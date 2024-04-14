@@ -50,12 +50,11 @@ useSeoMeta({
 						<span class="hidden lg:block">|</span
 						><span class="lg:hidden">-</span> <span>Web Developer</span>
 					</div>
-					&ldquo; I am a budding alchemist of code based in Lyon, France,
+					I am a budding alchemist of code based in Lyon, France,
 					studying at Epitech. My digital laboratory is a playground where I
 					turn lines of code into unique web experiences. Creativity,
 					innovation, and passion for technology are my magical ingredients.
 					Ready to explore together the frontiers of creativity and technology ?
-					&rdquo;
 				</div>
 			</div>
 			<div class="hidden lg:block">

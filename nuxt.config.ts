@@ -19,6 +19,9 @@ export default defineNuxtConfig({
           Sigmar: true,
           "Rubik Glitch": true,
           Gluten: true,
+          "RocknRoll One": true,
+          "Reggae One": true,
+          Acme: true,
         }
     }],
     'nuxt-icon',
