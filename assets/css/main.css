@@ -12,15 +12,31 @@ body {
 	font-family: Acme;
 }
 
+h1 {
+	font-size: 5rem;
+	line-height: 4.5rem;
+}
+
+h2 {
+	font-size: 4rem;
+    line-height: 5rem;
+}
+
+h3 {
+	font-size: 2.5rem;
+    line-height: 2.5rem;
+}
+
 .header {
 	z-index: 999;
 }
 
 .text-gradient {
-    background: linear-gradient(to right, #8D6DFA, #E178FB);
+	background: linear-gradient(to right, #8D6DFA, #E178FB);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+	@apply hover:saturate-200 transition-all duration-500;
 }
 
 @media screen and (max-width: 1024px) {

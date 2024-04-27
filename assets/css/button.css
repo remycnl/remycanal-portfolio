@@ -1,3 +1,7 @@
+.btn {
+	@apply hover:saturate-200 hover:bg-gradient-to-l transition-all duration-500;
+}
+
 .btn > span {
 	position: relative;
 	pointer-events: none;

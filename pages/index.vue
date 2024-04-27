@@ -10,7 +10,7 @@ const mounted = () => {
 			// Vérifie si la page est visible ou non
 			if (document.visibilityState === "hidden") {
 				// Change la valeur de la variable titre lorsque l'onglet n'est pas actif
-				titre = "Titre alternatif lorsque l'onglet n'est pas actif";
+				titre = "I miss you ! 😢";
 			} else {
 				// Restaure la valeur originale de la variable titre lorsque l'onglet redevient actif
 				titre = "Rémy Canal | Web Developer Portfolio";
@@ -35,7 +35,7 @@ useSeoMeta({
 <template>
 	<!-- ABOUT ME -->
 	<div class="top-0 bg-black h-fit">
-		<div class="container mx-auto px-4 pt-52 lg:pt-80 pb-48">
+		<div class="container mx-auto px-4 pt-32 lg:pt-80 pb-48">
 			<div
 				class="flex flex-col lg:flex-row justify-between items-center gap-x-80 gap-y-10">
 				<img
@@ -44,12 +44,11 @@ useSeoMeta({
 					class="gradient-img select-none w-3/4 lg:w-max" />
 				<div
 					class="flex flex-col justify-center text-center lg:text-start gap-y-14 text-white text-2xl">
-					<div
-						class="flex flex-col lg:flex-row items-center gap-x-5 text-gradient text-4xl font-bold">
-						<span class="uppercase">Rémy Canal</span>
-						<span class="hidden lg:block">|</span
-						><span class="lg:hidden">-</span> <span>Web Developer</span>
-					</div>
+					<h1
+						class="-mt-16 md:-mt-0 flex flex-col lg:flex-row items-center gap-x-5 gap-y-3 font-bold">
+						<span class="text-gradient -ml-14 md:-ml-0">Rémy <span class="ml-28 md:ml-16">Canal</span></span>
+						<span class="text-gradient text-[2.3rem] md:text-[5rem]">Web <span class="md:ml-16">Developer</span></span>
+					</h1>
 					I am a budding alchemist of code based in Lyon, France,
 					studying at Epitech. My digital laboratory is a playground where I
 					turn lines of code into unique web experiences. Creativity,
@@ -128,10 +127,10 @@ useSeoMeta({
 				color="#556afa"
 				icon="logos:strapi-icon" />
 		</div>
-		<h1 class="text-3xl text-white font-bold">
+		<div class="text-3xl text-white font-bold">
 			<img src="~/assets/img/logo.png" alt="Rémy Canal" />
 			<img src="~/assets/img/logo.png" alt="Rémy Canal" />
 			<img src="~/assets/img/logo.png" alt="Rémy Canal" />
-		</h1>
+		</div>
 	</div>
 </template>
