@@ -36,7 +36,11 @@ h3 {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-	@apply hover:saturate-200 transition-all duration-500;
+	transition: filter 0.5s ease-in-out;
+}
+
+.text-gradient:hover {
+	filter: saturate(200%);
 }
 
 @media screen and (max-width: 1024px) {

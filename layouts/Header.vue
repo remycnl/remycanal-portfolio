@@ -7,7 +7,7 @@
 				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="flex items-center justify-center">
-				<div class="md:cursor-pointer" @click="toggleDropdown">
+				<div class="md:cursor-pointer hover:saturate-200 transition-all duration-500" @click="toggleDropdown">
 					<div class="first-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
 					<div class="second-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
 					<div class="third-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
@@ -24,13 +24,12 @@
 				</a>
 				<div
 				class="flex flex-col lg:flex-row gap-x-20 gap-y-10 text-white uppercase items-center">
-					<a id="text-menu" @click="executeFunctionsMenu" href="about me" class="menu-sm hover:opacity-80 transition-opacity duration-300"> About me </a>
-					<a id="text-menu" @click="executeFunctionsMenu" href="skills" class="menu-sm hover:opacity-80 transition-opacity duration-300"> Skills </a>
-					<a id="text-menu" @click="executeFunctionsMenu" href="experience" class="menu-sm hover:opacity-80 transition-opacity duration-300"> Experience </a>
-					<a id="text-menu" @click="executeFunctionsMenu" href="portfolio" class="menu-sm hover:opacity-80 transition-opacity duration-300"> Portfolio </a>
-					<a @click="executeFunctionsMenu" href="contact me"
+					<span v-for="(menu, index) in menus" :key="index" :id="'text-menu-' + index" class="magnet">
+						<a @click="executeFunctionsMenu($event, 'top'); applyGradientText($event, index)" href="#" class="menu-sm transition-all duration-300 ease-in-out text-xl">{{ menu }}</a>
+					</span>
+					<a @click="executeFunctionsMenu($event, 'top')" href="#"
 					class="btn group relative p-5 border-none rounded-[0.8em] bg-gradient-to-r from-secondary-purple to-secondary-pink cursor-pointer isolate">
-						<span class="text-black-dark group-hover:text-white transition-colors duration-500">Contact me</span>
+						<span class="text-black-dark group-hover:text-white transition-colors duration-500 text-xl">Contact me</span>
 						<div class="ripple-container"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span> 
 							<div class="hover-ripple"></div>
 						</div>
@@ -63,6 +62,7 @@ export default {
 		return {
 			isScreenSM: true,
 			scrolled: false,
+			menus: ['About me', 'Skills', 'Experience', 'Portfolio']
 		};
 	},
 	computed: {
@@ -92,21 +92,23 @@ export default {
 		this.handleScroll();
 		window.addEventListener("scroll", this.handleScroll);
 		this.magnetEffect();
+		this.applyGradientText(null, 0);
 	},
 	beforeDestroy() {
 		window.removeEventListener("scroll", this.handleScroll);
 	},
 	methods: {
-		executeFunctionsMenu(event) {
+		executeFunctionsMenu(event, targetId) {
 			event.preventDefault();
+
 			if (window.innerWidth < 1024) {
 				gsapToggleDropdown();
 
 				setTimeout(() => {
-					this.ancreToSection(event, "top");
+					this.ancreToSection(event, targetId);
 				}, 500);
 			} else {
-				this.ancreToSection(event, "top");
+				this.ancreToSection(event, targetId);
 			}
 		},
 		handleScroll() {
@@ -129,6 +131,18 @@ export default {
 					behavior: "smooth",
 				});
 			}
+		},
+		applyGradientText(event, index) {
+			const textMenus = document.querySelectorAll("[id^='text-menu']");
+
+			textMenus.forEach((menu, idx) => {
+				if (idx === index) {
+					menu.classList.add('text-gradient');
+				} else {
+					menu.classList.remove('text-gradient');
+					
+				}
+			});
 		},
 		toggleDropdown() {
 			gsapToggleDropdown();

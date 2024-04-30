@@ -7,38 +7,39 @@ export default defineNuxtPlugin(() => {
 });
 
 export function magnetEffect() {
-    if (window.innerWidth >= 1024) {
-        var hoverMouse = function (elements) {
-            elements.forEach(function (element) {
-                var self = element;
-                var hover = false;
-                var offsetHoverMax = self.getAttribute("offset-hover-max") || 0.7;
-                var offsetHoverMin = self.getAttribute("offset-hover-min") || 0.5;
+    if (process.client && window.innerWidth >= 1024) {
+        const magnetElements = document.querySelectorAll(".magnet");
 
-                var attachEventsListener = function () {
-                    window.addEventListener("mousemove", function (e) {
-                        var hoverArea = hover ? offsetHoverMax : offsetHoverMin;
+        const hoverMouse = (elements) => {
+            elements.forEach(element => {
+                let hover = false;
+                const offsetHoverMax = parseFloat(element.getAttribute("offset-hover-max")) || 0.7;
+                const offsetHoverMin = parseFloat(element.getAttribute("offset-hover-min")) || 0.5;
 
-                        var cursor = {
+                const attachEventsListener = () => {
+                    window.addEventListener("mousemove", (e) => {
+                        const hoverArea = hover ? offsetHoverMax : offsetHoverMin;
+
+                        const cursor = {
                             x: e.clientX,
                             y: e.clientY + window.scrollY,
                         };
 
-                        var width = self.offsetWidth;
-                        var height = self.offsetHeight;
+                        const width = element.offsetWidth;
+                        const height = element.offsetHeight;
 
-                        var offset = self.getBoundingClientRect();
-                        var elPos = {
+                        const offset = element.getBoundingClientRect();
+                        const elPos = {
                             x: offset.left + width / 2,
                             y: offset.top + height / 2 + window.scrollY,
                         };
 
-                        var x = cursor.x - elPos.x;
-                        var y = cursor.y - elPos.y;
+                        const x = cursor.x - elPos.x;
+                        const y = cursor.y - elPos.y;
 
-                        var dist = Math.sqrt(x * x + y * y);
+                        const dist = Math.sqrt(x * x + y * y);
 
-                        var mutHover = false;
+                        let mutHover = false;
 
                         if (dist < width * hoverArea) {
                             mutHover = true;
@@ -55,8 +56,8 @@ export function magnetEffect() {
                     });
                 };
 
-                var onHover = function (x, y) {
-                    gsap.to(self, {
+                const onHover = (x, y) => {
+                    gsap.to(element, {
                         duration: 0.4,
                         x: x * 0.8,
                         y: y * 0.8,
@@ -64,8 +65,9 @@ export function magnetEffect() {
                         ease: Power2.easeOut,
                     });
                 };
-                var onLeave = function () {
-                    gsap.to(self, {
+
+                const onLeave = () => {
+                    gsap.to(element, {
                         duration: 0.7,
                         x: 0,
                         y: 0,
@@ -74,14 +76,14 @@ export function magnetEffect() {
                         ease: Elastic.easeOut.config(1.2, 0.4),
                     });
                 };
-
+                
                 attachEventsListener();
+
             });
         };
 
-        var textMenus = document.querySelectorAll("#text-menu");
-        if (textMenus) {
-            hoverMouse(textMenus);
+        if (magnetElements.length > 0) {
+            hoverMouse(magnetElements);
         }
     }
 }

@@ -43,9 +43,9 @@ useSeoMeta({
 					alt="Rémy Canal"
 					class="gradient-img select-none w-3/4 lg:w-max" />
 				<div
-					class="flex flex-col justify-center text-center lg:text-start gap-y-14 text-white text-2xl">
+					class="flex flex-col justify-center text-center md:text-start gap-y-14 text-white text-2xl">
 					<h1
-						class="-mt-16 md:-mt-0 flex flex-col lg:flex-row items-center gap-x-5 gap-y-3 font-bold">
+						class="-mt-16 lg:-mt-0 mx-0 md:mx-10 lg:mx-0 flex flex-col md:flex-row items-center gap-x-5 gap-y-3 font-bold">
 						<span class="text-gradient -ml-14 md:-ml-0">Rémy <span class="ml-28 md:ml-16">Canal</span></span>
 						<span class="text-gradient text-[2.3rem] md:text-[5rem]">Web <span class="md:ml-16">Developer</span></span>
 					</h1>
