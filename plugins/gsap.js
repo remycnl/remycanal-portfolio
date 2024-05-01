@@ -128,7 +128,7 @@ export function applyZoomEffect(index) {
         ease: "power2.inOut",
         onComplete: () => {
             gsap.to(textMenu, {
-            duration: 0.8,
+            duration: 0.7,
             scale: 1,
             ease: Bounce.easeOut,
             });
