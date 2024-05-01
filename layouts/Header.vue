@@ -3,7 +3,7 @@
 		class="header pointer-events-none lg:pointer-events-auto container mx-auto px-4">
 		<div
 			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
-			<a href="#top" @click="ancreToSection($event, 'top')">
+			<a href="#t" @click="ancreToSection($event, 'top')">
 				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="flex items-center justify-center">
@@ -16,7 +16,7 @@
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu">
 			<div :class="headerClasses">
-				<a href="#top" @click="executeFunctionsMenu">
+				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')">
 					<img
 						src="~/assets/img/logo.png"
 						alt="Rémy Canal"
@@ -25,9 +25,13 @@
 				<div
 				class="flex flex-col lg:flex-row gap-x-20 gap-y-10 text-white uppercase items-center">
 					<span v-for="(menu, index) in menus" :key="index" :id="'text-menu-' + index" class="magnet">
-						<a @click="executeFunctionsMenu($event, 'top'); applyGradientText($event, index)" href="#" class="menu-sm transition-all duration-300 ease-in-out text-xl">{{ menu }}</a>
+						<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(index); applyZoomEffect(index)"
+							href="#"
+							class="menu-sm transition-all duration-300 ease-in-out text-xl">
+							{{ menu }}
+						</a>
 					</span>
-					<a @click="executeFunctionsMenu($event, 'top')" href="#"
+					<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(4)" href="#"
 					class="btn group relative p-5 border-none rounded-[0.8em] bg-gradient-to-r from-secondary-purple to-secondary-pink cursor-pointer isolate">
 						<span class="text-black-dark group-hover:text-white transition-colors duration-500 text-xl">Contact me</span>
 						<div class="ripple-container"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span> 
@@ -54,7 +58,7 @@
 </template>
 
 <script>
-import { toggleDropdown as gsapToggleDropdown } from '~/plugins/gsap';
+import { toggleDropdown as gsapToggleDropdown, applyZoomEffect } from '~/plugins/gsap';
 import { magnetEffect as magnetTextEffect } from '~/plugins/global.js';
 
 export default {
@@ -92,7 +96,8 @@ export default {
 		this.handleScroll();
 		window.addEventListener("scroll", this.handleScroll);
 		this.magnetEffect();
-		this.applyGradientText(null, 0);
+		this.applyGradientText(0);
+		this.applyZoomEffect(0);
 	},
 	beforeDestroy() {
 		window.removeEventListener("scroll", this.handleScroll);
@@ -132,15 +137,16 @@ export default {
 				});
 			}
 		},
-		applyGradientText(event, index) {
+		applyGradientText(index) {
 			const textMenus = document.querySelectorAll("[id^='text-menu']");
 
 			textMenus.forEach((menu, idx) => {
-				if (idx === index) {
+				if (index === 4) {
+					menu.classList.remove('text-gradient');
+				} else if (idx === index) {
 					menu.classList.add('text-gradient');
 				} else {
 					menu.classList.remove('text-gradient');
-					
 				}
 			});
 		},
@@ -149,6 +155,12 @@ export default {
 		},
 		magnetEffect() {
 			magnetTextEffect();
+		},
+		applyZoomEffect(index) {
+			applyZoomEffect(index);
+		},
+		applyZoomEffectOnLogo() {
+			applyZoomEffectOnLogo();
 		},
 	},
 };
