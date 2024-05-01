@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css',
     '~/assets/css/button.css',
-    '~/assets/css/scrolldown.css',
+    '~/assets/css/valueCard.css',
   ],
   postcss: {
     plugins: {

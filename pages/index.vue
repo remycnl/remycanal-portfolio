@@ -41,7 +41,7 @@ useSeoMeta({
 				<img
 					src="~/assets/img/avatar.png"
 					alt="Rémy Canal"
-					class="gradient-img select-none w-3/4 lg:w-max" />
+					class="gradient-img select-none w-3/4 lg:w-max z-50" />
 				<div
 					class="flex flex-col justify-center text-center md:text-start gap-y-14 text-white text-2xl">
 					<h1
@@ -49,22 +49,37 @@ useSeoMeta({
 						<span class="text-gradient -ml-14 md:-ml-0">Rémy <span class="ml-28 md:ml-16">Canal</span></span>
 						<span class="text-gradient text-[2.3rem] md:text-[5rem]">Web <span class="md:ml-16">Developer</span></span>
 					</h1>
-					I am a budding alchemist of code based in Lyon, France,
-					studying at Epitech. My digital laboratory is a playground where I
-					turn lines of code into unique web experiences. Creativity,
-					innovation, and passion for technology are my magical ingredients.
-					Ready to explore together the frontiers of creativity and technology ?
+					I'm a student at Epitech, on my way to becoming a software engineer specialized in crafting outstanding and full digital experiences. Based in Lyon, France, I ensure responsive design, SEO optimization, and most importantly, prioritize user satisfaction above all else.
 				</div>
 			</div>
-			<div class="hidden lg:block">
-				<div class="flex justify-center mt-36 -mb-28">
-					<div class="scrolldown" >
-						<div class="chevrons">
-							<div class="chevrondown"></div>
-							<div class="chevrondown"></div>
-						</div>
-					</div>
-				</div>
+			<div class="flex flex-wrap justify-center md:justify-between gap-7 mt-20 -mb-20">
+				<ValueCard
+				text1="Simplicity"
+				text2="Sophistication"
+				subText="For a smooth user's experience and clean codebase."
+				icon="noto:rocket" />
+				<ValueCard
+				text1="Innovative"
+				text2="Meticulous"
+				subText="John Doe"
+				:isIcon="false"
+				pathIcon="/img/brackets.png" />
+				<ValueCard
+				text1="Autonomous"
+				text2="Listening"
+				subText="John Doe"
+				:isIcon="false"
+				pathIcon="/img/handshake.png" />
+				<ValueCard
+				text1="Open minded"
+				text2="Positive"
+				subText="John Doe"
+				icon="vscode-icons:file-type-html" />
+				<ValueCard
+				text1="Creative"
+				text2="Passionate"
+				subText="John Doe"
+				icon="vscode-icons:file-type-html" />
 			</div>
 		</div>
 	</div>
@@ -126,6 +141,24 @@ useSeoMeta({
 				text="Strapi"
 				color="#556afa"
 				icon="logos:strapi-icon" />
+			<BubbleIcon
+				text="PHP"
+				color="#6181B6"
+				icon="logos:php" />
+			<BubbleIcon
+				text="Python"
+				color="#FFD141"
+				icon="logos:python" />
+			<BubbleIcon
+				class="hidden md:block"
+				text="C"
+				color="#273393"
+				:isSVG="true"
+				pathIcon="/img/c.png" />
+			<BubbleIcon
+				text="Canva"
+				color="#00C4CC"
+				icon="devicon:canva" />
 		</div>
 		<div class="text-3xl text-white font-bold">
 			<img src="~/assets/img/logo.png" alt="Rémy Canal" />

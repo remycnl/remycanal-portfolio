@@ -5,6 +5,7 @@ export default defineNuxtPlugin(() => {
 	return {
 		toggleDropdown,
         applyZoomEffect,
+		applyUnzoom,
 	};
 });
 
@@ -135,3 +136,21 @@ export function applyZoomEffect(index) {
         }
     });
 }
+
+export function applyUnzoom(index) {
+    const logo = document.querySelector(`#skill-bubble-${index}`);
+
+    gsap.to(logo, {
+        duration: 0.4,
+        scale: 0.7,
+        ease: "power2.inOut",
+        onComplete: () => {
+            gsap.to(logo, {
+            duration: 0.7,
+            scale: 1,
+            ease: Bounce.easeOut,
+            });
+        }
+    });
+}
+
