@@ -3,7 +3,7 @@
 		class="header pointer-events-none lg:pointer-events-auto container mx-auto px-4">
 		<div
 			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
-			<a href="#t" @click="ancreToSection($event, 'top')">
+			<a href="#" @click="ancreToSection($event, 'top')">
 				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="flex items-center justify-center">
