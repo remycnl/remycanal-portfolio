@@ -1,5 +1,5 @@
 import { gsap } from "gsap";
-import { Bounce } from 'gsap/all';
+import { Elastic } from 'gsap/all';
 export { gsap };
 export default defineNuxtPlugin(() => {
 	return {
@@ -10,7 +10,7 @@ export default defineNuxtPlugin(() => {
 	};
 });
 
-gsap.registerPlugin(Bounce);
+gsap.registerPlugin(Elastic);
 
 let isDropdownOpen = false;
 
@@ -126,13 +126,13 @@ export function applyZoomEffect(index) {
 
     gsap.to(textMenu, {
         duration: 0.4,
-        scale: 1.5,
+        scale: 1.6,
         ease: "power2.inOut",
         onComplete: () => {
             gsap.to(textMenu, {
-            duration: 0.7,
+            duration: 1,
             scale: 1,
-            ease: Bounce.easeOut,
+            ease: Elastic.easeOut,
             });
         }
     });
@@ -147,9 +147,9 @@ export function applyUnzoom(index) {
         ease: "power2.inOut",
         onComplete: () => {
             gsap.to(logo, {
-            duration: 0.7,
+            duration: 1,
             scale: 1,
-            ease: Bounce.easeOut,
+            ease: Elastic.easeOut,
             });
         }
     });
@@ -159,9 +159,9 @@ export function toggleCard(index) {
     const card = document.querySelector(`.card-${index}`);
 
 	gsap.to(card, {
-		duration: 0.3,
+		duration: 0.1,
 		rotationY: "+=180",
-		ease: "easeOut",
+		ease: "none",
 		onComplete: () => {
 			card.classList.toggle("is-flipped");
 		},

@@ -41,7 +41,7 @@ useSeoMeta({
 				<img
 					src="~/assets/img/avatar.png"
 					alt="Rémy Canal"
-					class="gradient-img select-none w-3/4 lg:w-max z-50" />
+					class="gradient-img w-3/4 lg:w-max z-50" />
 				<div
 					class="flex flex-col justify-center text-center md:text-start gap-y-14 text-white text-2xl">
 					<h1
@@ -52,7 +52,7 @@ useSeoMeta({
 					I'm a student at Epitech, on my way to becoming a software engineer specialized in crafting outstanding and full digital experiences. Based in Lyon, France, I ensure responsive design, SEO optimization, and most importantly, prioritize user satisfaction above all else.
 				</div>
 			</div>
-			<div class="flex flex-wrap justify-center md:justify-between gap-7 mt-20 -mb-20">
+			<div class="flex flex-wrap justify-center md:justify-evenly lg:justify-between gap-7 mt-20 -mb-20">
 				<ValueCard
 				text1="Simplicity"
 				text2="Sophistication"
@@ -71,10 +71,11 @@ useSeoMeta({
 				:isIcon="false"
 				pathIcon="/img/handshake.png" />
 				<ValueCard
-				text1="Open minded"
+				text1="Open-minded"
 				text2="Positive"
 				subText="John Doe"
-				icon="vscode-icons:file-type-html" />
+				:isIcon="false"
+				pathIcon="/img/Statue-Of-Liberty.png" />
 				<ValueCard
 				text1="Creative"
 				text2="Passionate"
@@ -158,7 +159,8 @@ useSeoMeta({
 			<BubbleIcon
 				text="Canva"
 				color="#00C4CC"
-				icon="devicon:canva" />
+				:isSVG="true"
+				pathIcon="/img/canva.png" />
 		</div>
 		<div class="text-3xl text-white font-bold">
 			<img src="~/assets/img/logo.png" alt="Rémy Canal" />

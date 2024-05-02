@@ -7,13 +7,13 @@
 				:id="'skill-bubble-' + props.text"
 				:src="props.pathIcon"
 				:alt="props.text"
-				class="w-10 h-10 md:w-14 md:h-14" />
+				class="w-auto h-10 md:h-14" />
 			<Icon
 				v-else
 				:id="'skill-bubble-' + props.text"
 				:name="props.icon"
 				:color="props.iconColor"
-				class="w-10 h-10 md:w-14 md:h-14" />
+				class="w-auto h-10 md:h-14" />
 		</div>
 		<div
 			@mouseenter="handleMouseEnter"

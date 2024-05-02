@@ -31,6 +31,10 @@ h3 {
 	z-index: 999;
 }
 
+img, Icon {
+	@apply select-none pointer-events-none;
+}
+
 .text-gradient {
 	background: linear-gradient(to right, #8D6DFA, #E178FB);
     -webkit-background-clip: text;
