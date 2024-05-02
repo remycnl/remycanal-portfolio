@@ -6,6 +6,7 @@ export default defineNuxtPlugin(() => {
 		toggleDropdown,
         applyZoomEffect,
 		applyUnzoom,
+		toggleCard,
 	};
 });
 
@@ -154,3 +155,15 @@ export function applyUnzoom(index) {
     });
 }
 
+export function toggleCard(index) {
+    const card = document.querySelector(`.card-${index}`);
+
+	gsap.to(card, {
+		duration: 0.3,
+		rotationY: "+=180",
+		ease: "easeOut",
+		onComplete: () => {
+			card.classList.toggle("is-flipped");
+		},
+	});
+}

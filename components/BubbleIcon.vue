@@ -26,7 +26,6 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
 import { applyUnzoom } from "~/plugins/gsap";
 
 const props = defineProps({
