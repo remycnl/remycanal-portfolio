@@ -7,7 +7,7 @@
 				:id="'skill-bubble-' + props.text"
 				:src="props.pathIcon"
 				:alt="props.text"
-				class="w-auto h-10 md:h-14" />
+				class="icon-select-event w-auto h-10 md:h-14" />
 			<Icon
 				v-else
 				:id="'skill-bubble-' + props.text"

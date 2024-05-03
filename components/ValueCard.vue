@@ -4,12 +4,12 @@
 			<span>{{ props.text1 }}</span>
 			<span>&amp; {{ props.text2 }}</span>
 		</p>
-		<p class="back subtext text-center mx-10 text-xl text-gradient">{{ props.subText }}</p>
+		<p class="back subtext text-center mx-12 text-xl text-gradient">{{ props.subText }}</p>
 		<template v-if="props.isIcon">
 			<Icon :name="props.icon" class="front z-10 group-hover:z-30 opacity-50 group-hover:opacity-100 transition-all duration-500 ease-in-out value-icon w-auto h-28" />
 		</template>
 		<template v-else>
-			<img :src="props.pathIcon" :alt="props.text1" class="front z-10 group-hover:z-30 opacity-50 group-hover:opacity-100 transition-all duration-500 ease-in-out value-icon w-auto h-28" />
+			<img :src="props.pathIcon" :alt="props.text1" class="front icon-select-event z-10 group-hover:z-30 opacity-50 group-hover:opacity-100 transition-all duration-500 ease-in-out value-icon w-auto h-28" />
 		</template>
 	</div>
 </template>

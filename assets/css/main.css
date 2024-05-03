@@ -31,7 +31,7 @@ h3 {
 	z-index: 999;
 }
 
-img, Icon {
+.icon-select-event {
 	@apply select-none pointer-events-none;
 }
 
