@@ -4,7 +4,11 @@
 			<span>{{ props.text1 }}</span>
 			<span>&amp; {{ props.text2 }}</span>
 		</p>
-		<p class="back subtext text-center mx-12 text-xl text-gradient">{{ props.subText }}</p>
+		<div class="back">
+			<p style="transform: rotateY(180deg); transform-origin: center;" class="text-gradient text-center mx-10 text-[1.35rem]">
+				{{ props.subText }}
+			</p>
+		</div>
 		<template v-if="props.isIcon">
 			<Icon :name="props.icon" class="front z-10 group-hover:z-30 opacity-50 group-hover:opacity-100 transition-all duration-500 ease-in-out value-icon w-auto h-28" />
 		</template>
@@ -66,6 +70,4 @@ const toggleCardEvent = () => {
 	transform: rotateY(0deg);
 	display: block;
 }
-
-
 </style> 
