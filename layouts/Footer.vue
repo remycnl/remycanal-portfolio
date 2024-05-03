@@ -1,5 +1,4 @@
 <template>
-	<div class="bg-gradient-to-t from-black ... h-20"></div>
 	<div class="bottom-0 text-white bg-black">
 		<div class="container mx-auto px-4 pt-40 pb-20 flex flex-col items-center gap-y-32">
 			<img src="~/assets/img/fullLogo.png" alt="Rémy Canal" class="hover:saturate-200 transition-all duration-500 w-60 lg:w-60 h-auto" />

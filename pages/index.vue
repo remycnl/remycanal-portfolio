@@ -34,7 +34,7 @@ useSeoMeta({
 
 <template>
 	<!-- ABOUT ME -->
-	<div class="top-0 bg-black h-fit">
+	<div class="bg-gradient-to-b from-black via-primary to-black">
 		<div class="container mx-auto px-4 pt-32 lg:pt-60 pb-48">
 			<div
 				class="flex flex-col lg:flex-row justify-between items-center gap-x-80 gap-y-10">
@@ -78,8 +78,6 @@ useSeoMeta({
 				pathIcon="/img/Statue-Of-Liberty.png" />
 			</div>
 		</div>
-	</div>
-	<div class="bg-gradient-to-b from-black ... h-20"></div>
 	<div class="container mx-auto px-4 py-20">
 		<!-- SKILLS -->
 		<h2 id="skills" class="text-gradient uppercase">Skills</h2>
@@ -168,5 +166,6 @@ useSeoMeta({
 			<img src="~/assets/img/logo.png" alt="Rémy Canal" />
 			<img src="~/assets/img/logo.png" alt="Rémy Canal" />
 		</div>
+	</div>
 	</div>
 </template>
