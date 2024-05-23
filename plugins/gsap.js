@@ -17,7 +17,23 @@ let isDropdownOpen = false;
 export function toggleDropdown() {
 	if (window.innerWidth < 1024) {
 		isDropdownOpen = !isDropdownOpen;
+		const slotElement = document.getElementById('slot');
+		const footerElement = document.getElementById('footer');
+
 		if (isDropdownOpen) {
+			gsap.to(slotElement, {
+				duration: 0.8,
+				filter: "blur(10px)",
+				backdropFilter: "blur(10px)",
+				ease: "power2.out"
+			});
+			gsap.to(footerElement, {
+				duration: 0.8,
+				filter: "blur(10px)",
+				backdropFilter: "blur(10px)",
+				ease: "power2.out"
+			});
+
 			gsap.to(".third-line", {
 				scaleX: 0,
 				transformOrigin: "left",
@@ -68,6 +84,19 @@ export function toggleDropdown() {
 				},
 			});
 		} else {
+			gsap.to(slotElement, {
+				duration: 0.8,
+				filter: "blur(0px)",
+				backdropFilter: "blur(0px)",
+				ease: "power2.in"
+			});
+			gsap.to(footerElement, {
+				duration: 0.8,
+				filter: "blur(0px)",
+				backdropFilter: "blur(0px)",
+				ease: "power2.in"
+			});
+
 			gsap.to(".first-line", {
 				scaleX: 1,
 				transformOrigin: "left",
