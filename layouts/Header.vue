@@ -4,7 +4,7 @@
 		<div
 			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
 			<a href="#" @click="ancreToSection($event, 'top')">
-				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 transition-all duration-500 w-12 h-auto" />
+				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="flex items-center justify-center">
 				<div class="md:cursor-pointer hover:saturate-200 transition-all duration-500" @click="toggleDropdown">
@@ -20,7 +20,7 @@
 					<img
 						src="~/assets/img/logo.png"
 						alt="Rémy Canal"
-						class="hover:saturate-200 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0" />
+						class="hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0" />
 				</a>
 				<div
 				class="flex flex-col lg:flex-row gap-x-20 gap-y-10 text-white uppercase items-center">
