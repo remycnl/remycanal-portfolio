@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="header pointer-events-none lg:pointer-events-auto container mx-auto px-4">
+		class="header pointer-events-none container mx-auto px-4">
 		<div
 			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
 			<a href="#" @click="ancreToSection($event, 'top')">
@@ -15,24 +15,24 @@
 			</div>
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu 2xl:-mx-20">
-			<div :class="headerClasses">
+			<div :class="headerClasses" class="overflow-y-auto max-h-[97vh]">
 				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')">
 					<img
 						src="~/assets/img/logo.png"
 						alt="Rémy Canal"
-						class="hover:saturate-200 hover:translate-x-2 hover:skew-x-12 hover:skew-y-12 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0" />
+						class="hover-scale-effect hover:saturate-200 hover:translate-x-2 hover:skew-x-12 hover:skew-y-12 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
 				class="flex flex-col lg:flex-row gap-x-20 gap-y-10 text-white uppercase items-center">
-					<span v-for="(menu, index) in menus" :key="index" :id="'text-menu-' + index" class="magnet">
+					<span v-for="(menu, index) in menus" :key="index" :id="'text-menu-' + index" class="magnet pointer-events-auto">
 						<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(index); applyZoomEffect(index)"
 							href="#"
-							class="menu-sm transition-all duration-300 ease-in-out text-xl">
+							class="menu-sm transition-all duration-300 ease-in-out text-xl hover-scale-effect">
 							{{ menu }}
 						</a>
 					</span>
 					<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(4)" href="#"
-					class="btn group relative p-5 border-none rounded-[0.8em] bg-gradient-to-r from-secondary-purple to-secondary-pink cursor-pointer isolate">
+					class="hover-scale-effect btn pointer-events-auto group relative p-5 border-none rounded-[0.8em] bg-gradient-to-r from-secondary-purple to-secondary-pink cursor-pointer isolate">
 						<span class="text-black-dark group-hover:text-white transition-colors duration-500 text-xl">Contact me</span>
 						<div class="ripple-container"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span> 
 							<div class="hover-ripple"></div>
@@ -107,7 +107,7 @@ export default {
 			event.preventDefault();
 
 			if (window.innerWidth < 1024) {
-				toggleDropdown;
+				this.toggleDropdown();
 
 				setTimeout(() => {
 					this.ancreToSection(event, targetId);

@@ -105,9 +105,30 @@ export function mouseEffect() {
                 ease: "power2.out"
             });
         };
+
+        const handleMouseEnter = () => {
+            gsap.to(blob, {
+                scale: 0.5,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        };
+
+        const handleMouseLeave = () => {
+            gsap.to(blob, {
+                scale: 1,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        };
         
         document.body.onpointermove = updateBlobPosition;
-        
         window.addEventListener('scroll', updateBlobPosition);
+
+        const hoverElements = document.querySelectorAll('.hover-scale-effect');
+        hoverElements.forEach(element => {
+            element.addEventListener('mouseenter', handleMouseEnter);
+            element.addEventListener('mouseleave', handleMouseLeave);
+        });
     }
 }

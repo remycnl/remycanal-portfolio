@@ -42,6 +42,7 @@ h3 {
     color: transparent;
 	transition: filter 0.5s ease-in-out;
 	z-index: 100;
+	@apply transform-gpu
 }
 
 .text-gradient:hover {

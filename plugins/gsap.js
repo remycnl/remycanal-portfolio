@@ -21,6 +21,7 @@ export function toggleDropdown() {
 		const footerElement = document.getElementById('footer');
 
 		if (isDropdownOpen) {
+			document.body.classList.add('overflow-hidden');
 			gsap.to(slotElement, {
 				duration: 0.8,
 				filter: "blur(10px)",
@@ -84,6 +85,7 @@ export function toggleDropdown() {
 				},
 			});
 		} else {
+			document.body.classList.remove('overflow-hidden');
 			gsap.to(slotElement, {
 				duration: 0.8,
 				filter: "blur(0px)",
