@@ -37,19 +37,21 @@ useSeoMeta({
 	<div class="bg-gradient-to-b from-black via-primary to-black">
 		<div class="container mx-auto px-4 pt-32 lg:pt-60 pb-48">
 			<div
-				class="flex flex-col lg:flex-row justify-between items-center gap-x-80 gap-y-10">
+				class="flex flex-col lg:flex-row justify-around md:mx-20 gap-x-36 items-center gap-y-10">
 				<img
 					src="~/assets/img/avatar.png"
 					alt="Rémy Canal"
-					class="icon-select-event gradient-img w-3/4 lg:w-max z-50" />
+					class="icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
 				<div
-					class="flex flex-col justify-center text-center md:text-start gap-y-14 text-white text-2xl">
+					class="flex flex-col justify-center text-center md:text-start md:gap-y-14 z-50">
 					<h1
-						class="-mt-16 lg:-mt-0 mx-0 md:mx-10 lg:mx-0 flex flex-col md:flex-row items-center gap-x-5 gap-y-3 font-bold">
+						class="-mt-36 lg:-mt-0 mx-0 md:mx-10 lg:mx-0 flex flex-col md:flex-row items-center gap-x-5 gap-y-14 md:gap-y-3 font-bold">
 						<span class="text-gradient -ml-14 md:-ml-0">Rémy <span class="ml-28 md:ml-16">Canal</span></span>
-						<span class="text-gradient text-[2.3rem] md:text-[5rem]">Web <span class="md:ml-16">Developer</span></span>
+						<span class="text-gradient text-[3rem] md:text-[6rem]">Web <span class="md:ml-16">Developer</span></span>
 					</h1>
-					I'm a student at Epitech, on my way to becoming a software engineer specialized in crafting outstanding and full digital experiences. Based in Lyon, France, I ensure responsive design, SEO optimization, and most importantly, prioritize user satisfaction above all else.
+					<h4 style="font-family: RocknRoll One;" class="text-white text-2xl lg:text-3xl md:text-justify">
+						I'm a student at Epitech, on my way to becoming a software engineer specialized in crafting outstanding and full digital experiences. Based in Lyon, France, I ensure responsive design, SEO optimization, and most importantly, prioritize user satisfaction above all else.
+					</h4>
 				</div>
 			</div>
 			<div class="flex flex-wrap justify-center md:justify-evenly lg:justify-between gap-7 mt-20 lg:mt-40 -mb-20">
