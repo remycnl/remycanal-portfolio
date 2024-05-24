@@ -1,0 +1,26 @@
+:root {
+	--blob-color: linear-gradient(
+		to right,
+		#8D6DFA,
+		#E178FB
+	);
+	--blob-size: 300px;
+}
+
+#blob {
+	animation: rotate360 20s infinite;
+	background: var(--blob-color);
+	filter: blur(calc(var(--blob-size)/2.15));
+	width: var(--blob-size);
+	height: var(--blob-size);
+	left: 50%;
+	top: -20%;
+	translate: -50% -50%;
+	border-radius: 50%;
+}
+
+@keyframes rotate360 {
+	from { rotate: 0deg; }
+	50% { scale: 1 1.15; }
+	to { rotate: 360deg; }
+}

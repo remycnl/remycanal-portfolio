@@ -1,11 +1,11 @@
 <template>
-	<div class="group card border-none" :class="'card-' + props.text1" @click="toggleCardEvent">
+	<div class="group card border-none lg:basis-[23%] 2xl:basis-auto" :class="'card-' + props.text1" @click="toggleCardEvent">
 		<p class="front z-20 text-3xl text-with-shadow group-hover:text-gray-light transition-colors duration-300 ml-5 text-gray text-start flex flex-col">
 			<span>{{ props.text1 }}</span>
 			<span>&amp; {{ props.text2 }}</span>
 		</p>
 		<div class="back">
-			<p style="transform: rotateY(180deg); transform-origin: center;" class="text-gradient text-center mx-10 text-[1.35rem]">
+			<p style="transform: rotateY(180deg); transform-origin: center; font-family: RocknRoll One" class="text-gradient text-center m-6 text-[1.2rem]">
 				{{ props.subText }}
 			</p>
 		</div>

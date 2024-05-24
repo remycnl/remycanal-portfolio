@@ -14,7 +14,7 @@ body {
 
 h1 {
 	font-size: 6rem;
-	line-height: 5.5rem;
+	line-height: 6.4rem;
 }
 
 h2 {
@@ -41,6 +41,7 @@ h3 {
     background-clip: text;
     color: transparent;
 	transition: filter 0.5s ease-in-out;
+	z-index: 100;
 }
 
 .text-gradient:hover {
@@ -54,8 +55,8 @@ h3 {
 }
 
 .gradient-img {
-	-webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
-	mask-image: linear-gradient(to top, transparent 0%, black 30%);
+	-webkit-mask-image: linear-gradient(to top, transparent 0%, black 10%);
+	mask-image: linear-gradient(to top, transparent 0%, black 10%);
 }
 
 @media (max-width: 1023px) {

@@ -7,20 +7,20 @@
 				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="flex items-center justify-center">
-				<div class="md:cursor-pointer hover:saturate-200 transition-all duration-500" @click="toggleDropdown">
+				<div class="md:cursor-pointer hover:saturate-200 transition-all transform-gpu duration-500" @click="toggleDropdown">
 					<div class="first-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
 					<div class="second-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
 					<div class="third-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
 				</div>
 			</div>
 		</div>
-		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu">
+		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu 2xl:-mx-20">
 			<div :class="headerClasses">
 				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')">
 					<img
 						src="~/assets/img/logo.png"
 						alt="Rémy Canal"
-						class="hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0" />
+						class="hover:saturate-200 hover:translate-x-2 hover:skew-x-12 hover:skew-y-12 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0" />
 				</a>
 				<div
 				class="flex flex-col lg:flex-row gap-x-20 gap-y-10 text-white uppercase items-center">
@@ -58,8 +58,8 @@
 </template>
 
 <script>
-import { toggleDropdown as gsapToggleDropdown, applyZoomEffect } from '~/plugins/gsap';
-import { magnetEffect as magnetTextEffect } from '~/plugins/global.js';
+import { toggleDropdown, applyZoomEffect } from '~/plugins/gsap';
+import { magnetEffect } from '~/plugins/global.js';
 
 export default {
 	data() {
@@ -81,8 +81,8 @@ export default {
 				"items-center": true,
 				"p-4": true,
 				"border": true,
-				"border-black": this.scrolled,
-				"border-gray-semi": !this.scrolled || this.isScreenSM,
+				"border-transparent": this.scrolled,
+				"!border-gray-semi": !this.scrolled || this.isScreenSM,
 				"rounded-3xl": true,
 				"bg-black-dark": !this.scrolled || this.isScreenSM,
 				"lg:bg-opacity-90": true,
@@ -95,7 +95,7 @@ export default {
 	mounted() {
 		this.handleScroll();
 		window.addEventListener("scroll", this.handleScroll);
-		this.magnetEffect();
+		magnetEffect();
 		this.applyGradientText(0);
 		this.applyZoomEffect(0);
 	},
@@ -107,7 +107,7 @@ export default {
 			event.preventDefault();
 
 			if (window.innerWidth < 1024) {
-				gsapToggleDropdown();
+				toggleDropdown;
 
 				setTimeout(() => {
 					this.ancreToSection(event, targetId);
@@ -151,17 +151,11 @@ export default {
 			});
 		},
 		toggleDropdown() {
-			gsapToggleDropdown();
-		},
-		magnetEffect() {
-			magnetTextEffect();
+			toggleDropdown();
 		},
 		applyZoomEffect(index) {
 			applyZoomEffect(index);
-		},
-		applyZoomEffectOnLogo() {
-			applyZoomEffectOnLogo();
-		},
+		}
 	},
 };
 </script>

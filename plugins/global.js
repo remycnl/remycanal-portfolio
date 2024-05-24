@@ -3,6 +3,7 @@ import { gsap, Power2, Elastic } from 'gsap';
 export default defineNuxtPlugin(() => {
     return {
         magnetEffect,
+        mouseEffect,
     };
 });
 
@@ -81,9 +82,32 @@ export function magnetEffect() {
 
             });
         };
-
         if (magnetElements.length > 0) {
             hoverMouse(magnetElements);
         }
+    }
+}
+
+
+export function mouseEffect() {
+    if (process.client && window.innerWidth >= 1024) {
+        const blob = document.getElementById('blob');
+        
+        const updateBlobPosition = (event) => {
+            const { clientX, clientY } = event;
+            const scrollY = window.scrollY || window.pageYOffset;
+            const adjustedClientY = clientY + scrollY;
+            
+            gsap.to(blob, {
+                left: clientX,
+                top: adjustedClientY,
+                duration: 2,
+                ease: "power2.out"
+            });
+        };
+        
+        document.body.onpointermove = updateBlobPosition;
+        
+        window.addEventListener('scroll', updateBlobPosition);
     }
 }
