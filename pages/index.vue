@@ -1,17 +1,17 @@
 <script setup lang="ts">
-let titre = "Rémy Canal | Portfolio";
-let inactiveTitle = "I miss you !!!";
+const titre = ref("Rémy Canal | Portfolio");
+const inactiveTitle = ref("I miss you !!!");
 
 onMounted(() => {
-	if (process.client) {
-		document.addEventListener("visibilitychange", function () {
-			if (document.visibilityState === "hidden") {
-				document.title = inactiveTitle;
-			} else {
-				document.title = titre;
-			}
-		});
-	}
+    if (process.client) {
+        document.addEventListener("visibilitychange", function () {
+            if (document.visibilityState === "hidden") {
+                document.title = inactiveTitle.value;
+            } else {
+                document.title = titre.value;
+            }
+        });
+    }
 });
 
 useSeoMeta({
