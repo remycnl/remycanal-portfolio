@@ -27,7 +27,7 @@ useSeoMeta({
 <template>
 	<!-- ABOUT ME -->
 	<div class="bg-gradient-to-b from-black via-primary to-black">
-		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100	">
+		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
 			<div class="container mx-auto px-4 pt-28 lg:pt-40 pb-48">
 				<div
 					class="flex flex-col lg:flex-row justify-between items-center gap-y-10">
