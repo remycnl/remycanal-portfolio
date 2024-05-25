@@ -39,7 +39,7 @@ useSeoMeta({
 						class="flex flex-col justify-center text-center w-full lg:w-7/12 md:text-start md:gap-y-14 z-50">
 						<h1
 							class="-mt-36 md:-mt-24 lg:-mt-0 mx-0 md:mx-10 lg:mx-0 flex flex-col md:flex-row items-center gap-x-5 gap-y-14 md:gap-y-3 font-bold">
-							<span class="text-gradient -ml-14 md:-ml-0 text-[6rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.4rem] lg:leading-none 2xl:leading-[6.4rem]"
+							<span class="text-gradient -ml-14 md:-ml-0 text-[6rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.5rem] lg:leading-none 2xl:leading-[6.4rem]"
 								>Rémy <span class="ml-28 md:ml-16">Canal</span></span
 							>
 							<span class="text-gradient text-[3rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.4rem] lg:leading-none 2xl:leading-[6.4rem]"
