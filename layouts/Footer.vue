@@ -1,13 +1,23 @@
+<script setup>
+import { animationFooter } from '~/plugins/gsap';
+
+onMounted(() => {
+	if (typeof animationFooter === "function") {
+		animationFooter();
+	}
+});
+</script>
+
 <template>
 	<div class="bottom-0 text-white bg-black">
-		<div class="container mx-auto px-4 pt-40 pb-20 flex flex-col items-center gap-y-32 hover:brightness-100">
+		<div class="container mx-auto px-4 lg:px-0 pt-40 pb-20 flex flex-col items-center gap-y-32 hover:brightness-100">
 			<img src="~/assets/img/fullLogo.png" alt="Rémy Canal" class="hover:saturate-200 transition-all duration-500 w-60 lg:w-60 h-auto" />
 			<div
 				class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-4xl">
 				&ldquo; Simplicity is the ultimate sophistication. &rdquo;
 				<span class="text-xl">Leonardo da Vinci</span>
 			</div>
-			<div class="flex justify-center gap-x-5 md:gap-x-10">
+			<div class="flex justify-center gap-x-5 md:gap-x-10 mb-20">
 				<a
 					href="tel:+330619258299"
 					class="hover-scale-effect group z-10 bg-primary rounded-full border border-secondary-purple hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary p-4">
@@ -36,9 +46,10 @@
 					<Icon name="uil:linkedin" color="white" class="w-8 h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 				</a>
 			</div>
-			<div class="flex flex-col justify-center text-center">
-				©2024. All Rights Reserved. <br class="md:hidden">Handcrafted by me.
-				<span class="text-gradient ml-1 mt-1"> Rémy CANAL </span>
+			<div style="font-family: Source Code Pro" class="container-s flex absolute bottom-0 text-start w-screen p-3 overflow-hidden">
+				<span class="s whitespace-nowrap inline-block text-lg text-gray-semi">
+					▞▚▞▚▞▚▞_RÉMY_CANAL_▞▚▞▚▞▚▞_©_COPYRIGHT_2024_▞▚▞▚▞▚▞_ALL_RIGHTS_RESERVED_▞▚▞▚▞▚▞_HANDCRAFTED_BY_ME_
+				</span>
 			</div>
 		</div>
 	</div>

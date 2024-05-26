@@ -23,6 +23,10 @@ export default defineNuxtConfig({
           "RocknRoll One": true,
           "Reggae One": true,
           Acme: true,
+          "Sometype Mono": true,
+          "Cutive Mono": true,
+          VT323: true,
+          "Source Code Pro": true,
         }
     }],
     'nuxt-icon',

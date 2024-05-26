@@ -7,6 +7,7 @@ export default defineNuxtPlugin(() => {
         applyZoomEffect,
 		applyUnzoom,
 		toggleCard,
+		animationFooter,
 	};
 });
 
@@ -197,4 +198,33 @@ export function toggleCard(index) {
 			card.classList.toggle("is-flipped");
 		},
 	});
+}
+
+export function animationFooter() {
+	const scrollingTextElements = document.querySelectorAll('.s');
+
+    scrollingTextElements.forEach(scrollingTextElement => {
+        // Récupérez la taille de l'écran
+        const screenWidth = window.innerWidth;
+
+        // Calculez la largeur du texte pour savoir combien il faut décaler
+        const textWidth = scrollingTextElement.offsetWidth;
+
+        // Calculez la distance à laquelle le texte doit se déplacer pour couvrir toute la largeur de l'écran
+        const distanceToTravel = screenWidth + textWidth;
+
+        // Utilisez GSAP pour animer le défilement du texte
+        gsap.to(scrollingTextElement, {
+            x: distanceToTravel,
+            duration: 20, // Durée de l'animation en secondes
+            ease: "linear", // Assure une vitesse constante
+            repeat: -1, // Répétez l'animation indéfiniment
+            modifiers: {
+                x: gsap.utils.unitize(value => value % (screenWidth + textWidth) - textWidth)
+                // Cette fonction permet de faire boucler le texte
+            }
+        });
+
+		
+    });
 }

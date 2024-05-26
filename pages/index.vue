@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const titre = ref("Rémy Canal | Portfolio");
+const titre = ref("Rémy Canal | Portfolio - Web Developer");
 const inactiveTitle = ref("I miss you !!!");
 
 onMounted(() => {
@@ -28,7 +28,7 @@ useSeoMeta({
 	<!-- ABOUT ME -->
 	<div class="bg-gradient-to-b from-black via-primary to-black">
 		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
-			<div class="container mx-auto px-4 pt-28 lg:pt-40 pb-48">
+			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
 				<div
 					class="flex flex-col lg:flex-row justify-between items-center gap-y-10">
 					<img
@@ -84,9 +84,9 @@ useSeoMeta({
 						pathIcon="/img/Statue-Of-Liberty.png" />
 				</div>
 			</div>
-			<div class="container mx-auto px-4 py-20">
+			<div class="container mx-auto px-4 lg:px-0 py-20">
 				<!-- SKILLS -->
-				<h2 id="skills" class="text-gradient uppercase">Skills</h2>
+				<h2 id="skills" class="text-gradient uppercase w-fit">Skills</h2>
 				<div
 					class="flex flex-col lg:flex-row lg:justify-between items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div

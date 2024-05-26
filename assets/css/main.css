@@ -10,6 +10,12 @@
 body {
 	background-color: #0f172a;
 	font-family: Acme;
+	scrollbar-width: none; /* Pour Firefox */
+    -ms-overflow-style: none; /* Pour Internet Explorer et Edge */
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 h1 {

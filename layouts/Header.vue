@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="header pointer-events-none container mx-auto px-4">
+		class="header container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-20">
 		<div
 			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
 			<a href="#" @click="ancreToSection($event, 'top')">
@@ -14,13 +14,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu 2xl:-mx-20">
-			<div :class="headerClasses" class="overflow-y-auto lg:overflow-hidden max-h-[97vh]">
+		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
+			<div :class="headerClasses" class="overflow-y-auto lg:overflow-hidden max-h-[97vh] lg-custom-width">
 				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')">
 					<img
 						src="~/assets/img/logo.png"
 						alt="Rémy Canal"
-						class="hover-scale-effect hover:saturate-200 hover:translate-x-2 hover:skew-x-12 hover:skew-y-12 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
+						class="hover-scale-effect hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
 				class="flex flex-col lg:flex-row gap-x-20 gap-y-10 text-white uppercase items-center">
@@ -57,105 +57,114 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import { toggleDropdown, applyZoomEffect } from '~/plugins/gsap';
 import { magnetEffect } from '~/plugins/global.js';
 
-export default {
-	data() {
-		return {
-			isScreenSM: true,
-			scrolled: false,
-			menus: ['About me', 'Skills', 'Experience', 'Portfolio']
-		};
-	},
-	computed: {
-		headerClasses() {
-			return {
-				"w-full": true,
-				"flex": true,
-				"flex-col": true,
-				"lg:flex-row": true,
-				"gap-y-20": true,
-				"justify-between": true,
-				"items-center": true,
-				"p-4": true,
-				"border": true,
-				"border-transparent": this.scrolled,
-				"!border-gray-semi": !this.scrolled || this.isScreenSM,
-				"rounded-3xl": true,
-				"bg-black-dark": !this.scrolled || this.isScreenSM,
-				"lg:bg-opacity-90": true,
-				"bg-opacity-95": true,
-				"transition-all": true,
-				"duration-500": true,
-			};
-		},
-	},
-	mounted() {
-		this.handleScroll();
-		window.addEventListener("scroll", this.handleScroll);
-		magnetEffect();
-		this.applyGradientText(0);
-		this.applyZoomEffect(0);
-	},
-	beforeDestroy() {
-		window.removeEventListener("scroll", this.handleScroll);
-	},
-	methods: {
-		executeFunctionsMenu(event, targetId) {
-			event.preventDefault();
+let isScreenSM = true;
+let scrolled = false;
+const menus = ['About me', 'Skills', 'Experience', 'Portfolio'];
 
-			if (window.innerWidth < 1024) {
-				this.toggleDropdown();
+const headerClasses = {
+    "w-full": true,
+    "flex": true,
+    "flex-col": true,
+    "lg:flex-row": true,
+    "gap-y-20": true,
+    "justify-between": true,
+    "items-center": true,
+    "p-4": true,
+    "border": true,
+    "border-transparent": scrolled,
+    "!border-gray-semi": !scrolled || isScreenSM,
+    "rounded-3xl": true,
+    "bg-black-dark": !scrolled || isScreenSM,
+    "lg:bg-opacity-90": true,
+    "bg-opacity-95": true,
+    "transition-all": true,
+    "duration-500": true,
+};
 
-				setTimeout(() => {
-					this.ancreToSection(event, targetId);
-				}, 500);
-			} else {
-				this.ancreToSection(event, targetId);
-			}
-		},
-		handleScroll() {
-			this.isScreenSM = window.innerWidth < 1024;
+const handleScroll = () => {
+    isScreenSM = window.innerWidth < 1024;
+    scrolled = window.scrollY < 100;
+};
 
-			this.scrolled = window.scrollY < 100;
-		},
-		ancreToSection(event, targetId) {
-			event.preventDefault();
+const executeFunctionsMenu = (event, targetId) => {
+    event.preventDefault();
 
-			const targetElement = document.getElementById(targetId);
+    if (window.innerWidth < 1024) {
+        toggleDropdown();
 
-			if (targetElement) {
-				const viewportHeight = window.innerHeight;
-				const targetOffset = targetElement.getBoundingClientRect().top;
-				const scrollDistance = targetOffset - viewportHeight / 5;
+        setTimeout(() => {
+            ancreToSection(event, targetId);
+        }, 500);
+    } else {
+        ancreToSection(event, targetId);
+    }
+};
 
-				window.scrollBy({
-					top: scrollDistance,
-					behavior: "smooth",
-				});
-			}
-		},
-		applyGradientText(index) {
-			const textMenus = document.querySelectorAll("[id^='text-menu']");
+const ancreToSection = (event, targetId) => {
+    event.preventDefault();
 
-			textMenus.forEach((menu, idx) => {
-				if (index === 4) {
-					menu.classList.remove('text-gradient');
-				} else if (idx === index) {
-					menu.classList.add('text-gradient');
-				} else {
-					menu.classList.remove('text-gradient');
-				}
-			});
-		},
-		toggleDropdown() {
-			toggleDropdown();
-		},
-		applyZoomEffect(index) {
-			applyZoomEffect(index);
-		}
-	},
+    const targetElement = document.getElementById(targetId);
+
+    if (targetElement) {
+        const viewportHeight = window.innerHeight;
+        const targetOffset = targetElement.getBoundingClientRect().top;
+        const scrollDistance = targetOffset - viewportHeight / 5;
+
+        window.scrollBy({
+            top: scrollDistance,
+            behavior: "smooth",
+        });
+    }
+};
+
+const applyGradientText = (index) => {
+    const textMenus = document.querySelectorAll("[id^='text-menu']");
+
+    textMenus.forEach((menu, idx) => {
+        if (index === 4) {
+            menu.classList.remove('text-gradient');
+        } else if (idx === index) {
+            menu.classList.add('text-gradient');
+        } else {
+            menu.classList.remove('text-gradient');
+        }
+    });
+};
+
+onMounted(() => {
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    magnetEffect();
+    applyGradientText(0);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener("scroll", handleScroll);
+});
+
+const toggleDropdownMenu = () => {
+    toggleDropdown();
+};
+
+const applyZoomEffectMenu = (index) => {
+    applyZoomEffect(index);
 };
 </script>
+
+
+<style scoped>
+    @media (min-width: 1024px) {
+        .lg-custom-width {
+            width: calc(100vw - 2rem);
+        }
+    }
+	@media (min-width: 1536px) {
+        .lg-custom-width {
+            width: calc(100vw - 10rem);
+        }
+    }
+</style>
