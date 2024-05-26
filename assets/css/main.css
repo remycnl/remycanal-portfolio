@@ -40,6 +40,16 @@ h3 {
 .icon-select-event {
 	@apply select-none pointer-events-none;
 }
+.s:hover {
+	background: linear-gradient(to right, #8D6DFA, #E178FB);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+	transition: color 0.1s ease-in-out;
+	z-index: 100;
+	filter: saturate(200%);
+	@apply transform-gpu
+}
 
 .text-gradient {
 	background: linear-gradient(to right, #8D6DFA, #E178FB);
