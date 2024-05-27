@@ -1,6 +1,6 @@
 <template>
 	<div class="group hover-scale-effect card border-none lg:basis-[23%] 2xl:basis-auto" :class="'card-' + props.text1" @click="toggleCardEvent">
-		<p class="front z-20 text-3xl text-with-shadow group-hover:text-gray-light transition-colors duration-300 ml-5 text-gray text-start flex flex-col">
+		<p :class="'card-text-' + props.text1" class="front z-20 text-3xl group-hover:scale-[0.85] text-with-shadow group-hover:text-gray-light transition-all duration-300 ml-5 text-gray text-start flex flex-col">
 			<span>{{ props.text1 }}</span>
 			<span>&amp; {{ props.text2 }}</span>
 		</p>

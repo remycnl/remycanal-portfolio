@@ -46,7 +46,7 @@ onMounted(() => {
 				</a>
 			</div>
 			<div class="container-s flex absolute bottom-0 text-start w-screen pb-2 overflow-hidden select-none">
-				<div id="letters" class="font-mono s whitespace-nowrap inline-block text-sm text-gray-semi uppercase w-fit">
+				<div id="letters" class="tracking-wider font-mono s whitespace-nowrap inline-block text-xs text-gray-semi uppercase w-fit">
 				<!-- Ici apparaîssent les <span> des crédits -->
 				</div>
 			</div>

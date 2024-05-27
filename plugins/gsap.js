@@ -189,7 +189,15 @@ export function applyUnzoom(index) {
 
 export function toggleCard(index) {
     const card = document.querySelector(`.card-${index}`);
+	const cardText = document.querySelector(`.card-text-${index}`);
 
+	if (cardText.classList.contains('group-hover:text-gray-light')) {
+		cardText.classList.add('group-hover:text-black');
+		cardText.classList.remove('group-hover:text-gray-light');
+	} else {
+		cardText.classList.add('group-hover:text-gray-light');
+		cardText.classList.remove('group-hover:text-black');
+	}
 	gsap.to(card, {
 		duration: 0.1,
 		rotationY: "+=180",

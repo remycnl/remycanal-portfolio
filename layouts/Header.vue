@@ -61,11 +61,11 @@
 import { toggleDropdown, applyZoomEffect } from '~/plugins/gsap';
 import { magnetEffect } from '~/plugins/global.js';
 
-let isScreenSM = true;
-let scrolled = false;
+let isScreenSM = ref(true);
+let scrolled = ref(false);
 const menus = ['About me', 'Skills', 'Experience', 'Portfolio'];
 
-const headerClasses = {
+const headerClasses = computed(() => ({
     "w-full": true,
     "flex": true,
     "flex-col": true,
@@ -75,19 +75,19 @@ const headerClasses = {
     "items-center": true,
     "p-4": true,
     "border": true,
-    "border-transparent": scrolled,
-    "!border-gray-semi": !scrolled || isScreenSM,
+    "border-transparent": scrolled.value,
+    "!border-gray-semi": !scrolled.value || isScreenSM.value,
     "rounded-3xl": true,
-    "bg-black-dark": !scrolled || isScreenSM,
+    "bg-black-dark": !scrolled.value || isScreenSM.value,
     "lg:bg-opacity-90": true,
     "bg-opacity-95": true,
     "transition-all": true,
     "duration-500": true,
-};
+}));
 
 const handleScroll = () => {
-    isScreenSM = window.innerWidth < 1024;
-    scrolled = window.scrollY < 100;
+    isScreenSM.value = window.innerWidth < 1024;
+    scrolled.value = window.scrollY < 100;
 };
 
 const executeFunctionsMenu = (event, targetId) => {
@@ -136,8 +136,8 @@ const applyGradientText = (index) => {
 };
 
 onMounted(() => {
-    handleScroll();
     window.addEventListener("scroll", handleScroll);
+    handleScroll();
     magnetEffect();
     applyGradientText(0);
 });
