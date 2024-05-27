@@ -201,30 +201,54 @@ export function toggleCard(index) {
 }
 
 export function animationFooter() {
-	const scrollingTextElements = document.querySelectorAll('.s');
+    const lettersContainer = document.getElementById('letters');
+    const alphabet = '▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_YM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_'.split('');
+    let index = 0;
 
-    scrollingTextElements.forEach(scrollingTextElement => {
-        // Récupérez la taille de l'écran
-        const screenWidth = window.innerWidth;
+    for (let i = 0; i < 4; i++) {
+        generateLetters();
+    }
 
-        // Calculez la largeur du texte pour savoir combien il faut décaler
-        const textWidth = scrollingTextElement.offsetWidth;
+    function createLetterSpan(letter) {
+        const span = document.createElement('span');
+        span.className = 's';
+        span.textContent = letter;
+        
+        if (lettersContainer.firstChild) {
+            lettersContainer.insertBefore(span, lettersContainer.firstChild);
+        } else {
+            lettersContainer.appendChild(span);
+        }
+        
+        return span;
+    }
 
-        // Calculez la distance à laquelle le texte doit se déplacer pour couvrir toute la largeur de l'écran
-        const distanceToTravel = screenWidth + textWidth;
-
-        // Utilisez GSAP pour animer le défilement du texte
-        gsap.to(scrollingTextElement, {
-            x: distanceToTravel,
-            duration: 20, // Durée de l'animation en secondes
-            ease: "linear", // Assure une vitesse constante
-            repeat: -1, // Répétez l'animation indéfiniment
-            modifiers: {
-                x: gsap.utils.unitize(value => value % (screenWidth + textWidth) - textWidth)
-                // Cette fonction permet de faire boucler le texte
+    function animateLetter(letter) {
+        const span = createLetterSpan(letter);
+        
+        gsap.to(span, 
+            {
+                x: '100%',
+				repeat: -1,
+                ease: 'linear',
+                onComplete: () => {
+                    span.remove();
+                }
             }
-        });
+        );
+    }
 
-		
-    });
+    function generateLetters() {
+        alphabet.forEach(letter => {
+            const span = createLetterSpan(letter);
+        });
+    }
+
+    function generateAndAnimateLetters() {
+        animateLetter(alphabet[index]);
+        index = (index + 1) % alphabet.length;
+        setTimeout(generateAndAnimateLetters, 300);
+    }
+
+    generateAndAnimateLetters();
 }

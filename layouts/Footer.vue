@@ -1,6 +1,5 @@
 <script setup>
 import { animationFooter } from '~/plugins/gsap';
-
 onMounted(() => {
 	if (typeof animationFooter === "function") {
 		animationFooter();
@@ -46,10 +45,9 @@ onMounted(() => {
 					<Icon name="uil:linkedin" color="white" class="w-8 h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 				</a>
 			</div>
-			<div style="font-family: Source Code Pro" class="container-s flex absolute bottom-0 text-start w-screen p-3 overflow-hidden select-none">
-				<span class="s whitespace-nowrap inline-block text-lg text-gray-semi">
-					▞▚▞▚▞▚▞_RÉMY_CANAL_▞▚▞▚▞▚▞_©_COPYRIGHT_2024_▞▚▞▚▞▚▞_ALL_RIGHTS_RESERVED_▞▚▞▚▞▚▞_HANDCRAFTED_BY_ME_
-				</span>
+			<div class="container-s flex absolute bottom-0 text-start w-screen py-3 overflow-hidden select-none">
+				<div id="letters" style="font-family: Source Code Pro;" class="s whitespace-nowrap inline-block text-md text-gray-semi w-fit">
+				</div>
 			</div>
 		</div>
 	</div>

@@ -40,7 +40,7 @@ h3 {
 .icon-select-event {
 	@apply select-none pointer-events-none;
 }
-.s:hover {
+.container-s:hover .s {
 	background: linear-gradient(to right, #8D6DFA, #E178FB);
     -webkit-background-clip: text;
     background-clip: text;
