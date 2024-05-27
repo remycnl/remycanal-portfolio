@@ -17,16 +17,8 @@ export default defineNuxtConfig({
     ['@nuxtjs/google-fonts', {
         families: {
           Roboto: true,
-          Sigmar: true,
-          "Rubik Glitch": true,
-          Gluten: true,
           "RocknRoll One": true,
-          "Reggae One": true,
           Acme: true,
-          "Sometype Mono": true,
-          "Cutive Mono": true,
-          VT323: true,
-          "Source Code Pro": true,
         }
     }],
     'nuxt-icon',

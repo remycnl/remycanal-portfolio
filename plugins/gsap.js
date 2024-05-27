@@ -202,7 +202,7 @@ export function toggleCard(index) {
 
 export function animationFooter() {
     const lettersContainer = document.getElementById('letters');
-    const alphabet = '▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_YM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_'.split('');
+    const alphabet = '▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_'.split('');
     let index = 0;
 
     for (let i = 0; i < 4; i++) {
