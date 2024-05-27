@@ -88,7 +88,7 @@ useSeoMeta({
 				<!-- SKILLS -->
 				<h2 id="skills" class="text-gradient uppercase w-fit">Skills</h2>
 				<div
-					class="flex flex-col lg:flex-row lg:justify-between items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
+					class="flex flex-col lg:flex-row lg:justify-evenly items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
 						class="p-20 lg:p-40 bg-black border-2 text-center border-gray-semi rounded-3xl">
 						<p class="text-white text-2xl">Ici prendra place</p>
