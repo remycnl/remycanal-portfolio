@@ -9,7 +9,7 @@ onMounted(() => {
 
 <template>
 	<div class="bottom-0 text-white bg-black">
-		<div class="container mx-auto px-4 lg:px-0 pt-40 pb-20 flex flex-col items-center gap-y-32 hover:brightness-100">
+		<div class="container mx-auto px-4 lg:px-0 pt-40 pb-10 flex flex-col items-center gap-y-32 hover:brightness-100">
 			<img src="~/assets/img/fullLogo.png" alt="Rémy Canal" class="hover:saturate-200 transition-all duration-500 w-60 lg:w-60 h-auto" />
 			<div
 				class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-4xl">
@@ -45,8 +45,9 @@ onMounted(() => {
 					<Icon name="uil:linkedin" color="white" class="w-8 h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 				</a>
 			</div>
-			<div class="container-s flex absolute bottom-0 text-start w-screen py-3 overflow-hidden select-none">
-				<div id="letters" style="font-family: Source Code Pro;" class="s whitespace-nowrap inline-block text-md text-gray-semi w-fit">
+			<div class="container-s flex absolute bottom-0 text-start w-screen pb-2 overflow-hidden select-none">
+				<div id="letters" style="font-family: Source Code Pro;" class="s whitespace-nowrap inline-block text-sm text-gray-semi w-fit">
+				<!-- Ici apparaîssent les <span> des crédits -->
 				</div>
 			</div>
 		</div>

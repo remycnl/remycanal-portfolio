@@ -211,7 +211,6 @@ export function animationFooter() {
 
     function createLetterSpan(letter) {
         const span = document.createElement('span');
-        span.className = 's';
         span.textContent = letter;
         
         if (lettersContainer.firstChild) {
@@ -247,7 +246,7 @@ export function animationFooter() {
     function generateAndAnimateLetters() {
         animateLetter(alphabet[index]);
         index = (index + 1) % alphabet.length;
-        setTimeout(generateAndAnimateLetters, 300);
+        setTimeout(generateAndAnimateLetters, 250);
     }
 
     generateAndAnimateLetters();
