@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="header container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-20">
+		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-20">
 		<div
 			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
 			<a href="#" @click="ancreToSection($event, 'top')">
