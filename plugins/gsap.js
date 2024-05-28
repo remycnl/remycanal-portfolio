@@ -191,21 +191,35 @@ export function toggleCard(index) {
     const card = document.querySelector(`.card-${index}`);
 	const cardText = document.querySelector(`.card-text-${index}`);
 
+	card.classList.toggle("is-flipped");
+
 	if (cardText.classList.contains('group-hover:text-gray-light')) {
-		cardText.classList.add('group-hover:text-black');
+		cardText.classList.add('group-hover:text-primary');
 		cardText.classList.remove('group-hover:text-gray-light');
 	} else {
 		cardText.classList.add('group-hover:text-gray-light');
-		cardText.classList.remove('group-hover:text-black');
+		cardText.classList.remove('group-hover:text-primary');
 	}
+	
 	gsap.to(card, {
 		duration: 0.1,
 		rotationY: "+=180",
 		ease: "none",
-		onComplete: () => {
-			card.classList.toggle("is-flipped");
-		},
 	});
+
+	function toggleClassesAfterDelay() {
+		const cardSubtext = document.querySelector(`.card-subtext-${index}`);
+
+		if (cardSubtext.classList.contains('text-primary')) {
+			cardSubtext.classList.remove('text-primary');
+			cardSubtext.classList.add('text-gradient');
+		} else {
+			cardSubtext.classList.remove('text-gradient');
+			cardSubtext.classList.add('text-primary');
+		}
+	}
+
+	setTimeout(toggleClassesAfterDelay, 200);
 }
 
 export function animationFooter() {

@@ -63,24 +63,21 @@ useSeoMeta({
 						text1="Simplicity"
 						text2="Sophistication"
 						subText="For a smooth user's experience and clean codebase."
-						icon="noto:rocket" />
+						pathIcon="/img/rocket.png" />
 					<ValueCard
 						text1="Innovative"
 						text2="Meticulous"
 						subText="Engineered with creativity and attention to detail."
-						:isIcon="false"
 						pathIcon="/img/brackets.png" />
 					<ValueCard
 						text1="Autonomous"
 						text2="Listening"
 						subText="Independently developed with a focus on user feedback."
-						:isIcon="false"
 						pathIcon="/img/handshake.png" />
 					<ValueCard
 						text1="Open-minded"
 						text2="Passionate"
 						subText="Crafted with an open heart and driven by passion."
-						:isIcon="false"
 						pathIcon="/img/Statue-Of-Liberty.png" />
 				</div>
 			</div>
@@ -95,6 +92,7 @@ useSeoMeta({
 						<p class="text-white text-2xl mt-10">un élément 3D !</p>
 						<p class="text-white text-2xl mt-10">(un ordi maybe)</p>
 					</div>
+					<!-- <GridBackground></GridBackground> -->
 					<div
 						class="flex lg:grid lg:w-3/5 2xl:w-2/5 flex-wrap grid-cols-4 justify-center gap-10 gap-y-16 md:gap-20 md:gap-y-16">
 						<BubbleIcon

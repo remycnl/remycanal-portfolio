@@ -5,14 +5,11 @@
 			<span>&amp; {{ props.text2 }}</span>
 		</p>
 		<div class="back">
-			<p style="transform: rotateY(180deg); transform-origin: center; font-family: RocknRoll One" class="text-gradient text-center m-6 text-[1.2rem]">
+			<p :class="'card-subtext-' + props.text1" style="transform: rotateY(180deg); transform-origin: center; font-family: RocknRoll One" class="text-primary text-center m-6 text-[1.2rem]">
 				{{ props.subText }}
 			</p>
 		</div>
-		<template v-if="props.isIcon">
-			<Icon :name="props.icon" class="front z-10 group-hover:z-30 opacity-50 group-hover:opacity-100 transition-all duration-500 ease-in-out value-icon w-auto h-28" />
-		</template>
-		<template v-else>
+		<template>
 			<img :src="props.pathIcon" :alt="props.text1" class="front icon-select-event z-10 group-hover:z-30 opacity-50 group-hover:opacity-100 transition-all duration-500 ease-in-out value-icon w-auto h-28" />
 		</template>
 	</div>
@@ -27,10 +24,6 @@ const props = defineProps({
 	subText: String,
 	icon: String,
 	pathIcon: String,
-	isIcon: {
-		type: Boolean,
-		default: true,
-	},
 });
 
 const toggleCardEvent = () => {
