@@ -170,8 +170,8 @@ export function applyZoomEffect(index) {
     });
 }
 
-export function applyUnzoom(index) {
-    const logo = document.querySelector(`#skill-bubble-${index}`);
+export function applyUnzoom(index, isGif) {
+    const logo = document.querySelector(`#skill-bubble-${isGif ? 'gif' : index}`);
 
     gsap.to(logo, {
         duration: 0.4,

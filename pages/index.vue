@@ -101,69 +101,106 @@ useSeoMeta({
 						<BubbleIcon
 							text="HTML"
 							color="#f1662a"
-							icon="vscode-icons:file-type-html" />
+							icon="vscode-icons:file-type-html"
+							:stars="4" />
 						<BubbleIcon
 							text="JavaScript"
 							color="#f0db4f"
-							icon="skill-icons:javascript" />
+							icon="skill-icons:javascript"
+							:stars="4" />
 						<BubbleIcon
 							text="CSS"
 							color="#248cc8"
-							icon="vscode-icons:file-type-css" />
+							icon="vscode-icons:file-type-css"
+							:stars="4" />
 						<BubbleIcon
 							text="Tailwind"
 							color="#45bbbd"
-							icon="logos:tailwindcss-icon" />
-						<BubbleIcon text="Sass" color="#cd6799" icon="logos:sass" />
-						<BubbleIcon text="Nuxt" color="#67dd82" icon="logos:nuxt-icon" />
-						<BubbleIcon text="Vue" color="#51b883" icon="logos:vue" />
-						<BubbleIcon text="Laravel" color="#f24423" icon="logos:laravel" />
+							icon="logos:tailwindcss-icon"
+							:stars="5" />
+						<BubbleIcon
+							text="Sass"
+							color="#cd6799"
+							icon="logos:sass"
+							:stars="3" />
+						<BubbleIcon
+							text="Nuxt"
+							color="#67dd82"
+							icon="logos:nuxt-icon"
+							:stars="4" />
+						<BubbleIcon
+							text="Vue"
+							color="#51b883"
+							icon="logos:vue"
+							:stars="4" />
+						<BubbleIcon
+							text="Laravel"
+							color="#f24423"
+							icon="logos:laravel"
+							:stars="3" />
 						<BubbleIcon
 							text="Wordpress"
 							color="white"
 							icon="fa6-brands:wordpress"
-							iconColor="white" />
+							iconColor="white"
+							:stars="3" />
 						<BubbleIcon
 							text="Elementor"
 							color="#932c3c"
 							:withPath="true"
-							pathIcon="/img/elementor.svg" />
+							pathIcon="/img/elementor.svg"
+							:stars="3" />
 						<BubbleIcon
 							text="Swiper"
 							color="#0a7efa"
 							:withPath="true"
-							pathIcon="/img/swiper.svg" />
+							pathIcon="/img/swiper.svg"
+							:stars="4" />
 						<BubbleIcon
 							text="Strapi"
 							color="#556afa"
-							icon="logos:strapi-icon" />
-						<BubbleIcon text="PHP" color="#6181B6" icon="logos:php" />
-						<BubbleIcon text="Python" color="#FFD141" icon="logos:python" />
+							icon="logos:strapi-icon"
+							:stars="4" />
+						<BubbleIcon
+							text="PHP"
+							color="#6181B6"
+							icon="logos:php"
+							:stars="2" />
+						<BubbleIcon
+							text="Python"
+							color="#FFD141"
+							icon="logos:python"
+							:stars="3" />
 						<BubbleIcon
 							text="GitHub"
 							color="#FFFFFF"
 							:withPath="true"
-							pathIcon="/img/github.png" />
+							pathIcon="/img/github.png"
+							:stars="3" />
 						<BubbleIcon
 							text="GSAP"
 							color="#14D74B"
 							:withPath="true"
-							pathIcon="/img/gsap.png" />
+							pathIcon="/img/gsap.png"
+							:stars="4" />
 						<BubbleIcon
 							text="C"
 							color="#273393"
 							:withPath="true"
-							pathIcon="/img/c.png" />
+							pathIcon="/img/c.png"
+							:stars="4" />
 						<BubbleIcon
 							text="Canva"
 							color="#00C4CC"
 							:withPath="true"
-							pathIcon="/img/canva.png" />
+							pathIcon="/img/canva.png"
+							:stars="3" />
 						<BubbleIcon
 							text="ChatGPT"
 							color="#FFFFFF"
 							:withPath="true"
-							pathIcon="/img/chatgpt.png" />
+							pathIcon="/img/chatgpt.png"
+							:stars="5" />
 						<BubbleIcon
 							text="but still human..."
 							color="#FEC47C"
