@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
-			<div :class="headerClasses" class="overflow-y-auto lg:overflow-hidden max-h-[97vh] lg-custom-width">
+			<div :class="headerClasses" class="overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
 				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')">
 					<img
 						src="~/assets/img/logo.png"
