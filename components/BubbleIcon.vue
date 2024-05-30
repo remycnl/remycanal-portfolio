@@ -1,13 +1,21 @@
 <template>
-	<div class="relative w-20 h-20 md:w-28 md:h-28 text-center">
+	<div class="relative w-20 h-20 md:w-28 md:h-28 text-center"
+	:class="{'cursor-pointer': !isGif, 'hover-scale-effect': !isGif}">
 		<div
 			class="w-full h-full rounded-full bg-black border-2 md:border-3 border-gray-light border-opacity-5 flex justify-center items-center">
 			<img
-				v-if="props.isSVG"
+				v-if="props.withPath"
 				:id="'skill-bubble-' + props.text"
 				:src="props.pathIcon"
 				:alt="props.text"
-				class="icon-select-event w-auto h-10 md:h-14" />
+				:class="{
+				'icon-select-event': true,
+				'w-auto': true,
+				'h-10': !isGif,
+				'md:h-14': !isGif,
+				'h-16': isGif,
+				'md:h-[5.5rem]': isGif,
+				}" />
 			<Icon
 				v-else
 				:id="'skill-bubble-' + props.text"
@@ -34,7 +42,8 @@ const props = defineProps({
 	icon: String,
 	iconColor: String,
 	pathIcon: String,
-	isSVG: Boolean,
+	withPath: Boolean,
+	isGif: Boolean,
 });
 
 const handleMouseEnter = () => {

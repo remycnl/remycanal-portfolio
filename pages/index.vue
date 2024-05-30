@@ -3,15 +3,15 @@ const titre = ref("Rémy Canal | Portfolio - Web Developer");
 const inactiveTitle = ref("I miss you !!!");
 
 onMounted(() => {
-    if (process.client) {
-        document.addEventListener("visibilitychange", function () {
-            if (document.visibilityState === "hidden") {
-                document.title = inactiveTitle.value;
-            } else {
-                document.title = titre.value;
-            }
-        });
-    }
+	if (process.client) {
+		document.addEventListener("visibilitychange", function () {
+			if (document.visibilityState === "hidden") {
+				document.title = inactiveTitle.value;
+			} else {
+				document.title = titre.value;
+			}
+		});
+	}
 });
 
 useSeoMeta({
@@ -31,18 +31,21 @@ useSeoMeta({
 			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
 				<div
 					class="flex flex-col lg:flex-row justify-between items-center gap-y-10">
-					<img
-						src="~/assets/img/avatar.png"
+					<NuxtImg
+						src="/img/avatar.png"
+						format="webp"
 						alt="Rémy Canal"
 						class="icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
 					<div
 						class="flex flex-col justify-center text-center w-full lg:w-7/12 md:text-start md:gap-y-14 z-50">
 						<h1
 							class="-mt-36 md:-mt-24 lg:-mt-0 mx-0 md:mx-10 lg:mx-0 flex flex-col md:flex-row items-center gap-x-5 gap-y-14 md:gap-y-3 font-bold">
-							<span class="text-gradient -ml-14 md:-ml-0 text-[6rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.5rem] lg:leading-none 2xl:leading-[6.4rem]"
+							<span
+								class="text-gradient -ml-14 md:-ml-0 text-[6rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.5rem] lg:leading-none 2xl:leading-[6.4rem]"
 								>Rémy <span class="ml-28 md:ml-16">Canal</span></span
 							>
-							<span class="text-gradient text-[3rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.4rem] lg:leading-none 2xl:leading-[6.4rem]"
+							<span
+								class="text-gradient text-[3rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.4rem] lg:leading-none 2xl:leading-[6.4rem]"
 								>Web <span class="md:ml-16">Developer</span></span
 							>
 						</h1>
@@ -96,7 +99,7 @@ useSeoMeta({
 					<div
 						class="flex lg:grid lg:w-3/5 2xl:w-2/5 flex-wrap grid-cols-4 justify-center gap-10 gap-y-16 md:gap-20 md:gap-y-16">
 						<BubbleIcon
-							text="Html"
+							text="HTML"
 							color="#f1662a"
 							icon="vscode-icons:file-type-html" />
 						<BubbleIcon
@@ -123,12 +126,12 @@ useSeoMeta({
 						<BubbleIcon
 							text="Elementor"
 							color="#932c3c"
-							:isSVG="true"
+							:withPath="true"
 							pathIcon="/img/elementor.svg" />
 						<BubbleIcon
 							text="Swiper"
 							color="#0a7efa"
-							:isSVG="true"
+							:withPath="true"
 							pathIcon="/img/swiper.svg" />
 						<BubbleIcon
 							text="Strapi"
@@ -137,16 +140,36 @@ useSeoMeta({
 						<BubbleIcon text="PHP" color="#6181B6" icon="logos:php" />
 						<BubbleIcon text="Python" color="#FFD141" icon="logos:python" />
 						<BubbleIcon
-							class="hidden md:block"
+							text="GitHub"
+							color="#FFFFFF"
+							:withPath="true"
+							pathIcon="/img/github.png" />
+						<BubbleIcon
+							text="GSAP"
+							color="#14D74B"
+							:withPath="true"
+							pathIcon="/img/gsap.png" />
+						<BubbleIcon
 							text="C"
 							color="#273393"
-							:isSVG="true"
+							:withPath="true"
 							pathIcon="/img/c.png" />
 						<BubbleIcon
 							text="Canva"
 							color="#00C4CC"
-							:isSVG="true"
+							:withPath="true"
 							pathIcon="/img/canva.png" />
+						<BubbleIcon
+							text="ChatGPT"
+							color="#FFFFFF"
+							:withPath="true"
+							pathIcon="/img/chatgpt.png" />
+						<BubbleIcon
+							text="but still human..."
+							color="#FEC47C"
+							:withPath="true"
+							:isGif="true"
+							pathIcon="/img/wolf.gif" />
 					</div>
 				</div>
 				<div class="text-3xl text-white font-bold">
