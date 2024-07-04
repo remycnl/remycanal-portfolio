@@ -58,6 +58,16 @@ useSeoMeta({
 							SEO optimization, and most importantly, prioritize user
 							satisfaction above all else.
 						</h4>
+						<div class="flex mt-10 mb-7 lg:mb-0 justify-center lg:justify-end">
+							<a href="/doc/Rémy Canal - curriculum vitae.pdf" target="_blank" download
+							class="button group hover:saturate-200 transition-all duration-500 w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-gradient-to-r from-secondary-purple to-secondary-pink">
+								Download CV
+								<Icon
+									name="material-symbols:download-rounded"
+									color="#E178FB"
+									class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
+							</a>
+						</div>
 					</div>
 				</div>
 				<div

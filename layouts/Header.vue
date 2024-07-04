@@ -37,7 +37,9 @@
                         class="hover-scale-effect pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-gradient-to-r hover:bg-gradient-to-l from-secondary-purple to-secondary-pink cursor-pointer isolate">
                             <div
                             class="p-4 bg-black-dark bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 lg:ease-in rounded-xl">
-                                <span class="text-black group-hover:text-white transition-colors duration-300 lg:ease-in text-xl">Contact me</span>
+                                <span class="text-black group-hover:text-white transition-colors duration-300 lg:ease-in text-xl">
+                                    Contact me
+                                </span>
                             </div>
                         </div>
                     </a>
