@@ -16,7 +16,7 @@
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div :class="headerClasses" class="overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
-				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')">
+				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')" class="hover-scale-effect active:scale-105 transition-all duration-100">
 					<img
 						src="~/assets/img/logo.png"
 						alt="Rémy Canal"
