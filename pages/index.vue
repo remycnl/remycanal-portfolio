@@ -30,7 +30,7 @@ useSeoMeta({
 		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
 			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
 				<div
-					class="flex flex-col lg:flex-row-reverse justify-between items-center gap-y-10">
+					class="flex flex-col lg:flex-row justify-between items-center gap-y-10">
 					<NuxtImg
 						src="/img/avatar.png"
 						format="webp"

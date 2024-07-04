@@ -3,7 +3,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: [
     '~/assets/css/main.css',
-    '~/assets/css/button.css',
     '~/assets/css/valueCard.css',
     '~/assets/css/mouseEffect.css',
   ],
