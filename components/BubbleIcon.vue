@@ -25,11 +25,14 @@
 				class="w-auto h-10 md:h-14" />
 			<div
 				@mouseenter="handleMouseEnter"
+				@click="toggleTextWhite(props.index)"
 				:style="{ 'border-color': props.color }"
-				class="cursor-pointer hover:text-white absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin">
-			</div>
+				class="cursor-pointer absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin"></div>
 		</div>
-		<div class="cursor-pointer w-fit hover:text-white mt-4 text-lg md:text-xl text-gray-light transition-colors duration-500 whitespace-nowrap">
+		<div
+			@click="toggleTextWhite(props.index)"
+			:id="'toggle-text-white-' + props.index"
+			class="cursor-pointer w-fit mt-4 text-lg md:text-xl text-gray-light transition-colors duration-200 whitespace-nowrap">
 			{{ props.text }}
 		</div>
 		<div
@@ -44,7 +47,7 @@
 				<Icon
 					name="teenyicons:star-small-solid"
 					class="w-auto h-5 star-pulse"
-					:style="{ animationDelay: index * 0.2 + 's', 'color': props.color }" />
+					:style="{ animationDelay: index * 0.2 + 's', color: props.color }" />
 			</div>
 			<!-- Boucle pour afficher les étoiles vides -->
 			<div
@@ -55,7 +58,10 @@
 					name="teenyicons:star-small-outline"
 					color="yellow"
 					class="w-auto h-5 star-pulse"
-					:style="{ animationDelay: (stars + index) * 0.2 + 's', 'color': props.color }" />
+					:style="{
+						animationDelay: (stars + index) * 0.2 + 's',
+						color: props.color,
+					}" />
 			</div>
 		</div>
 	</div>
@@ -63,8 +69,10 @@
 
 <script setup>
 import { applyUnzoom } from "~/plugins/gsap";
+import { toggleTextWhite } from "~/plugins/global";
 
 const props = defineProps({
+	index: Number,
 	text: String,
 	color: String,
 	icon: String,

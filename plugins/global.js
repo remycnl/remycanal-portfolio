@@ -4,6 +4,7 @@ export default defineNuxtPlugin(() => {
     return {
         magnetEffect,
         mouseEffect,
+        toggleTextWhite,
     };
 });
 
@@ -131,4 +132,27 @@ export function mouseEffect() {
             element.addEventListener('mouseleave', handleMouseLeave);
         });
     }
+}
+
+const lastClickedTextElement = ref(null);
+
+export function toggleTextWhite(propsIndex) {
+    const clickedElement = document.querySelector(
+		`#toggle-text-white-${propsIndex}`
+	);
+
+	if (!clickedElement) {
+		return;
+	}
+
+	if (clickedElement === lastClickedTextElement.value) {
+		clickedElement.classList.remove("text-white");
+		lastClickedTextElement.value = null;
+	} else {
+		if (lastClickedTextElement.value) {
+			lastClickedTextElement.value.classList.remove("text-white");
+		}
+		clickedElement.classList.add("text-white");
+		lastClickedTextElement.value = clickedElement;
+	}
 }

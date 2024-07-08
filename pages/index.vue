@@ -105,9 +105,6 @@ useSeoMeta({
 						<p class="text-white text-2xl mt-10">Back-End 20%</p>
 						<p class="text-white text-2xl mt-10">(hover or click on a skill to see the % of handling)</p>
 					</div>
-					<!-- <div class="w-screen scale-125 opacity-30 lg:opacity-60 xl:w-[27rem] h-[29rem]">
-						<spline-viewer url="https://prod.spline.design/LEvjG3OETYd2GsRw/scene.splinecode"></spline-viewer> -->
-					<!-- </div> -->
 					<!-- <GridBackground></GridBackground> -->
 					<div
 					class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
@@ -127,109 +124,129 @@ useSeoMeta({
 							alt="Stars = Proficiency level"
 							class="absolute scale-50 bottom-[81%] md:bottom-[61%] lg:bottom-[85%] 2xl:bottom-[77%] left-[30%] lg:left-[30%] z-10" />
 						<BubbleIcon
+							:index="1"
 							text="HTML"
 							color="#f1662a"
 							icon="vscode-icons:file-type-html"
 							:stars="4" />
 						<BubbleIcon
+							:index="2"
 							text="JavaScript"
 							color="#f0db4f"
 							icon="skill-icons:javascript"
 							:stars="4" />
 						<BubbleIcon
+							:index="3"
 							text="CSS"
 							color="#248cc8"
 							icon="vscode-icons:file-type-css"
 							:stars="4" />
 						<BubbleIcon
+							:index="4"
 							text="Tailwind"
 							color="#45bbbd"
 							icon="logos:tailwindcss-icon"
 							:stars="5" />
 						<BubbleIcon
+							:index="5"
 							text="Sass"
 							color="#cd6799"
 							icon="logos:sass"
 							:stars="3" />
 						<BubbleIcon
+							:index="6"
 							text="Nuxt"
 							color="#67dd82"
 							icon="logos:nuxt-icon"
 							:stars="4" />
 						<BubbleIcon
+							:index="7"
 							text="Vue"
 							color="#51b883"
 							icon="logos:vue"
 							:stars="4" />
 						<BubbleIcon
+							:index="8"
 							text="Laravel"
 							color="#f24423"
 							icon="logos:laravel"
 							:stars="3" />
 						<BubbleIcon
+							:index="9"
 							text="Wordpress"
 							color="white"
 							icon="fa6-brands:wordpress"
 							iconColor="white"
 							:stars="3" />
 						<BubbleIcon
+							:index="10"
 							text="Elementor"
 							color="#932c3c"
 							:withPath="true"
 							pathIcon="/img/elementor.svg"
 							:stars="3" />
 						<BubbleIcon
+							:index="11"
 							text="Swiper"
 							color="#0a7efa"
 							:withPath="true"
 							pathIcon="/img/swiper.svg"
 							:stars="4" />
 						<BubbleIcon
+							:index="12"
 							text="Strapi"
 							color="#556afa"
 							icon="logos:strapi-icon"
 							:stars="4" />
 						<BubbleIcon
+							:index="13"
 							text="PHP"
 							color="#6181B6"
 							icon="logos:php"
 							:stars="2" />
 						<BubbleIcon
+							:index="14"
 							text="Python"
 							color="#FFD141"
 							icon="logos:python"
 							:stars="3" />
 						<BubbleIcon
+							:index="15"
 							text="GitHub"
 							color="#FFFFFF"
 							:withPath="true"
 							pathIcon="/img/github.png"
 							:stars="3" />
 						<BubbleIcon
+							:index="16"
 							text="GSAP"
 							color="#14D74B"
 							:withPath="true"
 							pathIcon="/img/gsap.png"
 							:stars="4" />
 						<BubbleIcon
+							:index="17"
 							text="C"
 							color="#273393"
 							:withPath="true"
 							pathIcon="/img/c.png"
 							:stars="4" />
 						<BubbleIcon
+							:index="18"
 							text="Canva"
 							color="#00C4CC"
 							:withPath="true"
 							pathIcon="/img/canva.png"
 							:stars="3" />
 						<BubbleIcon
+							:index="19"
 							text="ChatGPT"
 							color="#FFFFFF"
 							:withPath="true"
 							pathIcon="/img/chatgpt.png"
 							:stars="5" />
 						<BubbleIcon
+							:index="20"
 							text="but still human..."
 							color="#FEC47C"
 							:withPath="true"
