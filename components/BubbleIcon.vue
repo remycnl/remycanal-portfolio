@@ -1,9 +1,9 @@
 <template>
 	<div
 		@click="toggleStars"
-		class="relative w-20 h-20 md:w-28 md:h-28 text-center skills">
+		class="relative z-50 flex flex-col justify-center items-center text-center skills">
 		<div
-			class="z-50 w-full h-full rounded-full bg-black border-2 md:border-3 border-gray-light border-opacity-5 flex justify-center items-center">
+			class="relative z-30 w-20 h-20 md:w-28 md:h-28 rounded-full bg-black border-2 md:border-3 border-gray-light border-opacity-5 flex justify-center items-center">
 			<img
 				v-if="props.withPath"
 				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.text"
@@ -23,18 +23,19 @@
 				:name="props.icon"
 				:color="props.iconColor"
 				class="w-auto h-10 md:h-14" />
+			<div
+				@mouseenter="handleMouseEnter"
+				:style="{ 'border-color': props.color }"
+				class="cursor-pointer hover:text-white absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin">
+			</div>
 		</div>
-		<div
-			@mouseenter="handleMouseEnter"
-			:style="{ 'border-color': props.color }"
-			class="absolute top-0 left-0 w-full h-full rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin"></div>
-		<div class="mt-2 text-lg md:text-xl text-gray-light whitespace-nowrap">
+		<div class="cursor-pointer w-fit hover:text-white mt-4 text-lg md:text-xl text-gray-light transition-colors duration-500 whitespace-nowrap">
 			{{ props.text }}
 		</div>
 		<div
 			v-if="!isGif"
 			:class="'star-' + props.text"
-			class="star absolute flex flex-row bg-black p-2 rounded-full">
+			class="star absolute mt-7 flex flex-row bg-black p-2 rounded-full">
 			<!-- Boucle pour afficher les étoiles remplies -->
 			<div
 				v-for="index in stars"

@@ -98,16 +98,34 @@ useSeoMeta({
 				<!-- SKILLS -->
 				<h2 id="skills" class="text-gradient uppercase w-fit">Skills</h2>
 				<div
-					class="flex flex-col lg:flex-row lg:justify-evenly items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
+					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-36 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
-						class="p-20 lg:p-40 bg-black border-2 text-center border-gray-semi rounded-3xl">
-						<p class="text-white text-2xl">Ici prendra place</p>
-						<p class="text-white text-2xl mt-10">un élément 3D !</p>
-						<p class="text-white text-2xl mt-10">(un ordi maybe)</p>
+						class="p-20 lg:p-20 bg-black border-2 text-center border-gray-semi rounded-3xl">
+						<p class="text-white text-2xl">Front-End 80%</p>
+						<p class="text-white text-2xl mt-10">Back-End 20%</p>
+						<p class="text-white text-2xl mt-10">(hover or click on a skill to see the % of handling)</p>
 					</div>
+					<!-- <div class="w-screen scale-125 opacity-30 lg:opacity-60 xl:w-[27rem] h-[29rem]">
+						<spline-viewer url="https://prod.spline.design/LEvjG3OETYd2GsRw/scene.splinecode"></spline-viewer> -->
+					<!-- </div> -->
 					<!-- <GridBackground></GridBackground> -->
 					<div
-						class="flex lg:grid lg:w-3/5 2xl:w-2/5 flex-wrap grid-cols-4 justify-center gap-10 gap-y-16 md:gap-20 md:gap-y-16">
+					class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
+						<NuxtImg
+							src="/img/details-skills.png"
+							format="webp"
+							alt="Click on bubbles to see details"
+							class="hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[57%] right-[78%] 2xl:right-[72%] z-10" />
+						<NuxtImg
+							src="/img/mobile-details-skills.png"
+							format="webp"
+							alt="Click on bubbles to see details (mobile)"
+							class="lg:hidden absolute scale-50 bottom-[80%] md:bottom-[60%] right-[30%] md:right-[10%] z-10" />
+						<NuxtImg
+							src="/img/stars-info.png"
+							format="webp"
+							alt="Stars = Proficiency level"
+							class="absolute scale-50 bottom-[81%] md:bottom-[61%] lg:bottom-[85%] 2xl:bottom-[77%] left-[30%] lg:left-[30%] z-10" />
 						<BubbleIcon
 							text="HTML"
 							color="#f1662a"
