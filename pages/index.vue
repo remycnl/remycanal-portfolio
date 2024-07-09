@@ -50,7 +50,6 @@ useSeoMeta({
 </script>
 
 <template>
-	<!-- ABOUT ME -->
 	<div class="flex justify-center">
 		<button
 			class="cursor-pointer text-white flex items-center justify-center fixed z-[100] font-mono rounded-full overflow-hidden origin-center shadow-around hover:bg-secondary-purple bg-black opacity-0 pointer-events-none back-to-top hover-scale-effect scale-90 md:scale-100 lg:ml-[140vh] 2xl:ml-[176vh] mt-[91vh] md:mt-[91vh] lg:mt-[80vh] transition-all duration-500">
@@ -60,6 +59,7 @@ useSeoMeta({
 			</svg>
 		</button>
 	</div>
+	<!-- ABOUT ME -->
 	<div class="bg-gradient-to-b from-black via-primary to-black">
 		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
 			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
@@ -97,7 +97,7 @@ useSeoMeta({
 								href="/doc/Rémy Canal - curriculum vitae.pdf"
 								target="_blank"
 								download
-								class="button group hover:saturate-200 transition-all duration-500 w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-gradient-to-r from-secondary-purple to-secondary-pink">
+								class="hover-scale-effect button group hover:saturate-200 transition-all duration-500 w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-gradient-to-r from-secondary-purple to-secondary-pink">
 								Download CV
 								<Icon
 									name="material-symbols:download-rounded"
@@ -135,7 +135,7 @@ useSeoMeta({
 				<!-- SKILLS -->
 				<h2 id="skills" class="text-gradient uppercase w-fit">Skills</h2>
 				<div
-					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-36 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
+					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
 						class="bg-gray-dark shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
 						<div
@@ -161,7 +161,7 @@ useSeoMeta({
 								class="w-auto h-16 my-10"
 								color="white" />
 							<p
-								class="pb-10 font-mono text-gradient text-2xl md:text-3xl lg:text-4xl font-bold w-full">
+								class="pb-10 font-mono text-gradient text-xl font-bold w-full">
 								Description of the technology
 							</p>
 						</div>
@@ -173,7 +173,7 @@ useSeoMeta({
 							src="/img/details-skills.png"
 							format="webp"
 							alt="Click on bubbles to see details"
-							class="hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[57%] right-[78%] 2xl:right-[72%] z-10" />
+							class="hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[50%] right-[78%] 2xl:right-[70%] z-10" />
 						<NuxtImg
 							src="/img/mobile-details-skills.png"
 							format="webp"
@@ -183,7 +183,7 @@ useSeoMeta({
 							src="/img/stars-info.png"
 							format="webp"
 							alt="Stars = Proficiency level"
-							class="absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[73%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
+							class="absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[70%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
 						<BubbleIcon
 							:index="1"
 							text="HTML"
