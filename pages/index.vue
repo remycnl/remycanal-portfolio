@@ -100,10 +100,27 @@ useSeoMeta({
 				<div
 					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-36 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
-						class="p-20 lg:p-20 bg-black border-2 text-center border-gray-semi rounded-3xl">
-						<p class="text-white text-2xl">Front-End 80%</p>
-						<p class="text-white text-2xl mt-10">Back-End 20%</p>
-						<p class="text-white text-2xl mt-10">(hover or click on a skill to see the % of handling)</p>
+						class="bg-gray-dark border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
+						<div class="flex justify-center p-4 rounded-tl-2xl rounded-bl-2xl bg-secondary-purple w-[12%] h-full">
+							<div class="flex flex-col mt-10">
+								<div v-for="index in 3" :key="'filled-' + index">
+									<Icon name="teenyicons:star-small-solid"
+									class="w-auto h-8" color="#334054"/>
+								</div>
+								<div v-for="index in 5 - 3" :key="'empty-' + index">
+									<Icon name="teenyicons:star-small-outline"
+									class="w-auto h-8" color="#334054"/>
+								</div>
+							</div>
+						</div>
+						<div class="flex flex-col w-[88%] h-full p-4">
+							<Icon name="skill-icons:javascript"
+								class="w-auto h-16 my-10" color="white"/>
+							<p
+								class="pb-10 text-white text-2xl md:text-3xl lg:text-4xl font-bold w-full">
+								Description of the technology
+							</p>
+						</div>
 					</div>
 					<!-- <GridBackground></GridBackground> -->
 					<div
@@ -117,12 +134,12 @@ useSeoMeta({
 							src="/img/mobile-details-skills.png"
 							format="webp"
 							alt="Click on bubbles to see details (mobile)"
-							class="lg:hidden absolute scale-50 bottom-[80%] md:bottom-[60%] right-[30%] md:right-[10%] z-10" />
+							class="lg:hidden absolute scale-50 bottom-[80%] md:bottom-[65%] right-[30%] md:right-[22%] z-10" />
 						<NuxtImg
 							src="/img/stars-info.png"
 							format="webp"
 							alt="Stars = Proficiency level"
-							class="absolute scale-50 bottom-[81%] md:bottom-[61%] lg:bottom-[85%] 2xl:bottom-[77%] left-[30%] lg:left-[30%] z-10" />
+							class="absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[73%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
 						<BubbleIcon
 							:index="1"
 							text="HTML"
