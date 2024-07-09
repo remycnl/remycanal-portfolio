@@ -62,7 +62,7 @@
 import { toggleDropdown, applyZoomEffect } from '~/plugins/gsap';
 import { magnetEffect } from '~/plugins/global.js';
 
-let isScreenSM = ref(true);
+let isScreenSM = ref(false);
 let scrolled = ref(false);
 const menus = ['About me', 'Skills', 'Experience', 'Portfolio'];
 
@@ -76,10 +76,10 @@ const headerClasses = computed(() => ({
     "items-center": true,
     "p-4": true,
     "border": true,
-    "border-transparent": scrolled.value,
-    "!border-gray-semi": !scrolled.value || isScreenSM.value,
+    "border-transparent": !scrolled.value,
+    "border-gray-semi": scrolled.value || isScreenSM.value,
     "rounded-3xl": true,
-    "bg-black-dark": !scrolled.value || isScreenSM.value,
+    "bg-black-dark": scrolled.value || isScreenSM.value,
     "lg:bg-opacity-90": true,
     "bg-opacity-95": true,
     "transition-all": true,
@@ -88,7 +88,7 @@ const headerClasses = computed(() => ({
 
 const handleScroll = () => {
     isScreenSM.value = window.innerWidth < 1024;
-    scrolled.value = window.scrollY < 100;
+    scrolled.value = window.scrollY > 100;
 };
 
 const executeFunctionsMenu = (event, targetId) => {
