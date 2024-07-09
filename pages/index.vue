@@ -20,56 +20,64 @@ const skills: Skill[] = [
 		color: "#f1662a",
 		icon: "vscode-icons:file-type-html",
 		stars: 4,
-		description: "HTML Description",
+		description:
+			"Proficiency in HTML for structuring and organizing web content in a semantic way.",
 	},
 	{
 		text: "JavaScript",
 		color: "#f0db4f",
 		icon: "skill-icons:javascript",
 		stars: 4,
-		description: "JavaScript Description",
+		description:
+			"Advanced skills in JavaScript for frontend and backend development, DOM manipulation, and creating dynamic interactions.",
 	},
 	{
 		text: "CSS",
 		color: "#248cc8",
 		icon: "vscode-icons:file-type-css",
 		stars: 4,
-		description: "CSS Description",
+		description:
+			"Expertise in CSS for designing and styling user interfaces, using Flexbox, Grid, and advanced layout techniques.",
 	},
 	{
 		text: "Tailwind",
 		color: "#45bbbd",
 		icon: "logos:tailwindcss-icon",
 		stars: 5,
-		description: "Tailwind Description",
+		description:
+			"Extensive experience with Tailwind CSS for rapid and efficient development, using utility-first classes to style components.",
 	},
 	{
 		text: "Sass",
 		color: "#cd6799",
 		icon: "logos:sass",
 		stars: 3,
-		description: "Sass Description",
+		description:
+			"Advanced use of Sass for creating modular, reusable, and maintainable CSS stylesheets, with features like variables, mixins, and imports.",
 	},
 	{
 		text: "Nuxt",
 		color: "#67dd82",
 		icon: "logos:nuxt-icon",
 		stars: 4,
-		description: "Nuxt Description",
+		description:
+			"In-depth knowledge of Nuxt.js for building universal Vue.js applications, with routing, server-side rendering (SSR), and static site generation.",
 	},
 	{
 		text: "Vue",
 		color: "#51b883",
 		icon: "logos:vue",
 		stars: 4,
-		description: "Vue Description",
+		description:
+			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
 	},
 	{
 		text: "Laravel",
 		color: "#f24423",
 		icon: "logos:laravel",
 		stars: 3,
-		description: "Laravel Description",
+		description:
+			"Skills in Laravel for rapid development of robust PHP web applications, with MVC architecture, database migrations, and RESTful APIs.",
 	},
 	{
 		text: "Wordpress",
@@ -77,7 +85,8 @@ const skills: Skill[] = [
 		iconColor: "white",
 		icon: "fa6-brands:wordpress",
 		stars: 3,
-		description: "Wordpress Description",
+		description:
+			"Experience with WordPress for creating dynamic websites and blogs, with custom themes, plugins, and effective content management.",
 	},
 	{
 		text: "Elementor",
@@ -85,7 +94,8 @@ const skills: Skill[] = [
 		withPath: true,
 		pathIcon: "/img/elementor.svg",
 		stars: 3,
-		description: "Elementor Description",
+		description:
+			"Advanced use of Elementor for designing highly customizable WordPress pages, with drag-and-drop tools and visual configuration.",
 	},
 	{
 		text: "Swiper",
@@ -93,28 +103,32 @@ const skills: Skill[] = [
 		withPath: true,
 		pathIcon: "/img/swiper.svg",
 		stars: 4,
-		description: "Swiper Description",
+		description:
+			"Implementation of Swiper.js for interactive image carousels and galleries, with advanced customization options and multi-touch support.",
 	},
 	{
 		text: "Strapi",
 		color: "#556afa",
 		icon: "logos:strapi-icon",
 		stars: 4,
-		description: "Strapi Description",
+		description:
+			"Development of headless CMS applications with Strapi, creating RESTful and GraphQL APIs for managing and distributing digital content.",
 	},
 	{
 		text: "PHP",
 		color: "#6181B6",
 		icon: "logos:php",
 		stars: 2,
-		description: "PHP Description",
+		description:
+			"Skills in PHP for backend development, data manipulation, and integration with relational databases.",
 	},
 	{
 		text: "Python",
 		color: "#FFD141",
 		icon: "logos:python",
 		stars: 3,
-		description: "Python Description",
+		description:
+			"Use of Python for web application development, task automation, and data analysis, with frameworks like Django and Flask.",
 	},
 	{
 		text: "GitHub",
@@ -122,7 +136,8 @@ const skills: Skill[] = [
 		withPath: true,
 		pathIcon: "/img/github.png",
 		stars: 3,
-		description: "GitHub Description",
+		description:
+			"Advanced use of GitHub for version control, collaboration on open-source projects, and continuous deployment.",
 	},
 	{
 		text: "GSAP",
@@ -130,7 +145,8 @@ const skills: Skill[] = [
 		withPath: true,
 		pathIcon: "/img/gsap.png",
 		stars: 4,
-		description: "GSAP Description",
+		description:
+			"Proficiency in GreenSock Animation Platform (GSAP) for creating fluid and interactive animations in web applications.",
 	},
 	{
 		text: "C",
@@ -138,7 +154,8 @@ const skills: Skill[] = [
 		withPath: true,
 		pathIcon: "/img/c.png",
 		stars: 4,
-		description: "C Description",
+		description:
+			"Programming skills in C for system development, low-level programming, and creating robust and performant applications.",
 	},
 	{
 		text: "Canva",
@@ -146,7 +163,8 @@ const skills: Skill[] = [
 		withPath: true,
 		pathIcon: "/img/canva.png",
 		stars: 3,
-		description: "Canva Description",
+		description:
+			"Use of Canva for creating professional graphic designs, including illustrations, infographics, and visual presentations.",
 	},
 	{
 		text: "ChatGPT",
@@ -154,7 +172,8 @@ const skills: Skill[] = [
 		withPath: true,
 		pathIcon: "/img/chatgpt.png",
 		stars: 5,
-		description: "ChatGPT Description",
+		description:
+			"Experience with ChatGPT for integrating conversational artificial intelligence into web applications, enhancing user engagement and automating responses.",
 	},
 	{
 		text: "but still human...",
@@ -162,12 +181,13 @@ const skills: Skill[] = [
 		withPath: true,
 		isGif: true,
 		pathIcon: "/img/wolf.gif",
-		stars: 0,
-		description: "Human Description",
+		stars: 5,
+		description:
+			"In addition to the mentioned technologies, adaptability and quick learning of new technologies and tools to meet specific project requirements.",
 	},
 ];
 
-const currentSkill = ref<Skill>(skills[0]);
+const currentSkill = ref<Skill>(skills[19]);
 const isUpdating = ref(false);
 
 const fillCardSkills = (skill: Skill) => {
@@ -296,22 +316,22 @@ useSeoMeta({
 					<ValueCard
 						text1="Simplicity"
 						text2="Sophistication"
-						subText="For a smooth user's experience and clean codebase."
+						subText="For a smooth user's experience and clean codebase"
 						pathIcon="/img/rocket.png" />
 					<ValueCard
 						text1="Innovative"
 						text2="Meticulous"
-						subText="Engineered with creativity and attention to detail."
+						subText="Engineered with creativity and attention to detail"
 						pathIcon="/img/brackets.png" />
 					<ValueCard
 						text1="Autonomous"
 						text2="Listening"
-						subText="Independently developed with a focus on user feedback."
+						subText="Independently developed with a focus on user feedback"
 						pathIcon="/img/handshake.png" />
 					<ValueCard
 						text1="Open-minded"
 						text2="Passionate"
-						subText="Crafted with an open heart and driven by passion."
+						subText="Crafted with an open heart and driven by passion"
 						pathIcon="/img/Statue-Of-Liberty.png" />
 				</div>
 			</div>
@@ -321,9 +341,9 @@ useSeoMeta({
 				<div
 					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
-						class="bg-gray-dark w-5/6 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
+						class="bg-gray-dark h-fit w-5/6 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
 						<div
-							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary-purple w-[12%] md:w-[9%] h-full">
+							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary-purple w-[12%] md:w-[9%] h-fit">
 							<div
 								:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
 								@transitionend="finishUpdate"
@@ -333,7 +353,7 @@ useSeoMeta({
 									:key="'filled-' + index">
 									<Icon
 										name="teenyicons:star-small-solid"
-										class="w-auto h-8 md:h-10"
+										class="w-auto h-8 md:h-9"
 										color="#1f293b" />
 								</div>
 								<div
@@ -341,7 +361,7 @@ useSeoMeta({
 									:key="'empty-' + index">
 									<Icon
 										name="teenyicons:star-small-outline"
-										class="w-auto h-8 md:h-10"
+										class="w-auto h-8 md:h-9"
 										color="#1f293b" />
 								</div>
 							</div>
@@ -349,12 +369,27 @@ useSeoMeta({
 						<div
 							:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
 							@transitionend="finishUpdate"
-							class="flex flex-col w-[88%] h-full p-4 transition-opacity duration-300">
+							class="flex flex-col w-[88%] h-full py-4 px-8 transition-opacity duration-300">
+							<NuxtImg
+								v-if="currentSkill.withPath"
+								:src="currentSkill.pathIcon"
+								:alt="currentSkill.text"
+								:class="{
+									'icon-select-event': true,
+									'w-auto': true,
+									'h-10': !currentSkill.isGif,
+									'md:h-14': !currentSkill.isGif,
+									'h-16': currentSkill.isGif,
+									'md:h-[5.5rem]': currentSkill.isGif,
+								}"
+								class="my-10" />
 							<Icon
-								:name="currentSkill.icon"
+								v-else
+								:name="currentSkill.icon || ''"
 								class="w-auto h-16 my-10"
 								color="white" />
-							<p class="pb-10 font-mono text-gradient text-xl font-bold w-full">
+							<p
+								class="pb-10 font-mono text-gradient md:text-lg font-bold w-full">
 								{{ currentSkill.description }}
 							</p>
 						</div>
