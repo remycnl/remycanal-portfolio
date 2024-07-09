@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '~/assets/css/button.css',
     '~/assets/css/valueCard.css',
     '~/assets/css/mouseEffect.css',
+    '~/assets/css/backToTopButton.css',
   ],
 
   postcss: {

@@ -12,6 +12,31 @@ onMounted(() => {
 			}
 		});
 	}
+
+	const backToTopButton = document.querySelector(".back-to-top");
+	if (backToTopButton) {
+		backToTopButton.addEventListener("click", function () {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
+		});
+	}
+
+	window.addEventListener("scroll", function () {
+		const button = document.querySelector(".back-to-top") as HTMLElement;
+		if (button) {
+			if (window.scrollY > 100) {
+				button.classList.add("pointer-events-auto");
+				button.classList.remove("opacity-0");
+				button.classList.add("opacity-100");
+			} else {
+				button.classList.remove("opacity-100");
+				button.classList.add("opacity-0");
+				button.classList.remove("pointer-events-auto");
+			}
+		}
+	});
 });
 
 useSeoMeta({
@@ -26,6 +51,15 @@ useSeoMeta({
 
 <template>
 	<!-- ABOUT ME -->
+	<div class="flex justify-center">
+		<button
+			class="cursor-pointer text-white flex items-center justify-center fixed z-[100] font-mono rounded-full overflow-hidden origin-center shadow-around hover:bg-secondary-purple bg-black opacity-0 pointer-events-none back-to-top hover-scale-effect scale-90 md:scale-100 lg:ml-[140vh] 2xl:ml-[176vh] mt-[91vh] md:mt-[91vh] lg:mt-[80vh] transition-all duration-500">
+			<svg class="svgIcon" viewBox="0 0 384 512">
+				<path
+					d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
+			</svg>
+		</button>
+	</div>
 	<div class="bg-gradient-to-b from-black via-primary to-black">
 		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
 			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
@@ -59,8 +93,11 @@ useSeoMeta({
 							satisfaction above all else.
 						</h4>
 						<div class="flex mt-10 mb-7 lg:mb-0 justify-center lg:justify-end">
-							<a href="/doc/Rémy Canal - curriculum vitae.pdf" target="_blank" download
-							class="button group hover:saturate-200 transition-all duration-500 w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-gradient-to-r from-secondary-purple to-secondary-pink">
+							<a
+								href="/doc/Rémy Canal - curriculum vitae.pdf"
+								target="_blank"
+								download
+								class="button group hover:saturate-200 transition-all duration-500 w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-gradient-to-r from-secondary-purple to-secondary-pink">
 								Download CV
 								<Icon
 									name="material-symbols:download-rounded"
@@ -100,31 +137,38 @@ useSeoMeta({
 				<div
 					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-36 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
-						class="bg-gray-dark border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
-						<div class="flex justify-center p-4 rounded-tl-2xl rounded-bl-2xl bg-secondary-purple w-[12%] h-full">
+						class="bg-gray-dark shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
+						<div
+							class="flex justify-center rounded-tl-[1.35rem] rounded-bl-[1.35rem] bg-secondary-purple w-[12%] h-full">
 							<div class="flex flex-col mt-10">
 								<div v-for="index in 3" :key="'filled-' + index">
-									<Icon name="teenyicons:star-small-solid"
-									class="w-auto h-8" color="#334054"/>
+									<Icon
+										name="teenyicons:star-small-solid"
+										class="w-auto h-8"
+										color="#334054" />
 								</div>
 								<div v-for="index in 5 - 3" :key="'empty-' + index">
-									<Icon name="teenyicons:star-small-outline"
-									class="w-auto h-8" color="#334054"/>
+									<Icon
+										name="teenyicons:star-small-outline"
+										class="w-auto h-8"
+										color="#334054" />
 								</div>
 							</div>
 						</div>
 						<div class="flex flex-col w-[88%] h-full p-4">
-							<Icon name="skill-icons:javascript"
-								class="w-auto h-16 my-10" color="white"/>
+							<Icon
+								name="skill-icons:javascript"
+								class="w-auto h-16 my-10"
+								color="white" />
 							<p
-								class="pb-10 text-white text-2xl md:text-3xl lg:text-4xl font-bold w-full">
+								class="pb-10 font-mono text-gradient text-2xl md:text-3xl lg:text-4xl font-bold w-full">
 								Description of the technology
 							</p>
 						</div>
 					</div>
 					<!-- <GridBackground></GridBackground> -->
 					<div
-					class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
+						class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
 						<NuxtImg
 							src="/img/details-skills.png"
 							format="webp"

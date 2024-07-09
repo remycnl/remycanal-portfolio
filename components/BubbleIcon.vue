@@ -27,12 +27,12 @@
 				@mouseenter="handleMouseEnter"
 				@click="toggleTextWhite(props.index)"
 				:style="{ 'border-color': props.color }"
-				class="cursor-pointer absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin"></div>
+				class="cursor-pointer hover-scale-effect absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin"></div>
 		</div>
 		<div
 			@click="toggleTextWhite(props.index)"
 			:id="'toggle-text-white-' + props.index"
-			class="cursor-pointer w-fit mt-4 text-lg md:text-xl text-gray-light transition-colors duration-200 whitespace-nowrap">
+			class="cursor-pointer hover-scale-effect w-fit mt-4 text-lg md:text-xl text-gray-light transition-colors duration-200 whitespace-nowrap">
 			{{ props.text }}
 		</div>
 		<div
