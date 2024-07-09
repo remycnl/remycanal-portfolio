@@ -24,6 +24,7 @@ export default {
         gray: {
           light: '#8c99b0',
           semi: '#334054',
+          medium: '#8c99b0a2',
           dark: '#1f293b',
         },
       },

@@ -32,7 +32,7 @@
 		<div
 			@click="toggleTextWhite(props.index)"
 			:id="'toggle-text-white-' + props.index"
-			class="cursor-pointer hover-scale-effect w-fit mt-4 text-lg md:text-xl text-gray-light transition-colors duration-200 whitespace-nowrap">
+			class="cursor-pointer hover-scale-effect w-fit mt-4 text-lg md:text-xl text-gray-medium transition-colors duration-200 whitespace-nowrap">
 			{{ props.text }}
 		</div>
 		<div
