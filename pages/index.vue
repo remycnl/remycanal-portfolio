@@ -2,6 +2,188 @@
 const titre = ref("Rémy Canal | Portfolio - Web Developer");
 const inactiveTitle = ref("I miss you !!!");
 
+interface Skill {
+	text: string;
+	color: string;
+	iconColor?: string;
+	icon?: string;
+	withPath?: boolean;
+	pathIcon?: string;
+	isGif?: boolean;
+	stars: number;
+	description: string;
+}
+
+const skills: Skill[] = [
+	{
+		text: "HTML",
+		color: "#f1662a",
+		icon: "vscode-icons:file-type-html",
+		stars: 4,
+		description: "HTML Description",
+	},
+	{
+		text: "JavaScript",
+		color: "#f0db4f",
+		icon: "skill-icons:javascript",
+		stars: 4,
+		description: "JavaScript Description",
+	},
+	{
+		text: "CSS",
+		color: "#248cc8",
+		icon: "vscode-icons:file-type-css",
+		stars: 4,
+		description: "CSS Description",
+	},
+	{
+		text: "Tailwind",
+		color: "#45bbbd",
+		icon: "logos:tailwindcss-icon",
+		stars: 5,
+		description: "Tailwind Description",
+	},
+	{
+		text: "Sass",
+		color: "#cd6799",
+		icon: "logos:sass",
+		stars: 3,
+		description: "Sass Description",
+	},
+	{
+		text: "Nuxt",
+		color: "#67dd82",
+		icon: "logos:nuxt-icon",
+		stars: 4,
+		description: "Nuxt Description",
+	},
+	{
+		text: "Vue",
+		color: "#51b883",
+		icon: "logos:vue",
+		stars: 4,
+		description: "Vue Description",
+	},
+	{
+		text: "Laravel",
+		color: "#f24423",
+		icon: "logos:laravel",
+		stars: 3,
+		description: "Laravel Description",
+	},
+	{
+		text: "Wordpress",
+		color: "white",
+		iconColor: "white",
+		icon: "fa6-brands:wordpress",
+		stars: 3,
+		description: "Wordpress Description",
+	},
+	{
+		text: "Elementor",
+		color: "#932c3c",
+		withPath: true,
+		pathIcon: "/img/elementor.svg",
+		stars: 3,
+		description: "Elementor Description",
+	},
+	{
+		text: "Swiper",
+		color: "#0a7efa",
+		withPath: true,
+		pathIcon: "/img/swiper.svg",
+		stars: 4,
+		description: "Swiper Description",
+	},
+	{
+		text: "Strapi",
+		color: "#556afa",
+		icon: "logos:strapi-icon",
+		stars: 4,
+		description: "Strapi Description",
+	},
+	{
+		text: "PHP",
+		color: "#6181B6",
+		icon: "logos:php",
+		stars: 2,
+		description: "PHP Description",
+	},
+	{
+		text: "Python",
+		color: "#FFD141",
+		icon: "logos:python",
+		stars: 3,
+		description: "Python Description",
+	},
+	{
+		text: "GitHub",
+		color: "#FFFFFF",
+		withPath: true,
+		pathIcon: "/img/github.png",
+		stars: 3,
+		description: "GitHub Description",
+	},
+	{
+		text: "GSAP",
+		color: "#14D74B",
+		withPath: true,
+		pathIcon: "/img/gsap.png",
+		stars: 4,
+		description: "GSAP Description",
+	},
+	{
+		text: "C",
+		color: "#273393",
+		withPath: true,
+		pathIcon: "/img/c.png",
+		stars: 4,
+		description: "C Description",
+	},
+	{
+		text: "Canva",
+		color: "#00C4CC",
+		withPath: true,
+		pathIcon: "/img/canva.png",
+		stars: 3,
+		description: "Canva Description",
+	},
+	{
+		text: "ChatGPT",
+		color: "#FFFFFF",
+		withPath: true,
+		pathIcon: "/img/chatgpt.png",
+		stars: 5,
+		description: "ChatGPT Description",
+	},
+	{
+		text: "but still human...",
+		color: "#FEC47C",
+		withPath: true,
+		isGif: true,
+		pathIcon: "/img/wolf.gif",
+		stars: 0,
+		description: "Human Description",
+	},
+];
+
+const currentSkill = ref<Skill>(skills[0]);
+const isUpdating = ref(false);
+
+const fillCardSkills = (skill: Skill) => {
+	isUpdating.value = true;
+	setTimeout(() => {
+		currentSkill.value = skill;
+		isUpdating.value = false;
+	}, 300); // Durée de la transition d'opacité
+};
+
+const finishUpdate = () => {
+	if (isUpdating.value) {
+		isUpdating.value = false;
+	}
+};
+
 onMounted(() => {
 	if (process.client) {
 		document.addEventListener("visibilitychange", function () {
@@ -139,43 +321,51 @@ useSeoMeta({
 				<div
 					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
-						class="bg-gray-dark shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
+						class="bg-gray-dark w-5/6 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
 						<div
-							class="flex justify-center rounded-tl-[1.35rem] rounded-bl-[1.35rem] bg-secondary-purple w-[12%] h-full">
-							<div class="flex flex-col mt-10">
-								<div v-for="index in 3" :key="'filled-' + index">
+							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary-purple w-[12%] md:w-[9%] h-full">
+							<div
+								:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
+								@transitionend="finishUpdate"
+								class="flex flex-col my-10 transition-opacity duration-300">
+								<div
+									v-for="index in currentSkill.stars"
+									:key="'filled-' + index">
 									<Icon
 										name="teenyicons:star-small-solid"
-										class="w-auto h-8"
-										color="#334054" />
+										class="w-auto h-8 md:h-10"
+										color="#1f293b" />
 								</div>
-								<div v-for="index in 5 - 3" :key="'empty-' + index">
+								<div
+									v-for="index in 5 - currentSkill.stars"
+									:key="'empty-' + index">
 									<Icon
 										name="teenyicons:star-small-outline"
-										class="w-auto h-8"
-										color="#334054" />
+										class="w-auto h-8 md:h-10"
+										color="#1f293b" />
 								</div>
 							</div>
 						</div>
-						<div class="flex flex-col w-[88%] h-full p-4">
+						<div
+							:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
+							@transitionend="finishUpdate"
+							class="flex flex-col w-[88%] h-full p-4 transition-opacity duration-300">
 							<Icon
-								name="skill-icons:javascript"
+								:name="currentSkill.icon"
 								class="w-auto h-16 my-10"
 								color="white" />
-							<p
-								class="pb-10 font-mono text-gradient text-xl font-bold w-full">
-								Description of the technology
+							<p class="pb-10 font-mono text-gradient text-xl font-bold w-full">
+								{{ currentSkill.description }}
 							</p>
 						</div>
 					</div>
-					<!-- <GridBackground></GridBackground> -->
 					<div
 						class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
 						<NuxtImg
 							src="/img/details-skills.png"
 							format="webp"
 							alt="Click on bubbles to see details"
-							class="hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[50%] right-[78%] 2xl:right-[70%] z-10" />
+							class="hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[55%] right-[78%] 2xl:right-[70%] z-10" />
 						<NuxtImg
 							src="/img/mobile-details-skills.png"
 							format="webp"
@@ -185,136 +375,20 @@ useSeoMeta({
 							src="/img/stars-info.png"
 							format="webp"
 							alt="Stars = Proficiency level"
-							class="absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[70%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
+							class="absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[75%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
 						<BubbleIcon
-							:index="1"
-							text="HTML"
-							color="#f1662a"
-							icon="vscode-icons:file-type-html"
-							:stars="4" />
-						<BubbleIcon
-							:index="2"
-							text="JavaScript"
-							color="#f0db4f"
-							icon="skill-icons:javascript"
-							:stars="4" />
-						<BubbleIcon
-							:index="3"
-							text="CSS"
-							color="#248cc8"
-							icon="vscode-icons:file-type-css"
-							:stars="4" />
-						<BubbleIcon
-							:index="4"
-							text="Tailwind"
-							color="#45bbbd"
-							icon="logos:tailwindcss-icon"
-							:stars="5" />
-						<BubbleIcon
-							:index="5"
-							text="Sass"
-							color="#cd6799"
-							icon="logos:sass"
-							:stars="3" />
-						<BubbleIcon
-							:index="6"
-							text="Nuxt"
-							color="#67dd82"
-							icon="logos:nuxt-icon"
-							:stars="4" />
-						<BubbleIcon
-							:index="7"
-							text="Vue"
-							color="#51b883"
-							icon="logos:vue"
-							:stars="4" />
-						<BubbleIcon
-							:index="8"
-							text="Laravel"
-							color="#f24423"
-							icon="logos:laravel"
-							:stars="3" />
-						<BubbleIcon
-							:index="9"
-							text="Wordpress"
-							color="white"
-							icon="fa6-brands:wordpress"
-							iconColor="white"
-							:stars="3" />
-						<BubbleIcon
-							:index="10"
-							text="Elementor"
-							color="#932c3c"
-							:withPath="true"
-							pathIcon="/img/elementor.svg"
-							:stars="3" />
-						<BubbleIcon
-							:index="11"
-							text="Swiper"
-							color="#0a7efa"
-							:withPath="true"
-							pathIcon="/img/swiper.svg"
-							:stars="4" />
-						<BubbleIcon
-							:index="12"
-							text="Strapi"
-							color="#556afa"
-							icon="logos:strapi-icon"
-							:stars="4" />
-						<BubbleIcon
-							:index="13"
-							text="PHP"
-							color="#6181B6"
-							icon="logos:php"
-							:stars="2" />
-						<BubbleIcon
-							:index="14"
-							text="Python"
-							color="#FFD141"
-							icon="logos:python"
-							:stars="3" />
-						<BubbleIcon
-							:index="15"
-							text="GitHub"
-							color="#FFFFFF"
-							:withPath="true"
-							pathIcon="/img/github.png"
-							:stars="3" />
-						<BubbleIcon
-							:index="16"
-							text="GSAP"
-							color="#14D74B"
-							:withPath="true"
-							pathIcon="/img/gsap.png"
-							:stars="4" />
-						<BubbleIcon
-							:index="17"
-							text="C"
-							color="#273393"
-							:withPath="true"
-							pathIcon="/img/c.png"
-							:stars="4" />
-						<BubbleIcon
-							:index="18"
-							text="Canva"
-							color="#00C4CC"
-							:withPath="true"
-							pathIcon="/img/canva.png"
-							:stars="3" />
-						<BubbleIcon
-							:index="19"
-							text="ChatGPT"
-							color="#FFFFFF"
-							:withPath="true"
-							pathIcon="/img/chatgpt.png"
-							:stars="5" />
-						<BubbleIcon
-							:index="20"
-							text="but still human..."
-							color="#FEC47C"
-							:withPath="true"
-							:isGif="true"
-							pathIcon="/img/wolf.gif" />
+							v-for="(skill, index) in skills"
+							:key="index"
+							:index="index"
+							:text="skill.text"
+							:color="skill.color"
+							:iconColor="skill.iconColor"
+							:icon="skill.icon"
+							:stars="skill.stars"
+							:withPath="skill.withPath"
+							:pathIcon="skill.pathIcon"
+							:isGif="skill.isGif"
+							@click="fillCardSkills(skill)" />
 					</div>
 				</div>
 				<div class="text-3xl text-white font-bold">
