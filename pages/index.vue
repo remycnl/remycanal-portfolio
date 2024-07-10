@@ -263,7 +263,7 @@ useSeoMeta({
 	<div class="hidden lg:block">
 		<div class="flex justify-center">
 			<button
-				class="cursor-pointer text-white flex items-center justify-center fixed z-[100] font-mono rounded-full overflow-hidden origin-center shadow-around hover:bg-secondary-purple bg-black opacity-0 pointer-events-none back-to-top hover-scale-effect lg:ml-[140vh] 2xl:ml-[176vh] lg:mt-[80vh] transition-all duration-500">
+				class="cursor-pointer text-white flex items-center justify-center fixed z-[100] tracking-widest rounded-full overflow-hidden origin-center shadow-around hover:bg-secondary-purple bg-black opacity-0 pointer-events-none back-to-top hover-scale-effect lg:ml-[140vh] 2xl:ml-[176vh] lg:mt-[80vh] transition-all duration-500">
 				<svg class="svgIcon" viewBox="0 0 384 512">
 					<path
 						d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
@@ -283,20 +283,21 @@ useSeoMeta({
 						alt="Rémy Canal"
 						class="icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
 					<div
-						class="flex flex-col justify-center text-center w-full lg:w-7/12 md:text-start md:gap-y-14 z-50">
+						class="flex flex-col justify-center text-center w-full lg:w-7/12 lg:text-start lg:gap-y-14 z-50">
 						<h1
-							class="-mt-36 md:-mt-24 lg:-mt-0 mx-0 md:mx-10 lg:mx-0 flex flex-col md:flex-row items-center gap-x-5 gap-y-14 md:gap-y-3 font-bold">
+							class="-mt-36 md:-mt-20 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
 							<span
-								class="text-gradient -ml-14 md:-ml-0 text-[6rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.5rem] lg:leading-none 2xl:leading-[6.4rem]"
+								class="text-gradient -ml-14 md:-ml-0 text-[5.5rem] md:text-[5rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6rem] lg:leading-none 2xl:leading-[5.8rem]"
 								>Rémy <span class="ml-28 md:ml-16">Canal</span></span
 							>
 							<span
-								class="text-gradient text-[3rem] md:text-[5rem] lg:text-[4rem] 2xl:text-[6rem] leading-[5.4rem] lg:leading-none 2xl:leading-[6.4rem]"
-								>Web <span class="md:ml-16">Developer</span></span
+								class="text-gradient text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
+								>Web <span class="lg:ml-16">Developer</span></span
 							>
 						</h1>
 						<h4
-							class="text-white font-mono text-xl 2xl:text-2xl mx-4 md:mx-0 md:text-justify">
+							style="font-family: Share Tech Mono;"
+							class="text-white text-lg 2xl:text-2xl mx-4 md:mx-0 lg:text-justify">
 							I'm a student at Epitech, on my way to becoming a software
 							engineer specialized in crafting outstanding and full digital
 							experiences. Based in Lyon, France, I ensure responsive design,
@@ -344,7 +345,7 @@ useSeoMeta({
 			</div>
 			<div class="container mx-auto px-4 lg:px-0 py-20">
 				<!-- SKILLS -->
-				<h2 id="skills" class="text-gradient uppercase w-fit">Skills</h2>
+				<h2 id="skills" class="text-gradient text-[3rem] md:text-[4rem] uppercase w-fit">Skills</h2>
 				<div
 					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
@@ -395,12 +396,13 @@ useSeoMeta({
 								:name="currentSkill.icon || ''"
 								class="w-auto h-16 md:h-24 my-10"
 								color="white" />
-							<div class="text-gradient font-mono ">
-								<h3 v-if="currentSkill.text !== 'but still human...'" class="pb-5 font-bold">
+							<div class="text-gradient">
+								<h3
+									v-if="currentSkill.text !== 'but still human...'"
+									class="pb-5 font-bold">
 									{{ currentSkill.text }}
 								</h3>
-								<p
-									class="pb-10 text-sm md:text-lg font-bold w-full">
+								<p class="pb-10 text-sm md:text-lg font-bold w-full">
 									{{ currentSkill.description }}
 								</p>
 							</div>

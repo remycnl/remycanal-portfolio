@@ -23,7 +23,7 @@
 						class="hover-scale-effect hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
-				class="flex flex-col lg:flex-row gap-x-20 gap-y-10 text-white uppercase items-center">
+				class="flex flex-col lg:flex-row tracking-widest gap-x-20 gap-y-10 text-white uppercase items-center">
 					<span v-for="(menu, index) in menus" :key="index" :id="'text-menu-' + index" class="magnet pointer-events-auto">
 						<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(index); applyZoomEffect(index)"
 							href="#"
@@ -37,7 +37,7 @@
                         class="hover-scale-effect pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-gradient-to-r hover:bg-gradient-to-l from-secondary-purple to-secondary-pink cursor-pointer isolate">
                             <div
                             class="p-4 bg-black-dark bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 lg:ease-in rounded-xl">
-                                <span class="text-black group-hover:text-white transition-colors duration-300 lg:ease-in text-xl">
+                                <span class="text-black font-bold group-hover:font-normal group-hover:text-white transition-all duration-300 lg:ease-in text-xl">
                                     Contact me
                                 </span>
                             </div>
@@ -77,7 +77,7 @@ const headerClasses = computed(() => ({
     "p-4": true,
     "border": true,
     "border-transparent": !scrolled.value,
-    "border-gray-semi": scrolled.value || isScreenSM.value,
+    "!border-gray-semi": scrolled.value || isScreenSM.value,
     "rounded-3xl": true,
     "bg-black-dark": scrolled.value || isScreenSM.value,
     "lg:bg-opacity-90": true,

@@ -1,11 +1,11 @@
 <template>
-	<div class="font-[Schoolbell] group hover-scale-effect card border-none lg:basis-[23%] 2xl:basis-auto" :class="'card-' + props.text1" @click="toggleCardEvent">
-		<p :class="'card-text-' + props.text1" class="front z-20 text-3xl group-hover:scale-[0.85] text-with-shadow group-hover:text-gray-light transition-all duration-300 ml-5 text-gray text-start flex flex-col">
+	<div class="group hover-scale-effect card border-none lg:basis-[23%] 2xl:basis-auto" :class="'card-' + props.text1" @click="toggleCardEvent">
+		<h3 :class="'card-text-' + props.text1" class="front z-20 leading-[2rem] text-[1.70rem]  group-hover:scale-[0.85] text-with-shadow opacity-95 group-hover:text-gray-light transition-all duration-300 ml-5 text-gray text-start flex flex-col">
 			<span>{{ props.text1 }}</span>
 			<span>&amp; {{ props.text2 }}</span>
-		</p>
+		</h3>
 		<div class="back">
-			<p :class="'card-subtext-' + props.text1" style="transform: rotateY(180deg); transform-origin: center; font-family: RocknRoll One" class="text-primary text-center m-6 text-[1.2rem]">
+			<p :class="'card-subtext-' + props.text1" style="transform: rotateY(180deg); transform-origin: center" class="text-primary text-center m-6 text-[1.2rem]">
 				{{ props.subText }}
 			</p>
 		</div>
