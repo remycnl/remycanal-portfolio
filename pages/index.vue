@@ -80,7 +80,7 @@ const skills: Skill[] = [
 			"Skills in Laravel for rapid development of robust PHP web applications, with MVC architecture, database migrations, and RESTful APIs.",
 	},
 	{
-		text: "Wordpress",
+		text: "WordPress",
 		color: "white",
 		iconColor: "white",
 		icon: "fa6-brands:wordpress",
@@ -425,6 +425,7 @@ useSeoMeta({
 							class="absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[75%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
 						<BubbleIcon
 							v-for="(skill, index) in skills"
+							class="rounded-full"
 							:key="index"
 							:index="index"
 							:text="skill.text"
