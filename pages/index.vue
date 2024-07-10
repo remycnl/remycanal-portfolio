@@ -189,11 +189,19 @@ const skills: Skill[] = [
 
 const currentSkill = ref<Skill>(skills[19]);
 const isUpdating = ref(false);
+const lastSkillIndex = ref<number | null>(null);
 
-const fillCardSkills = (skill: Skill) => {
+const fillCardSkills = (index: number) => {
 	isUpdating.value = true;
+
 	setTimeout(() => {
-		currentSkill.value = skill;
+		if (lastSkillIndex.value !== null && lastSkillIndex.value === index) {
+			currentSkill.value = skills[19];
+			lastSkillIndex.value = null;
+		} else {
+			currentSkill.value = skills[index];
+			lastSkillIndex.value = index;
+		}
 		isUpdating.value = false;
 	}, 300); // Durée de la transition d'opacité
 };
@@ -288,8 +296,7 @@ useSeoMeta({
 							>
 						</h1>
 						<h4
-							style="font-family: RocknRoll One"
-							class="text-white text-xl 2xl:text-3xl mx-4 md:mx-0 md:text-justify">
+							class="text-white font-mono text-xl 2xl:text-2xl mx-4 md:mx-0 md:text-justify">
 							I'm a student at Epitech, on my way to becoming a software
 							engineer specialized in crafting outstanding and full digital
 							experiences. Based in Lyon, France, I ensure responsive design,
@@ -341,7 +348,7 @@ useSeoMeta({
 				<div
 					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
-						class="bg-gray-dark h-fit w-5/6 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
+						class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
 						<div
 							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary-purple w-[12%] md:w-[9%] h-fit">
 							<div
@@ -369,29 +376,34 @@ useSeoMeta({
 						<div
 							:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
 							@transitionend="finishUpdate"
-							class="flex flex-col w-[88%] h-full py-4 px-8 transition-opacity duration-300">
+							class="flex flex-col items-center w-[88%] h-full py-4 px-8 transition-opacity duration-300">
 							<NuxtImg
 								v-if="currentSkill.withPath"
 								:src="currentSkill.pathIcon"
 								:alt="currentSkill.text"
 								:class="{
 									'icon-select-event': true,
-									'w-auto': true,
-									'h-10': !currentSkill.isGif,
-									'md:h-14': !currentSkill.isGif,
-									'h-16': currentSkill.isGif,
-									'md:h-[5.5rem]': currentSkill.isGif,
+									'w-fit': true,
+									'h-16': !currentSkill.isGif,
+									'md:h-24': !currentSkill.isGif,
+									'h-24': currentSkill.isGif,
+									'md:h-36': currentSkill.isGif,
 								}"
 								class="my-10" />
 							<Icon
 								v-else
 								:name="currentSkill.icon || ''"
-								class="w-auto h-16 my-10"
+								class="w-auto h-16 md:h-24 my-10"
 								color="white" />
-							<p
-								class="pb-10 font-mono text-gradient md:text-lg font-bold w-full">
-								{{ currentSkill.description }}
-							</p>
+							<div class="text-gradient font-mono ">
+								<h3 v-if="currentSkill.text !== 'but still human...'" class="pb-5 font-bold">
+									{{ currentSkill.text }}
+								</h3>
+								<p
+									class="pb-10 text-sm md:text-lg font-bold w-full">
+									{{ currentSkill.description }}
+								</p>
+							</div>
 						</div>
 					</div>
 					<div
@@ -423,7 +435,7 @@ useSeoMeta({
 							:withPath="skill.withPath"
 							:pathIcon="skill.pathIcon"
 							:isGif="skill.isGif"
-							@click="fillCardSkills(skill)" />
+							@click="fillCardSkills(index)" />
 					</div>
 				</div>
 				<div class="text-3xl text-white font-bold">

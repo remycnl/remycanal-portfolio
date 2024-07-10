@@ -1,12 +1,12 @@
 <template>
 	<div
 		@click="toggleStars"
-		class="relative z-50 flex flex-col justify-center items-center text-center skills">
+		class="font-[Schoolbell] relative z-50 flex flex-col justify-center items-center text-center skills">
 		<div
 			class="relative z-30 w-20 h-20 md:w-28 md:h-28 rounded-full bg-black border-2 md:border-3 border-gray-light border-opacity-5 flex justify-center items-center">
 			<img
 				v-if="props.withPath"
-				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.text"
+				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.index"
 				:src="props.pathIcon"
 				:alt="props.text"
 				:class="{
@@ -19,7 +19,7 @@
 				}" />
 			<Icon
 				v-else
-				:id="'skill-bubble-' + props.text"
+				:id="'skill-bubble-' + props.index"
 				:name="props.icon"
 				:color="props.iconColor"
 				class="w-auto h-10 md:h-14" />
@@ -37,7 +37,7 @@
 		</div>
 		<div
 			v-if="!isGif"
-			:class="'star-' + props.text"
+			:class="'star-' + props.index"
 			class="star absolute mt-7 flex flex-row bg-black p-2 rounded-full">
 			<!-- Boucle pour afficher les étoiles remplies -->
 			<div
@@ -85,7 +85,7 @@ const props = defineProps({
 
 const handleMouseEnter = () => {
 	if (typeof applyUnzoom === "function") {
-		applyUnzoom(props.text, props.isGif);
+		applyUnzoom(props.index, props.isGif);
 	}
 };
 
@@ -94,7 +94,7 @@ const toggleStars = () => {
 
 	if (!isDesktopSize) {
 		if (window.innerWidth >= 768) {
-			const starElements = document.querySelectorAll(`.star-${props.text}`);
+			const starElements = document.querySelectorAll(`.star-${props.index}`);
 
 			if (starElements.length > 0) {
 				// Vérifie si les étoiles sont déjà visibles
@@ -130,7 +130,7 @@ const toggleStars = () => {
 			}
 		} else {
 			// Taille mobile
-			const starElements = document.querySelectorAll(`.star-${props.text}`);
+			const starElements = document.querySelectorAll(`.star-${props.index}`);
 
 			if (starElements.length > 0) {
 				// Vérifie si les étoiles sont déjà visibles

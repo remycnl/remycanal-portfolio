@@ -23,6 +23,8 @@ export default defineNuxtConfig({
         "RocknRoll One": true,
         Acme: true,
         Schoolbell: true,
+        Cinzel: true,
+        "Cormorant Garamond": true,
       }
   }], 'nuxt-icon', "@nuxt/image"],
 
