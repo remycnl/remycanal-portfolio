@@ -28,7 +28,7 @@ h1 {
 }
 
 h2 {
-	@apply tracking-widest;
+	@apply tracking-widest font-bold;
 	font-size: 4rem;
     line-height: 5rem;
 }
