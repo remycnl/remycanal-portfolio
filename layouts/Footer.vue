@@ -12,9 +12,9 @@ onMounted(() => {
 		<div class="container mx-auto px-4 lg:px-0 pt-40 pb-10 flex flex-col items-center gap-y-32 hover:brightness-100">
 			<img src="~/assets/img/fullLogo.png" alt="Rémy Canal" class="hover:saturate-200 transition-all duration-500 w-60 lg:w-60 h-auto" />
 			<div
-				class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-4xl">
+				class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-2xl md:text-3xl lg:text-4xl">
 				&ldquo; Simplicity is the ultimate sophistication. &rdquo;
-				<span class="text-xl">Leonardo da Vinci</span>
+				<span class="text-xs md:text-base lg:text-lg">Leonardo da Vinci</span>
 			</div>
 			<div class="flex justify-center gap-x-5 md:gap-x-10 mb-20">
 				<a href="tel:+330619258299" class="hover-scale-effect active:scale-90 transition-all duration-100">
