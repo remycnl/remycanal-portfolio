@@ -1,7 +1,7 @@
 <template>
 	<div
 		@click="toggleStars(); toggleTextWhite(props.index)"
-		class="font-[Schoolbell] md:font-[Orbitron] relative z-50 flex flex-col justify-center items-center text-center skills">
+		class="font-[Schoolbell] lg:font-[Orbitron] relative z-50 flex flex-col justify-center items-center text-center skills">
 		<div
 			class="relative z-30 w-20 h-20 md:w-28 md:h-28 rounded-full bg-black border-2 md:border-3 border-gray-light border-opacity-5 flex justify-center items-center">
 			<img
