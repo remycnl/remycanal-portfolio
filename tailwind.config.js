@@ -18,8 +18,8 @@ export default {
         white: '#ffffff',
         primary: '#0f172a',
         secondary: {
-          purple: '#8D6DFA',
-          pink: '#E178FB',
+          DEFAULT: '#6C34CC',
+          dark: '#301563',
         },
         gray: {
           light: '#8c99b0',

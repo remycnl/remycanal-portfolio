@@ -1,5 +1,5 @@
 <template>
-	<div class="group hover-scale-effect card border-none lg:basis-[23%] 2xl:basis-auto" :class="'card-' + props.text1" @click="toggleCardEvent">
+	<div class="group hover-scale-effect clickable cursor-none card border-none lg:basis-[23%] 2xl:basis-auto" :class="'card-' + props.text1" @click="toggleCardEvent">
 		<h3 :class="'card-text-' + props.text1" class="front z-20 leading-[2rem] text-[1.70rem]  group-hover:scale-[0.85] text-with-shadow opacity-95 group-hover:text-gray-light transition-all duration-300 ml-5 text-gray text-start flex flex-col">
 			<span>{{ props.text1 }}</span>
 			<span>&amp; {{ props.text2 }}</span>
@@ -52,7 +52,7 @@ const toggleCardEvent = () => {
 }
 
 .is-flipped {
-	border-color: #8D6DFA;
+	border-color: #6C34CC;
 }
 
 .is-flipped .front {

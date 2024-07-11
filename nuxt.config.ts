@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     '~/assets/css/valueCard.css',
     '~/assets/css/mouseEffect.css',
     '~/assets/css/backToTopButton.css',
+    '~/assets/css/scrollBar.css',
+    '~/assets/css/cursor.css',
   ],
 
   postcss: {

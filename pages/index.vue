@@ -263,7 +263,7 @@ useSeoMeta({
 	<div class="hidden lg:block">
 		<div class="flex justify-center">
 			<button
-				class="cursor-pointer active:scale-95 text-white flex items-center justify-center fixed z-[100] tracking-widest rounded-full overflow-hidden origin-center shadow-around hover:bg-secondary-purple bg-black opacity-0 pointer-events-none back-to-top hover-scale-effect lg:ml-[140vh] 2xl:ml-[176vh] lg:mt-[80vh] transition-all duration-500">
+				class="clickable mix-darken cursor-none active:scale-95 text-white flex items-center justify-center fixed z-[100] tracking-widest rounded-full overflow-hidden origin-center shadow-around hover:bg-secondary bg-black opacity-0 pointer-events-none back-to-top hover-scale-effect lg:ml-[140vh] 2xl:ml-[176vh] lg:mt-[80vh] transition-all duration-500">
 				<svg class="svgIcon" viewBox="0 0 384 512">
 					<path
 						d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
@@ -287,11 +287,11 @@ useSeoMeta({
 						<h1
 							class="-mt-36 md:-mt-20 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
 							<span
-								class="text-gradient -ml-14 md:-ml-0 text-[5.5rem] md:text-[5rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6rem] lg:leading-none 2xl:leading-[5.8rem]"
+								class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[5rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6rem] lg:leading-none 2xl:leading-[5.8rem]"
 								>Rémy <span class="ml-28 md:ml-16">Canal</span></span
 							>
 							<span
-								class="text-gradient text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
+								class="text-color-saturate text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
 								>Web <span class="lg:ml-16">Developer</span></span
 							>
 						</h1>
@@ -309,11 +309,11 @@ useSeoMeta({
 								href="/doc/Rémy Canal - curriculum vitae.pdf"
 								target="_blank"
 								download
-								class="hover-scale-effect button group hover:saturate-200 transition-all duration-500 w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-gradient-to-r from-secondary-purple to-secondary-pink">
+								class="hover-scale-effect clickable mix-darken cursor-none button group hover:saturate-200 transition-all duration-500 w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
 								Download CV
 								<Icon
 									name="material-symbols:download-rounded"
-									color="#E178FB"
+									color="#6C34CC"
 									class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
 							</a>
 						</div>
@@ -345,13 +345,13 @@ useSeoMeta({
 			</div>
 			<div class="container mx-auto px-4 lg:px-0 py-20">
 				<!-- SKILLS -->
-				<h2 id="skills" class="text-gradient text-[3rem] md:text-[4rem] uppercase w-fit">Skills</h2>
+				<h2 id="skills" class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">Skills</h2>
 				<div
 					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
-						class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary-purple rounded-3xl flex flex-row justify-between">
+						class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary rounded-3xl flex flex-row justify-between">
 						<div
-							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary-purple w-[12%] md:w-[9%] h-fit">
+							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary w-[12%] md:w-[9%] h-fit">
 							<div
 								:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
 								@transitionend="finishUpdate"
@@ -396,7 +396,7 @@ useSeoMeta({
 								:name="currentSkill.icon || ''"
 								class="w-auto h-16 md:h-24 my-10"
 								color="white" />
-							<div class="text-gradient">
+							<div class="text-color-saturate">
 								<h3
 									v-if="currentSkill.text !== 'but still human...'"
 									class="pb-5 font-bold">

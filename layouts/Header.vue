@@ -7,16 +7,16 @@
 				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="flex items-center justify-center">
-				<div class="md:cursor-pointer hover:saturate-200 transition-all transform-gpu duration-500" @click="toggleDropdown">
-					<div class="first-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
-					<div class="second-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
-					<div class="third-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
+				<div class="cursor-none hover:saturate-200 transition-all transform-gpu duration-500" @click="toggleDropdown">
+					<div class="first-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
+					<div class="second-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
+					<div class="third-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
 				</div>
 			</div>
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div :class="headerClasses" class="overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
-				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')" class="hover-scale-effect active:scale-105 transition-all duration-100">
+				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')" class="hover-scale-effect clickable cursor-none active:scale-105 transition-all duration-100">
 					<img
 						src="~/assets/img/logo.png"
 						alt="Rémy Canal"
@@ -27,14 +27,14 @@
 					<span v-for="(menu, index) in menus" :key="index" :id="'text-menu-' + index" class="magnet pointer-events-auto">
 						<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(index); applyZoomEffect(index)"
 							href="#"
-							class="menu-sm transition-all duration-300 ease-in-out text-xl hover-scale-effect">
+							class="menu-sm transition-all duration-300 ease-in-out text-xl hover-scale-effect clickable cursor-none">
 							{{ menu }}
 						</a>
 					</span>
                     <a @click="executeFunctionsMenu($event, 'top'); applyGradientText(4)" href="#"
                     class="active:scale-95 transition-all duration-75">
                         <div
-                        class="hover-scale-effect pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-gradient-to-r hover:bg-gradient-to-l from-secondary-purple to-secondary-pink cursor-pointer isolate">
+                        class="hover-scale-effect clickable cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
                             <div
                             class="p-4 bg-black-dark bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 lg:ease-in rounded-xl">
                                 <span class="text-black font-bold group-hover:font-normal group-hover:text-white transition-all duration-300 lg:ease-in text-xl">
@@ -127,11 +127,11 @@ const applyGradientText = (index) => {
 
     textMenus.forEach((menu, idx) => {
         if (index === 4) {
-            menu.classList.remove('text-gradient');
+            menu.classList.remove('text-color-saturate');
         } else if (idx === index) {
-            menu.classList.add('text-gradient');
+            menu.classList.add('text-color-saturate');
         } else {
-            menu.classList.remove('text-gradient');
+            menu.classList.remove('text-color-saturate');
         }
     });
 };
