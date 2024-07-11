@@ -272,7 +272,7 @@ useSeoMeta({
 		</div>
 	</div>
 	<!-- ABOUT ME -->
-	<div class="bg-gradient-to-b from-black via-primary to-black">
+	<div class="bg-gradient-to-b lg:rounded-t-[4rem] overflow-hidden shadow-around shadow-black from-black via-primary to-black">
 		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
 			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
 				<div

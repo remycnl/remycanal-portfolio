@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-20">
+		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-10">
 		<div
 			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
 			<a href="#" @click="ancreToSection($event, 'top')">
@@ -23,7 +23,7 @@
 						class="hover-scale-effect hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
-				class="flex flex-col lg:flex-row tracking-widest gap-x-20 gap-y-10 text-white uppercase items-center">
+				class="flex flex-col lg:flex-row tracking-widest lg:tracking-normal 2xl:tracking-widest gap-x-20 gap-y-10 text-white uppercase items-center">
 					<span v-for="(menu, index) in menus" :key="index" :id="'text-menu-' + index" class="magnet pointer-events-auto">
 						<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(index); applyZoomEffect(index)"
 							href="#"
@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
 <style scoped>
     @media (min-width: 1024px) {
         .lg-custom-width {
-            width: calc(100vw - 2rem);
+            width: calc(100vw - 6rem);
         }
     }
 	@media (min-width: 1536px) {

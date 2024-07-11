@@ -9,6 +9,7 @@ export default defineNuxtPlugin(() => {
 		toggleCard,
 		animationFooter,
 		customCursor,
+		animationFooterBottom,
 	};
 });
 
@@ -224,56 +225,113 @@ export function toggleCard(index) {
 }
 
 export function animationFooter() {
-	const lettersContainer = document.getElementById("letters");
-	const alphabet =
-		"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_".split(
-			""
-		);
-	let index = 0;
+	if (window.innerWidth < 1024) {
+		const lettersContainer = document.getElementById("letters");
+		const alphabet =
+			"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_".split(
+				""
+			);
+		let index = 0;
 
-	for (let i = 0; i < 4; i++) {
-		generateLetters();
-	}
-
-	function createLetterSpan(letter) {
-		const span = document.createElement("span");
-		span.textContent = letter;
-
-		if (lettersContainer.firstChild) {
-			lettersContainer.insertBefore(span, lettersContainer.firstChild);
-		} else {
-			lettersContainer.appendChild(span);
+		for (let i = 0; i < 4; i++) {
+			generateLetters();
 		}
 
-		return span;
-	}
+		function createLetterSpan(letter) {
+			const span = document.createElement("span");
+			span.textContent = letter;
 
-	function animateLetter(letter) {
-		const span = createLetterSpan(letter);
+			if (lettersContainer.firstChild) {
+				lettersContainer.insertBefore(span, lettersContainer.firstChild);
+			} else {
+				lettersContainer.appendChild(span);
+			}
 
-		gsap.to(span, {
-			x: "100%",
-			repeat: -1,
-			ease: "linear",
-			onComplete: () => {
-				span.remove();
-			},
-		});
-	}
+			return span;
+		}
 
-	function generateLetters() {
-		alphabet.forEach((letter) => {
+		function animateLetter(letter) {
 			const span = createLetterSpan(letter);
-		});
-	}
 
-	function generateAndAnimateLetters() {
-		animateLetter(alphabet[index]);
-		index = (index + 1) % alphabet.length;
-		setTimeout(generateAndAnimateLetters, 250);
-	}
+			gsap.to(span, {
+				x: "100%",
+				repeat: -1,
+				ease: "linear",
+				onComplete: () => {
+					span.remove();
+				},
+			});
+		}
 
-	generateAndAnimateLetters();
+		function generateLetters() {
+			alphabet.forEach((letter) => {
+				const span = createLetterSpan(letter);
+			});
+		}
+
+		function generateAndAnimateLetters() {
+			animateLetter(alphabet[index]);
+			index = (index + 1) % alphabet.length;
+			setTimeout(generateAndAnimateLetters, 250);
+		}
+
+		generateAndAnimateLetters();
+	};
+}
+
+export function animationFooterBottom() {
+	if (window.innerWidth >= 1024) {
+		const lettersContainer = document.getElementById("letters-bottom");
+		const alphabet =
+			"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_".split(
+				""
+			);
+		let index = 0;
+
+		for (let i = 0; i < 4; i++) {
+			generateLetters();
+		}
+
+		function createLetterSpan(letter) {
+			const span = document.createElement("span");
+			span.textContent = letter;
+
+			if (lettersContainer.firstChild) {
+				lettersContainer.insertBefore(span, lettersContainer.firstChild);
+			} else {
+				lettersContainer.appendChild(span);
+			}
+
+			return span;
+		}
+
+		function animateLetter(letter) {
+			const span = createLetterSpan(letter);
+
+			gsap.to(span, {
+				x: "100%",
+				repeat: -1,
+				ease: "linear",
+				onComplete: () => {
+					span.remove();
+				},
+			});
+		}
+
+		function generateLetters() {
+			alphabet.forEach((letter) => {
+				const span = createLetterSpan(letter);
+			});
+		}
+
+		function generateAndAnimateLetters() {
+			animateLetter(alphabet[index]);
+			index = (index + 1) % alphabet.length;
+			setTimeout(generateAndAnimateLetters, 250);
+		}
+
+		generateAndAnimateLetters();
+	};
 }
 
 export function customCursor() {

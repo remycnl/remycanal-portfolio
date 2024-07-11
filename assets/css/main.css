@@ -7,8 +7,8 @@ html {
 }
 
 ::selection {
-	/* background-color: #8c6cf6ac; */
-	color: #301563;
+	background-color: #111319;
+	color: #6C34CC;
 }
 
 body {
@@ -96,7 +96,7 @@ p {
 		width: 0;
 		height: 2px;
 		border-radius: 2px;
-		background-image: #6C34CC;
+		background-color: #6C34CC;
 		position: absolute;
 		bottom: -0.25rem;
 		right: 0;
@@ -107,4 +107,27 @@ p {
 		width: 100%;
 		left: 0;
 	}
+}
+
+.menu-line-animation {
+	color: #fff;
+	line-height: 2;
+	position: relative;
+}
+
+.menu-line-animation::before {
+	content: "";
+	width: 0;
+	height: 2px;
+	border-radius: 2px;
+	background-color: #6C34CC;
+	position: absolute;
+	bottom: -0.25rem;
+	right: 0;
+	transition: right 0.4s, width 0.4s, left 0.4s;
+}
+
+.menu-line-animation:hover::before {
+	width: 100%;
+	left: 0;
 }
