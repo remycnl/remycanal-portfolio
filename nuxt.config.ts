@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '~/assets/css/backToTopButton.css',
     '~/assets/css/scrollBar.css',
     '~/assets/css/cursor.css',
+    '~/assets/css/changeColorButton.css',
   ],
 
   postcss: {

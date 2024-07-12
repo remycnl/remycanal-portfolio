@@ -4,19 +4,19 @@
 }
 
 ::-webkit-scrollbar-track {
-	background: #111319; /* Couleur de la piste */
+	background: var(--black); /* Couleur de la piste */
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #6C34CC; /* Dégradé vertical pour le curseur */
+	background: #1f293b; /* Dégradé vertical pour le curseur */
 	border-radius: 10px; /* Arrondi du curseur */
-	border: 3px solid #111319; /* Ajout de marge et couleur de fond visible */
+	border: 3px solid var(--black); /* Ajout de marge et couleur de fond visible */
 	transition: filter 0.3s; /* Transition pour l'effet de saturation */
 }
 
 ::-webkit-scrollbar-thumb:hover {
 	@apply saturate-200; /* Application de la saturation */
-	background: #6C34CC; /* Dégradé vertical pour le curseur */
+	background: #1f293b; /* Dégradé vertical pour le curseur */
 }
 
 /* Pour Firefox */
@@ -25,17 +25,17 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-	background: #111319;
+	background: var(--black);
 }
 
 body::-webkit-scrollbar-thumb {
-	background: #6C34CC;
+	background: #1f293b;
 	border-radius: 10px;
-	border: 3px solid #111319;
+	border: 3px solid var(--black);
 	transition: filter 0.3s; /* Transition pour l'effet de saturation */
 }
 
 body::-webkit-scrollbar-thumb:hover {
 	@apply saturate-200; /* Application de la saturation */
-	background: #6C34CC;
+	background: #1f293b;
 }

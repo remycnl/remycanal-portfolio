@@ -52,7 +52,7 @@ const toggleCardEvent = () => {
 }
 
 .is-flipped {
-	border-color: #6C34CC;
+	border-color: var(--primary-color);
 }
 
 .is-flipped .front {

@@ -249,6 +249,118 @@ onMounted(() => {
 	});
 });
 
+interface ColorOption {
+	primary: string;
+	secondary: string;
+	transparent: string;
+	family: string;
+}
+
+const checkboxes = ref<boolean[]>([
+	true,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+]);
+
+const colorOptions = ref<ColorOption[]>([
+	{
+		primary: "#6C34CC",
+		secondary: "#301563",
+		transparent: "#6C34CC4F",
+		family: "purple",
+	},
+	{
+		primary: "#DD314E",
+		secondary: "#6A1625",
+		transparent: "#DD314E4F",
+		family: "red",
+	},
+	{
+		primary: "#FF3FAF",
+		secondary: "#5D0C34",
+		transparent: "#FF3FAF4F",
+		family: "pink",
+	},
+	{
+		primary: "#DD5F31",
+		secondary: "#742F17",
+		transparent: "#DD5F314F",
+		family: "orange",
+	},
+	{
+		primary: "#E9C925",
+		secondary: "#7D6B10",
+		transparent: "#E9C9254F",
+		family: "yellow",
+	},
+	{
+		primary: "#67D13D",
+		secondary: "#2C5F14",
+		transparent: "#67D13D4F",
+		family: "green",
+	},
+	{
+		primary: "#31BEDD",
+		secondary: "#147C8C",
+		transparent: "#31BEDD4F",
+		family: "cyan",
+	},
+	{
+		primary: "#32A1DA",
+		secondary: "#0A3890",
+		transparent: "#32A1DA4F",
+		family: "blue",
+	},
+	{
+		primary: "#868686",
+		secondary: "#424242",
+		transparent: "#8686864F",
+		family: "gray",
+	},
+]);
+
+const selectedColor = ref<string>(colorOptions.value[0].family); // Couleur sélectionnée par défaut
+
+const updateCheckbox = (
+	index: number,
+	primaryColor: string,
+	secondaryColor: string,
+	primaryColorTransparent: string,
+	selectedFamily: string
+) => {
+	checkboxes.value = checkboxes.value.map(
+		(_unused: unknown, i: number) => i === index
+	);
+	document.documentElement.style.setProperty("--primary-color", primaryColor);
+	document.documentElement.style.setProperty(
+		"--secondary-color",
+		secondaryColor
+	);
+	document.documentElement.style.setProperty(
+		"--primary-color-transparent",
+		primaryColorTransparent
+	);
+	selectedColor.value = selectedFamily;
+
+	const families: string[] = colorOptions.value.map(
+		(color: ColorOption) => color.family
+	);
+
+	const elements = document.querySelectorAll(".change-img-color");
+	elements.forEach((element) => {
+		families.forEach((family: string) => {
+			element.classList.remove(family);
+		});
+		element.classList.add(selectedFamily);
+	});
+};
+
 useSeoMeta({
 	title: titre,
 	ogTitle: "Rémy Canal | Web Developer Portfolio",
@@ -263,7 +375,7 @@ useSeoMeta({
 	<div class="hidden lg:block">
 		<div class="flex justify-center">
 			<button
-				class="clickable mix-darken cursor-none active:scale-95 text-white flex items-center justify-center fixed z-[100] tracking-widest rounded-full overflow-hidden origin-center shadow-around hover:bg-secondary bg-black opacity-0 pointer-events-none back-to-top hover-scale-effect lg:ml-[140vh] 2xl:ml-[176vh] lg:mt-[80vh] transition-all duration-500">
+				class="clickable mix-darken cursor-none active:scale-95 text-white flex items-center justify-center fixed z-[100] tracking-widest rounded-full overflow-hidden origin-center shadow-around hover:bg-secondary bg-black opacity-0 pointer-events-none back-to-top hover-scale-effect lg:ml-[140vh] 2xl:ml-[176vh] lg:mt-[70vh] transition-all duration-500">
 				<svg class="svgIcon" viewBox="0 0 384 512">
 					<path
 						d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
@@ -272,7 +384,8 @@ useSeoMeta({
 		</div>
 	</div>
 	<!-- ABOUT ME -->
-	<div class="bg-gradient-to-b lg:rounded-t-[4rem] overflow-hidden shadow-around shadow-black from-black via-primary to-black">
+	<div
+		class="bg-gradient-to-b lg:rounded-t-[4rem] overflow-hidden shadow-around shadow-black from-black via-primary to-black">
 		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
 			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
 				<div
@@ -296,7 +409,7 @@ useSeoMeta({
 							>
 						</h1>
 						<h4
-							style="font-family: Share Tech Mono;"
+							style="font-family: Share Tech Mono"
 							class="text-white text-lg 2xl:text-2xl mx-4 md:mx-0 lg:text-justify">
 							I'm a student at Epitech, on my way to becoming a software
 							engineer specialized in crafting outstanding and full digital
@@ -304,16 +417,47 @@ useSeoMeta({
 							SEO optimization, and most importantly, prioritize user
 							satisfaction above all else.
 						</h4>
-						<div class="flex mt-10 mb-7 lg:mb-0 justify-center lg:justify-end">
+						<div
+							class="flex flex-col-reverse gap-10 2xl:flex-row mt-10 mb-7 lg:mb-0 justify-center items-center lg:items-end 2xl:items-center lg:justify-between">
+							<button
+								class="group relative hover-scale-effect clickable cursor-none w-fit items-center gap-x-4 py-4 flex justify-between px-5 text-white change-color-button rounded-full tracking-widest overflow-hidden origin-center shadow-around hover:bg-secondary-dark bg-black transition-all duration-500">
+								<div>
+									<Icon
+										name="material-symbols:format-color-fill-rounded"
+										color="white"
+										class="w-5 h-auto group-hover:opacity-0 icon-fill-color -ml-1 mb-1 transition-all duration-300" />
+								</div>
+								<div class="cursor-none flex gap-x-4">
+									<label
+										v-for="(color, index) in colorOptions"
+										:key="index"
+										class="cyberpunk-checkbox-label opacity-0 group-hover:opacity-100">
+										<input
+											type="checkbox"
+											class="cursor-none"
+											:class="`color-${index + 1} cyberpunk-checkbox`"
+											v-model="checkboxes[index]"
+											@change="
+												updateCheckbox(
+													index,
+													color.primary,
+													color.secondary,
+													color.transparent,
+													color.family
+												)
+											" />
+									</label>
+								</div>
+							</button>
 							<a
 								href="/doc/Rémy Canal - curriculum vitae.pdf"
 								target="_blank"
 								download
-								class="hover-scale-effect clickable mix-darken cursor-none button group hover:saturate-200 transition-all duration-500 w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
+								class="hover-scale-effect clickable mix-darken cursor-none button group w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
 								Download CV
 								<Icon
 									name="material-symbols:download-rounded"
-									color="#6C34CC"
+									color="var(--primary-color)"
 									class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
 							</a>
 						</div>
@@ -345,7 +489,11 @@ useSeoMeta({
 			</div>
 			<div class="container mx-auto px-4 lg:px-0 py-20">
 				<!-- SKILLS -->
-				<h2 id="skills" class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">Skills</h2>
+				<h2
+					id="skills"
+					class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
+					Skills
+				</h2>
 				<div
 					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
@@ -411,17 +559,17 @@ useSeoMeta({
 					<div
 						class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
 						<NuxtImg
-							src="/img/details-skills.png"
+							:src="`/img/details-skills-${selectedColor}.png`"
 							format="webp"
 							alt="Click on bubbles to see details"
 							class="hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[55%] right-[78%] 2xl:right-[70%] z-10" />
 						<NuxtImg
-							src="/img/mobile-details-skills.png"
+							:src="`/img/mobile-details-skills-${selectedColor}.png`"
 							format="webp"
 							alt="Click on bubbles to see details (mobile)"
 							class="lg:hidden absolute scale-50 bottom-[80%] md:bottom-[65%] right-[30%] md:right-[22%] z-10" />
 						<NuxtImg
-							src="/img/stars-info.png"
+							:src="`/img/stars-info-${selectedColor}.png`"
 							format="webp"
 							alt="Stars = Proficiency level"
 							class="absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[75%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
@@ -442,9 +590,9 @@ useSeoMeta({
 					</div>
 				</div>
 				<div class="text-3xl text-white font-bold">
-					<img src="~/assets/img/logo.png" alt="Rémy Canal" />
-					<img src="~/assets/img/logo.png" alt="Rémy Canal" />
-					<img src="~/assets/img/logo.png" alt="Rémy Canal" />
+					<img src="/img/logo-purple.png" alt="Rémy Canal" />
+					<img src="/img/logo-purple.png" alt="Rémy Canal" />
+					<img src="/img/logo-purple.png" alt="Rémy Canal" />
 				</div>
 			</div>
 		</div>

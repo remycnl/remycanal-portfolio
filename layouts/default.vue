@@ -36,7 +36,7 @@ onMounted(() => {
 					<h4 class="w-fit text-xs text-gray-light hover:text-white transition-color duration-500 md:text-base lg:text-lg">Leonardo da Vinci</h4>
 				</div>
 				<div class="container-s hidden lg:flex text-start w-screen -ml-8 -mb-7 overflow-hidden select-none">
-					<div id="letters-bottom" class="tracking-wider font-mono s whitespace-nowrap inline-block text-xs text-black-dark uppercase w-fit">
+					<div id="letters-bottom" class="tracking-wider font-mono s whitespace-nowrap inline-block text-xs text-black uppercase w-fit">
 					<!-- Ici apparaîssent les <span> des crédits -->light
 					</div>
 				</div>

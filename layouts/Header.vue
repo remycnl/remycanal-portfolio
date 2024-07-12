@@ -4,7 +4,7 @@
 		<div
 			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
 			<a href="#" @click="ancreToSection($event, 'top')">
-				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
+				<img :src="`/img/logo-${primaryColor}.png`" alt="Rémy Canal" class="change-img-color hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="flex items-center justify-center">
 				<div class="cursor-none hover:saturate-200 transition-all transform-gpu duration-500" @click="toggleDropdown">
@@ -18,9 +18,9 @@
 			<div :class="headerClasses" class="overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
 				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')" class="hover-scale-effect clickable cursor-none active:scale-105 transition-all duration-100">
 					<img
-						src="~/assets/img/logo.png"
+						:src="`/img/logo-${primaryColor}.png`"
 						alt="Rémy Canal"
-						class="hover-scale-effect hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
+						class="change-img-color hover-scale-effect hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
 				class="flex flex-col lg:flex-row tracking-widest lg:tracking-normal 2xl:tracking-widest gap-x-20 gap-y-10 text-white uppercase items-center">
@@ -136,11 +136,62 @@ const applyGradientText = (index) => {
     });
 };
 
+const primaryColor = ref("purple");
+
 onMounted(() => {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     magnetEffect();
     applyGradientText(0);
+
+    const updatePrimaryColor = () => {
+		const element = document.querySelector(".change-img-color");
+		if (element) {
+			if (element.classList.contains("purple")) {
+				primaryColor.value = "purple";
+			} else if (element.classList.contains("orange")) {
+				primaryColor.value = "orange";
+			} else if (element.classList.contains("green")) {
+				primaryColor.value = "green";
+			} else if (element.classList.contains("cyan")) {
+				primaryColor.value = "cyan";
+			} else if (element.classList.contains("pink")) {
+				primaryColor.value = "pink";
+			} else if (element.classList.contains("red")) {
+				primaryColor.value = "red";
+			} else if (element.classList.contains("gray")) {
+				primaryColor.value = "gray";
+			} else if (element.classList.contains("yellow")) {
+				primaryColor.value = "yellow";
+			} else if (element.classList.contains("blue")) {
+				primaryColor.value = "blue";
+			}
+		}
+	};
+
+	updatePrimaryColor();
+
+	const observer = new MutationObserver((mutations) => {
+		mutations.forEach((mutation) => {
+			if (
+				mutation.type === "attributes" &&
+				mutation.attributeName === "class"
+			) {
+				updatePrimaryColor();
+			}
+		});
+	});
+
+	const elementToObserve = document.querySelector(".change-img-color");
+	if (elementToObserve) {
+		observer.observe(elementToObserve, {
+			attributes: true,
+		});
+	}
+
+	onUnmounted(() => {
+		observer.disconnect();
+	});
 });
 
 onBeforeUnmount(() => {

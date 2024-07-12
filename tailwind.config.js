@@ -18,8 +18,8 @@ export default {
         white: '#ffffff',
         primary: '#0f172a',
         secondary: {
-          DEFAULT: '#6C34CC',
-          dark: '#301563',
+          DEFAULT: 'var(--primary-color)',
+          dark: 'var(--secondary-color)',
         },
         gray: {
           light: '#8c99b0',
