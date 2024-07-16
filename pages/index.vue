@@ -56,11 +56,11 @@
 										class="w-5 h-auto group-hover:lg:opacity-0 icon-fill-color lg:-ml-1 mb-1 transition-all duration-300" />
 								</div>
 								<div
-									class="absolute lg:relative cursor-none flex justify-center items-center gap-x-4">
+									class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-none flex justify-center items-center gap-x-4">
 									<label
 										v-for="(color, index) in colorOptions"
 										:key="index"
-										class="absolute lg:relative cyberpunk-checkbox-label pointer-events-none lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
+										class="absolute cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
 										<input
 											type="checkbox"
 											class="cursor-none"

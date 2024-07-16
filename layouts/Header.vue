@@ -2,11 +2,11 @@
 	<div
 		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-10">
 		<div
-			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
+			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-none lg:pointer-events-auto">
 			<a href="#" @click="ancreToSection($event, 'top')">
-				<img :src="`/img/logo-${primaryColor}.png`" alt="Rémy Canal" class="change-img-color hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
+				<img :src="`/img/logo-${primaryColor}.png`" alt="Rémy Canal" class="change-img-color pointer-events-auto hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
-			<div class="flex items-center justify-center">
+			<div class="flex pointer-events-auto items-center justify-center">
 				<div class="cursor-none hover:saturate-200 transition-all transform-gpu duration-500" @click="toggleDropdown">
 					<div class="first-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
 					<div class="second-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
