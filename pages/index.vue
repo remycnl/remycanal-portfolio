@@ -1,396 +1,3 @@
-<script setup lang="ts">
-const activeTitle = ref("Rémy Canal - Portfolio | Web Developer");
-const inactiveTitle = ref("I miss you !!!");
-
-useSeoMeta({
-	title: activeTitle,
-	ogTitle: "Rémy Canal - Portfolio | Web Developer Portfolio",
-	description:
-		"I am a french web developer based in Lyon and this is my portfolio where I expose my projects and experiences.",
-	ogDescription: "This is my amazing site, let me tell you all about it.",
-	ogImage: "~/assets/img/avatar.png",
-});
-
-useServerSeoMeta({
-	robots: "index, follow",
-});
-
-interface Skill {
-	text: string;
-	color: string;
-	iconColor?: string;
-	icon?: string;
-	withPath?: boolean;
-	pathIcon?: string;
-	isGif?: boolean;
-	stars: number;
-	description: string;
-}
-
-const skills: Skill[] = [
-	{
-		text: "HTML",
-		color: "#f1662a",
-		icon: "vscode-icons:file-type-html",
-		stars: 4,
-		description:
-			"Proficiency in HTML for structuring and organizing web content in a semantic way.",
-	},
-	{
-		text: "JavaScript",
-		color: "#f0db4f",
-		icon: "skill-icons:javascript",
-		stars: 4,
-		description:
-			"Advanced skills in JavaScript for frontend and backend development, DOM manipulation, and creating dynamic interactions.",
-	},
-	{
-		text: "CSS",
-		color: "#248cc8",
-		icon: "vscode-icons:file-type-css",
-		stars: 4,
-		description:
-			"Expertise in CSS for designing and styling user interfaces, using Flexbox, Grid, and advanced layout techniques.",
-	},
-	{
-		text: "Tailwind",
-		color: "#45bbbd",
-		icon: "logos:tailwindcss-icon",
-		stars: 5,
-		description:
-			"Extensive experience with Tailwind CSS for rapid and efficient development, using utility-first classes to style components.",
-	},
-	{
-		text: "Sass",
-		color: "#cd6799",
-		icon: "logos:sass",
-		stars: 3,
-		description:
-			"Advanced use of Sass for creating modular, reusable, and maintainable CSS stylesheets, with features like variables, mixins, and imports.",
-	},
-	{
-		text: "Nuxt",
-		color: "#67dd82",
-		icon: "logos:nuxt-icon",
-		stars: 4,
-		description:
-			"In-depth knowledge of Nuxt.js for building universal Vue.js applications, with routing, server-side rendering (SSR), and static site generation.",
-	},
-	{
-		text: "Vue",
-		color: "#51b883",
-		icon: "logos:vue",
-		stars: 4,
-		description:
-			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
-	},
-	{
-		text: "Laravel",
-		color: "#f24423",
-		icon: "logos:laravel",
-		stars: 3,
-		description:
-			"Skills in Laravel for rapid development of robust PHP web applications, with MVC architecture, database migrations, and RESTful APIs.",
-	},
-	{
-		text: "WordPress",
-		color: "white",
-		iconColor: "white",
-		icon: "fa6-brands:wordpress",
-		stars: 3,
-		description:
-			"Experience with WordPress for creating dynamic websites and blogs, with custom themes, plugins, and effective content management.",
-	},
-	{
-		text: "Elementor",
-		color: "#932c3c",
-		withPath: true,
-		pathIcon: "/img/elementor.svg",
-		stars: 3,
-		description:
-			"Advanced use of Elementor for designing highly customizable WordPress pages, with drag-and-drop tools and visual configuration.",
-	},
-	{
-		text: "Swiper",
-		color: "#0a7efa",
-		withPath: true,
-		pathIcon: "/img/swiper.svg",
-		stars: 4,
-		description:
-			"Implementation of Swiper.js for interactive image carousels and galleries, with advanced customization options and multi-touch support.",
-	},
-	{
-		text: "Strapi",
-		color: "#556afa",
-		icon: "logos:strapi-icon",
-		stars: 4,
-		description:
-			"Development of headless CMS applications with Strapi, creating RESTful and GraphQL APIs for managing and distributing digital content.",
-	},
-	{
-		text: "PHP",
-		color: "#6181B6",
-		icon: "logos:php",
-		stars: 2,
-		description:
-			"Skills in PHP for backend development, data manipulation, and integration with relational databases.",
-	},
-	{
-		text: "Python",
-		color: "#FFD141",
-		icon: "logos:python",
-		stars: 3,
-		description:
-			"Use of Python for web application development, task automation, and data analysis, with frameworks like Django and Flask.",
-	},
-	{
-		text: "GitHub",
-		color: "#FFFFFF",
-		withPath: true,
-		pathIcon: "/img/github.png",
-		stars: 3,
-		description:
-			"Advanced use of GitHub for version control, collaboration on open-source projects, and continuous deployment.",
-	},
-	{
-		text: "GSAP",
-		color: "#14D74B",
-		withPath: true,
-		pathIcon: "/img/gsap.png",
-		stars: 4,
-		description:
-			"Proficiency in GreenSock Animation Platform (GSAP) for creating fluid and interactive animations in web applications.",
-	},
-	{
-		text: "C",
-		color: "#273393",
-		withPath: true,
-		pathIcon: "/img/c.png",
-		stars: 4,
-		description:
-			"Programming skills in C for system development, low-level programming, and creating robust and performant applications.",
-	},
-	{
-		text: "Canva",
-		color: "#00C4CC",
-		withPath: true,
-		pathIcon: "/img/canva.png",
-		stars: 3,
-		description:
-			"Use of Canva for creating professional graphic designs, including illustrations, infographics, and visual presentations.",
-	},
-	{
-		text: "ChatGPT",
-		color: "#FFFFFF",
-		withPath: true,
-		pathIcon: "/img/chatgpt.png",
-		stars: 5,
-		description:
-			"Experience with ChatGPT for integrating conversational artificial intelligence into web applications, enhancing user engagement and automating responses.",
-	},
-	{
-		text: "but still human...",
-		color: "#FEC47C",
-		withPath: true,
-		isGif: true,
-		pathIcon: "/img/wolf.gif",
-		stars: 5,
-		description:
-			"In addition to the mentioned technologies, adaptability and quick learning of new technologies and tools to meet specific project requirements.",
-	},
-];
-
-const currentSkill = ref<Skill>(skills[19]);
-const isUpdating = ref(false);
-const lastSkillIndex = ref<number | null>(null);
-
-const fillCardSkills = (index: number) => {
-	isUpdating.value = true;
-
-	setTimeout(() => {
-		if (lastSkillIndex.value !== null && lastSkillIndex.value === index) {
-			currentSkill.value = skills[19];
-			lastSkillIndex.value = null;
-		} else {
-			currentSkill.value = skills[index];
-			lastSkillIndex.value = index;
-		}
-		isUpdating.value = false;
-	}, 300); // Durée de la transition d'opacité
-};
-
-const finishUpdate = () => {
-	if (isUpdating.value) {
-		isUpdating.value = false;
-	}
-};
-
-onMounted(() => {
-	if (process.client) {
-		document.addEventListener("visibilitychange", function () {
-			if (document.visibilityState === "hidden") {
-				document.title = inactiveTitle.value;
-			} else {
-				document.title = activeTitle.value;
-			}
-		});
-	}
-
-	updateFavicon('purple');
-
-	const backToTopButton = document.querySelector(".back-to-top");
-	if (backToTopButton) {
-		backToTopButton.addEventListener("click", function () {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth",
-			});
-		});
-	}
-
-	window.addEventListener("scroll", function () {
-		const button = document.querySelector(".back-to-top") as HTMLElement;
-		if (button && window.innerWidth >= 1024) {
-			if (window.scrollY > 100) {
-				button.classList.add("pointer-events-auto");
-				button.classList.remove("opacity-0");
-				button.classList.add("opacity-100");
-			} else {
-				button.classList.remove("opacity-100");
-				button.classList.add("opacity-0");
-				button.classList.remove("pointer-events-auto");
-			}
-		}
-	});
-});
-
-interface ColorOption {
-	primary: string;
-	secondary: string;
-	transparent: string;
-	family: string;
-}
-
-const checkboxes = ref<boolean[]>([
-	true,
-	false,
-	false,
-	false,
-	false,
-	false,
-	false,
-	false,
-	false,
-]);
-
-const colorOptions = ref<ColorOption[]>([
-	{
-		primary: "#6C34CC",
-		secondary: "#301563",
-		transparent: "#6C34CC4F",
-		family: "purple",
-	},
-	{
-		primary: "#DD314E",
-		secondary: "#6A1625",
-		transparent: "#DD314E4F",
-		family: "red",
-	},
-	{
-		primary: "#FF3FAF",
-		secondary: "#5D0C34",
-		transparent: "#FF3FAF4F",
-		family: "pink",
-	},
-	{
-		primary: "#DD5F31",
-		secondary: "#742F17",
-		transparent: "#DD5F314F",
-		family: "orange",
-	},
-	{
-		primary: "#E9C925",
-		secondary: "#7D6B10",
-		transparent: "#E9C9254F",
-		family: "yellow",
-	},
-	{
-		primary: "#67D13D",
-		secondary: "#2C5F14",
-		transparent: "#67D13D4F",
-		family: "green",
-	},
-	{
-		primary: "#31BEDD",
-		secondary: "#147C8C",
-		transparent: "#31BEDD4F",
-		family: "cyan",
-	},
-	{
-		primary: "#32A1DA",
-		secondary: "#0A3890",
-		transparent: "#32A1DA4F",
-		family: "blue",
-	},
-	{
-		primary: "#868686",
-		secondary: "#424242",
-		transparent: "#8686864F",
-		family: "gray",
-	},
-]);
-
-const selectedColor = ref<string>(colorOptions.value[0].family);
-
-const updateCheckbox = (
-	index: number,
-	primaryColor: string,
-	secondaryColor: string,
-	primaryColorTransparent: string,
-	selectedFamily: string
-) => {
-	checkboxes.value = checkboxes.value.map(
-		(_unused: unknown, i: number) => i === index
-	);
-	document.documentElement.style.setProperty("--primary-color", primaryColor);
-	document.documentElement.style.setProperty(
-		"--secondary-color",
-		secondaryColor
-	);
-	document.documentElement.style.setProperty(
-		"--primary-color-transparent",
-		primaryColorTransparent
-	);
-	selectedColor.value = selectedFamily;
-
-	const families: string[] = colorOptions.value.map(
-		(color: ColorOption) => color.family
-	);
-
-	const elements = document.querySelectorAll(".change-img-color");
-	elements.forEach((element) => {
-		families.forEach((family: string) => {
-			element.classList.remove(family);
-		});
-		element.classList.add(selectedFamily);
-	});
-};
-
-const updateFavicon = (color: string) => {
-	const faviconName = `favicon-${color}.ico`;
-	let link = document.querySelector(
-		"link[rel*='icon']"
-	) as HTMLLinkElement | null;
-	if (!link) {
-		link = document.createElement("link") as HTMLLinkElement;
-		link.rel = "shortcut icon";
-		document.head.appendChild(link);
-	}
-	link.type = "image/x-icon";
-	link.href = `/${faviconName}`;
-};
-</script>
-
 <template>
 	<div class="hidden lg:block">
 		<div class="flex justify-center">
@@ -619,3 +226,370 @@ const updateFavicon = (color: string) => {
 		</div>
 	</div>
 </template>
+
+<script setup lang="ts">
+interface Skill {
+	text: string;
+	color: string;
+	iconColor?: string;
+	icon?: string;
+	withPath?: boolean;
+	pathIcon?: string;
+	isGif?: boolean;
+	stars: number;
+	description: string;
+}
+
+const skills: Skill[] = [
+	{
+		text: "HTML",
+		color: "#f1662a",
+		icon: "vscode-icons:file-type-html",
+		stars: 4,
+		description:
+			"Proficiency in HTML for structuring and organizing web content in a semantic way.",
+	},
+	{
+		text: "JavaScript",
+		color: "#f0db4f",
+		icon: "skill-icons:javascript",
+		stars: 4,
+		description:
+			"Advanced skills in JavaScript for frontend and backend development, DOM manipulation, and creating dynamic interactions.",
+	},
+	{
+		text: "CSS",
+		color: "#248cc8",
+		icon: "vscode-icons:file-type-css",
+		stars: 4,
+		description:
+			"Expertise in CSS for designing and styling user interfaces, using Flexbox, Grid, and advanced layout techniques.",
+	},
+	{
+		text: "Tailwind",
+		color: "#45bbbd",
+		icon: "logos:tailwindcss-icon",
+		stars: 5,
+		description:
+			"Extensive experience with Tailwind CSS for rapid and efficient development, using utility-first classes to style components.",
+	},
+	{
+		text: "Sass",
+		color: "#cd6799",
+		icon: "logos:sass",
+		stars: 3,
+		description:
+			"Advanced use of Sass for creating modular, reusable, and maintainable CSS stylesheets, with features like variables, mixins, and imports.",
+	},
+	{
+		text: "Nuxt",
+		color: "#67dd82",
+		icon: "logos:nuxt-icon",
+		stars: 4,
+		description:
+			"In-depth knowledge of Nuxt.js for building universal Vue.js applications, with routing, server-side rendering (SSR), and static site generation.",
+	},
+	{
+		text: "Vue",
+		color: "#51b883",
+		icon: "logos:vue",
+		stars: 4,
+		description:
+			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+	},
+	{
+		text: "Laravel",
+		color: "#f24423",
+		icon: "logos:laravel",
+		stars: 3,
+		description:
+			"Skills in Laravel for rapid development of robust PHP web applications, with MVC architecture, database migrations, and RESTful APIs.",
+	},
+	{
+		text: "WordPress",
+		color: "white",
+		iconColor: "white",
+		icon: "fa6-brands:wordpress",
+		stars: 3,
+		description:
+			"Experience with WordPress for creating dynamic websites and blogs, with custom themes, plugins, and effective content management.",
+	},
+	{
+		text: "Elementor",
+		color: "#932c3c",
+		withPath: true,
+		pathIcon: "/img/elementor.svg",
+		stars: 3,
+		description:
+			"Advanced use of Elementor for designing highly customizable WordPress pages, with drag-and-drop tools and visual configuration.",
+	},
+	{
+		text: "Swiper",
+		color: "#0a7efa",
+		withPath: true,
+		pathIcon: "/img/swiper.svg",
+		stars: 4,
+		description:
+			"Implementation of Swiper.js for interactive image carousels and galleries, with advanced customization options and multi-touch support.",
+	},
+	{
+		text: "Strapi",
+		color: "#556afa",
+		icon: "logos:strapi-icon",
+		stars: 4,
+		description:
+			"Development of headless CMS applications with Strapi, creating RESTful and GraphQL APIs for managing and distributing digital content.",
+	},
+	{
+		text: "PHP",
+		color: "#6181B6",
+		icon: "logos:php",
+		stars: 2,
+		description:
+			"Skills in PHP for backend development, data manipulation, and integration with relational databases.",
+	},
+	{
+		text: "Python",
+		color: "#FFD141",
+		icon: "logos:python",
+		stars: 3,
+		description:
+			"Use of Python for web application development, task automation, and data analysis, with frameworks like Django and Flask.",
+	},
+	{
+		text: "GitHub",
+		color: "#FFFFFF",
+		withPath: true,
+		pathIcon: "/img/github.png",
+		stars: 3,
+		description:
+			"Advanced use of GitHub for version control, collaboration on open-source projects, and continuous deployment.",
+	},
+	{
+		text: "GSAP",
+		color: "#14D74B",
+		withPath: true,
+		pathIcon: "/img/gsap.png",
+		stars: 4,
+		description:
+			"Proficiency in GreenSock Animation Platform (GSAP) for creating fluid and interactive animations in web applications.",
+	},
+	{
+		text: "C",
+		color: "#273393",
+		withPath: true,
+		pathIcon: "/img/c.png",
+		stars: 4,
+		description:
+			"Programming skills in C for system development, low-level programming, and creating robust and performant applications.",
+	},
+	{
+		text: "Canva",
+		color: "#00C4CC",
+		withPath: true,
+		pathIcon: "/img/canva.png",
+		stars: 3,
+		description:
+			"Use of Canva for creating professional graphic designs, including illustrations, infographics, and visual presentations.",
+	},
+	{
+		text: "ChatGPT",
+		color: "#FFFFFF",
+		withPath: true,
+		pathIcon: "/img/chatgpt.png",
+		stars: 5,
+		description:
+			"Experience with ChatGPT for integrating conversational artificial intelligence into web applications, enhancing user engagement and automating responses.",
+	},
+	{
+		text: "but still human...",
+		color: "#FEC47C",
+		withPath: true,
+		isGif: true,
+		pathIcon: "/img/wolf.gif",
+		stars: 5,
+		description:
+			"In addition to the mentioned technologies, adaptability and quick learning of new technologies and tools to meet specific project requirements.",
+	},
+];
+
+const currentSkill = ref<Skill>(skills[19]);
+const isUpdating = ref(false);
+const lastSkillIndex = ref<number | null>(null);
+
+const fillCardSkills = (index: number) => {
+	isUpdating.value = true;
+
+	setTimeout(() => {
+		if (lastSkillIndex.value !== null && lastSkillIndex.value === index) {
+			currentSkill.value = skills[19];
+			lastSkillIndex.value = null;
+		} else {
+			currentSkill.value = skills[index];
+			lastSkillIndex.value = index;
+		}
+		isUpdating.value = false;
+	}, 300); // Durée de la transition d'opacité
+};
+
+const finishUpdate = () => {
+	if (isUpdating.value) {
+		isUpdating.value = false;
+	}
+};
+
+onMounted(() => {
+	updateFavicon("purple");
+
+	const backToTopButton = document.querySelector(".back-to-top");
+	if (backToTopButton) {
+		backToTopButton.addEventListener("click", function () {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
+		});
+	}
+
+	window.addEventListener("scroll", function () {
+		const button = document.querySelector(".back-to-top") as HTMLElement;
+		if (button && window.innerWidth >= 1024) {
+			if (window.scrollY > 100) {
+				button.classList.add("pointer-events-auto");
+				button.classList.remove("opacity-0");
+				button.classList.add("opacity-100");
+			} else {
+				button.classList.remove("opacity-100");
+				button.classList.add("opacity-0");
+				button.classList.remove("pointer-events-auto");
+			}
+		}
+	});
+});
+
+interface ColorOption {
+	primary: string;
+	secondary: string;
+	transparent: string;
+	family: string;
+}
+
+const checkboxes = ref<boolean[]>([
+	true,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+]);
+
+const colorOptions = ref<ColorOption[]>([
+	{
+		primary: "#6C34CC",
+		secondary: "#301563",
+		transparent: "#6C34CC4F",
+		family: "purple",
+	},
+	{
+		primary: "#DD314E",
+		secondary: "#6A1625",
+		transparent: "#DD314E4F",
+		family: "red",
+	},
+	{
+		primary: "#FF3FAF",
+		secondary: "#5D0C34",
+		transparent: "#FF3FAF4F",
+		family: "pink",
+	},
+	{
+		primary: "#DD5F31",
+		secondary: "#742F17",
+		transparent: "#DD5F314F",
+		family: "orange",
+	},
+	{
+		primary: "#E9C925",
+		secondary: "#7D6B10",
+		transparent: "#E9C9254F",
+		family: "yellow",
+	},
+	{
+		primary: "#67D13D",
+		secondary: "#2C5F14",
+		transparent: "#67D13D4F",
+		family: "green",
+	},
+	{
+		primary: "#31BEDD",
+		secondary: "#147C8C",
+		transparent: "#31BEDD4F",
+		family: "cyan",
+	},
+	{
+		primary: "#32A1DA",
+		secondary: "#0A3890",
+		transparent: "#32A1DA4F",
+		family: "blue",
+	},
+	{
+		primary: "#868686",
+		secondary: "#424242",
+		transparent: "#8686864F",
+		family: "gray",
+	},
+]);
+
+const selectedColor = ref<string>(colorOptions.value[0].family);
+
+const updateCheckbox = (
+	index: number,
+	primaryColor: string,
+	secondaryColor: string,
+	primaryColorTransparent: string,
+	selectedFamily: string
+) => {
+	checkboxes.value = checkboxes.value.map(
+		(_unused: unknown, i: number) => i === index
+	);
+	document.documentElement.style.setProperty("--primary-color", primaryColor);
+	document.documentElement.style.setProperty(
+		"--secondary-color",
+		secondaryColor
+	);
+	document.documentElement.style.setProperty(
+		"--primary-color-transparent",
+		primaryColorTransparent
+	);
+	selectedColor.value = selectedFamily;
+
+	const families: string[] = colorOptions.value.map(
+		(color: ColorOption) => color.family
+	);
+
+	const elements = document.querySelectorAll(".change-img-color");
+	elements.forEach((element) => {
+		families.forEach((family: string) => {
+			element.classList.remove(family);
+		});
+		element.classList.add(selectedFamily);
+	});
+};
+
+const updateFavicon = (color: string) => {
+	const faviconName = `favicon-${color}.ico`;
+	let link = document.querySelector(
+		"link[rel*='icon']"
+	) as HTMLLinkElement | null;
+	if (!link) {
+		link = document.createElement("link") as HTMLLinkElement;
+		link.rel = "shortcut icon";
+		document.head.appendChild(link);
+	}
+	link.type = "image/x-icon";
+	link.href = `/${faviconName}`;
+};
+</script>

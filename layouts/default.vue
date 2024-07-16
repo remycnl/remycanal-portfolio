@@ -5,11 +5,57 @@ import Footer from "./Footer.vue";
 import { toggleDropdown, customCursor, animationFooterBottom } from "~/plugins/gsap";
 import { mouseEffect } from '~/plugins/global.js';
 
+const activeTitle = ref("Rémy Canal - Portfolio | Web Developer");
+const inactiveTitle = ref("I miss you !!!");
+
+useSeoMeta({
+	title: activeTitle,
+	ogTitle: "Rémy Canal - Portfolio | Web Developer Portfolio",
+	description:
+		"I am a french web developer based in Lyon and this is my portfolio where I expose my projects and experiences.",
+	ogDescription: "This is my amazing site, let me tell you all about it.",
+	ogImage: "~/assets/img/avatar.png",
+});
+
+useServerSeoMeta({
+	robots: "index, follow",
+});
+
+
 onMounted(() => {
+	setSEO();
+	setCSP();
 	customCursor();
     mouseEffect();
 	animationFooterBottom();
 });
+
+const setSEO = () => {
+	if (process.client) {
+		document.addEventListener("visibilitychange", function () {
+			if (document.visibilityState === "hidden") {
+				document.title = inactiveTitle.value;
+			} else {
+				document.title = activeTitle.value;
+			}
+		});
+	}
+};
+
+// Configuration de la Content Security Policy (CSP)
+const setCSP = () => {
+	const meta = document.createElement("meta");
+	meta.httpEquiv = "Content-Security-Policy";
+	meta.content = "script-src 'self' https://apis.google.com";
+
+	// Ajoute la balise meta à head seulement si elle n'existe pas déjà
+	const existingMeta = document.head.querySelector(
+		'meta[http-equiv="Content-Security-Policy"]'
+	);
+	if (!existingMeta) {
+		document.head.appendChild(meta);
+	}
+};
 </script>
 
 <template>
