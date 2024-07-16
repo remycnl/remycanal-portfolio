@@ -47,18 +47,20 @@
 						<div
 							class="flex flex-col-reverse gap-10 2xl:flex-row mt-10 mb-7 lg:mb-0 justify-center items-center lg:items-end 2xl:items-center lg:justify-between">
 							<button
-								class="group relative hover-scale-effect clickable cursor-none w-fit items-center gap-x-4 py-4 flex justify-between px-5 text-white change-color-button rounded-full tracking-widest overflow-hidden origin-center shadow-around hover:bg-secondary-dark bg-black transition-all duration-500">
+								@click="toggleColors"
+								class="group circle-container relative hover-scale-effect clickable cursor-none w-fit lg:w-[50px] h-fit lg:h-[50px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center shadow-around hover:bg-secondary-dark bg-black transition-all duration-500">
 								<div>
 									<Icon
 										name="material-symbols:format-color-fill-rounded"
 										color="white"
-										class="w-5 h-auto group-hover:opacity-0 icon-fill-color -ml-1 mb-1 transition-all duration-300" />
+										class="w-5 h-auto group-hover:lg:opacity-0 icon-fill-color lg:-ml-1 mb-1 transition-all duration-300" />
 								</div>
-								<div class="cursor-none flex gap-x-4">
+								<div
+									class="absolute lg:relative cursor-none flex justify-center items-center gap-x-4">
 									<label
 										v-for="(color, index) in colorOptions"
 										:key="index"
-										class="cyberpunk-checkbox-label opacity-0 group-hover:opacity-100">
+										class="absolute lg:relative cyberpunk-checkbox-label pointer-events-none lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
 										<input
 											type="checkbox"
 											class="cursor-none"
@@ -228,6 +230,8 @@
 </template>
 
 <script setup lang="ts">
+import { animationCheckboxColor } from "~/plugins/gsap";
+
 interface Skill {
 	text: string;
 	color: string;
@@ -577,6 +581,32 @@ const updateCheckbox = (
 		});
 		element.classList.add(selectedFamily);
 	});
+};
+
+let isOpenColorMenu = ref(false);
+
+const toggleColors = () => {
+	if (window.innerWidth < 1024) {
+		// setTimeout for bug SM format
+		setTimeout(() => {
+			isOpenColorMenu.value = !isOpenColorMenu.value;
+			animationCheckboxColor(isOpenColorMenu.value);
+		}, 200);
+		
+		const button = document.querySelector(
+			".change-color-button"
+		) as HTMLElement;
+		const checkboxs = document.querySelectorAll(".cyberpunk-checkbox-label");
+		button.classList.toggle("bg-black");
+		button.classList.toggle("bg-primary");
+		checkboxs.forEach((checkbox) => {
+			checkbox.classList.toggle("opacity-100");
+			checkbox.classList.toggle("pointer-events-none");
+			setTimeout(() => {
+				checkbox.classList.toggle("opacity-0");
+			}, 100);
+		});
+	}
 };
 
 const updateFavicon = (color: string) => {

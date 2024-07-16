@@ -10,6 +10,7 @@ export default defineNuxtPlugin(() => {
 		animationFooter,
 		customCursor,
 		animationFooterBottom,
+		animationCheckboxColor,
 	};
 });
 
@@ -276,7 +277,7 @@ export function animationFooter() {
 		}
 
 		generateAndAnimateLetters();
-	};
+	}
 }
 
 export function animationFooterBottom() {
@@ -331,7 +332,7 @@ export function animationFooterBottom() {
 		}
 
 		generateAndAnimateLetters();
-	};
+	}
 }
 
 export function customCursor() {
@@ -349,10 +350,10 @@ export function customCursor() {
 	// Anime le curseur lorsque la souris entre et quitte un élément cliquable
 	document.querySelectorAll(".clickable").forEach((el) => {
 		el.addEventListener("mouseenter", () => {
-			if (el.classList.contains('mix-darken')) {
-				customCursor.classList.add('mix-blend-darken');
+			if (el.classList.contains("mix-darken")) {
+				customCursor.classList.add("mix-blend-darken");
 			} else {
-				customCursor.classList.add('mix-blend-lighten');
+				customCursor.classList.add("mix-blend-lighten");
 			}
 			gsap.to(customCursor, {
 				width: 40,
@@ -360,12 +361,12 @@ export function customCursor() {
 				duration: 0.3,
 			});
 		});
-		
+
 		el.addEventListener("mouseleave", () => {
-			if (el.classList.contains('mix-darken')) {
-				customCursor.classList.remove('mix-blend-darken');
+			if (el.classList.contains("mix-darken")) {
+				customCursor.classList.remove("mix-blend-darken");
 			} else {
-				customCursor.classList.remove('mix-blend-lighten');
+				customCursor.classList.remove("mix-blend-lighten");
 			}
 			gsap.to(customCursor, {
 				width: 20,
@@ -373,5 +374,27 @@ export function customCursor() {
 				duration: 0.3,
 			});
 		});
+	});
+}
+
+export function animationCheckboxColor(isOpen) {
+	const labels = document.querySelectorAll(".circle-container label");
+	const finalRadius = 70;
+	const angleStep = (2 * Math.PI) / labels.length;
+
+	labels.forEach((label, index) => {
+		const angle = index * angleStep;
+		const x = finalRadius * Math.cos(angle) - label.offsetWidth / 2 + 11;
+		const y = finalRadius * Math.sin(angle) - label.offsetHeight / 2 + 13;
+
+		if (isOpen) {
+			gsap.fromTo(
+				label,
+				{ x: 0, y: 0 },
+				{ x: x, y: y, duration: 0.5, ease: "power2.out" }
+			);
+		} else {
+			gsap.to(label, { x: 0, y: 0, duration: 0.5, ease: "power2.in" });
+		}
 	});
 }
