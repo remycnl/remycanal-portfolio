@@ -6,6 +6,7 @@
 	box-shadow: 0px 0px 0px 4px var(--primary-color-transparent);
 }
 
+@media (min-width: 1024px) {
 	.change-color-button:hover {
 		width: 550px;
 		border-radius: 50px;
@@ -26,7 +27,7 @@
 		bottom: unset;
 		transition-duration: 0.5s;
 	}
-
+}
 
 /* checkbox */
 .cyberpunk-checkbox {
