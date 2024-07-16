@@ -95,9 +95,18 @@ p {
 	}
 }
 
-.gradient-img {
-	-webkit-mask-image: linear-gradient(to top, transparent 0%, var(--black) 10%);
-	mask-image: linear-gradient(to top, transparent 0%, var(--black) 10%);
+@media (max-width: 1023px) {
+	.gradient-img {
+		-webkit-mask-image: linear-gradient(to top, transparent 0%, var(--black) 80%);
+		mask-image: linear-gradient(to top, transparent 0%, var(--black) 80%);
+	}
+}
+
+@media (min-width: 1024px) {
+	.gradient-img {
+		-webkit-mask-image: linear-gradient(to top, transparent 0%, var(--black) 10%);
+		mask-image: linear-gradient(to top, transparent 0%, var(--black) 10%);
+	}
 }
 
 @media (max-width: 1023px) {

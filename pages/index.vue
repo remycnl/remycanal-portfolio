@@ -1,6 +1,19 @@
 <script setup lang="ts">
-const titre = ref("Rémy Canal | Portfolio - Web Developer");
+const activeTitle = ref("Rémy Canal - Portfolio | Web Developer");
 const inactiveTitle = ref("I miss you !!!");
+
+useSeoMeta({
+	title: activeTitle,
+	ogTitle: "Rémy Canal - Portfolio | Web Developer Portfolio",
+	description:
+		"I am a french web developer based in Lyon and this is my portfolio where I expose my projects and experiences.",
+	ogDescription: "This is my amazing site, let me tell you all about it.",
+	ogImage: "~/assets/img/avatar.png",
+});
+
+useServerSeoMeta({
+	robots: "index, follow",
+});
 
 interface Skill {
 	text: string;
@@ -218,10 +231,12 @@ onMounted(() => {
 			if (document.visibilityState === "hidden") {
 				document.title = inactiveTitle.value;
 			} else {
-				document.title = titre.value;
+				document.title = activeTitle.value;
 			}
 		});
 	}
+
+	updateFavicon('purple');
 
 	const backToTopButton = document.querySelector(".back-to-top");
 	if (backToTopButton) {
@@ -325,7 +340,7 @@ const colorOptions = ref<ColorOption[]>([
 	},
 ]);
 
-const selectedColor = ref<string>(colorOptions.value[0].family); // Couleur sélectionnée par défaut
+const selectedColor = ref<string>(colorOptions.value[0].family);
 
 const updateCheckbox = (
 	index: number,
@@ -361,14 +376,19 @@ const updateCheckbox = (
 	});
 };
 
-useSeoMeta({
-	title: titre,
-	ogTitle: "Rémy Canal | Web Developer Portfolio",
-	description:
-		"I am a french web developer based in Lyon and this is my portfolio where I expose my projects and experiences.",
-	ogDescription: "This is my amazing site, let me tell you all about it.",
-	ogImage: "~/assets/img/avatar.png",
-});
+const updateFavicon = (color: string) => {
+	const faviconName = `favicon-${color}.ico`;
+	let link = document.querySelector(
+		"link[rel*='icon']"
+	) as HTMLLinkElement | null;
+	if (!link) {
+		link = document.createElement("link") as HTMLLinkElement;
+		link.rel = "shortcut icon";
+		document.head.appendChild(link);
+	}
+	link.type = "image/x-icon";
+	link.href = `/${faviconName}`;
+};
 </script>
 
 <template>
@@ -444,7 +464,8 @@ useSeoMeta({
 													color.secondary,
 													color.transparent,
 													color.family
-												)
+												);
+												updateFavicon(color.family);
 											" />
 									</label>
 								</div>
@@ -562,17 +583,17 @@ useSeoMeta({
 							:src="`/img/details-skills-${selectedColor}.png`"
 							format="webp"
 							alt="Click on bubbles to see details"
-							class="hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[55%] right-[78%] 2xl:right-[70%] z-10" />
+							class="hover:saturate-200 transition-all duration-500 hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[55%] right-[78%] 2xl:right-[70%] z-10" />
 						<NuxtImg
 							:src="`/img/mobile-details-skills-${selectedColor}.png`"
 							format="webp"
 							alt="Click on bubbles to see details (mobile)"
-							class="lg:hidden absolute scale-50 bottom-[80%] md:bottom-[65%] right-[30%] md:right-[22%] z-10" />
+							class="hover:saturate-200 transition-all duration-500 lg:hidden absolute scale-50 bottom-[80%] md:bottom-[65%] right-[30%] md:right-[22%] z-10" />
 						<NuxtImg
 							:src="`/img/stars-info-${selectedColor}.png`"
 							format="webp"
 							alt="Stars = Proficiency level"
-							class="absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[75%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
+							class="hover:saturate-200 transition-all duration-500 absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[75%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
 						<BubbleIcon
 							v-for="(skill, index) in skills"
 							class="rounded-full"
