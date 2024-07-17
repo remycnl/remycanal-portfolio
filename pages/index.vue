@@ -60,7 +60,7 @@
 									<label
 										v-for="(color, index) in colorOptions"
 										:key="index"
-										class="absolute cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
+										class="absolute cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
 										<input
 											type="checkbox"
 											class="cursor-none"
