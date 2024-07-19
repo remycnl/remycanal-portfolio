@@ -2,17 +2,18 @@
 	<div
 		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-10">
 		<div
-			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-none lg:pointer-events-auto">
-			<a href="#" @click="ancreToSection($event, 'top')">
+			class="px-1 relative toolbar lg:hidden flex justify-between items-center pointer-events-none lg:pointer-events-auto">
+			<a href="#" @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
 				<img :src="`/img/logo-${primaryColor}.png`" alt="Rémy Canal" class="change-img-color pointer-events-auto hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
-			<div class="flex pointer-events-auto items-center justify-center">
+			<div class="z-50 flex pointer-events-auto items-center justify-center">
 				<div class="cursor-none hover:saturate-200 transition-all transform-gpu duration-500" @click="toggleDropdown">
 					<div class="first-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
 					<div class="second-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
 					<div class="third-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
 				</div>
 			</div>
+			<div class="-ml-4 md:-ml-12 -mt-5 z-10 bg-[#111319f2] absolute pointer-events-none top-0 w-[120vh] left-0 h-[5.5rem]"></div>
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div :class="headerClasses" class="overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
