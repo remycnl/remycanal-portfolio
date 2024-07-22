@@ -13,10 +13,10 @@
 					<div class="third-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
 				</div>
 			</div>
-			<div class="-ml-4 md:-ml-12 -mt-5 z-10 bg-[#111319f2] absolute pointer-events-none top-0 w-[120vh] left-0 h-[5.5rem]"></div>
+			<div class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-sm shadow-around shadow-black bg-[#111319c4] absolute pointer-events-auto top-0 w-[120vh] left-0 h-[5.5rem]"></div>
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
-			<div :class="headerClasses" class="overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
+			<div :class="headerClasses" class="pointer-events-auto backdrop-blur-sm overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
 				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')" class="hover-scale-effect clickable cursor-none active:scale-105 transition-all duration-100">
 					<img
 						:src="`/img/logo-${primaryColor}.png`"

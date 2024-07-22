@@ -219,6 +219,31 @@
 							@click="fillCardSkills(index)" />
 					</div>
 				</div>
+				<!-- SKILLS -->
+				<div class="my-80">
+					<h2
+						id="portfolio"
+						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
+						Portfolio
+					</h2>
+					<div class="flex justify-between items-center">
+						<div
+							class="flex flex-wrap lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-x-[0.001rem] gap-y-20">
+							<ProjectCard
+								v-for="(project, index) in projects"
+								:key="index"
+								:title="project.title"
+								:description="project.description"
+								:link="project.link"
+								:img="project.img"
+								:logo="project.logo"
+								:type="project.type"
+								:date="project.date"
+								:technos="project.technos"
+								:id="index" />
+						</div>
+					</div>
+				</div>
 				<div class="text-3xl text-white font-bold">
 					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
 					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
@@ -231,6 +256,71 @@
 
 <script setup lang="ts">
 import { animationCheckboxColor } from "~/plugins/gsap";
+
+interface Project {
+	title: string;
+	description: string;
+	link: string;
+	img: string;
+	logo: string;
+	type: string;
+	date: string;
+	technos?: string[];
+}
+
+const projects: Project[] = [
+	{
+		title: "Portfolio",
+		description: "Creation 'from scratch' of my portfolio.",
+		link: "https://example.com/project1",
+		img: "/img/test.jpg",
+		logo: "/img/logo-blue.png",
+		type: "website",
+		date: "2021-09-01",
+		technos: ["Vue.js", "Nuxt.js", "HTML", "CSS", "JavaScript", "GSAP", "TailwindCSS"],
+	},
+	{
+		title: "Sharewood",
+
+		description: "Redesign of the entire front part of the Sharewood website.",
+		link: "https://sharewood.team/",
+		img: "/img/test.jpg",
+		logo: "/img/fullLogo-blue.png",
+		type: "website",
+		date: "2021-09-01",
+		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
+	},
+	{
+		title: "Office des Lumières",
+		description: "Creation and animation of a website for the notary firm “Office des Lumières”",
+		link: "https://officedeslumieres.com/",
+		img: "/img/test.jpg",
+		logo: "/img/logo-blue.png",
+		type: "website",
+		date: "2021-09-01",
+		technos: ["Vue.js", "Nuxt.js", "HTML", "CSS", "JavaScript", "GSAP", "TailwindCSS"],
+	},
+	{
+		title: "Éco-fidélité",
+		description: "Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
+		link: "https://www.eco-fidelite.com/",
+		img: "/img/test.jpg",
+		logo: "/img/fullLogo-blue.png",
+		type: "website",
+		date: "2021-09-01",
+		technos: ["Vue.js", "Nuxt.js", "HTML", "CSS", "JavaScript", "GSAP", "TailwindCSS"],
+	},
+	{
+		title: "L'Appart Fitness",
+		description: "Participation in the full redesign of the L'Appart Fitness website.",
+		link: "https://www.lappartfitness.com/",
+		img: "/img/test.jpg",
+		logo: "/img/fullLogo-blue.png",
+		type: "website",
+		date: "2021-09-01",
+		technos: ["Wordpress", "HTML", "CSS", "JavaScript", "TailwindCSS"],
+	},
+];
 
 interface Skill {
 	text: string;
@@ -592,7 +682,7 @@ const toggleColors = () => {
 			isOpenColorMenu.value = !isOpenColorMenu.value;
 			animationCheckboxColor(isOpenColorMenu.value);
 		}, 200);
-		
+
 		const button = document.querySelector(
 			".change-color-button"
 		) as HTMLElement;
