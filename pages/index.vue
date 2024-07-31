@@ -117,7 +117,7 @@
 						pathIcon="/img/Statue-Of-Liberty.png" />
 				</div>
 			</div>
-			<div class="container mx-auto px-4 lg:px-0 py-20">
+			<div class="container mx-auto px-4 lg:mt-56 lg:px-0 py-20">
 				<!-- SKILLS -->
 				<h2
 					id="skills"
@@ -219,12 +219,12 @@
 							@click="fillCardSkills(index)" />
 					</div>
 				</div>
-				<!-- SKILLS -->
+				<!-- PROJECTS -->
 				<div class="my-80">
 					<h2
-						id="portfolio"
+						id="projects"
 						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
-						Portfolio
+						Projects
 					</h2>
 					<div class="mt-20">
 						<Swiper
