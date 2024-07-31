@@ -28,6 +28,16 @@ onMounted(() => {
 	customCursor();
     mouseEffect();
 	animationFooterBottom();
+	if (process.client) {
+        console.log(`
+        ******************************************
+        *                                        *
+        *    Appreciate scrolling through my     *
+        *            portfolio! :)               *
+        *                                        *
+        ******************************************
+        `);
+    }
 });
 
 const setSEO = () => {

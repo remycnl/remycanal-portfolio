@@ -1,0 +1,28 @@
+/* Styles pour les boutons de navigation */
+.swiper-button-next,
+.swiper-button-prev {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+	font-size: 20px;
+	color: white;
+}
+
+.swiper-pagination-bullet {
+	background-color: rgba(0, 0, 0, 0.5);
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	@apply !cursor-none;
+}
+
+.swiper-pagination-bullet-active {
+	background-color: rgba(0, 0, 0, 0.8);
+}

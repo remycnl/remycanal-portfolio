@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     '~/assets/css/scrollBar.css',
     '~/assets/css/cursor.css',
     '~/assets/css/changeColorButton.css',
+    '~/assets/css/swiper.css',
   ],
 
   postcss: {
@@ -45,7 +46,7 @@ export default defineNuxtConfig({
         // Audiowide: true,
         // "Exo 2": true,
       }
-  }], 'nuxt-icon', "@nuxt/image"],
+  }], 'nuxt-icon', '@nuxt/image', 'nuxt-swiper'],
 
   plugins: [
     { src: '~/plugins/gsap.js', ssr: false },

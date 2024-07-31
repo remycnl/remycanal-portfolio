@@ -226,22 +226,47 @@
 						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 						Portfolio
 					</h2>
-					<div class="flex justify-between items-center">
-						<div
-							class="flex flex-wrap lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-x-[0.001rem] gap-y-20">
-							<ProjectCard
-								v-for="(project, index) in projects"
-								:key="index"
-								:title="project.title"
-								:description="project.description"
-								:link="project.link"
-								:img="project.img"
-								:logo="project.logo"
-								:type="project.type"
-								:date="project.date"
-								:technos="project.technos"
-								:id="index" />
-						</div>
+					<div class="mt-20">
+						<Swiper
+							:modules="[SwiperNavigation, SwiperPagination]"
+							:slides-per-view="3"
+							:space-between="-50"
+							:loop="false"
+							:navigation="{
+								nextEl: '.swiper-button-next',
+								prevEl: '.swiper-button-prev',
+							}"
+							:pagination="{
+								el: '.swiper-pagination',
+								clickable: true,
+								bulletClass: 'swiper-pagination-bullet',
+								bulletActiveClass: 'swiper-pagination-bullet-active',
+							}"
+							:slides-per-group="1">
+							<SwiperSlide v-for="(project, index) in projects" :key="index">
+								<ProjectCard
+									:title="project.title"
+									:description="project.description"
+									:link="project.link"
+									:img="project.img"
+									:logo="project.logo"
+									:type="project.type"
+									:date="project.date"
+									:technos="project.technos"
+									:id="index"
+									class="m-20 hover-scale-effect clickable cursor-none" />
+							</SwiperSlide>
+
+							<!-- Navigation buttons -->
+							<div
+								class="swiper-button-next hover-scale-effect clickable !cursor-none"></div>
+							<div
+								class="swiper-button-prev hover-scale-effect clickable !cursor-none"></div>
+
+							<!-- Pagination bullets -->
+							<div
+								class="swiper-pagination hover-scale-effect w-full flex bottom-3 justify-center gap-x-7 clickable !cursor-none"></div>
+						</Swiper>
 					</div>
 				</div>
 				<div class="text-3xl text-white font-bold">
@@ -270,52 +295,78 @@ interface Project {
 
 const projects: Project[] = [
 	{
-		title: "Portfolio",
+		title: "Portfolio of Rémy Canal",
 		description: "Creation 'from scratch' of my portfolio.",
 		link: "https://example.com/project1",
-		img: "/img/test.jpg",
+		img: "/img/mockup-portfolio-remycanal.svg",
 		logo: "/img/logo-blue.png",
 		type: "website",
 		date: "2021-09-01",
-		technos: ["Vue.js", "Nuxt.js", "HTML", "CSS", "JavaScript", "GSAP", "TailwindCSS"],
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+		],
 	},
 	{
 		title: "Sharewood",
 
 		description: "Redesign of the entire front part of the Sharewood website.",
 		link: "https://sharewood.team/",
-		img: "/img/test.jpg",
-		logo: "/img/fullLogo-blue.png",
+		img: "/img/mockup-sharewood.svg",
+		logo: "/img/logo-sharewood.png",
 		type: "website",
 		date: "2021-09-01",
 		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
 	},
 	{
-		title: "Office des Lumières",
-		description: "Creation and animation of a website for the notary firm “Office des Lumières”",
-		link: "https://officedeslumieres.com/",
-		img: "/img/test.jpg",
-		logo: "/img/logo-blue.png",
+		title: "Éco-fidélité",
+		description:
+			"Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
+		link: "https://www.eco-fidelite.com/",
+		img: "/img/mockup-ecofid.svg",
+		logo: "/img/logo-ecofid.png",
 		type: "website",
 		date: "2021-09-01",
-		technos: ["Vue.js", "Nuxt.js", "HTML", "CSS", "JavaScript", "GSAP", "TailwindCSS"],
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+		],
 	},
 	{
-		title: "Éco-fidélité",
-		description: "Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
-		link: "https://www.eco-fidelite.com/",
-		img: "/img/test.jpg",
-		logo: "/img/fullLogo-blue.png",
+		title: "Office des Lumières",
+		description: "Creation and animation of a website for a notary firm.",
+		link: "https://officedeslumieres.com/",
+		img: "/img/mockup-odl.svg",
+		logo: "/img/logo-odl.png",
 		type: "website",
 		date: "2021-09-01",
-		technos: ["Vue.js", "Nuxt.js", "HTML", "CSS", "JavaScript", "GSAP", "TailwindCSS"],
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+		],
 	},
 	{
 		title: "L'Appart Fitness",
-		description: "Participation in the full redesign of the L'Appart Fitness website.",
+		description:
+			"Participation in the full redesign of the L'Appart Fitness website.",
 		link: "https://www.lappartfitness.com/",
 		img: "/img/test.jpg",
-		logo: "/img/fullLogo-blue.png",
+		logo: "/img/logo-lappart.png",
 		type: "website",
 		date: "2021-09-01",
 		technos: ["Wordpress", "HTML", "CSS", "JavaScript", "TailwindCSS"],
