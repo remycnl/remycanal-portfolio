@@ -286,9 +286,6 @@
 							<div
 								v-show="!hoveredProject"
 								class="rounded-[1.5rem] blur-sm w-full h-full bg-gray-dark"></div>
-							<!-- <canvas
-								id="canvas"
-								class="rounded-[1.5rem] w-full h-full brightness-[.8] object-cover"></canvas> -->
 						</div>
 						<div class="relative flex flex-col w-1/2 h-full">
 							<NuxtLink
@@ -350,8 +347,6 @@ import {
 	hideImages,
 } from "~/plugins/gsap";
 import { mouseEffect } from "~/plugins/global.js";
-
-// const { $applyGrainEffect } = useNuxtApp();
 
 interface Project {
 	slug: string;
@@ -688,9 +683,6 @@ watch(route, () => {
 onMounted(() => {
 	updateFavicon("purple");
 	applyEffects();
-	// if (typeof $applyGrainEffect === "function") {
-	// 	$applyGrainEffect();
-	// }
 
 	const backToTopButton = document.querySelector(".back-to-top");
 	if (backToTopButton) {

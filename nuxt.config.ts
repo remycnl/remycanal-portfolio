@@ -55,7 +55,6 @@ export default defineNuxtConfig({
   plugins: [
     { src: '~/plugins/gsap.js', mode: 'client' },
     { src: '~/plugins/global.js', mode: 'client' },
-    { src: '~/plugins/canvas.ts', mode: 'client' },
   ],
 
   compatibilityDate: '2024-07-04',
