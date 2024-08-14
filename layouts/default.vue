@@ -21,12 +21,21 @@ useServerSeoMeta({
 	robots: "index, follow",
 });
 
+const applyEffects = () => {
+	customCursor();
+	mouseEffect();
+};
+
+const route = useRoute();
+
+watch(route, () => {
+	applyEffects();
+});
 
 onMounted(() => {
 	setSEO();
 	setCSP();
-	customCursor();
-    mouseEffect();
+	applyEffects();
 	animationFooterBottom();
 	if (process.client) {
         console.log(`

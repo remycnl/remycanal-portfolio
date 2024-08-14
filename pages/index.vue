@@ -226,47 +226,110 @@
 						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 						Projects
 					</h2>
-					<div class="mt-20">
-						<Swiper
-							:modules="[SwiperNavigation, SwiperPagination]"
-							:slides-per-view="3"
-							:space-between="-50"
-							:loop="false"
-							:navigation="{
-								nextEl: '.swiper-button-next',
-								prevEl: '.swiper-button-prev',
-							}"
-							:pagination="{
-								el: '.swiper-pagination',
-								clickable: true,
-								bulletClass: 'swiper-pagination-bullet',
-								bulletActiveClass: 'swiper-pagination-bullet-active',
-							}"
-							:slides-per-group="1">
-							<SwiperSlide v-for="(project, index) in projects" :key="index">
-								<ProjectCard
-									:title="project.title"
-									:description="project.description"
-									:link="project.link"
-									:img="project.img"
-									:logo="project.logo"
-									:type="project.type"
-									:date="project.date"
-									:technos="project.technos"
-									:id="index"
-									class="m-20 hover-scale-effect clickable cursor-none" />
-							</SwiperSlide>
-
-							<!-- Navigation buttons -->
+					<div
+						class="relative mx-20 mt-40 flex justify-between gap-x-28 items-start">
+						<Transition name="fade">
+							<img
+								v-if="hoveredProject"
+								:src="
+									projects.find((project) => project.slug === hoveredProject)
+										?.logo
+								"
+								:alt="`Logo - ${
+									projects.find((project) => project.slug === hoveredProject)
+										?.logo
+								}`"
+								class="absolute bottom-0 right-[-10%] opacity-10 w-auto h-80" />
+						</Transition>
+						<div
+							class="bg-gray-dark text-secondary border border-secondary shadow-around shadow-black w-1/2 h-[35rem] rounded-[1.5rem]">
+							<Transition name="fade">
+								<div
+									v-show="hoveredProject"
+									class="flex flex-col items-center w-full h-full">
+									<div
+										class="w-[90%] h-[3rem] mt-5 flex flex-row justify-between items-center">
+										<p>
+											{{
+												projects.find(
+													(project) => project.slug === hoveredProject
+												)?.date
+											}}
+										</p>
+										<p>
+											{{
+												projects.find(
+													(project) => project.slug === hoveredProject
+												)?.title
+											}}
+										</p>
+									</div>
+									<div
+										class="relative image-animation-container my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden"></div>
+									<div
+										class="flex flex-wrap w-[90%] gap-3 my-5"
+										v-show="hoveredProject">
+										<TransitionGroup name="tag">
+											<span
+												v-for="(tech, index) in projects.find(
+													(project) => project.slug === hoveredProject
+												)?.technos"
+												:key="tech"
+												:style="{ transitionDelay: `${index * 100}ms` }"
+												class="bg-secondary-transparent font-bold tracking-widest text-secondary py-1 px-3 rounded-full text-sm">
+												{{ tech }}
+											</span>
+										</TransitionGroup>
+									</div>
+								</div>
+							</Transition>
 							<div
-								class="swiper-button-next hover-scale-effect clickable !cursor-none"></div>
-							<div
-								class="swiper-button-prev hover-scale-effect clickable !cursor-none"></div>
-
-							<!-- Pagination bullets -->
-							<div
-								class="swiper-pagination hover-scale-effect w-full flex bottom-3 justify-center gap-x-7 clickable !cursor-none"></div>
-						</Swiper>
+								v-show="!hoveredProject"
+								class="rounded-[1.5rem] blur-sm w-full h-full bg-gray-dark"></div>
+							<!-- <canvas
+								id="canvas"
+								class="rounded-[1.5rem] w-full h-full brightness-[.8] object-cover"></canvas> -->
+						</div>
+						<div class="relative flex flex-col w-1/2 h-full">
+							<NuxtLink
+								:to="project.link"
+								target="_blank"
+								v-for="project in projects"
+								:key="project.slug"
+								@mouseenter="showImage(project.img), startHover(project.slug)"
+								@mouseleave="hideImages(), stopHover()"
+								class="z-30 link-type flex flex-col justify-between items-start w-full h-fit transition-all duration-300">
+								<div
+									class="text-secondary group hover-scale-effect clickable cursor-none w-full h-full flex flex-col justify-between items-start">
+									<div
+										class="w-full h-full flex flex-row justify-between items-center">
+										<div
+											class="flex flex-row gap-x-4 items-center justify-start">
+											<h4
+												class="text-gray-light text-[1.5rem] leading-[2rem] tracking-wider font-bold group-hover:text-secondary group-hover:tracking-widest origin-center transform transition-all duration-500 py-5">
+												{{ project.title }}
+											</h4>
+											<Icon
+												name="formkit:linkexternal"
+												color="var(--primary-color)"
+												class="link-type-hover w-6 h-auto mb-1 transition-all duration-300" />
+										</div>
+										<h5
+											class="relative leading-[2rem] text-gray-light opacity-55">
+											{{ project.type }}
+										</h5>
+									</div>
+									<p
+										v-if="isSomethingHover && hoveredProject === project.slug"
+										class="text-gray-light -mt-3 pb-5">
+										{{ project.description }}
+									</p>
+								</div>
+								<hr
+									v-if="!project.last"
+									class="w-full border-1 cursor-none border-gray-semi" />
+							</NuxtLink>
+						</div>
 					</div>
 				</div>
 				<div class="text-3xl text-white font-bold">
@@ -280,28 +343,39 @@
 </template>
 
 <script setup lang="ts">
-import { animationCheckboxColor } from "~/plugins/gsap";
+import {
+	animationCheckboxColor,
+	customCursor,
+	showImage,
+	hideImages,
+} from "~/plugins/gsap";
+import { mouseEffect } from "~/plugins/global.js";
+
+// const { $applyGrainEffect } = useNuxtApp();
 
 interface Project {
+	slug: string;
 	title: string;
 	description: string;
 	link: string;
 	img: string;
 	logo: string;
 	type: string;
+	last?: boolean;
 	date: string;
 	technos?: string[];
 }
 
 const projects: Project[] = [
 	{
+		slug: "portfolio",
 		title: "Portfolio of Rémy Canal",
 		description: "Creation 'from scratch' of my portfolio.",
 		link: "https://example.com/project1",
-		img: "/img/mockup-portfolio-remycanal.svg",
+		img: "/img/mockup-portfolio-remycanal.png",
 		logo: "/img/logo-blue.png",
 		type: "website",
-		date: "2021-09-01",
+		date: "2021-02-01",
 		technos: [
 			"Vue.js",
 			"Nuxt.js",
@@ -313,22 +387,23 @@ const projects: Project[] = [
 		],
 	},
 	{
+		slug: "sharewood",
 		title: "Sharewood",
-
 		description: "Redesign of the entire front part of the Sharewood website.",
 		link: "https://sharewood.team/",
-		img: "/img/mockup-sharewood.svg",
+		img: "/img/mockup-sharewood.png",
 		logo: "/img/logo-sharewood.png",
 		type: "website",
-		date: "2021-09-01",
+		date: "2021-04-01",
 		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
 	},
 	{
+		slug: "ecofid",
 		title: "Éco-fidélité",
 		description:
 			"Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
 		link: "https://www.eco-fidelite.com/",
-		img: "/img/mockup-ecofid.svg",
+		img: "/img/mockup-ecofid.png",
 		logo: "/img/logo-ecofid.png",
 		type: "website",
 		date: "2021-09-01",
@@ -343,10 +418,11 @@ const projects: Project[] = [
 		],
 	},
 	{
+		slug: "odl",
 		title: "Office des Lumières",
 		description: "Creation and animation of a website for a notary firm.",
 		link: "https://officedeslumieres.com/",
-		img: "/img/mockup-odl.svg",
+		img: "/img/mockup-odl.png",
 		logo: "/img/logo-odl.png",
 		type: "website",
 		date: "2021-09-01",
@@ -361,17 +437,32 @@ const projects: Project[] = [
 		],
 	},
 	{
+		slug: "lappart",
 		title: "L'Appart Fitness",
 		description:
 			"Participation in the full redesign of the L'Appart Fitness website.",
 		link: "https://www.lappartfitness.com/",
-		img: "/img/test.jpg",
+		img: "/img/mockup-lappart.png",
 		logo: "/img/logo-lappart.png",
 		type: "website",
+		last: true,
 		date: "2021-09-01",
 		technos: ["Wordpress", "HTML", "CSS", "JavaScript", "TailwindCSS"],
 	},
 ];
+
+const isSomethingHover = ref(false);
+const hoveredProject = ref<string | null>(null);
+
+const startHover = (projectSlug: string) => {
+	isSomethingHover.value = true;
+	hoveredProject.value = projectSlug;
+};
+
+const stopHover = () => {
+	isSomethingHover.value = false;
+	hoveredProject.value = null;
+};
 
 interface Skill {
 	text: string;
@@ -583,8 +674,23 @@ const finishUpdate = () => {
 	}
 };
 
+const applyEffects = () => {
+	customCursor();
+	mouseEffect();
+};
+
+const route = useRoute();
+
+watch(route, () => {
+	applyEffects();
+});
+
 onMounted(() => {
 	updateFavicon("purple");
+	applyEffects();
+	// if (typeof $applyGrainEffect === "function") {
+	// 	$applyGrainEffect();
+	// }
 
 	const backToTopButton = document.querySelector(".back-to-top");
 	if (backToTopButton) {

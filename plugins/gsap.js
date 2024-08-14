@@ -11,6 +11,8 @@ export default defineNuxtPlugin(() => {
 		customCursor,
 		animationFooterBottom,
 		animationCheckboxColor,
+		showImage,
+		hideImages,
 	};
 });
 
@@ -397,4 +399,42 @@ export function animationCheckboxColor(isOpen) {
 			gsap.to(label, { x: 0, y: 0, duration: 0.5, ease: "power2.in" });
 		}
 	});
+}
+
+export function showImage(imageSrc) {
+	// Create the NuxtImg element
+	this.currentImage = imageSrc;
+	const nuxtImg = document.createElement("img");
+	nuxtImg.id = `image-${this.currentImage.replace(/[^a-zA-Z0-9]/g, "-")}`;
+	nuxtImg.src = imageSrc;
+	nuxtImg.alt = `Mockup - ${this.currentImage}`;
+	nuxtImg.className =
+		"absolute top-0 left-0 rounded-[1.5rem] w-full h-full brightness-[.7] object-fill";
+	nuxtImg.style.transform = "translateY(100%)"; // Start from bottom
+
+	// Find the container with the class 'image-animation-container'
+	const container = document.querySelector(".image-animation-container");
+	if (container) {
+		container.appendChild(nuxtImg);
+		this.imageElement = nuxtImg;
+
+		// Animate the image to appear from bottom to top over 0.3s
+		gsap.to(nuxtImg, {
+			y: 0,
+			duration: 0.5,
+		});
+	}
+}
+
+export function hideImages() {
+	const imgElements = document.querySelectorAll('[id^="image-"]');
+	imgElements.forEach((imgElement) => {
+		gsap.to(imgElement, {
+			delay: 0.7,
+			onComplete: () => {
+				imgElement.remove();
+			},
+		});
+	});
+	this.currentImage = null;
 }

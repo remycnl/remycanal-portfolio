@@ -8,15 +8,15 @@ html {
 
 :root {
 	--purple: #6c34cc;
-	--red: #DD314E;
-	--pink: #FF3FAF;
-	--orange: #DD5F31;
-	--yellow: #E9C925;
-	--green: #67D13D;
-	--cyan: #31BEDD;
-	--blue: #32A1DA;
+	--red: #dd314e;
+	--pink: #ff3faf;
+	--orange: #dd5f31;
+	--yellow: #e9c925;
+	--green: #67d13d;
+	--cyan: #31bedd;
+	--blue: #32a1da;
 	--gray: #868686;
-	--black: #111319; 
+	--black: #111319;
 	--primary-color: #6c34cc;
 	--primary-color-transparent: #6c34cc4f;
 	--secondary-color: #301563;
@@ -89,6 +89,10 @@ p {
 	filter: saturate(200%);
 }
 
+.text-shadow {
+	filter: drop-shadow(0 0 5px var(--black));
+}
+
 @media screen and (max-width: 1024px) {
 	.set-dropdown-menu {
 		transform: translateY(-150%);
@@ -97,14 +101,22 @@ p {
 
 @media (max-width: 1023px) {
 	.gradient-img {
-		-webkit-mask-image: linear-gradient(to top, transparent 0%, var(--black) 80%);
+		-webkit-mask-image: linear-gradient(
+			to top,
+			transparent 0%,
+			var(--black) 80%
+		);
 		mask-image: linear-gradient(to top, transparent 0%, var(--black) 80%);
 	}
 }
 
 @media (min-width: 1024px) {
 	.gradient-img {
-		-webkit-mask-image: linear-gradient(to top, transparent 0%, var(--black) 10%);
+		-webkit-mask-image: linear-gradient(
+			to top,
+			transparent 0%,
+			var(--black) 10%
+		);
 		mask-image: linear-gradient(to top, transparent 0%, var(--black) 10%);
 	}
 }

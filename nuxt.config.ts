@@ -12,6 +12,8 @@ export default defineNuxtConfig({
     '~/assets/css/cursor.css',
     '~/assets/css/changeColorButton.css',
     '~/assets/css/swiper.css',
+    '~/assets/css/transition.css',
+    '~/assets/css/project.css',
   ],
 
   postcss: {
@@ -27,6 +29,8 @@ export default defineNuxtConfig({
         Orbitron: true,
         "Share Tech Mono": true,
         Schoolbell: true,
+        Neonderthaw: true,
+        // Raleway: true,
         // "RocknRoll One": true,
         // Acme: true,
         // Cinzel: true,
@@ -49,8 +53,9 @@ export default defineNuxtConfig({
   }], 'nuxt-icon', '@nuxt/image', 'nuxt-swiper'],
 
   plugins: [
-    { src: '~/plugins/gsap.js', ssr: false },
-    { src: '~/plugins/global.js', ssr: false },
+    { src: '~/plugins/gsap.js', mode: 'client' },
+    { src: '~/plugins/global.js', mode: 'client' },
+    { src: '~/plugins/canvas.ts', mode: 'client' },
   ],
 
   compatibilityDate: '2024-07-04',

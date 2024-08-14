@@ -1,0 +1,8 @@
+.link-type-hover {
+	transform: scale(0);
+	transition: transform 0.3s ease;
+}
+
+.link-type:hover .link-type-hover {
+	transform: scale(1);
+}

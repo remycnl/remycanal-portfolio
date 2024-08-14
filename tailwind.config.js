@@ -20,6 +20,7 @@ export default {
         secondary: {
           DEFAULT: 'var(--primary-color)',
           dark: 'var(--secondary-color)',
+          transparent: 'var(--primary-color-transparent)',
         },
         gray: {
           light: '#8c99b0',
