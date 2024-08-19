@@ -13,6 +13,7 @@ export default defineNuxtPlugin(() => {
 		animationCheckboxColor,
 		showImage,
 		hideImages,
+		animationStarsCardSkill,
 	};
 });
 
@@ -437,4 +438,21 @@ export function hideImages() {
 		});
 	});
 	this.currentImage = null;
+}
+
+export function animationStarsCardSkill() {
+	const stars = document.querySelectorAll(".star-card");
+
+	gsap.fromTo(
+		stars,
+		{ scale: 0, rotate: 0, opacity: 0 },
+		{
+			scale: 1,
+			rotate: 360,
+			opacity: 1,
+			stagger: 0.15,
+			ease: "power2.out",
+			duration: 0.5,
+		}
+	);
 }

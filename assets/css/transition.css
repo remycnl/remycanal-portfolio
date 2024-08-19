@@ -36,3 +36,19 @@
 .tag-leave-from {
 	opacity: 0;
 }
+
+/* Animation of stars on skill card */
+@keyframes scaleRotate {
+	0% {
+		transform: scale(0.5) rotate(0deg);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1) rotate(360deg);
+		opacity: 1;
+	}
+}
+
+.transition-scale-rotate {
+	animation: scaleRotate 0.5s ease-out forwards;
+}

@@ -16,7 +16,7 @@
 			<div class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[120vh] left-0 h-[5.5rem]"></div>
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
-			<div :class="headerClasses" class="pointer-events-auto backdrop-blur-sm overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
+			<div :class="headerClasses" class="pointer-events-auto overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
 				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')" class="hover-scale-effect clickable cursor-none active:scale-105 transition-all duration-100">
 					<img
 						:src="`/img/logo-${primaryColor}.png`"
@@ -80,6 +80,9 @@ const headerClasses = computed(() => ({
     "border-transparent": !scrolled.value,
     "!border-gray-semi": scrolled.value || isScreenSM.value,
     "rounded-3xl": true,
+	"shadow-around": scrolled.value,
+	"shadow-black-dark": scrolled.value,
+	"backdrop-blur-sm": scrolled.value,
     "bg-black-dark": scrolled.value || isScreenSM.value,
     "lg:bg-opacity-90": true,
     "bg-opacity-95": true,

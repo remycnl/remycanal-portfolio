@@ -135,16 +135,18 @@
 								@transitionend="finishUpdate"
 								class="flex flex-col my-10 transition-opacity duration-300">
 								<div
-									v-for="index in currentSkill.stars"
-									:key="'filled-' + index">
+									v-for="star in currentSkill.stars"
+									:key="'filled-' + star"
+									class="star star-card">
 									<Icon
 										name="teenyicons:star-small-solid"
 										class="w-auto h-8 md:h-9"
 										color="#1f293b" />
 								</div>
 								<div
-									v-for="index in 5 - currentSkill.stars"
-									:key="'empty-' + index">
+									v-for="star in 5 - currentSkill.stars"
+									:key="'empty-' + star"
+									class="star star-card">
 									<Icon
 										name="teenyicons:star-small-outline"
 										class="w-auto h-8 md:h-9"
@@ -216,7 +218,7 @@
 							:withPath="skill.withPath"
 							:pathIcon="skill.pathIcon"
 							:isGif="skill.isGif"
-							@click="fillCardSkills(index)" />
+							@click="fillCardSkills(index), animStarsRotation()" />
 					</div>
 				</div>
 				<!-- PROJECTS -->
@@ -227,7 +229,7 @@
 						Projects
 					</h2>
 					<div
-						class="relative mx-20 mt-40 flex justify-between gap-x-28 items-start">
+						class="relative mt-40 flex justify-between gap-x-28 items-start">
 						<Transition name="fade">
 							<img
 								v-if="hoveredProject"
@@ -239,24 +241,24 @@
 									projects.find((project) => project.slug === hoveredProject)
 										?.logo
 								}`"
-								class="absolute bottom-0 right-[-10%] opacity-10 w-auto h-80" />
+								class="absolute bottom-0 right-[-5%] opacity-10 w-auto h-80" />
 						</Transition>
 						<div
-							class="bg-gray-dark text-secondary border border-secondary shadow-around shadow-black w-1/2 h-[35rem] rounded-[1.5rem]">
+							class="bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-1/2 h-[35rem] rounded-[1.5rem]">
 							<Transition name="fade">
 								<div
 									v-show="hoveredProject"
 									class="flex flex-col items-center w-full h-full">
 									<div
 										class="w-[90%] h-[3rem] mt-5 flex flex-row justify-between items-center">
-										<p>
+										<p v-show="hoveredProject">
 											{{
 												projects.find(
 													(project) => project.slug === hoveredProject
 												)?.date
 											}}
 										</p>
-										<p>
+										<p v-show="hoveredProject">
 											{{
 												projects.find(
 													(project) => project.slug === hoveredProject
@@ -345,6 +347,7 @@ import {
 	customCursor,
 	showImage,
 	hideImages,
+	animationStarsCardSkill,
 } from "~/plugins/gsap";
 import { mouseEffect } from "~/plugins/global.js";
 
@@ -650,7 +653,6 @@ const lastSkillIndex = ref<number | null>(null);
 
 const fillCardSkills = (index: number) => {
 	isUpdating.value = true;
-
 	setTimeout(() => {
 		if (lastSkillIndex.value !== null && lastSkillIndex.value === index) {
 			currentSkill.value = skills[19];
@@ -660,6 +662,13 @@ const fillCardSkills = (index: number) => {
 			lastSkillIndex.value = index;
 		}
 		isUpdating.value = false;
+		
+	}, 300); // Durée de la transition d'opacité
+};
+
+const animStarsRotation = () => {
+	setTimeout(() => {
+		animationStarsCardSkill();
 	}, 300); // Durée de la transition d'opacité
 };
 
