@@ -114,7 +114,7 @@ onMounted(() => {
 						class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 						<Icon
 							name="uil:phone"
-							color="white"
+							color="var(--white)"
 							class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 					</div>
 				</a>
@@ -125,7 +125,7 @@ onMounted(() => {
 						class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 						<Icon
 							name="material-symbols:mail-outline-rounded"
-							color="white"
+							color="var(--white)"
 							class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 					</div>
 				</a>
@@ -138,7 +138,7 @@ onMounted(() => {
 						class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 						<Icon
 							name="uil:github"
-							color="white"
+							color="var(--white)"
 							class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 					</div>
 				</a>
@@ -151,7 +151,7 @@ onMounted(() => {
 						class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 						<Icon
 							name="uil:linkedin"
-							color="white"
+							color="var(--white)"
 							class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 					</div>
 				</a>

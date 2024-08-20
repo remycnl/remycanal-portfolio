@@ -15,7 +15,7 @@ export default {
           DEFAULT: '#111319',
           dark: '#020617',
         },
-        white: '#ffffff',
+        white: '#D0D4DB',
         primary: '#0f172a',
         secondary: {
           DEFAULT: 'var(--primary-color)',

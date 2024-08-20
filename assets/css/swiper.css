@@ -12,7 +12,7 @@
 .swiper-button-next::after,
 .swiper-button-prev::after {
 	font-size: 20px;
-	color: white;
+	color: var(--white);
 }
 
 .swiper-pagination-bullet {

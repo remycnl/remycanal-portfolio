@@ -51,7 +51,7 @@
 					@click="toggleDropdown">
 					<Icon
 						name="fluent-emoji-high-contrast:cross-mark"
-						color="white"
+						color="var(--white)"
 						class="w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
 				</div>
 			</div>

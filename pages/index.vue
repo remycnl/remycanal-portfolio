@@ -52,8 +52,8 @@
 								<div>
 									<Icon
 										name="material-symbols:format-color-fill-rounded"
-										color="white"
-										class="w-5 h-auto group-hover:lg:opacity-0 icon-fill-color lg:-ml-1 mb-1 transition-all duration-300" />
+										color="var(--white)"
+										class="w-5 h-auto group-hover:lg:opacity-0 lg:-ml-1 mb-1 transition-all duration-300" />
 								</div>
 								<div
 									class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-none flex justify-center items-center gap-x-4">
@@ -94,83 +94,154 @@
 					</div>
 				</div>
 
-				<div class="flex justify-center items-center w-full h-[40rem]">
+				<div
+					class="flex flex-col gap-y-20 justify-center items-center w-full my-40 h-[40rem]">
 					<div class="bento grid gap-5 w-full h-full">
 						<article
-							class="hover:saturate-200 hover:scale-[1.01] relative overflow-hidden reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							class="hover:saturate-200 relative overflow-hidden reveal shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
 							<div
-								class="flex flex-row items-center justify-center h-full w-full p-5 font-bold text-gray-300">
-								<p id="experience" class="pt-10 text-[25rem]">0</p>
+								class="flex flex-row items-center gap-x-10 justify-between h-full w-full font-bold text-white">
+								<p id="experience" class="font-[Orbitron] pt-10 text-[15rem]">
+									0
+								</p>
 								<div
-									class="pt-36 flex flex-col w-full h-full justify-center items-center text-4xl">
-									<p>years of</p>
-									<p>experience</p>
+									class="pt-40 flex flex-col w-full h-full justify-center items-start text-3xl">
+									<p class="font-[Orbitron]">years of</p>
+									<p class="font-[Orbitron]">experience</p>
 								</div>
 							</div>
 							<div
-								class="absolute top-[-40%] right-[-40%] h-[80%] w-[80%] rounded-full bg-secondary transition-colors duration-[1s]"></div>
+								class="absolute border-[1.25rem] border-black top-[-40%] right-[-40%] h-[80%] w-[80%] rounded-full bg-secondary transition-colors duration-[1s]"></div>
 						</article>
 						<article
-							class="hover:saturate-200 hover:scale-[1.01] reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
+							class="hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
-								<p class="text-[1.5rem]">Developer</p>
+								<p class="text-[1.5rem] font-[Orbitron]">Developer</p>
 								<p class="text-[3rem] leading-tight uppercase">
 									&ldquo;Full-Stack&rdquo;
 								</p>
 							</div>
 						</article>
 						<article
-							class="hover:saturate-200 hover:scale-[1.01] reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
+							class="hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
-								<p class="text-[2rem]">Student at</p>
+								<p class="text-[2rem] font-[Orbitron]">Student at</p>
 								<p class="text-[4rem] leading-tight uppercase">{Epitech}</p>
 							</div>
 						</article>
 						<article
-							class="hover:saturate-200 hover:scale-[1.01] reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							class="hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
 							<div
-								class="flex flex-col items-center justify-center h-full w-full p-7 font-bold text-gray-300 text-4xl">
+								class="flex flex-col items-center justify-center h-full w-full p-7 font-bold text-white text-4xl">
 								<div
 									class="flex flex-col gap-y-1 items-start justify-center h-full w-full">
-									<p>Contributed</p>
-									<p>to</p>
+									<p class="font-[Orbitron]">Contributed</p>
+									<p class="font-[Orbitron]">to</p>
 								</div>
 								<div
-									class="flex flex-col justify-center gap-y-9 w-full h-full items-end">
-									<p class="text-[8rem]">10</p>
-									<p>websites</p>
+									class="flex flex-col justify-center gap-y-10 w-full h-full items-end">
+									<p class="text-[8rem] font-[Orbitron]">10</p>
+									<p class="font-[Orbitron]">websites</p>
 								</div>
 							</div>
 						</article>
-						<article class="relative box_parent rounded-[1rem] reveal">
-							<div style="width: calc(50% - 10px); height: calc(35% - 20px)" class="rounded-[1rem] absolute top-0 right-0 hover:saturate-200 hover:scale-[1.01] shadow-around shadow-black-dark backdrop-blur-md bg-white transition-all duration-[1s]"></div>
-							<article
-								class="box-handmade flex w-full h-full hover:saturate-200 hover:scale-[1.01] reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]"></article>
-							<svg
-								style="visibility: hidden; position: absolute"
-								width="0"
-								height="0"
-								xmlns="http://www.w3.org/2000/svg"
-								version="1.1">
-								<defs>
-									<filter id="round" class="round">
-										<feGaussianBlur
-											in="SourceGraphic"
-											stdDeviation="8"
-											result="blur" />
-										<feColorMatrix
-											in="blur"
-											mode="matrix"
-											values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
-											result="goo" />
-										<feComposite in="SourceGraphic" in2="goo" operator="atop" />
-									</filter>
-								</defs>
-							</svg>
+						<article
+							class="relative group overflow-hidden hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							<div
+								class="w-full h-full gap-x-5 flex flex-row justify-between items-center px-7 py-10 text-lg text-secondary transition-colors duration-[1s]">
+								<divborder-2
+									border-white
+									class="w-auto h-full flex flex-col gap-y-10 justify-between items-start text-start">
+									<div class="flex flex-col gap-y-3">
+										<div
+											class="flex flex-row gap-x-3 justify-start items-center">
+											<Icon
+												name="game-icons:small-fire"
+												color="var(--primary-color)"
+												class="w-20 h-auto transition-colors duration-[1s]" />
+											<p class="font-[Orbitron] font-bold uppercase">
+												Simplicity & Sophistication
+											</p>
+										</div>
+										<p class="text-sm text-center mr-7">
+											For a smooth user's experience<br />and clean codebase
+										</p>
+									</div>
+									<div class="flex flex-col gap-y-3">
+										<div
+											class="flex flex-row gap-x-3 justify-start items-center">
+											<Icon
+												name="game-icons:rocket"
+												color="var(--primary-color)"
+												class="w-20 h-auto transition-colors duration-[1s]" />
+											<p class="font-[Orbitron] font-bold uppercase">
+												Innovative & Meticulous
+											</p>
+										</div>
+										<p class="text-sm text-center mr-14">
+											Engineered with creativity<br />and attention to detail
+										</p>
+									</div>
+								</divborder-2>
+								<div class="w-auto h-full flex justify-center items-start">
+									<p
+										class="font-[Orbitron] font-bold text-lg text-center tracking-widest">
+										Some of my<span class="text-[5rem] leading-[5rem]"
+											>Values</span
+										>
+									</p>
+								</div>
+								<div
+									class="w-auto h-full flex flex-col justify-between items-end text-end">
+									<div class="flex flex-col gap-y-3">
+										<div class="flex flex-row gap-x-3 justify-end items-center">
+											<p class="font-[Orbitron] font-bold uppercase">
+												Autonomous & Listening
+											</p>
+											<Icon
+												name="game-icons:suckered-tentacle"
+												color="var(--primary-color)"
+												class="w-20 h-auto transition-colors duration-[1s]" />
+										</div>
+										<p class="text-sm text-center ml-8">
+											Independently developed with<br />a focus on user feedback
+										</p>
+									</div>
+									<div class="flex flex-col gap-y-3">
+										<div class="flex flex-row gap-x-3 justify-end items-center">
+											<p class="font-[Orbitron] font-bold uppercase">
+												Open-minded & Passionate
+											</p>
+											<Icon
+												name="game-icons:techno-heart"
+												color="var(--primary-color)"
+												class="w-20 h-auto transition-colors duration-[1s]" />
+										</div>
+										<p class="text-sm text-center ml-11">
+											Crafted with an open heart<br />and driven by passion
+										</p>
+									</div>
+								</div>
+							</div>
+							<div
+								style="bottom: calc(0px - 10rem); left: calc(50% - 15rem)"
+								class="absolute h-[20rem] w-[30rem] rounded-full bg-secondary transition-colors duration-[1s] border-[1.25rem] border-black"></div>
 						</article>
+
+						<!-- <div
+								style="bottom: calc(0px - 0.5rem); left: calc(50% - 10rem)"
+								class="half-circle absolute w-[20rem] h-[10.5rem] border-[1.25rem] border-primary"></div> -->
+						<!-- <div
+								style="bottom: calc(0px - 8.75rem); left: calc(50% - 8.75rem)"
+								class="rounded-full absolute w-[17.5rem] h-[17.5rem] hover:saturate-200 hover:scale-[1.01] backdrop-blur-md bg-secondary shadow-around shadow-black-dark transition-all duration-[1s]"></div> -->
 					</div>
+					<a
+						href="#"
+						class="clickable hover-scale-effect cursor-none active:scale-95 transition-all duration-75">
+						<h3 class="menu-line-animation text-white">Wanna work with me ?</h3>
+					</a>
 				</div>
 				<div
 					class="flex flex-wrap lg:flex-row justify-center md:justify-evenly lg:justify-between 2xl:justify-center gap-7 mt-20 lg:mt-26 -mb-20">
@@ -254,7 +325,7 @@
 								v-else
 								:name="currentSkill.icon || ''"
 								class="w-auto h-16 md:h-24 my-10"
-								color="white" />
+								color="var(--white)" />
 							<div class="text-color-saturate">
 								<h3
 									v-if="currentSkill.text !== 'but still human...'"
@@ -619,8 +690,8 @@ const skills: Skill[] = [
 	},
 	{
 		text: "WordPress",
-		color: "white",
-		iconColor: "white",
+		color: "#D0D4DB",
+		iconColor: "#D0D4DB",
 		icon: "fa6-brands:wordpress",
 		stars: 3,
 		description:

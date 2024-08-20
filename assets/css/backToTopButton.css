@@ -12,7 +12,7 @@
 }
 
 .svgIcon path {
-	fill: white;
+	fill: var(--white);
 }
 
 .back-to-top:hover {
