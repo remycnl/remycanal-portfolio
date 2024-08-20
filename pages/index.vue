@@ -93,6 +93,85 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="flex justify-center items-center w-full h-[40rem]">
+					<div class="bento grid gap-5 w-full h-full">
+						<article
+							class="hover:saturate-200 hover:scale-[1.01] relative overflow-hidden reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							<div
+								class="flex flex-row items-center justify-center h-full w-full p-5 font-bold text-gray-300">
+								<p id="experience" class="pt-10 text-[25rem]">0</p>
+								<div
+									class="pt-36 flex flex-col w-full h-full justify-center items-center text-4xl">
+									<p>years of</p>
+									<p>experience</p>
+								</div>
+							</div>
+							<div
+								class="absolute top-[-40%] right-[-40%] h-[80%] w-[80%] rounded-full bg-secondary transition-colors duration-[1s]"></div>
+						</article>
+						<article
+							class="hover:saturate-200 hover:scale-[1.01] reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
+							<div
+								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
+								<p class="text-[1.5rem]">Developer</p>
+								<p class="text-[3rem] leading-tight uppercase">
+									&ldquo;Full-Stack&rdquo;
+								</p>
+							</div>
+						</article>
+						<article
+							class="hover:saturate-200 hover:scale-[1.01] reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
+							<div
+								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
+								<p class="text-[2rem]">Student at</p>
+								<p class="text-[4rem] leading-tight uppercase">{Epitech}</p>
+							</div>
+						</article>
+						<article
+							class="hover:saturate-200 hover:scale-[1.01] reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							<div
+								class="flex flex-col items-center justify-center h-full w-full p-7 font-bold text-gray-300 text-4xl">
+								<div
+									class="flex flex-col gap-y-1 items-start justify-center h-full w-full">
+									<p>Contributed</p>
+									<p>to</p>
+								</div>
+								<div
+									class="flex flex-col justify-center gap-y-9 w-full h-full items-end">
+									<p class="text-[8rem]">10</p>
+									<p>websites</p>
+								</div>
+							</div>
+						</article>
+						<article class="relative box_parent rounded-[1rem] reveal">
+							<div style="width: calc(50% - 10px); height: calc(35% - 20px)" class="rounded-[1rem] absolute top-0 right-0 hover:saturate-200 hover:scale-[1.01] shadow-around shadow-black-dark backdrop-blur-md bg-white transition-all duration-[1s]"></div>
+							<article
+								class="box-handmade flex w-full h-full hover:saturate-200 hover:scale-[1.01] reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]"></article>
+							<svg
+								style="visibility: hidden; position: absolute"
+								width="0"
+								height="0"
+								xmlns="http://www.w3.org/2000/svg"
+								version="1.1">
+								<defs>
+									<filter id="round" class="round">
+										<feGaussianBlur
+											in="SourceGraphic"
+											stdDeviation="8"
+											result="blur" />
+										<feColorMatrix
+											in="blur"
+											mode="matrix"
+											values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+											result="goo" />
+										<feComposite in="SourceGraphic" in2="goo" operator="atop" />
+									</filter>
+								</defs>
+							</svg>
+						</article>
+					</div>
+				</div>
 				<div
 					class="flex flex-wrap lg:flex-row justify-center md:justify-evenly lg:justify-between 2xl:justify-center gap-7 mt-20 lg:mt-26 -mb-20">
 					<ValueCard
@@ -228,8 +307,7 @@
 						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 						Projects
 					</h2>
-					<div
-						class="relative mt-40 flex justify-between gap-x-28 items-start">
+					<div class="relative mt-40 flex justify-between gap-x-28 items-start">
 						<Transition name="fade">
 							<img
 								v-if="hoveredProject"
@@ -349,7 +427,7 @@ import {
 	hideImages,
 	animationStarsCardSkill,
 } from "~/plugins/gsap";
-import { mouseEffect } from "~/plugins/global.js";
+import { mouseEffect, setExperienceTime } from "~/plugins/global.js";
 
 interface Project {
 	slug: string;
@@ -662,7 +740,6 @@ const fillCardSkills = (index: number) => {
 			lastSkillIndex.value = index;
 		}
 		isUpdating.value = false;
-		
 	}, 300); // Durée de la transition d'opacité
 };
 
@@ -692,6 +769,7 @@ watch(route, () => {
 onMounted(() => {
 	updateFavicon("purple");
 	applyEffects();
+	setExperienceTime();
 
 	const backToTopButton = document.querySelector(".back-to-top");
 	if (backToTopButton) {

@@ -422,7 +422,7 @@ export function showImage(imageSrc) {
 		// Animate the image to appear from bottom to top over 0.3s
 		gsap.to(nuxtImg, {
 			y: 0,
-			duration: 0.5,
+			duration: 0.8,
 		});
 	}
 }

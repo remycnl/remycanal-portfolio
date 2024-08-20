@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '~/assets/css/swiper.css',
     '~/assets/css/transition.css',
     '~/assets/css/project.css',
+    '~/assets/css/bento.css',
   ],
 
   postcss: {
