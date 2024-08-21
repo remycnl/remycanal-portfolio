@@ -151,8 +151,7 @@
 							class="relative group overflow-hidden hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
 							<div
 								class="w-full h-full gap-x-5 flex flex-row justify-between items-center px-7 py-10 text-lg text-secondary transition-colors duration-[1s]">
-								<divborder-2
-									border-white
+								<div
 									class="w-auto h-full flex flex-col gap-y-10 justify-between items-start text-start">
 									<div class="flex flex-col gap-y-3">
 										<div
@@ -184,7 +183,7 @@
 											Engineered with creativity<br />and attention to detail
 										</p>
 									</div>
-								</divborder-2>
+								</div>
 								<div class="w-auto h-full flex justify-center items-start">
 									<p
 										class="font-[Orbitron] font-bold text-lg text-center tracking-widest">
@@ -240,7 +239,7 @@
 					<a
 						href="#"
 						class="clickable hover-scale-effect cursor-none active:scale-95 transition-all duration-75">
-						<h3 class="menu-line-animation text-white">Wanna work with me ?</h3>
+						<h3 class="menu-line-animation text-white hover:tracking-widest transition-all duration-500">Wanna work with me ?</h3>
 					</a>
 				</div>
 				<div
@@ -346,7 +345,7 @@
 							alt="Click on bubbles to see details"
 							class="hover:saturate-200 transition-all duration-500 hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[55%] right-[78%] 2xl:right-[70%] z-10" />
 						<NuxtImg
-							:src="`/img/mobile-details-skills-${selectedColor}.png`"
+							:src="`/img/mobile-details-skilllights-${selectedColor}.png`"
 							format="webp"
 							alt="Click on bubbles to see details (mobile)"
 							class="hover:saturate-200 transition-all duration-500 lg:hidden absolute scale-50 bottom-[80%] md:bottom-[65%] right-[30%] md:right-[22%] z-10" />
@@ -400,14 +399,14 @@
 									class="flex flex-col items-center w-full h-full">
 									<div
 										class="w-[90%] h-[3rem] mt-5 flex flex-row justify-between items-center">
-										<p v-show="hoveredProject">
+										<p v-show="hoveredProject" class="font-[Orbitron]">
 											{{
 												projects.find(
 													(project) => project.slug === hoveredProject
 												)?.date
 											}}
 										</p>
-										<p v-show="hoveredProject">
+										<p v-show="hoveredProject" class="font-[Orbitron]">
 											{{
 												projects.find(
 													(project) => project.slug === hoveredProject
@@ -522,7 +521,7 @@ const projects: Project[] = [
 		img: "/img/mockup-portfolio-remycanal.png",
 		logo: "/img/logo-blue.png",
 		type: "website",
-		date: "2021-02-01",
+		date: "2024",
 		technos: [
 			"Vue.js",
 			"Nuxt.js",
@@ -541,7 +540,7 @@ const projects: Project[] = [
 		img: "/img/mockup-sharewood.png",
 		logo: "/img/logo-sharewood.png",
 		type: "website",
-		date: "2021-04-01",
+		date: "2023",
 		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
 	},
 	{
@@ -553,7 +552,7 @@ const projects: Project[] = [
 		img: "/img/mockup-ecofid.png",
 		logo: "/img/logo-ecofid.png",
 		type: "website",
-		date: "2021-09-01",
+		date: "2023",
 		technos: [
 			"Vue.js",
 			"Nuxt.js",
@@ -572,7 +571,7 @@ const projects: Project[] = [
 		img: "/img/mockup-odl.png",
 		logo: "/img/logo-odl.png",
 		type: "website",
-		date: "2021-09-01",
+		date: "2023",
 		technos: [
 			"Vue.js",
 			"Nuxt.js",
@@ -593,7 +592,7 @@ const projects: Project[] = [
 		logo: "/img/logo-lappart.png",
 		type: "website",
 		last: true,
-		date: "2021-09-01",
+		date: "2023",
 		technos: ["Wordpress", "HTML", "CSS", "JavaScript", "TailwindCSS"],
 	},
 ];
