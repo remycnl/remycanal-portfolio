@@ -14,6 +14,8 @@ export default defineNuxtPlugin(() => {
 		showImage,
 		hideImages,
 		animationStarsCardSkill,
+		showProject,
+		hideProject,
 	};
 });
 
@@ -455,4 +457,25 @@ export function animationStarsCardSkill() {
 			duration: 0.5,
 		}
 	);
+}
+
+export function showProject() {
+	const containerProject = document.querySelector(".container-project");
+
+	gsap.set(containerProject, { x: -1000, opacity: 1 });
+
+	gsap.to(containerProject, {
+		x: 0,
+		duration: 1,
+		ease: "power2.out",
+	});
+}
+
+export function hideProject() {
+	const containerProject = document.querySelector(".container-project");
+	gsap.to(containerProject, {
+		x: -1000,
+		duration: 1,
+		ease: "power2.out",
+	});
 }

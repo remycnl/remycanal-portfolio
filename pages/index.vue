@@ -152,75 +152,109 @@
 							<div
 								class="w-full h-full gap-x-5 flex flex-row justify-between items-center px-7 py-10 text-lg text-secondary transition-colors duration-[1s]">
 								<div
-									class="w-auto h-full flex flex-col gap-y-10 justify-between items-start text-start">
+									class="w-1/4 h-full flex flex-col gap-y-20 justify-between items-start text-start">
 									<div class="flex flex-col gap-y-3">
-										<div
-											class="flex flex-row gap-x-3 justify-start items-center">
-											<Icon
-												name="game-icons:small-fire"
-												color="var(--primary-color)"
-												class="w-20 h-auto transition-colors duration-[1s]" />
-											<p class="font-[Orbitron] font-bold uppercase">
-												Simplicity & Sophistication
+										<transition name="fade-translate-up" mode="out-in">
+											<div
+												v-if="!isValueHover1"
+												@mouseenter="isValueHover1 = true"
+												class="flex flex-row gap-x-3 justify-start items-center"
+												key="icon-text">
+												<Icon
+													name="game-icons:small-fire"
+													color="var(--primary-color)"
+													class="w-20 h-auto transition-colors duration-[1s]" />
+												<p class="font-[Orbitron] font-bold uppercase">
+													Simplicity Sophistication
+												</p>
+											</div>
+											<p
+												v-else
+												@mouseleave="isValueHover1 = false"
+												class="text-center text-white"
+												key="description">
+												For a smooth user's experience and clean codebase
 											</p>
-										</div>
-										<p class="text-sm text-center mr-7">
-											For a smooth user's experience<br />and clean codebase
-										</p>
+										</transition>
 									</div>
 									<div class="flex flex-col gap-y-3">
-										<div
-											class="flex flex-row gap-x-3 justify-start items-center">
-											<Icon
-												name="game-icons:rocket"
-												color="var(--primary-color)"
-												class="w-20 h-auto transition-colors duration-[1s]" />
-											<p class="font-[Orbitron] font-bold uppercase">
-												Innovative & Meticulous
+										<transition name="fade-translate-down" mode="out-in">
+											<div
+												v-if="!isValueHover2"
+												@mouseenter="isValueHover2 = true"
+												class="flex flex-row gap-x-3 justify-start items-center"
+												key="icon-text">
+												<Icon
+													name="game-icons:rocket"
+													color="var(--primary-color)"
+													class="w-20 h-auto transition-colors duration-[1s]" />
+												<p class="font-[Orbitron] font-bold uppercase">
+													Innovative Meticulous
+												</p>
+											</div>
+											<p
+												v-else
+												@mouseleave="isValueHover2 = false"
+												class="text-center text-white"
+												key="description">
+												Engineered with creativity and attention to detail
 											</p>
-										</div>
-										<p class="text-sm text-center mr-14">
-											Engineered with creativity<br />and attention to detail
-										</p>
+										</transition>
 									</div>
 								</div>
-								<div class="w-auto h-full flex justify-center items-start">
+								<div class="w-1/3 h-full flex justify-center items-start">
 									<p
-										class="font-[Orbitron] font-bold text-lg text-center tracking-widest">
+										class="font-[Orbitron] font-bold text-lg text-center tracking-widest text-white">
 										Some of my<span class="text-[5rem] leading-[5rem]"
 											>Values</span
 										>
 									</p>
 								</div>
 								<div
-									class="w-auto h-full flex flex-col justify-between items-end text-end">
+									class="w-1/4 h-full flex flex-col gap-y-20 justify-between items-end text-end">
 									<div class="flex flex-col gap-y-3">
-										<div class="flex flex-row gap-x-3 justify-end items-center">
-											<p class="font-[Orbitron] font-bold uppercase">
-												Autonomous & Listening
+										<transition name="fade-translate-up" mode="out-in">
+											<div
+												class="flex flex-row gap-x-3 justify-end items-center"
+												v-if="!isValueHover3"
+												@mouseenter="isValueHover3 = true">
+												<p class="font-[Orbitron] font-bold uppercase">
+													Autonomous Listening
+												</p>
+												<Icon
+													name="game-icons:suckered-tentacle"
+													color="var(--primary-color)"
+													class="w-20 h-auto transition-colors duration-[1s]" />
+											</div>
+											<p
+												v-else
+												@mouseleave="isValueHover3 = false"
+												class="text-center text-white">
+												Independently developed with a focus on user feedback
 											</p>
-											<Icon
-												name="game-icons:suckered-tentacle"
-												color="var(--primary-color)"
-												class="w-20 h-auto transition-colors duration-[1s]" />
-										</div>
-										<p class="text-sm text-center ml-8">
-											Independently developed with<br />a focus on user feedback
-										</p>
+										</transition>
 									</div>
 									<div class="flex flex-col gap-y-3">
-										<div class="flex flex-row gap-x-3 justify-end items-center">
-											<p class="font-[Orbitron] font-bold uppercase">
-												Open-minded & Passionate
+										<transition name="fade-translate-down" mode="out-in">
+											<div
+												class="flex flex-row gap-x-3 justify-end items-center"
+												v-if="!isValueHover4"
+												@mouseenter="isValueHover4 = true">
+												<p class="font-[Orbitron] font-bold uppercase">
+													Open-minded Passionate
+												</p>
+												<Icon
+													name="game-icons:techno-heart"
+													color="var(--primary-color)"
+													class="w-20 h-auto transition-colors duration-[1s]" />
+											</div>
+											<p
+												v-else
+												@mouseleave="isValueHover4 = false"
+												class="text-center text-white">
+												Crafted with an open heart and driven by passion
 											</p>
-											<Icon
-												name="game-icons:techno-heart"
-												color="var(--primary-color)"
-												class="w-20 h-auto transition-colors duration-[1s]" />
-										</div>
-										<p class="text-sm text-center ml-11">
-											Crafted with an open heart<br />and driven by passion
-										</p>
+										</transition>
 									</div>
 								</div>
 							</div>
@@ -239,7 +273,10 @@
 					<a
 						href="#"
 						class="clickable hover-scale-effect cursor-none active:scale-95 transition-all duration-75">
-						<h3 class="menu-line-animation text-white hover:tracking-widest transition-all duration-500">Wanna work with me ?</h3>
+						<h3
+							class="menu-line-animation text-white hover:tracking-widest transition-all duration-500">
+							Wanna work with me ?
+						</h3>
 					</a>
 				</div>
 				<div
@@ -392,27 +429,29 @@
 								class="absolute bottom-0 right-[-5%] opacity-10 w-auto h-80" />
 						</Transition>
 						<div
-							class="bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-1/2 h-[35rem] rounded-[1.5rem]">
+							class="container-project opacity-0 bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-1/2 h-[35rem] rounded-[1.5rem]">
 							<Transition name="fade">
 								<div
 									v-show="hoveredProject"
 									class="flex flex-col items-center w-full h-full">
 									<div
 										class="w-[90%] h-[3rem] mt-5 flex flex-row justify-between items-center">
-										<p v-show="hoveredProject" class="font-[Orbitron]">
-											{{
+										<ScrambleText
+											v-show="hoveredProject"
+											:text="
 												projects.find(
 													(project) => project.slug === hoveredProject
 												)?.date
-											}}
-										</p>
-										<p v-show="hoveredProject" class="font-[Orbitron]">
-											{{
+											"
+											:frames="20" />
+										<ScrambleText
+											v-show="hoveredProject"
+											:text="
 												projects.find(
 													(project) => project.slug === hoveredProject
 												)?.title
-											}}
-										</p>
+											"
+											:frames="20" />
 									</div>
 									<div
 										class="relative image-animation-container my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden"></div>
@@ -433,11 +472,11 @@
 									</div>
 								</div>
 							</Transition>
-							<div
-								v-show="!hoveredProject"
-								class="rounded-[1.5rem] blur-sm w-full h-full bg-gray-dark"></div>
 						</div>
-						<div class="relative flex flex-col w-1/2 h-full">
+						<div
+							@mouseenter="showProject()"
+							@mouseleave="hideProject()"
+							class="relative flex flex-col w-1/2 h-full">
 							<NuxtLink
 								:to="project.link"
 								target="_blank"
@@ -445,7 +484,7 @@
 								:key="project.slug"
 								@mouseenter="showImage(project.img), startHover(project.slug)"
 								@mouseleave="hideImages(), stopHover()"
-								class="z-30 link-type flex flex-col justify-between items-start w-full h-fit transition-all duration-300">
+								class="z-30 link-type flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
 								<div
 									class="text-secondary group hover-scale-effect clickable cursor-none w-full h-full flex flex-col justify-between items-start">
 									<div
@@ -466,11 +505,13 @@
 											{{ project.type }}
 										</h5>
 									</div>
-									<p
-										v-if="isSomethingHover && hoveredProject === project.slug"
-										class="text-gray-light -mt-3 pb-5">
-										{{ project.description }}
-									</p>
+									<Transition name="fade-letter-by-letter" mode="out-in">
+										<p
+											v-if="isSomethingHover && hoveredProject === project.slug"
+											class="text-gray-light -mt-3 pb-5">
+											<LetterByLetter :text="project.description" />
+										</p>
+									</Transition>
 								</div>
 								<hr
 									v-if="!project.last"
@@ -496,8 +537,15 @@ import {
 	showImage,
 	hideImages,
 	animationStarsCardSkill,
+	showProject,
+	hideProject,
 } from "~/plugins/gsap";
 import { mouseEffect, setExperienceTime } from "~/plugins/global.js";
+
+const isValueHover1 = ref(false);
+const isValueHover2 = ref(false);
+const isValueHover3 = ref(false);
+const isValueHover4 = ref(false);
 
 interface Project {
 	slug: string;

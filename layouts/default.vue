@@ -102,7 +102,7 @@ const setCSP = () => {
 				</div>
 				<div class="container-s hidden lg:flex text-start w-screen -ml-8 -mb-7 overflow-hidden select-none">
 					<div id="letters-bottom" class="tracking-wider font-mono s whitespace-nowrap inline-block text-xs text-black uppercase w-fit">
-					<!-- Ici apparaîssent les <span> des crédits -->light
+					<!-- Ici apparaîssent les <span> des crédits -->
 					</div>
 				</div>
 			</div>
