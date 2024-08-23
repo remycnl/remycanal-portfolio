@@ -1,6 +1,11 @@
 <template>
 	<span class="scramble-text">
-		<span v-for="(letter, index) in displayedText" :key="index" class="letter">
+		<span
+			v-for="(letter, index) in displayedText"
+			:key="index"
+			class="letter"
+			:class="isFinalText ? 'text-white' : 'text-secondary'"
+		>
 			{{ letter === " " ? "\u00A0" : letter }}
 		</span>
 	</span>
@@ -21,6 +26,7 @@ const props = defineProps({
 });
 
 const displayedText = ref([]);
+const isFinalText = ref(false);
 
 const chars =
 	"!<>-_\\/[]{}—=+*^?#1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -34,6 +40,7 @@ function scrambleText(newText) {
 
 	let frame = 0;
 	const startTime = Date.now();
+	isFinalText.value = false;
 
 	displayedText.value = Array.from(newText).map(
 		() => chars[Math.floor(Math.random() * chars.length)]
@@ -56,6 +63,7 @@ function scrambleText(newText) {
 		if (elapsed >= scrambleDuration) {
 			clearInterval(interval);
 			displayedText.value = Array.from(newText);
+			isFinalText.value = true;
 		}
 	}, frameInterval);
 }
@@ -75,6 +83,6 @@ watch(
 
 .letter {
 	display: inline-block;
-	transition: opacity 0.3s ease, transform 0.3s ease;
+	transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 </style>

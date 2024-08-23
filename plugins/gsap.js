@@ -462,10 +462,12 @@ export function animationStarsCardSkill() {
 export function showProject() {
 	const containerProject = document.querySelector(".container-project");
 
-	gsap.set(containerProject, { x: -1000, opacity: 1 });
+	gsap.set(containerProject, { x: -1000, y: 600, rotate: -25, opacity: 1 });
 
 	gsap.to(containerProject, {
 		x: 0,
+		y: 0,
+		rotate: 0,
 		duration: 1,
 		ease: "power2.out",
 	});
@@ -475,6 +477,8 @@ export function hideProject() {
 	const containerProject = document.querySelector(".container-project");
 	gsap.to(containerProject, {
 		x: -1000,
+		y: 600,
+		rotate: -25,
 		duration: 1,
 		ease: "power2.out",
 	});
