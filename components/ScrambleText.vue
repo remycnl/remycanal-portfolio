@@ -83,6 +83,6 @@ watch(
 
 .letter {
 	display: inline-block;
-	transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+	transition: color 0.5s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 </style>

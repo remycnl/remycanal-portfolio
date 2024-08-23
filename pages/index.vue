@@ -100,12 +100,14 @@
 						<article
 							class="hover:saturate-200 relative overflow-hidden reveal shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
 							<div
-								class="flex flex-row items-center gap-x-10 justify-between h-full w-full font-bold text-white">
-								<p id="experience" class="font-[Orbitron] pt-10 text-[15rem]">
+								class="flex flex-row items-center lg:gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-white">
+								<p
+									id="experience"
+									class="font-[Orbitron] pt-10 lg:text-[8rem] 2xl:text-[15rem]">
 									0
 								</p>
 								<div
-									class="pt-40 flex flex-col w-full h-full justify-center items-start text-3xl">
+									class="lg:pt-20 2xl:pt-40 flex flex-col w-full h-full justify-center items-start lg:text-xl 2xl:text-3xl">
 									<p class="font-[Orbitron]">years of</p>
 									<p class="font-[Orbitron]">experience</p>
 								</div>
@@ -117,8 +119,11 @@
 							class="hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
-								<p class="text-[1.5rem] font-[Orbitron]">Developer</p>
-								<p class="text-[3rem] leading-tight uppercase">
+								<p class="lg:text-[1.2rem] 2xl:text-[1.5rem] font-[Orbitron]">
+									Developer
+								</p>
+								<p
+									class="lg:text-[2rem] 2xl:text-[3rem] leading-tight uppercase">
 									&ldquo;Full-Stack&rdquo;
 								</p>
 							</div>
@@ -127,22 +132,29 @@
 							class="hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
-								<p class="text-[2rem] font-[Orbitron]">Student at</p>
-								<p class="text-[4rem] leading-tight uppercase">{Epitech}</p>
+								<p class="lg:text-[1.5rem] 2xl:text-[2rem] font-[Orbitron]">
+									Student at
+								</p>
+								<p
+									class="lg:text-[3rem] 2xl:text-[4rem] leading-tight uppercase">
+									{Epitech}
+								</p>
 							</div>
 						</article>
 						<article
 							class="hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
 							<div
-								class="flex flex-col items-center justify-center h-full w-full p-7 font-bold text-white text-4xl">
+								class="flex flex-col items-center justify-center h-full w-full p-7 font-bold text-white lg:text-xl 2xl:text-4xl">
 								<div
 									class="flex flex-col gap-y-1 items-start justify-center h-full w-full">
 									<p class="font-[Orbitron]">Contributed</p>
 									<p class="font-[Orbitron]">to</p>
 								</div>
 								<div
-									class="flex flex-col justify-center gap-y-10 w-full h-full items-end">
-									<p class="text-[8rem] font-[Orbitron]">10</p>
+									class="flex flex-col justify-center lg:gap-y-7 2xl:gap-y-10 w-full h-full items-end">
+									<p class="lg:text-[5rem] 2xl:text-[8rem] font-[Orbitron]">
+										10
+									</p>
 									<p class="font-[Orbitron]">websites</p>
 								</div>
 							</div>
@@ -150,7 +162,7 @@
 						<article
 							class="relative group overflow-hidden hover:saturate-200 reveal shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
 							<div
-								class="w-full h-full gap-x-5 flex flex-row justify-between items-center px-7 py-10 text-lg text-secondary transition-colors duration-[1s]">
+								class="w-full h-full gap-x-5 flex flex-row justify-between items-center px-7 py-10 lg:text-sm 2xl:text-lg text-secondary transition-colors duration-[1s]">
 								<div
 									class="w-1/4 h-full flex flex-col gap-y-20 justify-between items-start text-start">
 									<div class="flex flex-col gap-y-3">
@@ -163,7 +175,7 @@
 												<Icon
 													name="game-icons:small-fire"
 													color="var(--primary-color)"
-													class="w-20 h-auto transition-colors duration-[1s]" />
+													class="lg:w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
 												<p class="font-[Orbitron] font-bold uppercase">
 													Simplicity Sophistication
 												</p>
@@ -187,7 +199,7 @@
 												<Icon
 													name="game-icons:rocket"
 													color="var(--primary-color)"
-													class="w-20 h-auto transition-colors duration-[1s]" />
+													class="lg:w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
 												<p class="font-[Orbitron] font-bold uppercase">
 													Innovative Meticulous
 												</p>
@@ -204,8 +216,9 @@
 								</div>
 								<div class="w-1/3 h-full flex justify-center items-start">
 									<p
-										class="font-[Orbitron] font-bold text-lg text-center tracking-widest text-white">
-										Some of my<span class="text-[5rem] leading-[5rem]"
+										class="font-[Orbitron] font-bold lg:text-sm 2xl:text-lg text-center tracking-widest text-white">
+										Some of my<span
+											class="lg:text-[3rem] 2xl:text-[5rem] lg:leading-[3rem] 2xl:leading-[5rem]"
 											>Values</span
 										>
 									</p>
@@ -224,7 +237,7 @@
 												<Icon
 													name="game-icons:suckered-tentacle"
 													color="var(--primary-color)"
-													class="w-20 h-auto transition-colors duration-[1s]" />
+													class="lg:w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
 											</div>
 											<p
 												v-else
@@ -246,7 +259,7 @@
 												<Icon
 													name="game-icons:techno-heart"
 													color="var(--primary-color)"
-													class="w-20 h-auto transition-colors duration-[1s]" />
+													class="lg:w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
 											</div>
 											<p
 												v-else
@@ -259,8 +272,12 @@
 								</div>
 							</div>
 							<div
-								style="bottom: calc(0px - 10rem); left: calc(50% - 15rem)"
-								class="absolute h-[20rem] w-[30rem] rounded-full bg-secondary transition-colors duration-[1s] border-[1.25rem] border-black"></div>
+								style="
+									bottom: calc(0px - 10rem);
+									left: 50%;
+									transform: translateX(-50%);
+								"
+								class="absolute h-[20rem] lg:w-[17rem] 2xl:w-[30rem] rounded-full bg-secondary transition-colors duration-[1s] border-[1.25rem] border-black"></div>
 						</article>
 
 						<!-- <div
@@ -415,6 +432,10 @@
 						Projects
 					</h2>
 					<div class="relative mt-40 flex justify-between gap-x-28 items-start">
+						<Icon
+							name="game-icons:wind-slap"
+							color="var(--secondary-color)"
+							class="absolute top-0 left-[-15%] w-[50rem] h-auto transition-all duration-300" />
 						<Transition name="fade">
 							<img
 								v-if="hoveredProject"
