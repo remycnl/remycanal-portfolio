@@ -1,5 +1,5 @@
 import { gsap } from "gsap";
-import { Elastic } from "gsap/all";
+import { Elastic, ScrollTrigger } from "gsap/all";
 export { gsap };
 export default defineNuxtPlugin(() => {
 	return {
@@ -16,10 +16,12 @@ export default defineNuxtPlugin(() => {
 		animationStarsCardSkill,
 		showProject,
 		hideProject,
+		stickyProject,
 	};
 });
 
 gsap.registerPlugin(Elastic);
+gsap.registerPlugin(ScrollTrigger);
 
 let isDropdownOpen = false;
 
@@ -482,4 +484,21 @@ export function hideProject() {
 		duration: 1,
 		ease: "power2.out",
 	});
+}
+
+export function stickyProject() {
+	const projects = document.querySelector('.projects-link');
+	const projectCard = document.querySelector('.container-project');
+
+    gsap.to(projectCard, {
+        y: () => projects.offsetHeight - projectCard.offsetHeight,
+        ease: "none",
+        scrollTrigger: {
+            trigger: projects,
+            start: "top 30%",
+            end: "bottom 80%",
+            scrub: 1,
+            anticipatePin: 1
+        }
+    });
 }
