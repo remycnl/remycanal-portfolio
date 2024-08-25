@@ -296,7 +296,7 @@
 						</h3>
 					</a>
 				</div>
-				<div
+				<!-- <div
 					class="flex flex-wrap lg:flex-row justify-center md:justify-evenly lg:justify-between 2xl:justify-center gap-7 mt-20 lg:mt-26 -mb-20">
 					<ValueCard
 						text1="Simplicity"
@@ -318,7 +318,7 @@
 						text2="Passionate"
 						subText="Crafted with an open heart and driven by passion"
 						pathIcon="/img/Statue-Of-Liberty.png" />
-				</div>
+				</div> -->
 			</div>
 			<div class="container mx-auto px-4 lg:mt-56 lg:px-0 py-20">
 				<!-- SKILLS -->
@@ -431,7 +431,64 @@
 						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 						Projects
 					</h2>
-					<div class="relative overflow-visible mt-40 flex justify-between gap-x-28 items-start">
+					<!-- Mobile -->
+					<div class="lg:hidden relative mt-20">
+						<Icon
+							name="game-icons:wind-slap"
+							color="var(--secondary-color)"
+							class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-auto transition-all duration-300" />
+						<div v-for="project in projects" :key="project.slug">
+							<div
+								class="group flex mt-10 flex-col items-center group bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full h-[35rem] rounded-[1.5rem]">
+								<div
+									class="w-[90%] h-[3rem] mt-5 flex flex-row justify-between items-center">
+									<p
+										class="font-[Orbitron] text-secondary font-bold tracking-widest text-sm">
+										{{ project.date }}
+									</p>
+									<p
+										class="font-[Orbitron] text-secondary font-bold tracking-widest text-sm">
+										{{ project.title }}
+									</p>
+								</div>
+								<div
+									class="relative my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden">
+									<img
+										:src="project.img"
+										:alt="`Mockup - ${project.img}`"
+										class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+								</div>
+								<p class="text-gray-light w-[85%]">
+									{{ project.description }}
+								</p>
+								<div class="flex flex-wrap w-[90%] gap-3 my-5">
+									<span
+										v-for="(tech, index) in project.technos"
+										:key="tech"
+										:style="{ transitionDelay: `${index * 100}ms` }"
+										class="bg-secondary-transparent font-bold tracking-widest text-secondary py-1 px-3 rounded-full text-sm">
+										{{ tech }}
+									</span>
+								</div>
+								<div
+									class="flex flex-row justify-end items-center w-[90%] mt-3 mb-5">
+									<NuxtLink
+										:to="project.link"
+										target="_blank"
+										class="focus:scale-90 transition-transform duration-75 flex rounded-xl text-white bg-secondary p-3 flex-row gap-2 items-center">
+										Visit {{ project.type }}
+										<Icon
+											name="formkit:linkexternal"
+											color="var(--white)"
+											class="w-5 h-auto" />
+									</NuxtLink>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Desktop -->
+					<div
+						class="hidden lg:flex relative overflow-visible mt-40 justify-between gap-x-28 items-start">
 						<Icon
 							name="game-icons:wind-slap"
 							color="var(--secondary-color)"
