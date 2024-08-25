@@ -487,17 +487,19 @@ export function hideProject() {
 }
 
 export function stickyProject() {
-	const projects = document.querySelector('.projects-link');
-	const projectCard = document.querySelector('.container-project');
+	const projects = document.querySelector(".projects-link");
+	const projectCard = document.querySelector(".container-project");
 
-    gsap.to(projectCard, {
-        y: () => projects.offsetHeight - projectCard.offsetHeight,
-        ease: "none",
-        scrollTrigger: {
-            trigger: projects,
-            start: "top 30%",
-            end: "bottom 80%",
-            scrub: 0,
-        }
-    });
+	if (projects.offsetHeight > projectCard.offsetHeight) {
+		gsap.to(projectCard, {
+			top: () => `${projects.offsetHeight - projectCard.offsetHeight}px`,
+			ease: "none",
+			scrollTrigger: {
+				trigger: projects,
+				start: "top 30%",
+				end: "bottom 80%",
+				scrub: 0,
+			},
+		});
+	}
 }
