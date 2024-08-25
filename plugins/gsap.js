@@ -497,8 +497,7 @@ export function stickyProject() {
             trigger: projects,
             start: "top 30%",
             end: "bottom 80%",
-            scrub: 1,
-            anticipatePin: 1
+            scrub: 0,
         }
     });
 }

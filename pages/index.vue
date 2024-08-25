@@ -777,6 +777,7 @@ const projects: Project[] = [
 		date: "2023",
 		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
 	},
+	
 ];
 
 const isSomethingHover = ref(false);
