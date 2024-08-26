@@ -17,6 +17,7 @@ export default defineNuxtPlugin(() => {
 		showProject,
 		hideProject,
 		stickyProject,
+		apparitionMobileProjectCards,
 	};
 });
 
@@ -502,4 +503,34 @@ export function stickyProject() {
 			},
 		});
 	}
+}
+
+export function apparitionMobileProjectCards() {
+	const cards = document.querySelectorAll(".cards-project-mobile");
+
+	cards.forEach((card) => {
+		gsap.fromTo(
+			card,
+			{
+				y: 200,
+				rotation: -20,
+				opacity: 0,
+				scale: 0.5,
+			},
+			{
+				y: 0,
+				rotation: 0,
+				opacity: 1,
+				scale: 1,
+				duration: 1,
+				ease: "power3.out",
+				scrollTrigger: {
+					trigger: card,
+					start: "top bottom",
+					end: "top 50%",
+					scrub: true,
+				},
+			}
+		);
+	});
 }

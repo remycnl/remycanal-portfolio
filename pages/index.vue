@@ -95,7 +95,7 @@
 				</div>
 
 				<div
-					class="flex flex-col gap-y-20 justify-center items-center w-full my-40 h-[40rem]">
+					class="flex flex-col gap-y-20 justify-center items-center w-full mt-20 lg:mt-32 2xl:mt-40 h-fit">
 					<div class="bento grid gap-5 w-full h-full">
 						<article
 							class="hover:saturate-200 relative overflow-hidden reveal shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
@@ -279,19 +279,12 @@
 								"
 								class="absolute h-[20rem] lg:w-[17rem] 2xl:w-[30rem] rounded-full bg-secondary transition-colors duration-[1s] border-[1.25rem] border-black"></div>
 						</article>
-
-						<!-- <div
-								style="bottom: calc(0px - 0.5rem); left: calc(50% - 10rem)"
-								class="half-circle absolute w-[20rem] h-[10.5rem] border-[1.25rem] border-primary"></div> -->
-						<!-- <div
-								style="bottom: calc(0px - 8.75rem); left: calc(50% - 8.75rem)"
-								class="rounded-full absolute w-[17.5rem] h-[17.5rem] hover:saturate-200 hover:scale-[1.01] backdrop-blur-md bg-secondary shadow-around shadow-black-dark transition-all duration-[1s]"></div> -->
 					</div>
 					<a
 						href="#"
 						class="clickable hover-scale-effect cursor-none active:scale-95 transition-all duration-75">
 						<h3
-							class="menu-line-animation text-white hover:tracking-widest transition-all duration-500">
+							class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-[3rem] text-white hover:tracking-widest transition-all duration-500">
 							Wanna work with me ?
 						</h3>
 					</a>
@@ -320,7 +313,7 @@
 						pathIcon="/img/Statue-Of-Liberty.png" />
 				</div> -->
 			</div>
-			<div class="container mx-auto px-4 lg:mt-56 lg:px-0 py-20">
+			<div class="container mx-auto px-4 lg:mt-56 lg:px-0">
 				<!-- SKILLS -->
 				<h2
 					id="skills"
@@ -425,21 +418,22 @@
 					</div>
 				</div>
 				<!-- PROJECTS -->
-				<div class="relative overflow-visible projects-container my-80">
+				<div
+					class="relative overflow-visible projects-container my-60 lg:my-96">
 					<h2
 						id="projects"
 						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 						Projects
 					</h2>
 					<!-- Mobile -->
-					<div class="lg:hidden relative mt-20">
+					<div class="lg:hidden relative mt-10">
 						<Icon
 							name="game-icons:wind-slap"
 							color="var(--secondary-color)"
 							class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-auto transition-all duration-300" />
 						<div v-for="project in projects" :key="project.slug">
 							<div
-								class="group flex mt-10 flex-col items-center group bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full h-[35rem] rounded-[1.5rem]">
+								class="cards-project-mobile group flex mt-10 flex-col items-center bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full h-[35rem] rounded-[1.5rem]">
 								<div
 									class="w-[90%] h-[3rem] mt-5 flex flex-row justify-between items-center">
 									<p
@@ -458,20 +452,20 @@
 										:alt="`Mockup - ${project.img}`"
 										class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
 								</div>
-								<p class="text-gray-light w-[85%]">
+								<p class="text-gray-light w-[86%]">
 									{{ project.description }}
 								</p>
-								<div class="flex flex-wrap w-[90%] gap-3 my-5">
+								<div class="flex flex-wrap w-[86%] gap-3 my-5">
 									<span
 										v-for="(tech, index) in project.technos"
 										:key="tech"
 										:style="{ transitionDelay: `${index * 100}ms` }"
-										class="bg-secondary-transparent font-bold tracking-widest text-secondary py-1 px-3 rounded-full text-sm">
+										class="bg-secondary-transparent font-bold tracking-widest text-secondary py-1.5 px-2 rounded-full text-xs">
 										{{ tech }}
 									</span>
 								</div>
 								<div
-									class="flex flex-row justify-end items-center w-[90%] mt-3 mb-5">
+									class="flex flex-row justify-end items-center w-[90%] mt-4 mb-7">
 									<NuxtLink
 										:to="project.link"
 										target="_blank"
@@ -493,19 +487,6 @@
 							name="game-icons:wind-slap"
 							color="var(--secondary-color)"
 							class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-auto transition-all duration-300" />
-						<Transition name="fade">
-							<img
-								v-if="hoveredProject"
-								:src="
-									projects.find((project) => project.slug === hoveredProject)
-										?.logo
-								"
-								:alt="`Logo - ${
-									projects.find((project) => project.slug === hoveredProject)
-										?.logo
-								}`"
-								class="absolute bottom-0 right-[-5%] opacity-10 w-auto h-80" />
-						</Transition>
 						<div
 							class="relative overflow-visible container-project opacity-0 bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-1/2 h-[35rem] rounded-[1.5rem]">
 							<Transition name="fade">
@@ -558,11 +539,15 @@
 							<NuxtLink
 								:to="project.link"
 								target="_blank"
-								v-for="project in projects"
-								:key="project.slug"
+								v-for="(project, index) in projects"
+								:key="index"
 								@mouseenter="showImage(project.img), startHover(project.slug)"
 								@mouseleave="hideImages(), stopHover()"
-								class="z-30 link-type flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
+								class="group relative z-30 link-type flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
+								<img
+									:src="project.logo"
+									:alt="`Logo - ${project.logo}`"
+									class="absolute top-4 right-[-10%] scale-50 group-hover:scale-100 opacity-0 group-hover:opacity-10 w-auto h-60 transition-all duration-[0.8s]" />
 								<div
 									class="text-secondary group hover-scale-effect clickable cursor-none w-full h-full flex flex-col justify-between items-start">
 									<div
@@ -618,6 +603,7 @@ import {
 	showProject,
 	hideProject,
 	stickyProject,
+	apparitionMobileProjectCards,
 } from "~/plugins/gsap";
 import { mouseEffect, setExperienceTime } from "~/plugins/global.js";
 
@@ -968,6 +954,7 @@ onMounted(() => {
 	applyEffects();
 	setExperienceTime();
 	stickyProject();
+	apparitionMobileProjectCards();
 
 	const backToTopButton = document.querySelector(".back-to-top");
 	if (backToTopButton) {

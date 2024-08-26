@@ -35,20 +35,3 @@ article {
 		}
 	}
 }
-
-/* .box-handmade {
-	clip-path: polygon(
-		0% 0%,
-		calc(50% - 10px) 0%,
-		calc(50% - 10px) 35%,
-		100% 35%,
-		100% 100%,
-		0% 100%
-	);
-} */
-
-.half-circle {
-    border-top-left-radius: calc(10.5rem + 1.25rem);  /* 100px of height + 10px of border */
-    border-top-right-radius: calc(10.5rem + 1.25rem); /* 100px of height + 10px of border */
-    border-bottom: 0;
-}
