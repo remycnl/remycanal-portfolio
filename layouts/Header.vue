@@ -1,56 +1,58 @@
 <template>
 	<div
-		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-20">
+		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-10">
 		<div
-			class="px-1 toolbar lg:hidden flex justify-between items-center pointer-events-auto">
-			<a href="#" @click="ancreToSection($event, 'top')">
-				<img src="~/assets/img/logo.png" alt="Rémy Canal" class="hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
+			class="px-1 relative toolbar lg:hidden flex justify-between items-center pointer-events-none">
+			<a href="#" @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
+				<img :src="`/img/logo-${primaryColor}.png`" alt="Rémy Canal" class="change-img-color pointer-events-auto hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
-			<div class="flex items-center justify-center">
-				<div class="md:cursor-pointer hover:saturate-200 transition-all transform-gpu duration-500" @click="toggleDropdown">
-					<div class="first-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
-					<div class="second-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
-					<div class="third-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary-purple to-secondary-pink mb-1.5"></div>
+			<div class="z-50 flex pointer-events-auto items-center justify-center">
+				<div class="cursor-none hover:saturate-200 transition-all transform-gpu duration-500" @click="toggleDropdown">
+					<div class="first-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
+					<div class="second-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
+					<div class="third-line w-6 h-1 rounded-full bg-gradient-to-l from-secondary to-secondary-dark mb-1.5"></div>
 				</div>
 			</div>
+			<div class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[120vh] left-0 h-[5.5rem]"></div>
 		</div>
 		<div class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
-			<div :class="headerClasses" class="overflow-y-auto lg:overflow-hidden max-h-[97vh] lg-custom-width">
-				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')">
+			<div :class="headerClasses" class="pointer-events-auto overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
+				<a href="#" id="logo-zoom" @click="executeFunctionsMenu($event, 'top')" class="hover-scale-effect clickable cursor-none active:scale-105 transition-all duration-100">
 					<img
-						src="~/assets/img/logo.png"
+						:src="`/img/logo-${primaryColor}.png`"
 						alt="Rémy Canal"
-						class="hover-scale-effect hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
+						class="change-img-color hover-scale-effect hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
-				class="flex flex-col lg:flex-row gap-x-20 gap-y-10 text-white uppercase items-center">
+				class="flex flex-col lg:flex-row tracking-widest lg:tracking-normal 2xl:tracking-widest gap-x-20 gap-y-10 text-white uppercase items-center">
 					<span v-for="(menu, index) in menus" :key="index" :id="'text-menu-' + index" class="magnet pointer-events-auto">
 						<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(index); applyZoomEffect(index)"
 							href="#"
-							class="menu-sm transition-all duration-300 ease-in-out text-xl hover-scale-effect">
+							class="menu-sm transition-all duration-300 ease-in-out text-xl hover-scale-effect clickable cursor-none">
 							{{ menu }}
 						</a>
 					</span>
-					<a @click="executeFunctionsMenu($event, 'top'); applyGradientText(4)" href="#"
-					class="hover-scale-effect btn pointer-events-auto group relative p-5 border-none rounded-[0.8em] bg-gradient-to-r from-secondary-purple to-secondary-pink cursor-pointer isolate">
-						<span class="text-black-dark group-hover:text-white transition-colors duration-500 text-xl">Contact me</span>
-						<div class="ripple-container"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span> 
-							<div class="hover-ripple"></div>
-						</div>
-					</a>
+                    <a @click="executeFunctionsMenu($event, 'top'); applyGradientText(4)" href="#"
+                    class="active:scale-95 transition-all duration-75">
+                        <div
+                        class="hover-scale-effect clickable cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
+                            <div
+                            class="p-4 bg-black-dark bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 lg:ease-in rounded-xl">
+                                <span class="text-black font-bold group-hover:font-normal group-hover:text-white transition-all duration-300 lg:ease-in text-xl">
+                                    Contact me
+                                </span>
+                            </div>
+                        </div>
+                    </a>
 				</div>
 
 				<div
-					class="group lg:hidden flex flex-col items-center"
+					class="group lg:hidden flex flex-col items-center pb-5"
 					@click="toggleDropdown">
 					<Icon
 						name="fluent-emoji-high-contrast:cross-mark"
-						color="white"
+						color="var(--white)"
 						class="w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
-					<span
-						class="text-xs font-bold uppercase text-gradient opacity-0 group-hover:opacity-100 transition duration-100"
-						>Exit</span
-					>
 				</div>
 			</div>
 		</div>
@@ -61,9 +63,9 @@
 import { toggleDropdown, applyZoomEffect } from '~/plugins/gsap';
 import { magnetEffect } from '~/plugins/global.js';
 
-let isScreenSM = ref(true);
+let isScreenSM = ref(false);
 let scrolled = ref(false);
-const menus = ['About me', 'Skills', 'Experience', 'Portfolio'];
+const menus = ['About me', 'Skills', 'Experience', 'Projects'];
 
 const headerClasses = computed(() => ({
     "w-full": true,
@@ -75,10 +77,13 @@ const headerClasses = computed(() => ({
     "items-center": true,
     "p-4": true,
     "border": true,
-    "border-transparent": scrolled.value,
-    "!border-gray-semi": !scrolled.value || isScreenSM.value,
+    "border-transparent": !scrolled.value,
+    "!border-gray-semi": scrolled.value || isScreenSM.value,
     "rounded-3xl": true,
-    "bg-black-dark": !scrolled.value || isScreenSM.value,
+	"shadow-around": scrolled.value,
+	"shadow-black-dark": scrolled.value,
+	"backdrop-blur-sm": scrolled.value,
+    "bg-black-dark": scrolled.value || isScreenSM.value,
     "lg:bg-opacity-90": true,
     "bg-opacity-95": true,
     "transition-all": true,
@@ -87,7 +92,7 @@ const headerClasses = computed(() => ({
 
 const handleScroll = () => {
     isScreenSM.value = window.innerWidth < 1024;
-    scrolled.value = window.scrollY < 100;
+    scrolled.value = window.scrollY > 100;
 };
 
 const executeFunctionsMenu = (event, targetId) => {
@@ -126,40 +131,83 @@ const applyGradientText = (index) => {
 
     textMenus.forEach((menu, idx) => {
         if (index === 4) {
-            menu.classList.remove('text-gradient');
+            menu.classList.remove('text-color-saturate');
         } else if (idx === index) {
-            menu.classList.add('text-gradient');
+            menu.classList.add('text-color-saturate');
         } else {
-            menu.classList.remove('text-gradient');
+            menu.classList.remove('text-color-saturate');
         }
     });
 };
+
+const primaryColor = ref("purple");
 
 onMounted(() => {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     magnetEffect();
     applyGradientText(0);
+
+    const updatePrimaryColor = () => {
+		const element = document.querySelector(".change-img-color");
+		if (element) {
+			if (element.classList.contains("purple")) {
+				primaryColor.value = "purple";
+			} else if (element.classList.contains("orange")) {
+				primaryColor.value = "orange";
+			} else if (element.classList.contains("green")) {
+				primaryColor.value = "green";
+			} else if (element.classList.contains("cyan")) {
+				primaryColor.value = "cyan";
+			} else if (element.classList.contains("pink")) {
+				primaryColor.value = "pink";
+			} else if (element.classList.contains("red")) {
+				primaryColor.value = "red";
+			} else if (element.classList.contains("gray")) {
+				primaryColor.value = "gray";
+			} else if (element.classList.contains("yellow")) {
+				primaryColor.value = "yellow";
+			} else if (element.classList.contains("blue")) {
+				primaryColor.value = "blue";
+			}
+		}
+	};
+
+	updatePrimaryColor();
+
+	const observer = new MutationObserver((mutations) => {
+		mutations.forEach((mutation) => {
+			if (
+				mutation.type === "attributes" &&
+				mutation.attributeName === "class"
+			) {
+				updatePrimaryColor();
+			}
+		});
+	});
+
+	const elementToObserve = document.querySelector(".change-img-color");
+	if (elementToObserve) {
+		observer.observe(elementToObserve, {
+			attributes: true,
+		});
+	}
+
+	onUnmounted(() => {
+		observer.disconnect();
+	});
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener("scroll", handleScroll);
 });
-
-const toggleDropdownMenu = () => {
-    toggleDropdown();
-};
-
-const applyZoomEffectMenu = (index) => {
-    applyZoomEffect(index);
-};
 </script>
 
 
 <style scoped>
     @media (min-width: 1024px) {
         .lg-custom-width {
-            width: calc(100vw - 2rem);
+            width: calc(100vw - 6rem);
         }
     }
 	@media (min-width: 1536px) {

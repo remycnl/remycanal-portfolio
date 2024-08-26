@@ -10,6 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@iconify-json/game-icons": "^1.1.10",
+    "@nuxt/image": "^1.7.0",
+    "@nuxt/types": "^2.18.1",
     "@nuxtjs/google-fonts": "^3.2.0",
     "autoprefixer": "^10.4.17",
     "nuxt": "^3.9.3",
@@ -22,6 +25,7 @@
   "dependencies": {
     "gsap": "^3.12.5",
     "node": "^21.6.1",
-    "nodejs": "^0.0.0"
+    "nodejs": "^0.0.0",
+    "nuxt-swiper": "^1.2.2"
   }
 }

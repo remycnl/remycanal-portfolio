@@ -6,8 +6,7 @@
 	perspective: 1000px;
 	box-shadow: rgb(0, 0, 0, 0.7) 5px 10px 50px, rgb(0, 0, 0, 0.7) -5px 0px 250px;
 	display: flex;
-	color: white;
-	cursor: pointer;
+	color: var(--white);
 	justify-content: center;
 	position: relative;
 	flex-direction: column;

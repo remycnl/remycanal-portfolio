@@ -15,15 +15,17 @@ export default {
           DEFAULT: '#111319',
           dark: '#020617',
         },
-        white: '#ffffff',
+        white: '#D0D4DB',
         primary: '#0f172a',
         secondary: {
-          purple: '#8D6DFA',
-          pink: '#E178FB',
+          DEFAULT: 'var(--primary-color)',
+          dark: 'var(--secondary-color)',
+          transparent: 'var(--primary-color-transparent)',
         },
         gray: {
           light: '#8c99b0',
           semi: '#334054',
+          medium: '#8c99b0a2',
           dark: '#1f293b',
         },
       },
@@ -37,4 +39,3 @@ export default {
   },
   plugins: [],
 }
-

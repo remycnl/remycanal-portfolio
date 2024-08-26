@@ -1,0 +1,121 @@
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.7s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+}
+
+.tag-enter-active,
+.tag-leave-active {
+	transition: all 0.5s ease;
+	transform-origin: center;
+}
+
+.tag-enter-from {
+	opacity: 0;
+	transform: scale(0.5);
+}
+
+.tag-enter-to {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.tag-leave-active {
+	position: absolute;
+}
+
+.tag-leave-to {
+	opacity: 0;
+	transform: scale(0.5);
+}
+
+.tag-leave-from {
+	opacity: 0;
+}
+
+/* Animation of stars on skill card */
+@keyframes scaleRotate {
+	0% {
+		transform: scale(0.5) rotate(0deg);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1) rotate(360deg);
+		opacity: 1;
+	}
+}
+
+.transition-scale-rotate {
+	animation: scaleRotate 0.5s ease-out forwards;
+}
+
+/* Animation Values */
+
+.fade-translate-up-enter-active,
+.fade-translate-up-leave-active,
+.fade-translate-down-enter-active,
+.fade-translate-down-leave-active {
+	transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-translate-up-enter-from {
+	opacity: 0;
+	transform: translateY(20px);
+}
+
+.fade-translate-down-enter-from {
+	opacity: 0;
+	transform: translateY(-20px);
+}
+
+.fade-translate-up-enter-to,
+.fade-translate-down-enter-to {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.fade-translate-up-leave-from,
+.fade-translate-down-leave-from {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.fade-translate-up-leave-to {
+	opacity: 0;
+	transform: translateY(-20px);
+}
+
+
+.fade-translate-down-leave-to {
+	opacity: 0;
+	transform: translateY(20px);
+}
+
+/* Transition "fade-letter-by-letter" */
+.fade-letter-by-letter-enter-active {
+	transition: opacity 0.6s ease, transform 0.6s ease; /* Apparition normale (0.6s) */
+}
+.fade-letter-by-letter-enter-from {
+	opacity: 0;
+	transform: translateY(10px);
+}
+.fade-letter-by-letter-enter-to {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.fade-letter-by-letter-leave-active {
+	transition: opacity 0.2s ease, transform 0.2s ease; /* Sortie très rapide (0.1s) */
+}
+.fade-letter-by-letter-leave-from {
+	opacity: 1;
+	transform: translateY(0);
+}
+.fade-letter-by-letter-leave-to {
+	opacity: 0;
+	transform: translateY(10px);
+}

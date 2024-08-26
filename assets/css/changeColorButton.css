@@ -1,0 +1,151 @@
+.change-color-button {
+	font-family: Orbitron;
+	font-weight: 600;
+	box-shadow: 0px 0px 0px 4px var(--primary-color-transparent);
+}
+
+@media (min-width: 1024px) {
+	.change-color-button:hover {
+		width: 550px;
+		border-radius: 50px;
+		transition-duration: 0.5s;
+		align-items: center;
+	}
+
+	.change-color-button::before {
+		position: absolute;
+		bottom: -20px;
+		content: "Choose a color :";
+		font-size: 0px;
+	}
+
+	.change-color-button:hover::before {
+		font-size: 13px;
+		opacity: 1;
+		bottom: unset;
+		transition-duration: 0.5s;
+	}
+}
+
+/* checkbox */
+.cyberpunk-checkbox {
+	appearance: none;
+	width: 25px;
+	height: 25px;
+	border-radius: 5px;
+	background-color: transparent;
+	display: inline-block;
+	position: relative;
+}
+
+.cyberpunk-checkbox:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) scale(0);
+	width: 13.5px;
+	height: 13.5px;
+	border-radius: 3px;
+	transition: all 0.3s ease-in-out;
+}
+
+.cyberpunk-checkbox:checked:before {
+	transform: translate(-50%, -50%) scale(1);
+}
+
+.cyberpunk-checkbox-label {
+	font-size: 18px;
+	color: var(--primary-color);
+	cursor: none;
+	user-select: none;
+	display: flex;
+	align-items: center;
+	transform-origin: center center;
+}
+
+.cyberpunk-checkbox-label {
+	transition: opacity 0.5s ease-in-out;
+}
+
+.group:not(:hover) .cyberpunk-checkbox-label {
+	transition-delay: 0s;
+	transition: opacity 0.2s ease-in-out;
+}
+
+.circle-container {
+	align-items: center;
+}
+
+.color-1 {
+	border: 2px solid var(--purple);
+}
+
+.color-1:before {
+	background-color: var(--purple);
+}
+
+.color-2 {
+	border: 2px solid var(--red);
+}
+
+.color-2:before {
+	background-color: var(--red);
+}
+
+.color-3 {
+	border: 2px solid var(--pink);
+}
+
+.color-3:before {
+	background-color: var(--pink);
+}
+
+.color-4 {
+	border: 2px solid var(--orange);
+}
+
+.color-4:before {
+	background-color: var(--orange);
+}
+
+.color-5 {
+	border: 2px solid var(--yellow);
+}
+
+.color-5:before {
+	background-color: var(--yellow);
+}
+
+.color-6 {
+	border: 2px solid var(--green);
+}
+
+.color-6:before {
+	background-color: var(--green);
+}
+
+.color-7 {
+	border: 2px solid var(--cyan);
+}
+
+.color-7:before {
+	background-color: var(--cyan);
+}
+
+.color-8 {
+	border: 2px solid var(--blue);
+}
+
+.color-8:before {
+	background-color: var(--blue);
+}
+
+.color-9 {
+	border: 2px solid var(--gray);
+}
+
+.color-9:before {
+	background-color: var(--gray);
+}

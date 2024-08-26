@@ -2,20 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+	scroll-behavior: smooth;
+}
+
+:root {
+	--purple: #6c34cc;
+	--red: #dd314e;
+	--pink: #ff3faf;
+	--orange: #dd5f31;
+	--yellow: #e9c925;
+	--green: #67d13d;
+	--cyan: #31bedd;
+	--blue: #32a1da;
+	--gray: #868686;
+	--black: #111319;
+	--white: #D0D4DB;
+	--primary-color: #6c34cc;
+	--primary-color-transparent: #6c34cc4f;
+	--secondary-color: #301563;
+}
+
 ::selection {
-	/* background-color: #8c6cf6ac; */
-	color: #E178FB;
+	background-color: var(--black);
+	color: var(--primary-color);
 }
 
 body {
-	background-color: #0f172a;
-	font-family: Acme;
-	scrollbar-width: none; /* Pour Firefox */
-    -ms-overflow-style: none; /* Pour Internet Explorer et Edge */
-}
-
-::-webkit-scrollbar {
-    display: none;
+	cursor: none;
+	background-color: var(--black);
+	font-family: Orbitron;
+	scrollbar-width: thin; /* Pour Firefox */
+	scrollbar-color: #1f293b; /* Pour Firefox */
 }
 
 h1 {
@@ -24,13 +42,23 @@ h1 {
 }
 
 h2 {
+	@apply tracking-widest font-bold;
 	font-size: 4rem;
-    line-height: 5rem;
+	line-height: 5rem;
 }
 
 h3 {
 	font-size: 2.5rem;
-    line-height: 2.5rem;
+	line-height: 2.5rem;
+}
+
+h4 {
+	font-size: 2rem;
+	line-height: 2.5rem;
+}
+
+p {
+	font-family: Share Tech Mono;
 }
 
 .header {
@@ -41,28 +69,29 @@ h3 {
 	@apply select-none pointer-events-none;
 }
 .container-s:hover .s {
-	background: linear-gradient(to right, #8D6DFA, #E178FB);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+	background: var(--primary-color);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
 	transition: color 0.1s ease-in-out;
 	z-index: 100;
 	filter: saturate(200%);
-	@apply transform-gpu
+	@apply transform-gpu;
 }
 
-.text-gradient {
-	background: linear-gradient(to right, #8D6DFA, #E178FB);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-	transition: filter 0.5s ease-in-out;
+.text-color-saturate {
+	color: var(--primary-color);
+	transition: color 0.3s ease-in-out, filter 0.5s ease-in-out;
 	z-index: 100;
-	@apply transform-gpu
+	@apply transform-gpu;
 }
 
-.text-gradient:hover {
+.text-color-saturate:hover {
 	filter: saturate(200%);
+}
+
+.text-shadow {
+	filter: drop-shadow(0 0 5px var(--black));
 }
 
 @media screen and (max-width: 1024px) {
@@ -71,9 +100,26 @@ h3 {
 	}
 }
 
-.gradient-img {
-	-webkit-mask-image: linear-gradient(to top, transparent 0%, black 10%);
-	mask-image: linear-gradient(to top, transparent 0%, black 10%);
+@media (max-width: 1023px) {
+	.gradient-img {
+		-webkit-mask-image: linear-gradient(
+			to top,
+			transparent 0%,
+			var(--black) 80%
+		);
+		mask-image: linear-gradient(to top, transparent 0%, var(--black) 80%);
+	}
+}
+
+@media (min-width: 1024px) {
+	.gradient-img {
+		-webkit-mask-image: linear-gradient(
+			to top,
+			transparent 0%,
+			var(--black) 10%
+		);
+		mask-image: linear-gradient(to top, transparent 0%, var(--black) 10%);
+	}
 }
 
 @media (max-width: 1023px) {
@@ -88,7 +134,7 @@ h3 {
 		width: 0;
 		height: 2px;
 		border-radius: 2px;
-		background-image: linear-gradient(to right, #8D6DFA, #E178FB);
+		background-color: var(--primary-color);
 		position: absolute;
 		bottom: -0.25rem;
 		right: 0;
@@ -99,4 +145,27 @@ h3 {
 		width: 100%;
 		left: 0;
 	}
+}
+
+.menu-line-animation {
+	color: #fff;
+	line-height: 1.5;
+	position: relative;
+}
+
+.menu-line-animation::before {
+	content: "";
+	width: 0;
+	height: 2px;
+	border-radius: 2px;
+	background-color: var(--primary-color);
+	position: absolute;
+	bottom: -0.25rem;
+	right: 0;
+	transition: right 0.4s, width 0.4s, left 0.4s;
+}
+
+.menu-line-animation:hover::before {
+	width: 100%;
+	left: 0;
 }

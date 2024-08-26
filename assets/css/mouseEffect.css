@@ -1,8 +1,8 @@
 :root {
 	--blob-color: linear-gradient(
 		to right,
-		#8D6DFA,
-		#E178FB
+		var(--secondary-color),
+		var(--primary-color)
 	);
 	--blob-size: 300px;
 }
