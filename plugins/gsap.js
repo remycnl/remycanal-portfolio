@@ -1,3 +1,4 @@
+import { setExperienceTime, setProjectsCounter } from "~/plugins/global.js";
 import { gsap } from "gsap";
 import { Elastic, ScrollTrigger } from "gsap/all";
 export { gsap };
@@ -18,11 +19,12 @@ export default defineNuxtPlugin(() => {
 		hideProject,
 		stickyProject,
 		apparitionMobileProjectCards,
+		appearBento,
+		appearStart,
 	};
 });
 
-gsap.registerPlugin(Elastic);
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Elastic);
 
 let isDropdownOpen = false;
 
@@ -533,4 +535,121 @@ export function apparitionMobileProjectCards() {
 			}
 		);
 	});
+}
+
+export function appearBento() {
+	const bento = document.querySelector(".bento");
+	const articles = Array.from(document.querySelectorAll(".article"));
+	const isMobile = window.matchMedia("(max-width: 768px)").matches;
+	const wannaWorkWithMe = document.getElementById("wanna-work-with-me");
+
+	if (isMobile) {
+		gsap.set(wannaWorkWithMe,
+			{
+				opacity: 0,
+				y: -100,
+			}
+		)
+		articles.forEach((article) => {
+			gsap.fromTo(
+				article,
+				{
+					opacity: 0,
+					scale: 0.5,
+				},
+				{
+					opacity: 1,
+					scale: 1,
+					duration: 1,
+					ease: "elastic.out(1, 0.4)",
+					scrollTrigger: {
+						trigger: article,
+						start: "top 90%",
+						once: true,
+						onEnter: () => {
+							if (article.id === "experience-nbr") {
+								setTimeout(() => {
+									setExperienceTime();
+								}, 500);
+							} else if (article.id === "projects-nbr") {
+								setTimeout(() => {
+									setProjectsCounter();
+								}, 500);
+							}
+						},
+					},
+					onComplete: () => {
+						setTimeout(() => {
+							gsap.to(wannaWorkWithMe,
+								{
+									opacity: 1,
+									y: 0,
+									duration: 0.3,
+								}
+							)
+							wannaWorkWithMe.classList.add("animate-pulse");
+						}, 1000);
+					}
+				}
+			);
+		});
+	} else {
+		let randomOrder = [...articles].sort(() => Math.random() - 0.5);
+
+		gsap.set(wannaWorkWithMe,
+			{
+				opacity: 0,
+				y: -100,
+			}
+		)
+
+		randomOrder.forEach((article, index) => {
+			gsap.fromTo(
+				article,
+				{
+					opacity: 0,
+					scale: 0.5,
+				},
+				{
+					opacity: 1,
+					scale: 1,
+					duration: 1.5,
+					delay: index * 0.3,
+					ease: "elastic.out(1, 0.4)",
+					scrollTrigger: {
+						trigger: bento,
+						start: "top 70%",
+						once: true,
+					},
+					onStart: () => {
+						if (article.id === "experience-nbr") {
+							setTimeout(() => {
+								setExperienceTime();
+							}, 500);
+						} else if (article.id === "projects-nbr") {
+							setTimeout(() => {
+								setProjectsCounter();
+							}, 500);
+						}
+					},
+					onComplete: () => {
+						setTimeout(() => {
+							gsap.to(wannaWorkWithMe,
+								{
+									opacity: 1,
+									y: 0,
+									duration: 0.3,
+								}
+							)
+							wannaWorkWithMe.classList.add("animate-pulse");
+						}, 500);
+					}
+				}
+			);
+		});
+	}
+}
+
+export function appearStart() {
+
 }

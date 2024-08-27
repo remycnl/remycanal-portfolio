@@ -98,7 +98,8 @@
 					class="flex flex-col gap-y-20 justify-center items-center w-full mt-20 lg:mt-32 2xl:mt-40 h-fit">
 					<div class="bento grid gap-5 w-full h-full">
 						<article
-							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+						id="experience-nbr"
+							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-[filter] duration-[1s]">
 							<div
 								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-white">
 								<p
@@ -116,7 +117,7 @@
 								class="absolute border-[1.25rem] border-black top-[-40%] right-[-40%] h-[80%] w-[80%] rounded-full bg-secondary transition-colors duration-[1s]"></div>
 						</article>
 						<article
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-[filter] duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
 								<p
@@ -130,7 +131,7 @@
 							</div>
 						</article>
 						<article
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-[filter] duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
 								<p class="text-[1.5rem] 2xl:text-[2rem] font-[Orbitron]">
@@ -142,7 +143,8 @@
 							</div>
 						</article>
 						<article
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+						id="projects-nbr"
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-[filter] duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-white text-3xl lg:text-xl 2xl:text-4xl">
 								<div
@@ -153,15 +155,16 @@
 								<div
 									class="flex flex-col justify-center gap-y-8 lg:gap-y-7 2xl:gap-y-10 w-full h-full items-end">
 									<p
+										id="projects-number"
 										class="text-[6rem] lg:text-[5rem] 2xl:text-[8rem] font-[Orbitron]">
-										10
+										0
 									</p>
 									<p class="font-[Orbitron]">websites</p>
 								</div>
 							</div>
 						</article>
 						<article
-							class="article relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							class="article relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-[filter] duration-[1s]">
 							<div
 								class="w-full h-full gap-x-5 gap-y-16 flex flex-col md:flex-row justify-between items-center px-7 py-10 text-lg md:text-sm 2xl:text-lg text-secondary transition-colors duration-[1s]">
 								<div
@@ -175,7 +178,8 @@
 								</div>
 								<div
 									class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-start text-start">
-									<div class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+									<div
+										class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-up" mode="out-in">
 											<div
 												v-if="!isValueHover1"
@@ -188,7 +192,7 @@
 													color="var(--primary-color)"
 													class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
 												<p class="font-[Orbitron] font-bold uppercase">
-													Simplicity <br class="md:hidden">Sophistication
+													Simplicity <br class="md:hidden" />Sophistication
 												</p>
 											</div>
 											<p
@@ -201,7 +205,8 @@
 											</p>
 										</transition>
 									</div>
-									<div class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+									<div
+										class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-down" mode="out-in">
 											<div
 												v-if="!isValueHover2"
@@ -214,7 +219,7 @@
 													color="var(--primary-color)"
 													class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
 												<p class="font-[Orbitron] font-bold uppercase">
-													Innovative <br class="md:hidden">Meticulous
+													Innovative <br class="md:hidden" />Meticulous
 												</p>
 											</div>
 											<p
@@ -240,7 +245,8 @@
 								</div>
 								<div
 									class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-end text-end">
-									<div class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+									<div
+										class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-up" mode="out-in">
 											<div
 												class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
@@ -248,7 +254,7 @@
 												@mouseenter="isValueHover3 = true"
 												@click="isValueHover3 = true">
 												<p class="font-[Orbitron] font-bold uppercase">
-													Autonomous <br class="md:hidden">Listening
+													Autonomous <br class="md:hidden" />Listening
 												</p>
 												<Icon
 													name="game-icons:suckered-tentacle"
@@ -264,7 +270,8 @@
 											</p>
 										</transition>
 									</div>
-									<div class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+									<div
+										class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-down" mode="out-in">
 											<div
 												class="flex flex-row gap-x-3 justify-end items-center"
@@ -272,7 +279,7 @@
 												@mouseenter="isValueHover4 = true"
 												@click="isValueHover4 = true">
 												<p class="font-[Orbitron] font-bold uppercase">
-													Open-minded <br class="md:hidden">Passionate
+													Open-minded <br class="md:hidden" />Passionate
 												</p>
 												<Icon
 													name="game-icons:techno-heart"
@@ -300,6 +307,7 @@
 						</article>
 					</div>
 					<a
+					id="wanna-work-with-me"
 						href="#"
 						class="clickable hover-scale-effect cursor-none active:scale-95 transition-all duration-75">
 						<h3
@@ -623,8 +631,10 @@ import {
 	hideProject,
 	stickyProject,
 	apparitionMobileProjectCards,
+	appearBento,
+	appearStart,
 } from "~/plugins/gsap";
-import { mouseEffect, setExperienceTime } from "~/plugins/global.js";
+import { mouseEffect } from "~/plugins/global.js";
 
 const isValueHover1 = ref(false);
 const isValueHover2 = ref(false);
@@ -971,9 +981,10 @@ watch(route, () => {
 onMounted(() => {
 	updateFavicon("purple");
 	applyEffects();
-	setExperienceTime();
 	stickyProject();
 	apparitionMobileProjectCards();
+	appearBento();
+	appearStart();
 
 	const backToTopButton = document.querySelector(".back-to-top");
 	if (backToTopButton) {

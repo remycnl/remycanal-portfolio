@@ -192,3 +192,20 @@ export function setExperienceTime() {
     // Démarrer l'animation
     incrementExperience();
 }
+
+export function setProjectsCounter() {
+    let nbrProjects = 10;
+
+    let currentDisplayValue = 0;
+    const incrementSpeed = 100;
+
+    function incrementProjectsNbr() {
+        if (currentDisplayValue < nbrProjects) {
+            currentDisplayValue++;
+            document.getElementById("projects-number").textContent = currentDisplayValue;
+            setTimeout(incrementProjectsNbr, incrementSpeed);
+        }
+    }
+
+    incrementProjectsNbr();
+}

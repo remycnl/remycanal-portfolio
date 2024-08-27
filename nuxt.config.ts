@@ -30,7 +30,6 @@ export default defineNuxtConfig({
         Orbitron: true,
         "Share Tech Mono": true,
         Schoolbell: true,
-        Neonderthaw: true,
         // Raleway: true,
         // "RocknRoll One": true,
         // Acme: true,
