@@ -544,12 +544,10 @@ export function appearBento() {
 	const wannaWorkWithMe = document.getElementById("wanna-work-with-me");
 
 	if (isMobile) {
-		gsap.set(wannaWorkWithMe,
-			{
-				opacity: 0,
-				y: -100,
-			}
-		)
+		gsap.set(wannaWorkWithMe, {
+			opacity: 0,
+			y: -100,
+		});
 		articles.forEach((article) => {
 			gsap.fromTo(
 				article,
@@ -578,30 +576,30 @@ export function appearBento() {
 							}
 						},
 					},
-					onComplete: () => {
-						setTimeout(() => {
-							gsap.to(wannaWorkWithMe,
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.3,
-								}
-							)
-							wannaWorkWithMe.classList.add("animate-pulse");
-						}, 1000);
-					}
 				}
 			);
+		});
+		gsap.to(wannaWorkWithMe, {
+			opacity: 1,
+			y: 0,
+			duration: 2,
+			ease: "elastic.out(1, 0.3)",
+			scrollTrigger: {
+				trigger: wannaWorkWithMe,
+				start: "top 80%",
+				once: true,
+			},
+			onComplete: () => {
+				wannaWorkWithMe.classList.add("animate-pulse");
+			},
 		});
 	} else {
 		let randomOrder = [...articles].sort(() => Math.random() - 0.5);
 
-		gsap.set(wannaWorkWithMe,
-			{
-				opacity: 0,
-				y: -100,
-			}
-		)
+		gsap.set(wannaWorkWithMe, {
+			opacity: 0,
+			y: -100,
+		});
 
 		randomOrder.forEach((article, index) => {
 			gsap.fromTo(
@@ -634,16 +632,15 @@ export function appearBento() {
 					},
 					onComplete: () => {
 						setTimeout(() => {
-							gsap.to(wannaWorkWithMe,
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.3,
-								}
-							)
+							gsap.to(wannaWorkWithMe, {
+								opacity: 1,
+								y: 0,
+								duration: 2,
+								ease: "elastic.out(1, 0.3)",
+							});
 							wannaWorkWithMe.classList.add("animate-pulse");
 						}, 500);
-					}
+					},
 				}
 			);
 		});
@@ -651,5 +648,94 @@ export function appearBento() {
 }
 
 export function appearStart() {
+	const width = window.innerWidth;
+	const isMobile = width <= 768;
+	const isTablet = width > 768 && width <= 1024;
+	const isDesktop = width > 1024;
 
+	const avatar = document.getElementById("avatar");
+	const buttonCV = document.getElementById("download-cv");
+	const buttonColor = document.getElementById("color-button");
+
+	// Fonction réutilisable pour animer un élément
+	function animateElement(selector, fromProps, toProps) {
+		gsap.fromTo(selector, fromProps, toProps);
+	}
+
+	// Configuration des paramètres en fonction de l'appareil
+	const easeValueAvatar = isMobile
+		? "elastic.out(0.8, 1)"
+		: isTablet
+		? "elastic.out(0.85, 1)"
+		: "elastic.out(1, 0.60)";
+
+	// Animation de l'avatar
+	animateElement(
+		avatar,
+		{ y: 1000, opacity: 0 },
+		{ y: 0, opacity: 1, duration: 3, ease: easeValueAvatar }
+	);
+
+	// Animation pour firstname et lastname
+	const commonAnimation = { duration: 3, ease: "elastic.out(1, 0.5)" };
+	animateElement(
+		".firstname-about-me",
+		{ x: 700, opacity: 0 },
+		{ x: 0, opacity: 1, ...commonAnimation }
+	);
+	animateElement(
+		".lastname-about-me",
+		{ x: -900, opacity: 0 },
+		{ x: 0, opacity: 1, ...commonAnimation }
+	);
+
+	// Animations spécifiques pour Desktop et Tablet
+	if (isDesktop) {
+		animateElement(
+			".web",
+			{ x: 900, opacity: 0 },
+			{ x: 0, opacity: 1, ...commonAnimation }
+		);
+		animateElement(
+			".developer",
+			{ x: -700, opacity: 0 },
+			{ x: 0, opacity: 1, ...commonAnimation }
+		);
+		animateElement(
+			".about-me-paragraph",
+			{ x: 400, opacity: 0 },
+			{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+		);
+		animateElement(
+			buttonCV,
+			{ x: 500, opacity: 0 },
+			{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+		);
+		animateElement(
+			buttonColor,
+			{ x: -500, opacity: 0 },
+			{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+		);
+	} else if (isTablet) {
+		animateElement(
+			".web",
+			{ y: 400, opacity: 0 },
+			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+		);
+		animateElement(
+			".developer",
+			{ y: 400, opacity: 0 },
+			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+		);
+		animateElement(
+			".about-me-paragraph",
+			{ y: 500, opacity: 0 },
+			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+		);
+		animateElement(
+			buttonCV,
+			{ y: 600, opacity: 0 },
+			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+		);
+	}
 }

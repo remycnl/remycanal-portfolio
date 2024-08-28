@@ -18,26 +18,36 @@
 				<div
 					class="flex flex-col lg:flex-row justify-between items-center gap-y-10">
 					<NuxtImg
+						id="avatar"
 						src="/img/avatar.png"
 						format="webp"
 						alt="Rémy Canal"
-						class="icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
+						class="opacity-0 icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
 					<div
 						class="flex flex-col justify-center text-center w-full lg:w-7/12 lg:text-start lg:gap-y-14 z-50">
 						<h1
-							class="-mt-36 md:-mt-20 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
+							class="-mt-36 md:-mt-40 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
 							<span
-								class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[5rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6rem] lg:leading-none 2xl:leading-[5.8rem]"
-								>Rémy <span class="ml-28 md:ml-16">Canal</span></span
+								class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[6rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6.5rem] lg:leading-none 2xl:leading-[5.8rem]"
+								><div class="firstname-about-me opacity-0 md:mr-20 lg:mr-0">
+									Rémy
+								</div>
+								<div
+									class="lastname-about-me opacity-0 ml-28 md:ml-20 lg:ml-16">
+									Canal
+								</div></span
 							>
 							<span
-								class="text-color-saturate text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
-								>Web <span class="lg:ml-16">Developer</span></span
+								class="text-color-saturate flex flex-row lg:flex-col gap-x-5 text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
+								><div class="web md:opacity-0">Web</div>
+								<div class="developer md:opacity-0 lg:ml-16">
+									Developer
+								</div></span
 							>
 						</h1>
 						<h4
 							style="font-family: Share Tech Mono"
-							class="text-white text-lg 2xl:text-2xl mx-4 md:mx-0 lg:text-justify">
+							class="about-me-paragraph md:opacity-0 text-white text-lg 2xl:text-2xl mx-4 md:mx-0 lg:text-justify">
 							I'm a student at Epitech, on my way to becoming a software
 							engineer specialized in crafting outstanding and full digital
 							experiences. Based in Lyon, France, I ensure responsive design,
@@ -46,50 +56,54 @@
 						</h4>
 						<div
 							class="flex flex-col-reverse gap-10 2xl:flex-row mt-10 mb-7 lg:mb-0 justify-center items-center lg:items-end 2xl:items-center lg:justify-between">
-							<button
-								@click="toggleColors"
-								class="group circle-container relative hover-scale-effect clickable cursor-none w-fit lg:w-[50px] h-fit lg:h-[50px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center shadow-around hover:bg-secondary-dark bg-black transition-all duration-500">
-								<div>
+							<div id="color-button" class="lg:opacity-0">
+								<button
+									@click="toggleColors"
+									class="group circle-container relative hover-scale-effect clickable cursor-none w-fit lg:w-[50px] h-fit lg:h-[50px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center shadow-around hover:bg-secondary-dark bg-black transition-all duration-500">
+									<div>
+										<Icon
+											name="material-symbols:format-color-fill-rounded"
+											color="var(--white)"
+											class="w-5 h-auto group-hover:lg:opacity-0 lg:-ml-1 mb-1 transition-all duration-300" />
+									</div>
+									<div
+										class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-none flex justify-center items-center gap-x-4">
+										<label
+											v-for="(color, index) in colorOptions"
+											:key="index"
+											class="absolute cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
+											<input
+												type="checkbox"
+												class="cursor-none"
+												:class="`color-${index + 1} cyberpunk-checkbox`"
+												v-model="checkboxes[index]"
+												@change="
+													updateCheckbox(
+														index,
+														color.primary,
+														color.secondary,
+														color.transparent,
+														color.family
+													);
+													updateFavicon(color.family);
+												" />
+										</label>
+									</div>
+								</button>
+							</div>
+							<div id="download-cv" class="md:opacity-0">
+								<a
+									href="/doc/Rémy Canal - curriculum vitae.pdf"
+									target="_blank"
+									download
+									class="hover-scale-effect clickable mix-darken cursor-none button group w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
+									Download CV
 									<Icon
-										name="material-symbols:format-color-fill-rounded"
-										color="var(--white)"
-										class="w-5 h-auto group-hover:lg:opacity-0 lg:-ml-1 mb-1 transition-all duration-300" />
-								</div>
-								<div
-									class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-none flex justify-center items-center gap-x-4">
-									<label
-										v-for="(color, index) in colorOptions"
-										:key="index"
-										class="absolute cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
-										<input
-											type="checkbox"
-											class="cursor-none"
-											:class="`color-${index + 1} cyberpunk-checkbox`"
-											v-model="checkboxes[index]"
-											@change="
-												updateCheckbox(
-													index,
-													color.primary,
-													color.secondary,
-													color.transparent,
-													color.family
-												);
-												updateFavicon(color.family);
-											" />
-									</label>
-								</div>
-							</button>
-							<a
-								href="/doc/Rémy Canal - curriculum vitae.pdf"
-								target="_blank"
-								download
-								class="hover-scale-effect clickable mix-darken cursor-none button group w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
-								Download CV
-								<Icon
-									name="material-symbols:download-rounded"
-									color="var(--primary-color)"
-									class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
-							</a>
+										name="material-symbols:download-rounded"
+										color="var(--primary-color)"
+										class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -98,7 +112,7 @@
 					class="flex flex-col gap-y-20 justify-center items-center w-full mt-20 lg:mt-32 2xl:mt-40 h-fit">
 					<div class="bento grid gap-5 w-full h-full">
 						<article
-						id="experience-nbr"
+							id="experience-nbr"
 							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-[filter] duration-[1s]">
 							<div
 								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-white">
@@ -143,7 +157,7 @@
 							</div>
 						</article>
 						<article
-						id="projects-nbr"
+							id="projects-nbr"
 							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-[filter] duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-white text-3xl lg:text-xl 2xl:text-4xl">
@@ -306,15 +320,17 @@
 								class="absolute h-[20rem] w-[17rem] 2xl:w-[30rem] rounded-full bg-secondary transition-colors duration-[1s] border-[1.25rem] border-black"></div>
 						</article>
 					</div>
-					<a
-					id="wanna-work-with-me"
-						href="#"
-						class="clickable hover-scale-effect cursor-none active:scale-95 transition-all duration-75">
-						<h3
-							class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-[3rem] text-white hover:tracking-widest transition-all duration-500">
-							Wanna work with me ?
-						</h3>
-					</a>
+					<div id="wanna-work-with-me">
+						<div
+							class="scale-100 hover:scale-105 active:scale-95 transform transition-transform duration-75 lg:duration-500">
+							<a href="#" class="clickable hover-scale-effect cursor-none">
+								<h3
+									class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-[3rem] text-white hover:tracking-widest transition-all duration-500">
+									Wanna work with me ?
+								</h3>
+							</a>
+						</div>
+					</div>
 				</div>
 				<!-- <div
 					class="flex flex-wrap lg:flex-row justify-center md:justify-evenly lg:justify-between 2xl:justify-center gap-7 mt-20 lg:mt-26 -mb-20">
@@ -980,11 +996,11 @@ watch(route, () => {
 
 onMounted(() => {
 	updateFavicon("purple");
+	appearStart();
 	applyEffects();
 	stickyProject();
 	apparitionMobileProjectCards();
 	appearBento();
-	appearStart();
 
 	const backToTopButton = document.querySelector(".back-to-top");
 	if (backToTopButton) {
