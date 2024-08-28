@@ -17,7 +17,7 @@ html {
 	--blue: #32a1da;
 	--gray: #868686;
 	--black: #111319;
-	--white: #D0D4DB;
+	--white: #d0d4db;
 	--primary-color: #6c34cc;
 	--primary-color-transparent: #6c34cc4f;
 	--secondary-color: #301563;
@@ -168,4 +168,8 @@ p {
 .menu-line-animation:hover::before {
 	width: 100%;
 	left: 0;
+}
+
+.transition-filter-bgcolor {
+	transition-property: filter, background-color;
 }

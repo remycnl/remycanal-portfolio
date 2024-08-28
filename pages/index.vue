@@ -113,7 +113,7 @@
 					<div class="bento grid gap-5 w-full h-full">
 						<article
 							id="experience-nbr"
-							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-[filter] duration-[1s]">
+							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
 								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-white">
 								<p
@@ -131,7 +131,7 @@
 								class="absolute border-[1.25rem] border-black top-[-40%] right-[-40%] h-[80%] w-[80%] rounded-full bg-secondary transition-colors duration-[1s]"></div>
 						</article>
 						<article
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-[filter] duration-[1s]">
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-filter-bgcolor duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
 								<p
@@ -145,7 +145,7 @@
 							</div>
 						</article>
 						<article
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-[filter] duration-[1s]">
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-filter-bgcolor duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
 								<p class="text-[1.5rem] 2xl:text-[2rem] font-[Orbitron]">
@@ -158,7 +158,7 @@
 						</article>
 						<article
 							id="projects-nbr"
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-[filter] duration-[1s]">
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-white text-3xl lg:text-xl 2xl:text-4xl">
 								<div
@@ -178,7 +178,7 @@
 							</div>
 						</article>
 						<article
-							class="article relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-[filter] duration-[1s]">
+							class="article relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
 								class="w-full h-full gap-x-5 gap-y-16 flex flex-col md:flex-row justify-between items-center px-7 py-10 text-lg md:text-sm 2xl:text-lg text-secondary transition-colors duration-[1s]">
 								<div
