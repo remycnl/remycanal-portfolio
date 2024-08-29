@@ -193,11 +193,10 @@
 								<div
 									class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-start text-start">
 									<div
-										class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+										class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-up" mode="out-in">
 											<div
 												v-if="!isValueHover1"
-												@mouseenter="isValueHover1 = true"
 												@click="isValueHover1 = true"
 												class="flex flex-row gap-x-3 justify-start items-center"
 												key="icon-text">
@@ -211,7 +210,6 @@
 											</div>
 											<p
 												v-else
-												@mouseleave="isValueHover1 = false"
 												@click="isValueHover1 = false"
 												class="text-center text-white w-3/4 md:w-full"
 												key="description">
@@ -220,11 +218,10 @@
 										</transition>
 									</div>
 									<div
-										class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+										class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-down" mode="out-in">
 											<div
 												v-if="!isValueHover2"
-												@mouseenter="isValueHover2 = true"
 												@click="isValueHover2 = true"
 												class="flex flex-row-reverse md:flex-row gap-x-3 justify-start items-center text-end md:text-start"
 												key="icon-text">
@@ -238,7 +235,6 @@
 											</div>
 											<p
 												v-else
-												@mouseleave="isValueHover2 = false"
 												@click="isValueHover2 = false"
 												class="text-center text-white w-3/4 md:w-full"
 												key="description">
@@ -260,12 +256,11 @@
 								<div
 									class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-end text-end">
 									<div
-										class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+										class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-up" mode="out-in">
 											<div
 												class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
 												v-if="!isValueHover3"
-												@mouseenter="isValueHover3 = true"
 												@click="isValueHover3 = true">
 												<p class="font-[Orbitron] font-bold uppercase">
 													Autonomous <br class="md:hidden" />Listening
@@ -277,7 +272,6 @@
 											</div>
 											<p
 												v-else
-												@mouseleave="isValueHover3 = false"
 												@click="isValueHover3 = false"
 												class="text-center text-white w-3/4 md:w-full">
 												Independently developed with a focus on user feedback
@@ -285,12 +279,11 @@
 										</transition>
 									</div>
 									<div
-										class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+										class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-down" mode="out-in">
 											<div
 												class="flex flex-row gap-x-3 justify-end items-center"
 												v-if="!isValueHover4"
-												@mouseenter="isValueHover4 = true"
 												@click="isValueHover4 = true">
 												<p class="font-[Orbitron] font-bold uppercase">
 													Open-minded <br class="md:hidden" />Passionate
@@ -302,7 +295,6 @@
 											</div>
 											<p
 												v-else
-												@mouseleave="isValueHover4 = false"
 												@click="isValueHover4 = false"
 												class="text-center text-white w-3/4 md:w-full">
 												Crafted with an open heart and driven by passion
