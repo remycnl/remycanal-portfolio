@@ -467,13 +467,13 @@ export function animationStarsCardSkill() {
 export function showProject() {
 	const containerProject = document.querySelector(".container-project");
 
-	gsap.set(containerProject, { x: -1000, y: 600, rotate: -25, opacity: 1 });
+	gsap.set(containerProject, { x: -1500, y: 900, rotate: -30, opacity: 1 });
 
 	gsap.to(containerProject, {
 		x: 0,
 		y: 0,
 		rotate: 0,
-		duration: 1,
+		duration: 1.5,
 		ease: "power2.out",
 	});
 }
@@ -481,10 +481,10 @@ export function showProject() {
 export function hideProject() {
 	const containerProject = document.querySelector(".container-project");
 	gsap.to(containerProject, {
-		x: -1000,
-		y: 600,
-		rotate: -25,
-		duration: 1,
+		x: -1500,
+		y: 900,
+		rotate: -30,
+		duration: 1.5,
 		ease: "power2.out",
 	});
 }

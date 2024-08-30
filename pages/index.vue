@@ -521,7 +521,7 @@
 						<Icon
 							name="game-icons:wind-slap"
 							color="var(--secondary-color)"
-							class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-auto transition-all duration-300" />
+							class="absolute top-0 left-[-15%] 2xl:left-[-40%] w-[50rem] 2xl:w-[70rem] opacity-30 h-auto transition-all duration-300" />
 						<div
 							class="relative overflow-visible container-project opacity-0 bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-1/2 h-[35rem] rounded-[1.5rem]">
 							<Transition name="fade">
