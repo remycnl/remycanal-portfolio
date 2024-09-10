@@ -239,7 +239,7 @@ export function animationFooter() {
 	if (window.innerWidth < 1024) {
 		const lettersContainer = document.getElementById("letters");
 		const alphabet =
-			"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_".split(
+			"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_▞▚▞▚▞▚▞_EEFFOC_DNA_♡_HTIW_EDAM_".split(
 				""
 			);
 		let index = 0;
@@ -294,7 +294,7 @@ export function animationFooterBottom() {
 	if (window.innerWidth >= 1024) {
 		const lettersContainer = document.getElementById("letters-bottom");
 		const alphabet =
-			"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_".split(
+			"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_▞▚▞▚▞▚▞_EEFFOC_DNA_♡_HTIW_EDAM_".split(
 				""
 			);
 		let index = 0;
