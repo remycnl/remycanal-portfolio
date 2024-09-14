@@ -548,7 +548,7 @@
 											:frames="20" />
 									</div>
 									<div
-										class="relative image-animation-container my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden"></div>
+										class="relative image-animation-container my-5 rounded-[1.5rem] w-[90%] h-[20rem] border-2 border-gray-semi overflow-hidden"></div>
 									<div
 										class="flex flex-wrap w-[90%] gap-3 my-5"
 										v-show="hoveredProject">
@@ -618,11 +618,14 @@
 						</div>
 					</div>
 				</div>
+
 				<div class="text-3xl text-white font-bold">
 					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
 					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
 					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
 				</div>
+				<!-- Contact Form -->
+				<ContactForm/>
 			</div>
 		</div>
 	</div>
@@ -743,7 +746,7 @@ const projects: Project[] = [
 		type: "website",
 		last: true,
 		date: "2023",
-		technos: ["Wordpress", "HTML", "CSS", "JavaScript", "TailwindCSS"],
+		technos: ["Wordpress", "Elementor", "HTML", "CSS", "JavaScript", "TailwindCSS"],
 	},
 ];
 
