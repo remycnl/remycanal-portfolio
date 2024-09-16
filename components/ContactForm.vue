@@ -2,7 +2,8 @@
 	<div
 		class="relative w-full mb-40 flex flex-col lg:flex-row gap-20 items-start justify-between">
 		<div
-			class="relative lg:p-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
+		id="container-contact"
+			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
 			<h2
 				class="text-[2rem] md:text-[3rem] 2xl:text-[3.5rem] font-bold text-secondary md:mb-1 text-start">
 				Just say Hello !
@@ -189,7 +190,8 @@
 			</Transition>
 		</div>
 		<div
-			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl lg:rounded-[3rem] bg-secondary-transparent shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
+			id="contact"
+			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-transparent shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
 			<h2
 				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-secondary mb-5 text-start">
 				Contact me
@@ -344,6 +346,11 @@
 
 <script setup>
 import { reactive, ref, watch } from "vue";
+import { stickyContact } from "~/plugins/gsap.js";
+
+onMounted(() => {
+	stickyContact();
+});
 
 const form = reactive({
 	firstname: "",

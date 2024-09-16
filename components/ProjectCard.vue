@@ -78,10 +78,6 @@ const props = defineProps({
 	);
 }
 
-.logo-img {
-	filter: drop-shadow(0 0 10px var(--black));
-}
-
 .techno-badge {
 	padding: 4px 8px;
 	border-radius: 12px;

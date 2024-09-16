@@ -41,7 +41,7 @@
 					<img
 						:src="`/img/logo-${primaryColor}.png`"
 						alt="Rémy Canal"
-						class="change-img-color hover-scale-effect hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
+						class="change-img-color text-shadow hover-scale-effect hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
 					class="flex flex-col lg:flex-row tracking-widest lg:tracking-normal 2xl:tracking-widest gap-x-20 gap-y-10 text-white uppercase items-center">
@@ -57,7 +57,7 @@
 								applyZoomEffect(index);
 							"
 							href="#"
-							class="menu-sm transition-all duration-300 ease-in-out text-xl hover-scale-effect clickable cursor-none">
+							class="menu-sm text-shadow transition-all duration-300 ease-in-out text-xl hover-scale-effect clickable cursor-none">
 							{{ menu }}
 						</a>
 					</span>

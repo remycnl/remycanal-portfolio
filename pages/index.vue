@@ -356,8 +356,9 @@
 					Skills
 				</h2>
 				<div
-					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
+					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center lg:items-start gap-40 2xl:gap-x-60 gap-y-20 my-20">
 					<div
+					id="skill-card"
 						class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary rounded-3xl flex flex-row justify-between">
 						<div
 							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary w-[12%] md:w-[9%] h-fit">
@@ -420,17 +421,13 @@
 						</div>
 					</div>
 					<div
+					id="container-skills"
 						class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
 						<NuxtImg
 							:src="`/img/details-skills-${selectedColor}.png`"
 							format="webp"
-							alt="Click on bubbles to see details"
-							class="hover:saturate-200 transition-all duration-500 hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[55%] right-[78%] 2xl:right-[70%] z-10" />
-						<NuxtImg
-							:src="`/img/mobile-details-skills-${selectedColor}.png`"
-							format="webp"
 							alt="Click on bubbles to see details (mobile)"
-							class="hover:saturate-200 transition-all duration-500 lg:hidden absolute scale-50 bottom-[80%] md:bottom-[65%] right-[30%] md:right-[22%] z-10" />
+							class="hover:saturate-200 transition-all duration-500 absolute scale-50 bottom-[80%] md:bottom-[65%] lg:bottom-[74%] right-[30%] md:right-[22%] lg:right-[40%] z-10" />
 						<NuxtImg
 							:src="`/img/stars-info-${selectedColor}.png`"
 							format="webp"
@@ -644,6 +641,7 @@ import {
 	apparitionMobileProjectCards,
 	appearBento,
 	appearStart,
+	stickySkills,
 } from "~/plugins/gsap";
 import { mouseEffect } from "~/plugins/global.js";
 
@@ -994,6 +992,7 @@ onMounted(() => {
 	appearStart();
 	applyEffects();
 	stickyProject();
+	stickySkills();
 	apparitionMobileProjectCards();
 	appearBento();
 

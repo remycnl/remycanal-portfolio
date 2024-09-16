@@ -21,6 +21,8 @@ export default defineNuxtPlugin(() => {
 		apparitionMobileProjectCards,
 		appearBento,
 		appearStart,
+		stickyContact,
+		stickySkills,
 	};
 });
 
@@ -501,7 +503,7 @@ export function stickyProject() {
 				trigger: projects,
 				start: "top 30%",
 				end: "bottom 80%",
-				scrub: 0,
+				scrub: 0.5,
 			},
 		});
 	}
@@ -737,5 +739,45 @@ export function appearStart() {
 			{ y: 600, opacity: 0 },
 			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
 		);
+	}
+}
+
+export function stickyContact() {
+	const container = document.getElementById("container-contact");
+	const contact = document.getElementById("contact");
+	const width = window.innerWidth;
+	const isDesktop = width > 1024;
+
+	if (isDesktop && container.offsetHeight > contact.offsetHeight) {
+		gsap.to(contact, {
+			y: () => `${container.offsetHeight - contact.offsetHeight}px`,
+			ease: "none",
+			scrollTrigger: {
+				trigger: container,
+				start: "top 30%",
+				end: "bottom 80%",
+				scrub: 0.5,
+			},
+		});
+	}
+}
+
+export function stickySkills() {
+	const container = document.getElementById("container-skills");
+	const skillCard = document.getElementById("skill-card");
+	const width = window.innerWidth;
+	const isDesktop = width > 1024;
+
+	if (isDesktop && container.offsetHeight > skillCard.offsetHeight) {
+		gsap.to(skillCard, {
+			y: () => `${container.offsetHeight - skillCard.offsetHeight}px`,
+			ease: "none",
+			scrollTrigger: {
+				trigger: container,
+				start: "top 30%",
+				end: "bottom 80%",
+				scrub: 0.5,
+			},
+		});
 	}
 }
