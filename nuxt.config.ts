@@ -15,6 +15,9 @@ export default defineNuxtConfig({
     '~/assets/css/transition.css',
     '~/assets/css/project.css',
     '~/assets/css/bento.css',
+    '~/assets/css/checkbox.css',
+    '~/assets/css/loader.css',
+    '~/assets/css/clipboard.css',
   ],
 
   postcss: {

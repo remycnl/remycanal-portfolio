@@ -56,13 +56,13 @@ export function toggleDropdown() {
 			});
 			gsap.to(".second-line", {
 				scaleX: 0,
-				transformOrigin: "left",
+				transformOrigin: "center",
 				duration: 0.2,
 				delay: 0.2,
 			});
 			gsap.to(".first-line", {
 				scaleX: 0,
-				transformOrigin: "left",
+				transformOrigin: "right",
 				duration: 0.2,
 				delay: 0.4,
 			});
@@ -115,21 +115,21 @@ export function toggleDropdown() {
 
 			gsap.to(".first-line", {
 				scaleX: 1,
-				transformOrigin: "left",
+				transformOrigin: "right",
 				duration: 0.2,
-				delay: 0.3,
+				delay: 0.6,
 			});
 			gsap.to(".second-line", {
 				scaleX: 1,
-				transformOrigin: "left",
+				transformOrigin: "center",
 				duration: 0.2,
-				delay: 0.5,
+				delay: 0.8,
 			});
 			gsap.to(".third-line", {
 				scaleX: 1,
 				transformOrigin: "left",
 				duration: 0.2,
-				delay: 0.7,
+				delay: 1,
 			});
 			gsap.to(".toolbar", {
 				opacity: 1,

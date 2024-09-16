@@ -1,14 +1,14 @@
 <template>
 	<div
-		class="w-full mb-40 flex flex-col lg:flex-row gap-20 items-start justify-between">
+		class="relative w-full mb-40 flex flex-col lg:flex-row gap-20 items-start justify-between">
 		<div
-			class="relative rounded-lg p-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
+			class="relative lg:p-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
 			<h2
-				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] font-bold text-secondary md:mb-1 text-start">
+				class="text-[2rem] md:text-[3rem] 2xl:text-[3.5rem] font-bold text-secondary md:mb-1 text-start">
 				Just say Hello !
 			</h2>
 			<h3
-				class="text-[0.9rem] lg:text-[1.5rem] -mt-5 md:-mt-6 lg:-mt-0 text-gray-light mb-5 lg:mb-10 text-start md:tracking-widest">
+				class="text-[1.2rem] md:text-[1.5rem] -mt-5 md:-mt-2 lg:-mt-0 text-gray-light mb-5 lg:mb-10 text-start md:tracking-widest">
 				Let me know more about you
 			</h3>
 
@@ -16,15 +16,15 @@
 			<form
 				@submit.prevent="submitForm"
 				autocomplete="off"
-				class="space-y-6 lg:space-y-10">
+				class="space-y-6 2xl:space-y-10">
 				<!-- Première ligne de champs (prénom et nom de famille) -->
 				<div
-					class="flex flex-col lg:flex-row justify-between items-center gap-y-6 gap-x-10">
+					class="flex flex-col md:flex-row justify-between items-center gap-y-6 md:gap-x-6 2xl:gap-x-10">
 					<input
 						id="firstname"
 						type="text"
 						v-model="form.firstname"
-						class="hover-scale-effect clickable cursor-none w-full lg:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Firstname*"
 						autocomplete="off"
 						required />
@@ -32,7 +32,7 @@
 						id="lastname"
 						type="text"
 						v-model="form.lastname"
-						class="hover-scale-effect clickable cursor-none w-full lg:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Lastname*"
 						autocomplete="off"
 						required />
@@ -40,12 +40,12 @@
 
 				<!-- Deuxième ligne de champs (email et entreprise) -->
 				<div
-					class="flex flex-col lg:flex-row justify-between items-center gap-y-6 gap-x-10">
+					class="flex flex-col md:flex-row justify-between items-center gap-y-6 md:gap-x-6 2xl:gap-x-10">
 					<input
 						id="email"
 						type="email"
 						v-model="form.email"
-						class="hover-scale-effect clickable cursor-none w-full lg:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Email*"
 						autocomplete="off"
 						required />
@@ -53,7 +53,7 @@
 						id="company"
 						type="text"
 						v-model="form.company"
-						class="hover-scale-effect clickable cursor-none w-full lg:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Company"
 						autocomplete="off" />
 				</div>
@@ -63,7 +63,7 @@
 					<textarea
 						id="message"
 						v-model="form.message"
-						class="hover-scale-effect clickable cursor-none w-full h-32 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Message*"
 						autocomplete="off"
 						required></textarea>
@@ -71,38 +71,18 @@
 
 				<!-- RGPD Checkbox -->
 				<div class="flex flex-row justify-start items-start gap-x-3">
-					<div class="checkbox-wrapper">
-						<div class="cbx hover-scale-effect clickable">
-							<input
-								v-model="form.rgpdConsent"
-								type="checkbox"
-								class="cursor-none"
-								id="cbx-12" />
-							<label for="cbx-12"></label>
-							<svg fill="none" viewBox="0 0 15 14" height="14" width="15">
-								<path d="M2 8.36364L6.23077 12L13 2"></path>
-							</svg>
-						</div>
-
-						<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-							<defs>
-								<filter id="goo-12">
-									<feGaussianBlur
-										result="blur"
-										stdDeviation="4"
-										in="SourceGraphic"></feGaussianBlur>
-									<feColorMatrix
-										result="goo-12"
-										values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -7"
-										mode="matrix"
-										in="blur"></feColorMatrix>
-									<feBlend in2="goo-12" in="SourceGraphic"></feBlend>
-								</filter>
-							</defs>
-						</svg>
+					<div
+						class="cntr hover-scale-effect clickable rounded-[10px] shadow-around shadow-black">
+						<input
+							v-model="form.rgpdConsent"
+							class="hidden-xs-up cursor-none"
+							id="cbx"
+							type="checkbox"
+							checked="" />
+						<label class="cbx" for="cbx"></label>
 					</div>
 					<label
-						for="cbx-12"
+						for="cbx"
 						style="font-family: Share Tech Mono"
 						class="hover-scale-effect clickable cursor-none ml-2 text-sm md:text-base text-white">
 						I consent to the use of my personal data for the purpose of
@@ -116,19 +96,36 @@
 					@before-enter="beforeEnter"
 					@enter="enter"
 					@leave="leave">
-					<div v-if="showConsentError" class="w-full flex justify-end">
-						<div
-							class="w-fit flex flex-row gap-x-3 justify-center items-start md:items-center lg:items-start 2xl:items-center bg-yellow-100 rounded-lg py-5 px-7">
-							<div>
-								<Icon
-									name="lucide:message-circle-warning"
-									color="#eab308"
-									class="w-8 h-8" />
-							</div>
+					<div
+						v-if="showConsentError"
+						class="w-full flex justify-start md:justify-end">
+						<div class="flex flex-col gap-2 w-fit">
 							<div
-								style="font-family: Share Tech Mono"
-								class="font-bold text-yellow-500 text-sm lg:text-lg">
-								You must agree to the data processing terms before submitting.
+								class="flex shadow-around shadow-black w-full p-2 h-fit rounded-lg bg-[#232531]">
+								<div class="flex gap-2">
+									<div
+										class="text-yellow-600 bg-white/5 backdrop-blur-xl h-fit p-1 rounded-lg">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke-width="1.5"
+											stroke="currentColor"
+											class="w-9 h-9">
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"></path>
+										</svg>
+									</div>
+									<div>
+										<p class="text-white text-base">Please accept the terms</p>
+										<p class="text-gray-500 text-sm">
+											You must agree to the data processing terms before
+											submitting.
+										</p>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -191,336 +188,274 @@
 				</div>
 			</Transition>
 		</div>
+		<div
+			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl lg:rounded-[3rem] bg-secondary-transparent shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
+			<h2
+				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-secondary mb-5 text-start">
+				Contact me
+			</h2>
+			<div class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+				<div
+					class="flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					<Icon
+						name="material-symbols:alternate-email"
+						color="var(--primary-color)"
+						class="p-1 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-lg bg-secondary-dark" />
+					<div class="w-full flex flex-col items-start">
+						<div class="w-full flex flex-row justify-between items-center">
+							<h3
+								style="font-family: Share Tech Mono"
+								class="text-lg md:text-2xl text-gray-light font-bold">
+								By email
+							</h3>
+							<p class="text-xs md:text-sm text-gray-light">Now</p>
+						</div>
+						<h4
+							ref="emailText"
+							style="font-family: Share Tech Mono"
+							class="text-sm md:text-base text-gray-semi tracking-tight md:tracking-wider">
+							remy.canal@epitech.eu
+						</h4>
+					</div>
+				</div>
+				<div
+					@click="copyToClipboard('emailText')"
+					class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+					<label class="container-clipboard cursor-none p-4 md:p-5">
+						<input type="checkbox" v-model="copiedEmail" />
+						<svg
+							viewBox="0 0 384 512"
+							height="1em"
+							xmlns="http://www.w3.org/2000/svg"
+							class="clipboard">
+							<path
+								d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
+						</svg>
+						<svg
+							viewBox="0 0 384 512"
+							height="1em"
+							xmlns="http://www.w3.org/2000/svg"
+							class="clipboard-check">
+							<path
+								d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
+						</svg>
+					</label>
+				</div>
+			</div>
+			<div class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+				<div
+					class="flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					<Icon
+						name="ic:outline-local-phone"
+						color="var(--primary-color)"
+						class="p-1 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-lg bg-secondary-dark" />
+					<div class="w-full flex flex-col items-start">
+						<div class="w-full flex flex-row justify-between items-center">
+							<h3
+								style="font-family: Share Tech Mono"
+								class="text-lg md:text-2xl text-gray-light font-bold">
+								By phone
+							</h3>
+							<p class="text-xs md:text-sm text-gray-light">Now</p>
+						</div>
+						<h4
+							ref="phoneText"
+							style="font-family: Share Tech Mono"
+							class="text-sm md:text-base text-gray-semi tracking-tight md:tracking-wider">
+							+33 (0)6 19 25 82 99
+						</h4>
+					</div>
+				</div>
+				<div
+					@click="copyToClipboard('phoneText')"
+					class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+					<label class="container-clipboard cursor-none p-4 md:p-5">
+						<input checked="" type="checkbox" v-model="copiedPhone" />
+						<svg
+							viewBox="0 0 384 512"
+							height="1em"
+							xmlns="http://www.w3.org/2000/svg"
+							class="clipboard">
+							<path
+								d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
+						</svg>
+						<svg
+							viewBox="0 0 384 512"
+							height="1em"
+							xmlns="http://www.w3.org/2000/svg"
+							class="clipboard-check">
+							<path
+								d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
+						</svg>
+					</label>
+				</div>
+			</div>
+			<div class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+				<div
+					class="flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					<Icon
+						name="material-symbols:location-on-outline"
+						color="var(--primary-color)"
+						class="p-1 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-lg bg-secondary-dark" />
+					<div class="w-full flex flex-col items-start">
+						<div class="w-full flex flex-row justify-between items-center">
+							<h3
+								style="font-family: Share Tech Mono"
+								class="text-lg md:text-2xl text-gray-light font-bold">
+								My adress
+							</h3>
+							<p class="text-xs md:text-sm text-gray-light">Since 2022</p>
+						</div>
+						<h4
+							ref="locationText"
+							style="font-family: Share Tech Mono"
+							class="text-sm md:text-base text-gray-semi tracking-tight md:tracking-wider">
+							69007 Lyon, France
+						</h4>
+					</div>
+				</div>
+				<div
+					@click="copyToClipboard('locationText')"
+					class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+					<label class="container-clipboard cursor-none p-4 md:p-5">
+						<input checked="" type="checkbox" v-model="copiedLocation" />
+						<svg
+							viewBox="0 0 384 512"
+							height="1em"
+							xmlns="http://www.w3.org/2000/svg"
+							class="clipboard">
+							<path
+								d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
+						</svg>
+						<svg
+							viewBox="0 0 384 512"
+							height="1em"
+							xmlns="http://www.w3.org/2000/svg"
+							class="clipboard-check">
+							<path
+								d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
+						</svg>
+					</label>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script setup>
 import { reactive, ref, watch } from "vue";
 
-// Définir l'état du formulaire réactif
 const form = reactive({
-	firstname: "", // Prénom
-	lastname: "", // Nom de famille
-	email: "", // Email
-	company: "", // Entreprise
-	message: "", // Message
-	rgpdConsent: false, // Consentement RGPD
+	firstname: "",
+	lastname: "",
+	email: "",
+	company: "",
+	message: "",
+	rgpdConsent: false,
 });
 
-// Variables pour gérer la popup et le loader
-const showPopup = ref(false); // Affiche la popup
-const isMessageSent = ref(false); // Message envoyé ou non
+const showPopup = ref(false);
+const isMessageSent = ref(false);
 
-// Variable pour afficher ou non l'erreur de consentement
 const showConsentError = ref(false);
 
-// Fonction pour soumettre le formulaire
 const submitForm = async () => {
 	if (!form.rgpdConsent) {
-		showConsentError.value = true; // Afficher l'erreur si consentement non coché
+		showConsentError.value = true;
 		return;
 	}
 
-	showConsentError.value = false; // Masquer l'erreur si tout est bon
-	showPopup.value = true; // Afficher la popup avec loader
+	showConsentError.value = false;
+	showPopup.value = true;
 
-	// Simuler l'envoi avec un délai
-	await simulateFormSubmission();
+	const formData = {
+		firstname: form.firstname,
+		lastname: form.lastname,
+		email: form.email,
+		company: form.company,
+		message: form.message,
+	};
 
-	// Afficher le message de confirmation après l'envoi
-	isMessageSent.value = true;
+	try {
+		const response = await fetch("/api/send-email", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
 
-	// Attendre une demi-seconde (500 ms) avant de cacher la popup
+		const result = await response.json();
+
+		if (result.status === "success") {
+			isMessageSent.value = true;
+		} else {
+			console.error("Erreur lors de l'envoi:", result.message);
+		}
+	} catch (error) {
+		console.error("Erreur lors de la requête:", error);
+	}
+
 	setTimeout(() => {
 		showPopup.value = false;
 		isMessageSent.value = false;
-	}, 2000); // Délai de 500 ms
+	}, 2000);
 };
 
-// Simuler l'envoi du formulaire avec un délai (par exemple 2 secondes)
-const simulateFormSubmission = () => {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve();
-		}, 2000); // Délai de 2 secondes pour simuler l'envoi
-	});
-};
-
-// Watch pour surveiller les changements dans la case RGPD
 watch(
 	() => form.rgpdConsent,
 	(newValue) => {
 		if (newValue) {
-			showConsentError.value = false; // Si la case est cochée, masquer l'erreur
+			showConsentError.value = false;
 		}
 	}
 );
+
+// Références pour chaque élément à copier
+const emailText = ref(null);
+const phoneText = ref(null);
+const locationText = ref(null);
+
+// Variables réactives pour gérer les états de copie
+const copiedEmail = ref(false);
+const copiedPhone = ref(false);
+const copiedLocation = ref(false);
+
+// Fonction pour copier le contenu dans le presse-papier
+function copyToClipboard(refName) {
+	let textToCopy = "";
+	if (refName === "emailText") {
+		textToCopy = emailText.value.innerText;
+	} else if (refName === "phoneText") {
+		textToCopy = phoneText.value.innerText;
+	} else if (refName === "locationText") {
+		textToCopy = locationText.value.innerText;
+	}
+
+	// Copier le texte dans le presse-papier
+	navigator.clipboard.writeText(textToCopy).then(() => {
+		if (refName === "emailText") {
+			copiedEmail.value = true;
+			setTimeout(() => {
+				copiedEmail.value = false;
+			}, 2000);
+			copiedPhone.value = false;
+			copiedLocation.value = false;
+		} else if (refName === "phoneText") {
+			copiedEmail.value = false;
+			copiedPhone.value = true;
+			setTimeout(() => {
+				copiedPhone.value = false;
+			}, 2000);
+			copiedLocation.value = false;
+		} else if (refName === "locationText") {
+			copiedEmail.value = false;
+			copiedPhone.value = false;
+			copiedLocation.value = true;
+			setTimeout(() => {
+				copiedLocation.value = false;
+			}, 2000);
+		}
+	});
+}
 </script>
-
-<style scoped>
-.dot-spinner {
-	--uib-size: 10rem;
-	--uib-speed: 0.9s;
-	--uib-color: var(--primary-color);
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	height: var(--uib-size);
-	width: var(--uib-size);
-}
-
-.dot-spinner__dot {
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	height: 100%;
-	width: 100%;
-}
-
-.dot-spinner__dot::before {
-	content: "";
-	height: 20%;
-	width: 20%;
-	border-radius: 50%;
-	background-color: var(--uib-color);
-	transform: scale(0);
-	opacity: 0.5;
-	animation: pulse0112 calc(var(--uib-speed) * 1.111) ease-in-out infinite;
-	box-shadow: 0 0 20px rgba(18, 31, 53, 0.3);
-}
-
-.dot-spinner__dot:nth-child(2) {
-	transform: rotate(45deg);
-}
-
-.dot-spinner__dot:nth-child(2)::before {
-	animation-delay: calc(var(--uib-speed) * -0.875);
-}
-
-.dot-spinner__dot:nth-child(3) {
-	transform: rotate(90deg);
-}
-
-.dot-spinner__dot:nth-child(3)::before {
-	animation-delay: calc(var(--uib-speed) * -0.75);
-}
-
-.dot-spinner__dot:nth-child(4) {
-	transform: rotate(135deg);
-}
-
-.dot-spinner__dot:nth-child(4)::before {
-	animation-delay: calc(var(--uib-speed) * -0.625);
-}
-
-.dot-spinner__dot:nth-child(5) {
-	transform: rotate(180deg);
-}
-
-.dot-spinner__dot:nth-child(5)::before {
-	animation-delay: calc(var(--uib-speed) * -0.5);
-}
-
-.dot-spinner__dot:nth-child(6) {
-	transform: rotate(225deg);
-}
-
-.dot-spinner__dot:nth-child(6)::before {
-	animation-delay: calc(var(--uib-speed) * -0.375);
-}
-
-.dot-spinner__dot:nth-child(7) {
-	transform: rotate(270deg);
-}
-
-.dot-spinner__dot:nth-child(7)::before {
-	animation-delay: calc(var(--uib-speed) * -0.25);
-}
-
-.dot-spinner__dot:nth-child(8) {
-	transform: rotate(315deg);
-}
-
-.dot-spinner__dot:nth-child(8)::before {
-	animation-delay: calc(var(--uib-speed) * -0.125);
-}
-
-@keyframes pulse0112 {
-	0%,
-	100% {
-		transform: scale(0);
-		opacity: 0.5;
-	}
-
-	50% {
-		transform: scale(1);
-		opacity: 1;
-	}
-}
-
-@keyframes spin {
-	to {
-		transform: rotate(360deg);
-	}
-}
-
-.checkbox-wrapper {
-	position: relative;
-}
-
-.checkbox-wrapper > svg {
-	position: absolute;
-	top: -130%;
-	left: -170%;
-	width: 110px;
-	pointer-events: none;
-}
-
-.checkbox-wrapper * {
-	box-sizing: border-box;
-}
-
-.checkbox-wrapper input[type="checkbox"] {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	-webkit-tap-highlight-color: transparent;
-	margin: 0;
-}
-
-.checkbox-wrapper input[type="checkbox"]:focus {
-	outline: 0;
-}
-
-.checkbox-wrapper .cbx {
-	width: 24px;
-	height: 24px;
-	top: calc(100px - 12px);
-	left: calc(100px - 12px);
-}
-
-.checkbox-wrapper .cbx input {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 24px;
-	height: 24px;
-	border: 2px solid var(--white);
-	border-radius: 50%;
-}
-
-.checkbox-wrapper .cbx label {
-	width: 24px;
-	height: 24px;
-	background: none;
-	border-radius: 50%;
-	position: absolute;
-	top: 0;
-	left: 0;
-	transform: trasnlate3d(0, 0, 0);
-	pointer-events: none;
-}
-
-.checkbox-wrapper .cbx svg {
-	position: absolute;
-	top: 5px;
-	left: 4px;
-	z-index: 1;
-	pointer-events: none;
-}
-
-.checkbox-wrapper .cbx svg path {
-	stroke: var(--white);
-	stroke-width: 3;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-	stroke-dasharray: 19;
-	stroke-dashoffset: 19;
-	transition: stroke-dashoffset 0.3s ease;
-	transition-delay: 0.2s;
-}
-
-.checkbox-wrapper .cbx input:checked + label {
-	animation: splash 0.6s ease forwards;
-}
-
-.checkbox-wrapper .cbx input:checked + label + svg path {
-	stroke-dashoffset: 0;
-}
-
-@-moz-keyframes splash {
-	40% {
-		background: var(--primary-color);
-		box-shadow: 0 -18px 0 -8px var(--primary-color),
-			16px -8px 0 -8px var(--primary-color),
-			16px 8px 0 -8px var(--primary-color), 0 18px 0 -8px var(--primary-color),
-			-16px 8px 0 -8px var(--primary-color),
-			-16px -8px 0 -8px var(--primary-color);
-	}
-
-	100% {
-		background: var(--primary-color);
-		box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent,
-			32px 16px 0 -10px transparent, 0 36px 0 -10px transparent,
-			-32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
-	}
-}
-
-@-webkit-keyframes splash {
-	40% {
-		background: var(--primary-color);
-		box-shadow: 0 -18px 0 -8px var(--primary-color),
-			16px -8px 0 -8px var(--primary-color),
-			16px 8px 0 -8px var(--primary-color), 0 18px 0 -8px var(--primary-color),
-			-16px 8px 0 -8px var(--primary-color),
-			-16px -8px 0 -8px var(--primary-color);
-	}
-
-	100% {
-		background: var(--primary-color);
-		box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent,
-			32px 16px 0 -10px transparent, 0 36px 0 -10px transparent,
-			-32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
-	}
-}
-
-@-o-keyframes splash {
-	40% {
-		background: var(--primary-color);
-		box-shadow: 0 -18px 0 -8px var(--primary-color),
-			16px -8px 0 -8px var(--primary-color),
-			16px 8px 0 -8px var(--primary-color), 0 18px 0 -8px var(--primary-color),
-			-16px 8px 0 -8px var(--primary-color),
-			-16px -8px 0 -8px var(--primary-color);
-	}
-
-	100% {
-		background: var(--primary-color);
-		box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent,
-			32px 16px 0 -10px transparent, 0 36px 0 -10px transparent,
-			-32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
-	}
-}
-
-@keyframes splash {
-	40% {
-		background: var(--primary-color);
-		box-shadow: 0 -18px 0 -8px var(--primary-color),
-			16px -8px 0 -8px var(--primary-color),
-			16px 8px 0 -8px var(--primary-color), 0 18px 0 -8px var(--primary-color),
-			-16px 8px 0 -8px var(--primary-color),
-			-16px -8px 0 -8px var(--primary-color);
-	}
-
-	100% {
-		background: var(--primary-color);
-		box-shadow: 0 -36px 0 -10px transparent, 32px -16px 0 -10px transparent,
-			32px 16px 0 -10px transparent, 0 36px 0 -10px transparent,
-			-32px 16px 0 -10px transparent, -32px -16px 0 -10px transparent;
-	}
-}
-</style>

@@ -1,0 +1,49 @@
+.container-clipboard {
+	--color: var(--primary-color);
+	--size: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	font-size: var(--size);
+	user-select: none;
+	fill: var(--color);
+}
+
+.container-clipboard .clipboard {
+	animation: keyframes-fill 0.5s;
+}
+
+.container-clipboard .clipboard-check {
+	display: none;
+	animation: keyframes-fill 0.5s;
+}
+
+/* ------ On check event ------ */
+.container-clipboard input:checked ~ .clipboard {
+	display: none;
+}
+
+.container-clipboard input:checked ~ .clipboard-check {
+	display: block;
+}
+
+/* ------ Hide the default checkbox ------ */
+.container-clipboard input {
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+/* ------ Animation ------ */
+@keyframes keyframes-fill {
+	0% {
+		transform: rotate(0deg) scale(0);
+		opacity: 0;
+	}
+
+	50% {
+		transform: rotate(-10deg) scale(1.2);
+	}
+}
