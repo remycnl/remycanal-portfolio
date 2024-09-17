@@ -23,6 +23,7 @@ export default defineNuxtPlugin(() => {
 		appearStart,
 		stickyContact,
 		stickySkills,
+		appearContact,
 	};
 });
 
@@ -780,4 +781,61 @@ export function stickySkills() {
 			},
 		});
 	}
+}
+
+export function appearContact() {
+	const contact = document.getElementById("contact");
+	const notifs = document.querySelectorAll(".notif");
+	const clipboards = document.querySelectorAll(".copy");
+	const times = document.querySelectorAll(".time");
+
+	gsap.set(notifs, {
+		x: 100,
+		opacity: 0,
+	});
+
+	gsap.set(clipboards, {
+		scale: 0.4,
+		opacity: 0,
+	});
+
+	let tl = gsap.timeline({
+		scrollTrigger: {
+			trigger: contact,
+			start: "top 70%",
+		},
+	});
+
+	tl.to(notifs, {
+		x: 0,
+		opacity: 1,
+		ease: "elastic.out(1, 0.3)",
+		duration: 2,
+		stagger: 0.3,
+	});
+
+	tl.to(clipboards, {
+		scale: 1,
+		opacity: 1,
+		ease: "elastic.out(1, 0.3)",
+		duration: 2,
+		stagger: 0.3,
+	}, "-=1");
+
+	tl.call(() => {
+		updateTimeElements(times);
+	});
+}
+
+function updateTimeElements(elements) {
+	const now = Date.now();
+
+	elements.forEach((el) => {
+		el.textContent = "Now";
+
+		setInterval(() => {
+			const elapsedMinutes = Math.floor((Date.now() - now) / 60000);
+			el.textContent = elapsedMinutes === 0 ? "Now" : `${elapsedMinutes} min ago`;
+		}, 60000);
+	});
 }

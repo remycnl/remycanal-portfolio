@@ -2,7 +2,7 @@
 	<div
 		class="relative w-full mb-40 flex flex-col lg:flex-row gap-20 items-start justify-between">
 		<div
-		id="container-contact"
+			id="container-contact"
 			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
 			<h2
 				class="text-[2rem] md:text-[3rem] 2xl:text-[3.5rem] font-bold text-secondary md:mb-1 text-start">
@@ -194,11 +194,12 @@
 			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-transparent shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
 			<h2
 				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-secondary mb-5 text-start">
-				Contact me
+				Get in touch
 			</h2>
-			<div class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+			<div
+				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
 				<div
-					class="flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<Icon
 						name="material-symbols:alternate-email"
 						color="var(--primary-color)"
@@ -207,46 +208,49 @@
 						<div class="w-full flex flex-row justify-between items-center">
 							<h3
 								style="font-family: Share Tech Mono"
-								class="text-lg md:text-2xl text-gray-light font-bold">
+								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
 								By email
 							</h3>
-							<p class="text-xs md:text-sm text-gray-light">Now</p>
+							<p class="time text-xs md:text-sm text-gray-light whitespace-nowrap">Now</p>
 						</div>
 						<h4
 							ref="emailText"
 							style="font-family: Share Tech Mono"
-							class="text-sm md:text-base text-gray-semi tracking-tight md:tracking-wider">
+							class="whitespace-nowrap text-sm md:text-base text-[#435166] tracking-tight md:tracking-wider">
 							remy.canal@epitech.eu
 						</h4>
 					</div>
 				</div>
-				<div
-					@click="copyToClipboard('emailText')"
-					class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-					<label class="container-clipboard cursor-none p-4 md:p-5">
-						<input type="checkbox" v-model="copiedEmail" />
-						<svg
-							viewBox="0 0 384 512"
-							height="1em"
-							xmlns="http://www.w3.org/2000/svg"
-							class="clipboard">
-							<path
-								d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
-						</svg>
-						<svg
-							viewBox="0 0 384 512"
-							height="1em"
-							xmlns="http://www.w3.org/2000/svg"
-							class="clipboard-check">
-							<path
-								d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
-						</svg>
-					</label>
+				<div class="copy">
+					<div
+						@click="copyToClipboard('emailText')"
+						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+						<label class="container-clipboard cursor-none p-4 md:p-5">
+							<input type="checkbox" v-model="copiedEmail" />
+							<svg
+								viewBox="0 0 384 512"
+								height="1em"
+								xmlns="http://www.w3.org/2000/svg"
+								class="clipboard">
+								<path
+									d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
+							</svg>
+							<svg
+								viewBox="0 0 384 512"
+								height="1em"
+								xmlns="http://www.w3.org/2000/svg"
+								class="clipboard-check">
+								<path
+									d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
+							</svg>
+						</label>
+					</div>
 				</div>
 			</div>
-			<div class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+			<div
+				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
 				<div
-					class="flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<Icon
 						name="ic:outline-local-phone"
 						color="var(--primary-color)"
@@ -255,46 +259,49 @@
 						<div class="w-full flex flex-row justify-between items-center">
 							<h3
 								style="font-family: Share Tech Mono"
-								class="text-lg md:text-2xl text-gray-light font-bold">
+								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
 								By phone
 							</h3>
-							<p class="text-xs md:text-sm text-gray-light">Now</p>
+							<p class="time text-xs md:text-sm text-gray-light whitespace-nowrap">Now</p>
 						</div>
 						<h4
 							ref="phoneText"
 							style="font-family: Share Tech Mono"
-							class="text-sm md:text-base text-gray-semi tracking-tight md:tracking-wider">
+							class="whitespace-nowrap text-sm md:text-base text-[#435166] tracking-tight md:tracking-wider">
 							+33 (0)6 19 25 82 99
 						</h4>
 					</div>
 				</div>
-				<div
-					@click="copyToClipboard('phoneText')"
-					class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-					<label class="container-clipboard cursor-none p-4 md:p-5">
-						<input checked="" type="checkbox" v-model="copiedPhone" />
-						<svg
-							viewBox="0 0 384 512"
-							height="1em"
-							xmlns="http://www.w3.org/2000/svg"
-							class="clipboard">
-							<path
-								d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
-						</svg>
-						<svg
-							viewBox="0 0 384 512"
-							height="1em"
-							xmlns="http://www.w3.org/2000/svg"
-							class="clipboard-check">
-							<path
-								d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
-						</svg>
-					</label>
+				<div class="copy">
+					<div
+						@click="copyToClipboard('phoneText')"
+						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+						<label class="container-clipboard cursor-none p-4 md:p-5">
+							<input checked="" type="checkbox" v-model="copiedPhone" />
+							<svg
+								viewBox="0 0 384 512"
+								height="1em"
+								xmlns="http://www.w3.org/2000/svg"
+								class="clipboard">
+								<path
+									d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
+							</svg>
+							<svg
+								viewBox="0 0 384 512"
+								height="1em"
+								xmlns="http://www.w3.org/2000/svg"
+								class="clipboard-check">
+								<path
+									d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
+							</svg>
+						</label>
+					</div>
 				</div>
 			</div>
-			<div class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+			<div
+				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
 				<div
-					class="flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<Icon
 						name="material-symbols:location-on-outline"
 						color="var(--primary-color)"
@@ -303,41 +310,43 @@
 						<div class="w-full flex flex-row justify-between items-center">
 							<h3
 								style="font-family: Share Tech Mono"
-								class="text-lg md:text-2xl text-gray-light font-bold">
-								My adress
+								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
+								See my adress
 							</h3>
-							<p class="text-xs md:text-sm text-gray-light">Since 2022</p>
+							<p class="time text-xs md:text-sm text-gray-light whitespace-nowrap">Now</p>
 						</div>
 						<h4
 							ref="locationText"
 							style="font-family: Share Tech Mono"
-							class="text-sm md:text-base text-gray-semi tracking-tight md:tracking-wider">
+							class="whitespace-nowrap text-sm md:text-base text-[#435166] tracking-tight md:tracking-wider">
 							69007 Lyon, France
 						</h4>
 					</div>
 				</div>
-				<div
-					@click="copyToClipboard('locationText')"
-					class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-					<label class="container-clipboard cursor-none p-4 md:p-5">
-						<input checked="" type="checkbox" v-model="copiedLocation" />
-						<svg
-							viewBox="0 0 384 512"
-							height="1em"
-							xmlns="http://www.w3.org/2000/svg"
-							class="clipboard">
-							<path
-								d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
-						</svg>
-						<svg
-							viewBox="0 0 384 512"
-							height="1em"
-							xmlns="http://www.w3.org/2000/svg"
-							class="clipboard-check">
-							<path
-								d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
-						</svg>
-					</label>
+				<div class="copy">
+					<div
+						@click="copyToClipboard('locationText')"
+						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+						<label class="container-clipboard cursor-none p-4 md:p-5">
+							<input checked="" type="checkbox" v-model="copiedLocation" />
+							<svg
+								viewBox="0 0 384 512"
+								height="1em"
+								xmlns="http://www.w3.org/2000/svg"
+								class="clipboard">
+								<path
+									d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path>
+							</svg>
+							<svg
+								viewBox="0 0 384 512"
+								height="1em"
+								xmlns="http://www.w3.org/2000/svg"
+								class="clipboard-check">
+								<path
+									d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path>
+							</svg>
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -346,10 +355,11 @@
 
 <script setup>
 import { reactive, ref, watch } from "vue";
-import { stickyContact } from "~/plugins/gsap.js";
+import { stickyContact, appearContact } from "~/plugins/gsap.js";
 
 onMounted(() => {
 	stickyContact();
+	appearContact();
 });
 
 const form = reactive({

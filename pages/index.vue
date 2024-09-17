@@ -29,18 +29,18 @@
 							class="-mt-36 md:-mt-40 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
 							<span
 								class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[6rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6.5rem] lg:leading-none 2xl:leading-[5.8rem]"
-								><div class="firstname-about-me opacity-0 md:mr-20 lg:mr-0">
+								><div class="text-shadow firstname-about-me opacity-0 md:mr-20 lg:mr-0">
 									Rémy
 								</div>
 								<div
-									class="lastname-about-me opacity-0 ml-28 md:ml-20 lg:ml-16">
+									class="text-shadow lastname-about-me opacity-0 ml-28 md:ml-20 lg:ml-16">
 									Canal
 								</div></span
 							>
 							<span
 								class="text-color-saturate flex flex-row lg:flex-col gap-x-5 text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
-								><div class="web md:opacity-0">Web</div>
-								<div class="developer md:opacity-0 lg:ml-16">
+								><div class="web md:opacity-0 text-shadow">Web</div>
+								<div class="developer md:opacity-0 lg:ml-16 text-shadow">
 									Developer
 								</div></span
 							>
@@ -115,7 +115,7 @@
 							id="experience-nbr"
 							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
-								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-white">
+								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-gray-light">
 								<p
 									id="experience"
 									class="font-[Orbitron] pt-10 text-[10rem] lg:text-[8rem] 2xl:text-[15rem]">
@@ -160,7 +160,7 @@
 							id="projects-nbr"
 							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
-								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-white text-3xl lg:text-xl 2xl:text-4xl">
+								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-gray-light text-3xl lg:text-xl 2xl:text-4xl">
 								<div
 									class="flex flex-col gap-y-1 items-start justify-center h-full w-full">
 									<p class="font-[Orbitron]">Contributed</p>
@@ -184,7 +184,7 @@
 								<div
 									class="md:hidden w-full h-full flex justify-center items-center">
 									<p
-										class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-white">
+										class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-gray-light">
 										Some of my<span class="text-[4rem] leading-[4rem]"
 											>Values</span
 										>
@@ -211,7 +211,7 @@
 											<p
 												v-else
 												@click="isValueHover1 = false"
-												class="text-center text-white w-3/4 md:w-full"
+												class="text-center text-gray-light w-3/4 md:w-full"
 												key="description">
 												For a smooth user's experience and clean codebase
 											</p>
@@ -236,7 +236,7 @@
 											<p
 												v-else
 												@click="isValueHover2 = false"
-												class="text-center text-white w-3/4 md:w-full"
+												class="text-center text-gray-light w-3/4 md:w-full"
 												key="description">
 												Engineered with creativity and attention to detail
 											</p>
@@ -246,7 +246,7 @@
 								<div
 									class="hidden w-1/3 h-full md:flex justify-center items-start">
 									<p
-										class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-white">
+										class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light">
 										Some of my<span
 											class="text-[3rem] 2xl:text-[5rem] leading-[3rem] 2xl:leading-[5rem]"
 											>Values</span
@@ -273,7 +273,7 @@
 											<p
 												v-else
 												@click="isValueHover3 = false"
-												class="text-center text-white w-3/4 md:w-full">
+												class="text-center text-gray-light w-3/4 md:w-full">
 												Independently developed with a focus on user feedback
 											</p>
 										</transition>
@@ -296,7 +296,7 @@
 											<p
 												v-else
 												@click="isValueHover4 = false"
-												class="text-center text-white w-3/4 md:w-full">
+												class="text-center text-gray-light w-3/4 md:w-full">
 												Crafted with an open heart and driven by passion
 											</p>
 										</transition>

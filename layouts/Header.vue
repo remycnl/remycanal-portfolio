@@ -7,7 +7,7 @@
 				<img
 					:src="`/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
-					class="change-img-color pointer-events-auto hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
+					class="change-img-color text-shadow pointer-events-auto hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="z-50 flex pointer-events-auto items-center justify-center">
 				<div
@@ -15,13 +15,13 @@
 					@click="toggleDropdown">
 					<div class="flex justify-end">
 						<div
-							class="first-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
+							class="first-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5 shadow-around shadow-black"></div>
 					</div>
 					<div
-						class="second-line w-9 h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
+						class="second-line w-9 h-[0.3rem] rounded-full bg-secondary mb-1.5 shadow-around shadow-black"></div>
 					<div class="flex justify-start">
 						<div
-							class="third-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
+							class="third-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5 shadow-around shadow-black"></div>
 					</div>
 				</div>
 			</div>
