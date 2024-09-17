@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="relative w-full mb-40 flex flex-col lg:flex-row gap-20 items-start justify-between">
+		class="relative w-full pb-40 flex flex-col lg:flex-row gap-20 items-start justify-between">
 		<div
 			id="container-contact"
 			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
@@ -25,7 +25,7 @@
 						id="firstname"
 						type="text"
 						v-model="form.firstname"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Firstname*"
 						autocomplete="off"
 						required />
@@ -33,7 +33,7 @@
 						id="lastname"
 						type="text"
 						v-model="form.lastname"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Lastname*"
 						autocomplete="off"
 						required />
@@ -46,7 +46,7 @@
 						id="email"
 						type="email"
 						v-model="form.email"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Email*"
 						autocomplete="off"
 						required />
@@ -54,7 +54,7 @@
 						id="company"
 						type="text"
 						v-model="form.company"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Company"
 						autocomplete="off" />
 				</div>
@@ -64,7 +64,7 @@
 					<textarea
 						id="message"
 						v-model="form.message"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-light bg-opacity-30 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Message*"
 						autocomplete="off"
 						required></textarea>
@@ -191,9 +191,9 @@
 		</div>
 		<div
 			id="contact"
-			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-transparent shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
+			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-dark shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
 			<h2
-				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-secondary mb-5 text-start">
+				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-gray-light mb-5 text-start">
 				Get in touch
 			</h2>
 			<div

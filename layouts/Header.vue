@@ -15,13 +15,13 @@
 					@click="toggleDropdown">
 					<div class="flex justify-end">
 						<div
-							class="first-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5 shadow-around shadow-black"></div>
+							class="first-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
 					</div>
 					<div
-						class="second-line w-9 h-[0.3rem] rounded-full bg-secondary mb-1.5 shadow-around shadow-black"></div>
+						class="second-line w-9 h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
 					<div class="flex justify-start">
 						<div
-							class="third-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5 shadow-around shadow-black"></div>
+							class="third-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
 					</div>
 				</div>
 			</div>

@@ -177,3 +177,8 @@ p {
 .transition-filter-bgcolor {
 	transition-property: filter, background-color;
 }
+
+input:-webkit-autofill {
+	background-color: var(--black) !important;
+	color: var(--white) !important;
+}
