@@ -69,7 +69,7 @@ onMounted(() => {
 				alt="Rémy Canal"
 				class="change-img-color hover:saturate-200 transition-all duration-500 w-40 lg:w-48 2xl:w-60 h-auto" />
 			<div
-				class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-2xl md:text-3xl lg:text-4xl">
+				class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-2xl md:text-3xl lg:text-4xl tracking-wide">
 				<div class="active:scale-95 transition-all duration-75">
 					<a
 						href="#"
