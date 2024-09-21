@@ -25,7 +25,7 @@
 						id="firstname"
 						type="text"
 						v-model="form.firstname"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Firstname*"
 						autocomplete="off"
 						required />
@@ -33,7 +33,7 @@
 						id="lastname"
 						type="text"
 						v-model="form.lastname"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Lastname*"
 						autocomplete="off"
 						required />
@@ -46,7 +46,7 @@
 						id="email"
 						type="email"
 						v-model="form.email"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Email*"
 						autocomplete="off"
 						required />
@@ -54,7 +54,7 @@
 						id="company"
 						type="text"
 						v-model="form.company"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Company"
 						autocomplete="off" />
 				</div>
@@ -64,7 +64,7 @@
 					<textarea
 						id="message"
 						v-model="form.message"
-						class="hover-scale-effect clickable cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Message*"
 						autocomplete="off"
 						required></textarea>
