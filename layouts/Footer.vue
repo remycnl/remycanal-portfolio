@@ -88,7 +88,7 @@ onMounted(() => {
 					<a
 						href="#"
 						class="menu-line-animation hover-scale-effect active:scale-95 transition-all duration-75 clickable cursor-none text-base lg:text-lg">
-						Experience
+						Timeline
 					</a>
 				</div>
 				<div class="active:scale-95 transition-all duration-75">

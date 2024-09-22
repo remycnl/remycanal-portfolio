@@ -29,7 +29,8 @@
 							class="-mt-36 md:-mt-40 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
 							<span
 								class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[6rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6.5rem] lg:leading-none 2xl:leading-[5.8rem]"
-								><div class="text-shadow firstname-about-me opacity-0 md:mr-20 lg:mr-0">
+								><div
+									class="text-shadow firstname-about-me opacity-0 md:mr-20 lg:mr-0">
 									Rémy
 								</div>
 								<div
@@ -47,7 +48,7 @@
 						</h1>
 						<h4
 							style="font-family: Share Tech Mono"
-							class="about-me-paragraph md:opacity-0 text-white text-lg 2xl:text-2xl mx-4 md:mx-0 lg:text-justify">
+							class="about-me-paragraph md:opacity-0 text-white text-lg 2xl:text-2xl mx-4 md:mx-0">
 							I'm a student at Epitech, on my way to becoming a software
 							engineer specialized in crafting outstanding and full digital
 							experiences. Based in Lyon, France, I ensure responsive design,
@@ -115,7 +116,7 @@
 							id="experience-nbr"
 							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
-								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-gray-light">
+								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-gray-light hover:text-white transition-colors duration-500">
 								<p
 									id="experience"
 									class="font-[Orbitron] pt-10 text-[10rem] lg:text-[8rem] 2xl:text-[15rem]">
@@ -160,7 +161,7 @@
 							id="projects-nbr"
 							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
-								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-gray-light text-3xl lg:text-xl 2xl:text-4xl">
+								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-gray-light hover:text-white transition-colors duration-500 text-3xl lg:text-xl 2xl:text-4xl">
 								<div
 									class="flex flex-col gap-y-1 items-start justify-center h-full w-full">
 									<p class="font-[Orbitron]">Contributed</p>
@@ -184,7 +185,7 @@
 								<div
 									class="md:hidden w-full h-full flex justify-center items-center">
 									<p
-										class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-gray-light">
+										class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-gray-light hover:text-white transition-colors duration-500">
 										Some of my<span class="text-[4rem] leading-[4rem]"
 											>Values</span
 										>
@@ -211,7 +212,7 @@
 											<p
 												v-else
 												@click="isValueHover1 = false"
-												class="text-center text-gray-light w-3/4 md:w-full"
+												class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 												key="description">
 												For a smooth user's experience and clean codebase
 											</p>
@@ -236,7 +237,7 @@
 											<p
 												v-else
 												@click="isValueHover2 = false"
-												class="text-center text-gray-light w-3/4 md:w-full"
+												class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 												key="description">
 												Engineered with creativity and attention to detail
 											</p>
@@ -246,7 +247,7 @@
 								<div
 									class="hidden w-1/3 h-full md:flex justify-center items-start">
 									<p
-										class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light">
+										class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light hover:text-white transition-colors duration-500">
 										Some of my<span
 											class="text-[3rem] 2xl:text-[5rem] leading-[3rem] 2xl:leading-[5rem]"
 											>Values</span
@@ -273,7 +274,7 @@
 											<p
 												v-else
 												@click="isValueHover3 = false"
-												class="text-center text-gray-light w-3/4 md:w-full">
+												class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 												Independently developed with a focus on user feedback
 											</p>
 										</transition>
@@ -296,7 +297,7 @@
 											<p
 												v-else
 												@click="isValueHover4 = false"
-												class="text-center text-gray-light w-3/4 md:w-full">
+												class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 												Crafted with an open heart and driven by passion
 											</p>
 										</transition>
@@ -355,10 +356,18 @@
 					class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 					Skills
 				</h2>
+				<h3
+					style="font-family: Share Tech Mono"
+					class="mt-5 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+					From front-end frameworks to back-end systems, I have honed my skills
+					in a wide range of technologies, enabling me to build efficient and
+					scalable web applications. Below is a curated list of tools and
+					technologies that are part of my developer toolkit.
+				</h3>
 				<div
-					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center lg:items-start gap-40 2xl:gap-x-60 gap-y-20 my-20">
+					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center lg:items-start gap-40 lg:gap-x-20 2xl:gap-x-60 gap-y-20 my-20">
 					<div
-					id="skill-card"
+						id="skill-card"
 						class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary rounded-3xl flex flex-row justify-between">
 						<div
 							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary w-[12%] md:w-[9%] h-fit">
@@ -421,21 +430,21 @@
 						</div>
 					</div>
 					<div
-					id="container-skills"
-						class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
+						id="container-skills"
+						class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center items-start pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
 						<NuxtImg
 							:src="`/img/details-skills-${selectedColor}.png`"
 							format="webp"
 							alt="Click on bubbles to see details (mobile)"
-							class="hover:saturate-200 transition-all duration-500 absolute scale-50 bottom-[80%] md:bottom-[65%] lg:bottom-[74%] right-[30%] md:right-[22%] lg:right-[40%] z-10" />
+							class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-21rem] 2xl:top-[-30.5rem] right-[30%] md:right-[10%] lg:right-[40%] z-10" />
 						<NuxtImg
 							:src="`/img/stars-info-${selectedColor}.png`"
 							format="webp"
 							alt="Stars = Proficiency level"
-							class="hover:saturate-200 transition-all duration-500 absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[75%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
+							class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-22rem] 2xl:top-[-30.5rem] left-[30%] md:left-[30%] lg:left-[30%] z-10" />
 						<BubbleIcon
 							v-for="(skill, index) in skills"
-							class="rounded-full"
+							class="rounded-full lg:scale-90 2xl:scale-100"
 							:key="index"
 							:index="index"
 							:text="skill.text"
@@ -457,6 +466,15 @@
 						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 						Projects
 					</h2>
+					<h3
+						style="font-family: Share Tech Mono"
+						class="mt-5 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+						Throughout my journey as a developer, I've worked on a variety of
+						projects that demonstrate my technical skills and problem-solving
+						abilities. Below is a selection of projects that showcase my
+						expertise in modern development practices, design patterns, and
+						coding efficiency.
+					</h3>
 					<!-- Mobile -->
 					<div class="lg:hidden relative mt-10">
 						<Icon
@@ -622,7 +640,7 @@
 					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
 				</div>
 				<!-- Contact Form -->
-				<ContactForm/>
+				<ContactForm />
 			</div>
 		</div>
 	</div>
@@ -744,7 +762,14 @@ const projects: Project[] = [
 		type: "website",
 		last: true,
 		date: "2023",
-		technos: ["Wordpress", "Elementor", "HTML", "CSS", "JavaScript", "TailwindCSS"],
+		technos: [
+			"Wordpress",
+			"Elementor",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"TailwindCSS",
+		],
 	},
 ];
 
@@ -827,6 +852,30 @@ const skills: Skill[] = [
 		color: "#51b883",
 		icon: "logos:vue",
 		stars: 4,
+		description:
+			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+	},
+	{
+		text: "Next",
+		color: "#000000",
+		icon: "logos:nextjs-icon",
+		stars: 3,
+		description:
+			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+	},
+	{
+		text: "React",
+		color: "#00D8FF",
+		icon: "skill-icons:react-dark",
+		stars: 3,
+		description:
+			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+	},
+	{
+		text: "React Native",
+		color: "#F4F2ED",
+		icon: "skill-icons:react-light",
+		stars: 2,
 		description:
 			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
 	},
@@ -946,7 +995,7 @@ const skills: Skill[] = [
 	},
 ];
 
-const currentSkill = ref<Skill>(skills[19]);
+const currentSkill = ref<Skill>(skills[skills.length - 1]);
 const isUpdating = ref(false);
 const lastSkillIndex = ref<number | null>(null);
 
@@ -954,7 +1003,7 @@ const fillCardSkills = (index: number) => {
 	isUpdating.value = true;
 	setTimeout(() => {
 		if (lastSkillIndex.value !== null && lastSkillIndex.value === index) {
-			currentSkill.value = skills[19];
+			currentSkill.value = skills[skills.length - 1];
 			lastSkillIndex.value = null;
 		} else {
 			currentSkill.value = skills[index];

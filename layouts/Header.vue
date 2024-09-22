@@ -100,7 +100,7 @@ import { magnetEffect } from "~/plugins/global.js";
 
 let isScreenSM = ref(false);
 let scrolled = ref(false);
-const menus = ["About me", "Skills", "Experience", "Projects"];
+const menus = ["About me", "Skills", "Timeline", "Projects"];
 
 const headerClasses = computed(() => ({
 	"w-full": true,
