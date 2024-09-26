@@ -1288,7 +1288,7 @@ const timelineData = [
 		title: "Letmotiv",
 		subtitle: "Full-Stack Web Developer",
 		paragraph: [
-			"Internship - september 2024 to february 2025 (6 months)",
+			"Internship - september 2024 to march 2025 (7 months)",
 		],
 		images: [
 			{

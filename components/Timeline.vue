@@ -1,5 +1,5 @@
 <template>
-	<div class="w-full" ref="containerRef">
+	<div class="w-full">
 		<div class="py-20">
 			<h2
 				id="timeline"
@@ -23,16 +23,16 @@
 				<div
 					class="sticky flex flex-col z-40 items-start top-40 self-start max-w-xs lg:max-w-sm md:w-full">
 					<div
-						class="h-10 left-[0.08rem] absolute w-10 rounded-full bg-white dark:bg-black flex items-center justify-center">
+						class="h-10 left-[0.08rem] absolute w-10 rounded-full bg-black flex items-center justify-center">
 						<div
-							class="h-4 w-4 rounded-full bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 p-2"></div>
+							class="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 p-2"></div>
 					</div>
 					<h3
-						class="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-neutral-500 dark:text-neutral-500">
+						class="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-neutral-500">
 						{{ item.date }}
 					</h3>
 					<h4
-						class="hidden md:block text-xl md:pl-20 md:text-xl font-bold text-neutral-500 dark:text-neutral-500">
+						class="hidden md:block text-xl md:pl-20 md:text-xl font-bold text-neutral-500">
 						{{ item.type }}
 					</h4>
 				</div>
@@ -40,11 +40,11 @@
 				<div class="relative pl-20 pr-4 md:pl-4 w-full">
 					<div class="flex flex-row gap-x-4 items-center">
 						<h3
-							class="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500">
+							class="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500">
 							{{ item.date }}
 						</h3>
 						<h4
-							class="md:hidden text-xs -mt-2 font-bold text-neutral-500 dark:text-neutral-500">
+							class="md:hidden text-xs -mt-2 font-bold text-neutral-500">
 							{{ item.type }}
 						</h4>
 					</div>
@@ -102,22 +102,22 @@ const props = defineProps({
 	},
 });
 
-const containerRef = ref(null);
+const timelineRef = ref(null);
 const progressBar = ref(null);
 const height = ref(0);
 
 onMounted(() => {
-	if (containerRef.value) {
-		height.value = containerRef.value.getBoundingClientRect().height;
+	if (timelineRef.value) {
+		height.value = timelineRef.value.getBoundingClientRect().height;
 	}
 
-	if (progressBar.value && containerRef.value) {
+	if (progressBar.value && timelineRef.value) {
 		gsap.to(progressBar.value, {
 			height: "100%",
 			ease: "none",
 			scrollTrigger: {
-				trigger: containerRef.value,
-				start: "top 20%",
+				trigger: timelineRef.value,
+				start: "top 50%",
 				end: "bottom 50%",
 				scrub: true,
 			},
