@@ -656,6 +656,7 @@ import {
 	appearStart,
 	stickySkills,
 } from "@/plugins/gsap";
+
 import { mouseEffect } from "@/plugins/global.js";
 
 const isValueHover1 = ref(false);
@@ -1280,7 +1281,7 @@ const timelineData = [
 		date: "2024",
 		type: "experience",
 		title: "Letmotiv",
-		subtitle: "Full-Stack Web Developer",
+		subtitle: "Full-Stack Web Developer (currently)",
 		paragraph: [
 			"Internship - september 2024 to march 2025 (7 months)",
 		],

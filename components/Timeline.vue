@@ -50,7 +50,7 @@
 					</div>
 					<div class="mb-8 flex flex-col gap-y-5 lg:gap-y-8">
 						<div class="flex flex-col gap-y-2">
-							<h3 class="text-lg md:text-2xl lg:text-3xl text-secondary">
+							<h3 class="text-color-saturate text-lg md:text-2xl lg:text-3xl text-secondary">
 								{{ item.title }}
 							</h3>
 							<h4

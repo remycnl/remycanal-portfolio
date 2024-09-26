@@ -128,15 +128,17 @@ const setCSP = () => {
 				</div>
 				<Footer id="footer" />
 				<div
-					class="flex justify-center items-center flex-col mt-32 lg:mt-60 mb-24 lg:mb-48 gap-y-3">
-					<h4
-						class="w-fit text-center text-gray-light hover:text-white transition-color duration-500 text-2xl md:text-3xl lg:text-4xl">
-						&ldquo; Simplicity is the ultimate sophistication. &rdquo;
-					</h4>
-					<h4
-						class="w-fit text-xs text-gray-light hover:text-white transition-color duration-500 md:text-base lg:text-lg">
-						Leonardo da Vinci
-					</h4>
+					class="flex justify-center items-center mt-32 lg:mt-60 mb-24 lg:mb-48">
+					<div class="group flex justify-center items-center flex-col gap-y-3 w-fit">
+						<h4
+							class="w-fit text-center text-gray-light group-hover:text-white transition-color duration-500 text-2xl md:text-3xl lg:text-4xl">
+							&ldquo; Simplicity is the ultimate sophistication. &rdquo;
+						</h4>
+						<h4
+							class="w-fit text-xs text-gray-light group-hover:text-white transition-color duration-500 md:text-base lg:text-lg">
+							Leonardo da Vinci
+						</h4>
+					</div>
 				</div>
 				<div
 					class="container-s hidden lg:flex text-start w-screen -ml-8 -mb-7 overflow-hidden select-none">
