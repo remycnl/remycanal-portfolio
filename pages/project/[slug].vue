@@ -35,8 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import { customCursor } from "~/plugins/gsap";
-import { mouseEffect } from "~/plugins/global.js";
+import { customCursor } from "@/plugins/gsap";
+import { mouseEffect } from "@/plugins/global.js";
 
 interface Project {
 	slug: string;

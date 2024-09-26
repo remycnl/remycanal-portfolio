@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { toggleCard } from '~/plugins/gsap';
+import { toggleCard } from '@/plugins/gsap';
 
 const props = defineProps({
 	text1: String,

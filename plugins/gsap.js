@@ -1,4 +1,4 @@
-import { setExperienceTime, setProjectsCounter } from "~/plugins/global.js";
+import { setExperienceTime, setProjectsCounter } from "@/plugins/global.js";
 import { gsap } from "gsap";
 import { Elastic, ScrollTrigger } from "gsap/all";
 export { gsap };

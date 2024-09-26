@@ -458,6 +458,7 @@
 							@click="fillCardSkills(index), animStarsRotation()" />
 					</div>
 				</div>
+				<Timeline :data="timelineData" />
 				<!-- PROJECTS -->
 				<div
 					class="relative overflow-visible projects-container my-60 lg:my-96">
@@ -660,8 +661,8 @@ import {
 	appearBento,
 	appearStart,
 	stickySkills,
-} from "~/plugins/gsap";
-import { mouseEffect } from "~/plugins/global.js";
+} from "@/plugins/gsap";
+import { mouseEffect } from "@/plugins/global.js";
 
 const isValueHover1 = ref(false);
 const isValueHover2 = ref(false);
@@ -1222,4 +1223,79 @@ const updateFavicon = (color: string) => {
 	link.type = "image/x-icon";
 	link.href = `/${faviconName}`;
 };
+
+const timelineData = [
+	{
+		date: "2020",
+		type: "certification",
+		title: "Cambridge English Language Assessment",
+		subtitle: "Certification Cambridge - B2 First",
+		images: [
+			{
+				src: "/img/cambridge-logo.png",
+				alt: "Cambridge Logo",
+			},
+		],
+	},
+	{
+		date: "2021",
+		type: "formation",
+		title: "Institution Saint-Alyre | Clermont-Ferrand",
+		subtitle: "General Baccalaureate | Honors (AB)",
+		paragraph: [
+			"Specialization in Mathematics, Physics & Chemistry, and Computer Science with Advanced Mathematics Option",
+		],
+		images: [
+			{
+				src: "/img/saint-alyre-logo.png",
+				alt: "Saint-Alyre Logo",
+			},
+		],
+	},
+	{
+		date: "2022",
+		type: "formation",
+		title: "EPITECH - European Institute of Technology | Lyon",
+		subtitle: "Promo 2022-2027 - Program Grande Ecole (currently)",
+		paragraph: [
+			"5-Year Program Post-Baccalaureate to Become an Expert in Software Engineering Recognized by the State at Level 7 on the RNCP",
+		],
+		images: [
+			{
+				src: "/img/epitech-logo.png",
+				alt: "Epitech Logo",
+			},
+		],
+	},
+	{
+		date: "2023",
+		type: "experience",
+		title: "Sharewood",
+		subtitle: "Front-End Web Developer",
+		paragraph: [
+			"Internship - july to december 2023 (6 months)",
+		],
+		images: [
+			{
+				src: "/img/sharewood-logo.png",
+				alt: "Sharewood Logo",
+			},
+		],
+	},
+	{
+		date: "2024",
+		type: "experience",
+		title: "Letmotiv",
+		subtitle: "Full-Stack Web Developer",
+		paragraph: [
+			"Internship - september 2024 to february 2025 (6 months)",
+		],
+		images: [
+			{
+				src: "/img/letmotiv-logo.png",
+				alt: "Letmotiv Logo",
+			},
+		],
+	},
+];
 </script>

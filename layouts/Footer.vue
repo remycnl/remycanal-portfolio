@@ -1,5 +1,5 @@
 <script setup>
-import { animationFooter } from "~/plugins/gsap";
+import { animationFooter } from "@/plugins/gsap";
 
 const primaryColor = ref("purple");
 

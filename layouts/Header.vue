@@ -95,8 +95,8 @@
 </template>
 
 <script setup>
-import { toggleDropdown, applyZoomEffect } from "~/plugins/gsap";
-import { magnetEffect } from "~/plugins/global.js";
+import { toggleDropdown, applyZoomEffect } from "@/plugins/gsap";
+import { magnetEffect } from "@/plugins/global.js";
 
 let isScreenSM = ref(false);
 let scrolled = ref(false);

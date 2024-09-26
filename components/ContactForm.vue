@@ -355,7 +355,7 @@
 
 <script setup>
 import { reactive, ref, watch } from "vue";
-import { stickyContact, appearContact } from "~/plugins/gsap.js";
+import { stickyContact, appearContact } from "@/plugins/gsap.js";
 
 onMounted(() => {
 	stickyContact();
