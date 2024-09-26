@@ -23,7 +23,7 @@
 				<div
 					class="sticky flex flex-col z-40 items-start top-40 self-start max-w-xs lg:max-w-sm md:w-full">
 					<div
-						class="h-10 left-[0.08rem] absolute w-10 rounded-full bg-black flex items-center justify-center">
+						class="h-10 left-0 absolute w-10 rounded-full bg-black flex items-center justify-center">
 						<div
 							class="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 p-2"></div>
 					</div>

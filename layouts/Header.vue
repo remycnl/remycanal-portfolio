@@ -29,10 +29,10 @@
 				class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[120vh] left-0 h-[5.5rem]"></div>
 		</div>
 		<div
-			class="dropdown-animation -mt-16 lg:-mt-0 set-dropdown-menu transform-gpu">
+			class="dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div
 				:class="headerClasses"
-				class="pointer-events-auto overflow-y-auto lg:overflow-y-visible max-h-[97vh] lg-custom-width">
+				class="pointer-events-auto overflow-y-auto lg:overflow-y-visible max-h-[95vh] lg-custom-width">
 				<a
 					href="#"
 					id="logo-zoom"
@@ -44,7 +44,7 @@
 						class="change-img-color text-shadow hover-scale-effect hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
-					class="flex flex-col lg:flex-row tracking-widest lg:tracking-normal 2xl:tracking-widest gap-x-20 gap-y-10 text-white uppercase items-center">
+					class="flex flex-col lg:flex-row tracking-widest lg:tracking-normal 2xl:tracking-widest gap-x-20 gap-y-8 text-white uppercase items-center">
 					<span
 						v-for="(menu, index) in menus"
 						:key="index"
