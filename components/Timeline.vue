@@ -37,7 +37,7 @@
 					</h4>
 				</div>
 
-				<div class="relative pl-20 pr-4 md:pl-4 w-full">
+				<div class="timeline-element relative pl-20 pr-4 md:pl-4 w-full">
 					<div class="flex flex-row gap-x-4 items-center">
 						<h3
 							class="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500">
@@ -92,6 +92,9 @@
 <script setup>
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import {
+	appearTimeline
+} from "@/plugins/gsap";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -107,6 +110,8 @@ const progressBar = ref(null);
 const height = ref(0);
 
 onMounted(() => {
+	appearTimeline();
+
 	if (timelineRef.value) {
 		height.value = timelineRef.value.getBoundingClientRect().height;
 	}

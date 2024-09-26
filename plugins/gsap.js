@@ -24,6 +24,7 @@ export default defineNuxtPlugin(() => {
 		stickyContact,
 		stickySkills,
 		appearContact,
+		appearTimeline,
 	};
 });
 
@@ -814,13 +815,17 @@ export function appearContact() {
 		stagger: 0.3,
 	});
 
-	tl.to(clipboards, {
-		scale: 1,
-		opacity: 1,
-		ease: "elastic.out(1, 0.3)",
-		duration: 2,
-		stagger: 0.3,
-	}, "-=1");
+	tl.to(
+		clipboards,
+		{
+			scale: 1,
+			opacity: 1,
+			ease: "elastic.out(1, 0.3)",
+			duration: 2,
+			stagger: 0.3,
+		},
+		"-=1"
+	);
 
 	tl.call(() => {
 		updateTimeElements(times);
@@ -835,7 +840,31 @@ function updateTimeElements(elements) {
 
 		setInterval(() => {
 			const elapsedMinutes = Math.floor((Date.now() - now) / 60000);
-			el.textContent = elapsedMinutes === 0 ? "Now" : `${elapsedMinutes} min ago`;
+			el.textContent =
+				elapsedMinutes === 0 ? "Now" : `${elapsedMinutes} min ago`;
 		}, 60000);
+	});
+}
+
+export function appearTimeline() {
+	const timelineElements = document.querySelectorAll(".timeline-element");
+
+	timelineElements.forEach((timelineElement) => {
+		gsap.set(timelineElement, {
+			x: 100,
+			opacity: 0,
+		});
+
+		gsap.to(timelineElement, {
+			x: 0,
+			opacity: 1,
+			ease: "elastic.out(1, 0.3)",
+			duration: 2,
+			scrollTrigger: {
+				trigger: timelineElement,
+				start: "top 70%",
+				toggleActions: "play none none none",
+			},
+		});
 	});
 }
