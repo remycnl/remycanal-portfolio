@@ -634,12 +634,6 @@
 						</div>
 					</div>
 				</div>
-
-				<div class="text-3xl text-white font-bold">
-					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
-					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
-					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
-				</div>
 				<!-- Contact Form -->
 				<ContactForm />
 			</div>

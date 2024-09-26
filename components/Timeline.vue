@@ -1,6 +1,6 @@
 <template>
 	<div class="w-full">
-		<div class="py-20">
+		<div class="mt-40 lg:mt-96 py-20">
 			<h2
 				id="timeline"
 				class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
@@ -19,7 +19,7 @@
 			<div
 				v-for="(item, index) in data"
 				:key="index"
-				class="flex justify-start pt-10 md:pt-40 md:gap-10">
+				class="flex justify-start pt-10 lg:pt-20 md:gap-10">
 				<div
 					class="sticky flex flex-col z-40 items-start top-40 self-start max-w-xs lg:max-w-sm md:w-full">
 					<div
