@@ -17,12 +17,14 @@ useSeoMeta({
 	ogTitle: "Rémy Canal | Web Developer Portfolio",
 	description:
 		"Discover the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end, full-stack, and mobile development. Explore my projects, skills, and experiences in modern web technologies.",
-	ogDescription: "Explore the portfolio of Rémy Canal, showcasing web development projects, expertise, and skills in front-end, full-stack, and mobile development.",
+	ogDescription:
+		"Explore the portfolio of Rémy Canal, showcasing web development projects, expertise, and skills in front-end, full-stack, and mobile development.",
 	ogImage: "/img/messageSent.gif",
 	ogUrl: "https://remycanal.me",
 	ogType: "website",
 	twitterTitle: "Rémy Canal - Portfolio | Web Developer",
-	twitterDescription: "Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end, full-stack, and mobile development.",
+	twitterDescription:
+		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end, full-stack, and mobile development.",
 	twitterImage: "/img/messageSent.gif",
 	twitterUrl: "https://remycanal.me",
 	twitterCard: "summary_large_image",
@@ -31,10 +33,22 @@ useSeoMeta({
 		"Web Developer, Portfolio, Lyon, Front-End, Full-Stack, Mobile Developer, JavaScript, Nuxt.js, Vue.js, Next.js, React, Laravel, GSAP, Tailwind, Strapi, Wordpress, PHP, Github, Freelance, Rémy Canal",
 });
 
-
 useServerSeoMeta({
 	robots: "index, follow",
-	htmlLang: "fr",
+	htmlLang: "en",
+});
+
+useHead({
+	htmlAttrs: {
+		lang: "en",
+	},
+	link: [
+		{
+			rel: "icon",
+			type: "image/gif",
+			href: "/img/messageSent.gif",
+		},
+	],
 });
 
 const applyEffects = () => {

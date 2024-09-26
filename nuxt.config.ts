@@ -1,6 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
+  },
 
   css: [
     '@/assets/css/main.css',
@@ -11,7 +17,6 @@ export default defineNuxtConfig({
     '@/assets/css/scrollBar.css',
     '@/assets/css/cursor.css',
     '@/assets/css/changeColorButton.css',
-    '@/assets/css/swiper.css',
     '@/assets/css/transition.css',
     '@/assets/css/project.css',
     '@/assets/css/bento.css',
@@ -34,7 +39,7 @@ export default defineNuxtConfig({
         "Share Tech Mono": true,
         Schoolbell: true,
       }
-  }], 'nuxt-icon', '@nuxt/image', 'nuxt-swiper'],
+  }], 'nuxt-icon', '@nuxt/image'],
 
   plugins: [
     { src: '@/plugins/gsap.js', mode: 'client' },
