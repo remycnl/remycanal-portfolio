@@ -66,7 +66,7 @@
 							</p>
 						</div>
 						<div
-							class="group overflow-hidden bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full lg:w-1/3 h-40 lg:h-[20rem] rounded-[1.5rem] flex justify-center items-center p-5 lg:p-10">
+							class="group overflow-hidden bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full lg:w-1/3 h-40 lg:h-60 rounded-[1.5rem] flex justify-center items-center p-5 lg:p-10">
 							<img
 								v-for="(img, imgIdx) in item.images"
 								:key="imgIdx"
@@ -80,7 +80,7 @@
 
 			<div
 				:style="{ height: height + 'px' }"
-				class="absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-200 dark:via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
+				class="absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
 				<div
 					ref="progressBar"
 					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-secondary via-secondary-dark to-transparent rounded-full"></div>
