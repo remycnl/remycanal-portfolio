@@ -2,23 +2,39 @@
 import "@/assets/css/main.css";
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
-import { toggleDropdown, customCursor, animationFooterBottom } from "~/plugins/gsap";
-import { mouseEffect } from '~/plugins/global.js';
+import {
+	toggleDropdown,
+	customCursor,
+	animationFooterBottom,
+} from "@/plugins/gsap";
+import { mouseEffect } from "@/plugins/global.js";
 
-const activeTitle = ref("Rémy Canal - Portfolio | Web Developer");
+const activeTitle = ref("Rémy Canal | Web Developer Portfolio");
 const inactiveTitle = ref("I miss you !!!");
 
 useSeoMeta({
 	title: activeTitle,
-	ogTitle: "Rémy Canal - Portfolio | Web Developer Portfolio",
+	ogTitle: "Rémy Canal | Web Developer Portfolio",
 	description:
-		"I am a french web developer based in Lyon and this is my portfolio where I expose my projects and experiences.",
-	ogDescription: "This is my amazing site, let me tell you all about it.",
-	ogImage: "~/assets/img/avatar.png",
+		"Discover the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end, full-stack, and mobile development. Explore my projects, skills, and experiences in modern web technologies.",
+	ogDescription: "Explore the portfolio of Rémy Canal, showcasing web development projects, expertise, and skills in front-end, full-stack, and mobile development.",
+	ogImage: "/img/messageSent.gif",
+	ogUrl: "https://remycanal.me",
+	ogType: "website",
+	twitterTitle: "Rémy Canal - Portfolio | Web Developer",
+	twitterDescription: "Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end, full-stack, and mobile development.",
+	twitterImage: "/img/messageSent.gif",
+	twitterUrl: "https://remycanal.me",
+	twitterCard: "summary_large_image",
+	canonical: "https://remycanal.me",
+	keywords:
+		"Web Developer, Portfolio, Lyon, Front-End, Full-Stack, Mobile Developer, JavaScript, Nuxt.js, Vue.js, Next.js, React, Laravel, GSAP, Tailwind, Strapi, Wordpress, PHP, Github, Freelance, Rémy Canal",
 });
+
 
 useServerSeoMeta({
 	robots: "index, follow",
+	htmlLang: "fr",
 });
 
 const applyEffects = () => {
@@ -38,7 +54,7 @@ onMounted(() => {
 	applyEffects();
 	animationFooterBottom();
 	if (process.client) {
-        console.log(`
+		console.log(`
         ******************************************
         *                                        *
         *    Appreciate scrolling through my     *
@@ -46,7 +62,7 @@ onMounted(() => {
         *                                        *
         ******************************************
         `);
-    }
+	}
 });
 
 const setSEO = () => {
@@ -79,30 +95,41 @@ const setCSP = () => {
 
 <template>
 	<div class="cursor-none">
-		<div class="hidden lg:block custom-cursor shadow-around bg-secondary rounded-full pointer-events-none z-[1000]"></div>
+		<div
+			class="hidden lg:block custom-cursor shadow-around bg-secondary rounded-full pointer-events-none z-[1000]"></div>
 		<div class="scroll-smooth relative max-w-screen overflow-hidden">
-			<div id="blob" class="absolute -z-0 pointer-events-none hidden lg:block"></div>
 			<div
-			@click="toggleDropdown"
-			class="blur-background-menu z-[100] pointer-events-none blur-none lg:hidden opacity-0 absolute h-full w-full bg-black bg-opacity-90"></div>
-			<div class="bg-secondary-dark lg:p-8 lg:pt-36 overflow-hidden transition-colors duration-[1s]">
+				@click="toggleDropdown"
+				class="blur-background-menu z-[100] pointer-events-none blur-none lg:hidden opacity-0 absolute h-full w-full bg-black bg-opacity-90"></div>
+			<div
+				id="blob"
+				class="absolute -z-0 pointer-events-none hidden lg:block"></div>
+			<div
+				class="bg-secondary-dark lg:p-8 lg:pt-36 overflow-hidden transition-colors duration-[1s]">
 				<div id="top" class="container mx-auto lg:mx-0 z-[9999]">
 					<Header class="fixed top-5" />
 				</div>
 				<div id="slot">
 					<slot />
 				</div>
-				<Footer id="footer"/>
-				<div class="flex justify-center items-center flex-col mt-32 lg:mt-60 mb-24 lg:mb-48 gap-y-3">
+				<Footer id="footer" />
+				<div
+					class="flex justify-center items-center flex-col mt-32 lg:mt-60 mb-24 lg:mb-48 gap-y-3">
 					<h4
 						class="w-fit text-center text-gray-light hover:text-white transition-color duration-500 text-2xl md:text-3xl lg:text-4xl">
 						&ldquo; Simplicity is the ultimate sophistication. &rdquo;
 					</h4>
-					<h4 class="w-fit text-xs text-gray-light hover:text-white transition-color duration-500 md:text-base lg:text-lg">Leonardo da Vinci</h4>
+					<h4
+						class="w-fit text-xs text-gray-light hover:text-white transition-color duration-500 md:text-base lg:text-lg">
+						Leonardo da Vinci
+					</h4>
 				</div>
-				<div class="container-s hidden lg:flex text-start w-screen -ml-8 -mb-7 overflow-hidden select-none">
-					<div id="letters-bottom" class="tracking-wider font-mono s whitespace-nowrap inline-block text-xs text-black uppercase w-fit">
-					<!-- Ici apparaîssent les <span> des crédits -->
+				<div
+					class="container-s hidden lg:flex text-start w-screen -ml-8 -mb-7 overflow-hidden select-none">
+					<div
+						id="letters-bottom"
+						class="tracking-wider font-mono s whitespace-nowrap inline-block text-xs text-black uppercase w-fit">
+						<!-- Ici apparaîssent les <span> des crédits -->
 					</div>
 				</div>
 			</div>

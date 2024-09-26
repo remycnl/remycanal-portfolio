@@ -66,8 +66,8 @@
 </template>
 
 <script setup>
-import { applyUnzoom } from "~/plugins/gsap";
-import { toggleTextWhite } from "~/plugins/global";
+import { applyUnzoom } from "@/plugins/gsap";
+import { toggleTextWhite } from "@/plugins/global";
 
 const props = defineProps({
 	index: Number,

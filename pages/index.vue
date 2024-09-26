@@ -13,31 +13,42 @@
 	<!-- ABOUT ME -->
 	<div
 		class="bg-gradient-to-b lg:rounded-t-[4rem] overflow-hidden shadow-around shadow-black from-black via-primary to-black">
-		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
+		<div class="bg-dot-primary lg:mx-20 2xl:mx-0 hover:brightness-100">
 			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
 				<div
 					class="flex flex-col lg:flex-row justify-between items-center gap-y-10">
 					<NuxtImg
+						id="avatar"
 						src="/img/avatar.png"
 						format="webp"
 						alt="Rémy Canal"
-						class="icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
+						class="opacity-0 icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
 					<div
 						class="flex flex-col justify-center text-center w-full lg:w-7/12 lg:text-start lg:gap-y-14 z-50">
 						<h1
-							class="-mt-36 md:-mt-20 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
+							class="-mt-36 md:-mt-40 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
 							<span
-								class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[5rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6rem] lg:leading-none 2xl:leading-[5.8rem]"
-								>Rémy <span class="ml-28 md:ml-16">Canal</span></span
+								class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[6rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6.5rem] lg:leading-none 2xl:leading-[5.8rem]"
+								><div
+									class="text-shadow firstname-about-me opacity-0 md:mr-20 lg:mr-0">
+									Rémy
+								</div>
+								<div
+									class="text-shadow lastname-about-me opacity-0 ml-28 md:ml-20 lg:ml-16">
+									Canal
+								</div></span
 							>
 							<span
-								class="text-color-saturate text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
-								>Web <span class="lg:ml-16">Developer</span></span
+								class="text-color-saturate flex flex-row lg:flex-col gap-x-5 text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
+								><div class="web md:opacity-0 text-shadow">Web</div>
+								<div class="developer md:opacity-0 lg:ml-16 text-shadow">
+									Developer
+								</div></span
 							>
 						</h1>
 						<h4
 							style="font-family: Share Tech Mono"
-							class="text-white text-lg 2xl:text-2xl mx-4 md:mx-0 lg:text-justify">
+							class="about-me-paragraph md:opacity-0 text-white text-lg 2xl:text-2xl mx-4 md:mx-0">
 							I'm a student at Epitech, on my way to becoming a software
 							engineer specialized in crafting outstanding and full digital
 							experiences. Based in Lyon, France, I ensure responsive design,
@@ -46,50 +57,54 @@
 						</h4>
 						<div
 							class="flex flex-col-reverse gap-10 2xl:flex-row mt-10 mb-7 lg:mb-0 justify-center items-center lg:items-end 2xl:items-center lg:justify-between">
-							<button
-								@click="toggleColors"
-								class="group circle-container relative hover-scale-effect clickable cursor-none w-fit lg:w-[50px] h-fit lg:h-[50px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center shadow-around hover:bg-secondary-dark bg-black transition-all duration-500">
-								<div>
+							<div id="color-button" class="lg:opacity-0">
+								<button
+									@click="toggleColors"
+									class="group circle-container relative hover-scale-effect clickable cursor-none w-fit lg:w-[50px] h-fit lg:h-[50px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center shadow-around hover:bg-secondary-dark bg-black transition-all duration-500">
+									<div>
+										<Icon
+											name="material-symbols:format-color-fill-rounded"
+											color="var(--white)"
+											class="w-5 h-auto group-hover:lg:opacity-0 lg:-ml-1 mb-1 transition-all duration-300" />
+									</div>
+									<div
+										class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-none flex justify-center items-center gap-x-4">
+										<label
+											v-for="(color, index) in colorOptions"
+											:key="index"
+											class="absolute cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
+											<input
+												type="checkbox"
+												class="cursor-none"
+												:class="`color-${index + 1} cyberpunk-checkbox`"
+												v-model="checkboxes[index]"
+												@change="
+													updateCheckbox(
+														index,
+														color.primary,
+														color.secondary,
+														color.transparent,
+														color.family
+													);
+													updateFavicon(color.family);
+												" />
+										</label>
+									</div>
+								</button>
+							</div>
+							<div id="download-cv" class="md:opacity-0">
+								<a
+									href="/doc/Rémy Canal - curriculum vitae.pdf"
+									target="_blank"
+									download
+									class="hover-scale-effect clickable mix-darken cursor-none button group w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
+									Download CV
 									<Icon
-										name="material-symbols:format-color-fill-rounded"
-										color="var(--white)"
-										class="w-5 h-auto group-hover:lg:opacity-0 lg:-ml-1 mb-1 transition-all duration-300" />
-								</div>
-								<div
-									class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-none flex justify-center items-center gap-x-4">
-									<label
-										v-for="(color, index) in colorOptions"
-										:key="index"
-										class="absolute cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
-										<input
-											type="checkbox"
-											class="cursor-none"
-											:class="`color-${index + 1} cyberpunk-checkbox`"
-											v-model="checkboxes[index]"
-											@change="
-												updateCheckbox(
-													index,
-													color.primary,
-													color.secondary,
-													color.transparent,
-													color.family
-												);
-												updateFavicon(color.family);
-											" />
-									</label>
-								</div>
-							</button>
-							<a
-								href="/doc/Rémy Canal - curriculum vitae.pdf"
-								target="_blank"
-								download
-								class="hover-scale-effect clickable mix-darken cursor-none button group w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
-								Download CV
-								<Icon
-									name="material-symbols:download-rounded"
-									color="var(--primary-color)"
-									class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
-							</a>
+										name="material-symbols:download-rounded"
+										color="var(--primary-color)"
+										class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -98,9 +113,10 @@
 					class="flex flex-col gap-y-20 justify-center items-center w-full mt-20 lg:mt-32 2xl:mt-40 h-fit">
 					<div class="bento grid gap-5 w-full h-full">
 						<article
-							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							id="experience-nbr"
+							class="article hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
-								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-white">
+								class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-gray-light hover:text-white transition-colors duration-500">
 								<p
 									id="experience"
 									class="font-[Orbitron] pt-10 text-[10rem] lg:text-[8rem] 2xl:text-[15rem]">
@@ -116,7 +132,7 @@
 								class="absolute border-[1.25rem] border-black top-[-40%] right-[-40%] h-[80%] w-[80%] rounded-full bg-secondary transition-colors duration-[1s]"></div>
 						</article>
 						<article
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-filter-bgcolor duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
 								<p
@@ -130,7 +146,7 @@
 							</div>
 						</article>
 						<article
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-all duration-[1s]">
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-filter-bgcolor duration-[1s]">
 							<div
 								class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
 								<p class="text-[1.5rem] 2xl:text-[2rem] font-[Orbitron]">
@@ -142,9 +158,10 @@
 							</div>
 						</article>
 						<article
-							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							id="projects-nbr"
+							class="article hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
-								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-white text-3xl lg:text-xl 2xl:text-4xl">
+								class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-gray-light hover:text-white transition-colors duration-500 text-3xl lg:text-xl 2xl:text-4xl">
 								<div
 									class="flex flex-col gap-y-1 items-start justify-center h-full w-full">
 									<p class="font-[Orbitron]">Contributed</p>
@@ -153,21 +170,22 @@
 								<div
 									class="flex flex-col justify-center gap-y-8 lg:gap-y-7 2xl:gap-y-10 w-full h-full items-end">
 									<p
+										id="projects-number"
 										class="text-[6rem] lg:text-[5rem] 2xl:text-[8rem] font-[Orbitron]">
-										10
+										0
 									</p>
 									<p class="font-[Orbitron]">websites</p>
 								</div>
 							</div>
 						</article>
 						<article
-							class="article relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-all duration-[1s]">
+							class="article relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 							<div
 								class="w-full h-full gap-x-5 gap-y-16 flex flex-col md:flex-row justify-between items-center px-7 py-10 text-lg md:text-sm 2xl:text-lg text-secondary transition-colors duration-[1s]">
 								<div
 									class="md:hidden w-full h-full flex justify-center items-center">
 									<p
-										class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-white">
+										class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-gray-light hover:text-white transition-colors duration-500">
 										Some of my<span class="text-[4rem] leading-[4rem]"
 											>Values</span
 										>
@@ -175,11 +193,11 @@
 								</div>
 								<div
 									class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-start text-start">
-									<div class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+									<div
+										class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-up" mode="out-in">
 											<div
 												v-if="!isValueHover1"
-												@mouseenter="isValueHover1 = true"
 												@click="isValueHover1 = true"
 												class="flex flex-row gap-x-3 justify-start items-center"
 												key="icon-text">
@@ -188,24 +206,23 @@
 													color="var(--primary-color)"
 													class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
 												<p class="font-[Orbitron] font-bold uppercase">
-													Simplicity <br class="md:hidden">Sophistication
+													Simplicity <br class="md:hidden" />Sophistication
 												</p>
 											</div>
 											<p
 												v-else
-												@mouseleave="isValueHover1 = false"
 												@click="isValueHover1 = false"
-												class="text-center text-white w-3/4 md:w-full"
+												class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 												key="description">
 												For a smooth user's experience and clean codebase
 											</p>
 										</transition>
 									</div>
-									<div class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+									<div
+										class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-down" mode="out-in">
 											<div
 												v-if="!isValueHover2"
-												@mouseenter="isValueHover2 = true"
 												@click="isValueHover2 = true"
 												class="flex flex-row-reverse md:flex-row gap-x-3 justify-start items-center text-end md:text-start"
 												key="icon-text">
@@ -214,14 +231,13 @@
 													color="var(--primary-color)"
 													class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
 												<p class="font-[Orbitron] font-bold uppercase">
-													Innovative <br class="md:hidden">Meticulous
+													Innovative <br class="md:hidden" />Meticulous
 												</p>
 											</div>
 											<p
 												v-else
-												@mouseleave="isValueHover2 = false"
 												@click="isValueHover2 = false"
-												class="text-center text-white w-3/4 md:w-full"
+												class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 												key="description">
 												Engineered with creativity and attention to detail
 											</p>
@@ -231,7 +247,7 @@
 								<div
 									class="hidden w-1/3 h-full md:flex justify-center items-start">
 									<p
-										class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-white">
+										class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light hover:text-white transition-colors duration-500">
 										Some of my<span
 											class="text-[3rem] 2xl:text-[5rem] leading-[3rem] 2xl:leading-[5rem]"
 											>Values</span
@@ -240,15 +256,15 @@
 								</div>
 								<div
 									class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-end text-end">
-									<div class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+									<div
+										class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-up" mode="out-in">
 											<div
 												class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
 												v-if="!isValueHover3"
-												@mouseenter="isValueHover3 = true"
 												@click="isValueHover3 = true">
 												<p class="font-[Orbitron] font-bold uppercase">
-													Autonomous <br class="md:hidden">Listening
+													Autonomous <br class="md:hidden" />Listening
 												</p>
 												<Icon
 													name="game-icons:suckered-tentacle"
@@ -257,22 +273,21 @@
 											</div>
 											<p
 												v-else
-												@mouseleave="isValueHover3 = false"
 												@click="isValueHover3 = false"
-												class="text-center text-white w-3/4 md:w-full">
+												class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 												Independently developed with a focus on user feedback
 											</p>
 										</transition>
 									</div>
-									<div class="flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+									<div
+										class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 										<transition name="fade-translate-down" mode="out-in">
 											<div
 												class="flex flex-row gap-x-3 justify-end items-center"
 												v-if="!isValueHover4"
-												@mouseenter="isValueHover4 = true"
 												@click="isValueHover4 = true">
 												<p class="font-[Orbitron] font-bold uppercase">
-													Open-minded <br class="md:hidden">Passionate
+													Open-minded <br class="md:hidden" />Passionate
 												</p>
 												<Icon
 													name="game-icons:techno-heart"
@@ -281,9 +296,8 @@
 											</div>
 											<p
 												v-else
-												@mouseleave="isValueHover4 = false"
 												@click="isValueHover4 = false"
-												class="text-center text-white w-3/4 md:w-full">
+												class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 												Crafted with an open heart and driven by passion
 											</p>
 										</transition>
@@ -299,14 +313,17 @@
 								class="absolute h-[20rem] w-[17rem] 2xl:w-[30rem] rounded-full bg-secondary transition-colors duration-[1s] border-[1.25rem] border-black"></div>
 						</article>
 					</div>
-					<a
-						href="#"
-						class="clickable hover-scale-effect cursor-none active:scale-95 transition-all duration-75">
-						<h3
-							class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-[3rem] text-white hover:tracking-widest transition-all duration-500">
-							Wanna work with me ?
-						</h3>
-					</a>
+					<div id="wanna-work-with-me">
+						<div
+							class="scale-100 hover:scale-105 active:scale-95 transform transition-transform duration-75 lg:duration-500">
+							<a href="#" class="clickable hover-scale-effect cursor-none">
+								<h3
+									class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-[3rem] text-white hover:tracking-widest transition-all duration-500">
+									Wanna work with me ?
+								</h3>
+							</a>
+						</div>
+					</div>
 				</div>
 				<!-- <div
 					class="flex flex-wrap lg:flex-row justify-center md:justify-evenly lg:justify-between 2xl:justify-center gap-7 mt-20 lg:mt-26 -mb-20">
@@ -339,9 +356,18 @@
 					class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 					Skills
 				</h2>
+				<h3
+					style="font-family: Share Tech Mono"
+					class="mt-5 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+					From front-end frameworks to back-end systems, I have honed my skills
+					in a wide range of technologies, enabling me to build efficient and
+					scalable web applications. Below is a curated list of tools and
+					technologies that are part of my developer toolkit.
+				</h3>
 				<div
-					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center gap-40 2xl:gap-x-60 gap-y-20 my-20">
+					class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center lg:items-start gap-40 lg:gap-x-20 2xl:gap-x-60 gap-y-20 my-20">
 					<div
+						id="skill-card"
 						class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary rounded-3xl flex flex-row justify-between">
 						<div
 							class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary w-[12%] md:w-[9%] h-fit">
@@ -404,25 +430,21 @@
 						</div>
 					</div>
 					<div
-						class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
+						id="container-skills"
+						class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center items-start pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
 						<NuxtImg
 							:src="`/img/details-skills-${selectedColor}.png`"
 							format="webp"
-							alt="Click on bubbles to see details"
-							class="hover:saturate-200 transition-all duration-500 hidden lg:block absolute scale-50 bottom-[68%] 2xl:bottom-[55%] right-[78%] 2xl:right-[70%] z-10" />
-						<NuxtImg
-							:src="`/img/mobile-details-skills-${selectedColor}.png`"
-							format="webp"
 							alt="Click on bubbles to see details (mobile)"
-							class="hover:saturate-200 transition-all duration-500 lg:hidden absolute scale-50 bottom-[80%] md:bottom-[65%] right-[30%] md:right-[22%] z-10" />
+							class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-21rem] 2xl:top-[-30.5rem] right-[30%] md:right-[10%] lg:right-[40%] z-10" />
 						<NuxtImg
 							:src="`/img/stars-info-${selectedColor}.png`"
 							format="webp"
 							alt="Stars = Proficiency level"
-							class="hover:saturate-200 transition-all duration-500 absolute scale-50 bottom-[81%] md:bottom-[67%] lg:bottom-[85%] 2xl:bottom-[75%] left-[30%] md:left-[40%] lg:left-[30%] z-10" />
+							class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-22rem] 2xl:top-[-30.5rem] left-[30%] md:left-[30%] lg:left-[30%] z-10" />
 						<BubbleIcon
 							v-for="(skill, index) in skills"
-							class="rounded-full"
+							class="rounded-full lg:scale-90 2xl:scale-100"
 							:key="index"
 							:index="index"
 							:text="skill.text"
@@ -436,6 +458,7 @@
 							@click="fillCardSkills(index), animStarsRotation()" />
 					</div>
 				</div>
+				<Timeline :data="timelineData" />
 				<!-- PROJECTS -->
 				<div
 					class="relative overflow-visible projects-container my-60 lg:my-96">
@@ -444,6 +467,15 @@
 						class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 						Projects
 					</h2>
+					<h3
+						style="font-family: Share Tech Mono"
+						class="mt-5 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+						Throughout my journey as a developer, I've worked on a variety of
+						projects that demonstrate my technical skills and problem-solving
+						abilities. Below is a selection of projects that showcase my
+						expertise in modern development practices, design patterns, and
+						coding efficiency.
+					</h3>
 					<!-- Mobile -->
 					<div class="lg:hidden relative mt-10">
 						<Icon
@@ -505,7 +537,7 @@
 						<Icon
 							name="game-icons:wind-slap"
 							color="var(--secondary-color)"
-							class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-auto transition-all duration-300" />
+							class="absolute top-0 left-[-15%] 2xl:left-[-40%] w-[50rem] 2xl:w-[70rem] opacity-30 h-auto transition-all duration-300" />
 						<div
 							class="relative overflow-visible container-project opacity-0 bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-1/2 h-[35rem] rounded-[1.5rem]">
 							<Transition name="fade">
@@ -532,7 +564,7 @@
 											:frames="20" />
 									</div>
 									<div
-										class="relative image-animation-container my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden"></div>
+										class="relative image-animation-container my-5 rounded-[1.5rem] w-[90%] h-[20rem] border-2 border-gray-semi overflow-hidden"></div>
 									<div
 										class="flex flex-wrap w-[90%] gap-3 my-5"
 										v-show="hoveredProject">
@@ -566,7 +598,7 @@
 								<img
 									:src="project.logo"
 									:alt="`Logo - ${project.logo}`"
-									class="absolute top-4 right-[-10%] scale-50 group-hover:scale-100 opacity-0 group-hover:opacity-10 w-auto h-60 transition-all duration-[0.8s]" />
+									class="absolute top-4 right-[-10%] hover-scale-effect clickable cursor-none scale-50 group-hover:scale-100 opacity-0 group-hover:opacity-10 w-auto h-60 transition-all duration-[0.8s]" />
 								<div
 									class="text-secondary group hover-scale-effect clickable cursor-none w-full h-full flex flex-col justify-between items-start">
 									<div
@@ -602,11 +634,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="text-3xl text-white font-bold">
-					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
-					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
-					<img :src="`/img/logo-${selectedColor}.png`" alt="Rémy Canal" />
-				</div>
+				<!-- Contact Form -->
+				<ContactForm />
 			</div>
 		</div>
 	</div>
@@ -623,8 +652,11 @@ import {
 	hideProject,
 	stickyProject,
 	apparitionMobileProjectCards,
-} from "~/plugins/gsap";
-import { mouseEffect, setExperienceTime } from "~/plugins/global.js";
+	appearBento,
+	appearStart,
+	stickySkills,
+} from "@/plugins/gsap";
+import { mouseEffect } from "@/plugins/global.js";
 
 const isValueHover1 = ref(false);
 const isValueHover2 = ref(false);
@@ -725,7 +757,14 @@ const projects: Project[] = [
 		type: "website",
 		last: true,
 		date: "2023",
-		technos: ["Wordpress", "HTML", "CSS", "JavaScript", "TailwindCSS"],
+		technos: [
+			"Wordpress",
+			"Elementor",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"TailwindCSS",
+		],
 	},
 ];
 
@@ -808,6 +847,30 @@ const skills: Skill[] = [
 		color: "#51b883",
 		icon: "logos:vue",
 		stars: 4,
+		description:
+			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+	},
+	{
+		text: "Next",
+		color: "#000000",
+		icon: "logos:nextjs-icon",
+		stars: 3,
+		description:
+			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+	},
+	{
+		text: "React",
+		color: "#00D8FF",
+		icon: "skill-icons:react-dark",
+		stars: 3,
+		description:
+			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+	},
+	{
+		text: "React Native",
+		color: "#F4F2ED",
+		icon: "skill-icons:react-light",
+		stars: 2,
 		description:
 			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
 	},
@@ -927,7 +990,7 @@ const skills: Skill[] = [
 	},
 ];
 
-const currentSkill = ref<Skill>(skills[19]);
+const currentSkill = ref<Skill>(skills[skills.length - 1]);
 const isUpdating = ref(false);
 const lastSkillIndex = ref<number | null>(null);
 
@@ -935,7 +998,7 @@ const fillCardSkills = (index: number) => {
 	isUpdating.value = true;
 	setTimeout(() => {
 		if (lastSkillIndex.value !== null && lastSkillIndex.value === index) {
-			currentSkill.value = skills[19];
+			currentSkill.value = skills[skills.length - 1];
 			lastSkillIndex.value = null;
 		} else {
 			currentSkill.value = skills[index];
@@ -970,10 +1033,12 @@ watch(route, () => {
 
 onMounted(() => {
 	updateFavicon("purple");
+	appearStart();
 	applyEffects();
-	setExperienceTime();
 	stickyProject();
+	stickySkills();
 	apparitionMobileProjectCards();
+	appearBento();
 
 	const backToTopButton = document.querySelector(".back-to-top");
 	if (backToTopButton) {
@@ -1152,4 +1217,79 @@ const updateFavicon = (color: string) => {
 	link.type = "image/x-icon";
 	link.href = `/${faviconName}`;
 };
+
+const timelineData = [
+	{
+		date: "2020",
+		type: "certification",
+		title: "Cambridge English Language Assessment",
+		subtitle: "Certification Cambridge - B2 First",
+		images: [
+			{
+				src: "/img/cambridge-logo.png",
+				alt: "Cambridge Logo",
+			},
+		],
+	},
+	{
+		date: "2021",
+		type: "formation",
+		title: "Institution Saint-Alyre | Clermont-Ferrand",
+		subtitle: "General Baccalaureate | Honors (AB)",
+		paragraph: [
+			"Specialization in Mathematics, Physics & Chemistry, and Computer Science with Advanced Mathematics Option",
+		],
+		images: [
+			{
+				src: "/img/saint-alyre-logo.png",
+				alt: "Saint-Alyre Logo",
+			},
+		],
+	},
+	{
+		date: "2022",
+		type: "formation",
+		title: "EPITECH - European Institute of Technology | Lyon",
+		subtitle: "Promo 2022-2027 - Program Grande Ecole (currently)",
+		paragraph: [
+			"5-Year Program Post-Baccalaureate to Become an Expert in Software Engineering Recognized by the State at Level 7 on the RNCP",
+		],
+		images: [
+			{
+				src: "/img/epitech-logo.png",
+				alt: "Epitech Logo",
+			},
+		],
+	},
+	{
+		date: "2023",
+		type: "experience",
+		title: "Sharewood",
+		subtitle: "Front-End Web Developer",
+		paragraph: [
+			"Internship - july to december 2023 (6 months)",
+		],
+		images: [
+			{
+				src: "/img/sharewood-logo.png",
+				alt: "Sharewood Logo",
+			},
+		],
+	},
+	{
+		date: "2024",
+		type: "experience",
+		title: "Letmotiv",
+		subtitle: "Full-Stack Web Developer",
+		paragraph: [
+			"Internship - september 2024 to march 2025 (7 months)",
+		],
+		images: [
+			{
+				src: "/img/letmotiv-logo.png",
+				alt: "Letmotiv Logo",
+			},
+		],
+	},
+];
 </script>

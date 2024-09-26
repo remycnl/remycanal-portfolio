@@ -1,5 +1,5 @@
 <script setup>
-import { animationFooter } from "~/plugins/gsap";
+import { animationFooter } from "@/plugins/gsap";
 
 const primaryColor = ref("purple");
 
@@ -61,7 +61,7 @@ onMounted(() => {
 
 <template>
 	<div
-		class="lg:rounded-b-[4rem] z-30 overflow-hidden shadow-around shadow-black bottom-0 text-white bg-black">
+		class="bg-dot-primary lg:rounded-b-[4rem] z-30 overflow-hidden shadow-around shadow-black bottom-0 text-white bg-black">
 		<div
 			class="container mx-auto px-4 lg:px-0 pt-40 pb-10 lg:pb-32 flex flex-col items-center gap-y-20 md:gap-y-20 lg:gap-y-32 hover:brightness-100">
 			<img
@@ -69,7 +69,7 @@ onMounted(() => {
 				alt="Rémy Canal"
 				class="change-img-color hover:saturate-200 transition-all duration-500 w-40 lg:w-48 2xl:w-60 h-auto" />
 			<div
-				class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-2xl md:text-3xl lg:text-4xl">
+				class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-2xl md:text-3xl lg:text-4xl tracking-wide">
 				<div class="active:scale-95 transition-all duration-75">
 					<a
 						href="#"
@@ -88,7 +88,7 @@ onMounted(() => {
 					<a
 						href="#"
 						class="menu-line-animation hover-scale-effect active:scale-95 transition-all duration-75 clickable cursor-none text-base lg:text-lg">
-						Experience
+						Timeline
 					</a>
 				</div>
 				<div class="active:scale-95 transition-all duration-75">
