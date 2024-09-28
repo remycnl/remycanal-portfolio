@@ -405,22 +405,24 @@
 								:alt="currentSkill.text"
 								:class="{
 									'icon-select-event': true,
-									'w-fit': true,
+									'w-auto': true,
 									'h-16': !currentSkill.isGif,
 									'md:h-24': !currentSkill.isGif,
 									'h-24': currentSkill.isGif,
 									'md:h-36': currentSkill.isGif,
 								}"
 								class="my-10" />
-							<Icon
-								v-else
-								:name="currentSkill.icon || ''"
-								class="w-auto h-16 md:h-24 my-10"
-								color="var(--white)" />
+							<div v-else class="w-auto h-16 md:h-24 my-10">
+								<Icon
+									:name="currentSkill.icon || ''"
+									class="w-full h-full"
+									size="16rem"
+									color="var(--white)" />
+							</div>
 							<div class="text-color-saturate">
 								<h3
 									v-if="currentSkill.text !== 'but still human...'"
-									class="pb-5 font-bold">
+									class="pb-5 text-3xl lg:text-[2rem] font-bold">
 									{{ currentSkill.text }}
 								</h3>
 								<p class="pb-10 text-sm md:text-lg font-bold w-full">
@@ -695,6 +697,7 @@ const projects: Project[] = [
 			"JavaScript",
 			"GSAP",
 			"TailwindCSS",
+			"Vercel",
 		],
 	},
 	{
@@ -1267,9 +1270,7 @@ const timelineData = [
 		type: "experience",
 		title: "Sharewood",
 		subtitle: "Front-End Web Developer",
-		paragraph: [
-			"Internship - july to december 2023 (6 months)",
-		],
+		paragraph: ["Internship - july to december 2023 (6 months)"],
 		images: [
 			{
 				src: "/img/sharewood-logo.png",
@@ -1282,9 +1283,7 @@ const timelineData = [
 		type: "experience",
 		title: "Letmotiv",
 		subtitle: "Full-Stack Web Developer (currently)",
-		paragraph: [
-			"Internship - september 2024 to march 2025 (7 months)",
-		],
+		paragraph: ["Internship - september 2024 to march 2025 (7 months)"],
 		images: [
 			{
 				src: "/img/letmotiv-logo.png",
