@@ -4,9 +4,10 @@
 		<div
 			class="px-1 relative toolbar lg:hidden flex justify-between items-center pointer-events-none">
 			<a @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
-				<img
+				<NuxtImg
 					:src="`/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
+					format="webp"
 					class="change-img-color text-shadow pointer-events-auto hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="z-50 flex pointer-events-auto items-center justify-center">
@@ -37,9 +38,10 @@
 					id="logo-zoom"
 					@click="executeFunctionsMenu($event, 'top')"
 					class="hover-scale-effect clickable cursor-none active:scale-105 transition-all duration-100">
-					<img
+					<NuxtImg
 						:src="`/img/logo-${primaryColor}.png`"
 						alt="Rémy Canal"
+						format="webp"
 						class="change-img-color text-shadow hover-scale-effect hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
@@ -71,10 +73,10 @@
 							class="hover-scale-effect clickable cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
 							<div
 								class="p-4 bg-black-dark bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 lg:ease-in rounded-xl">
-								<span
+								<h2
 									class="text-black font-bold group-hover:font-normal group-hover:text-white transition-all duration-300 lg:ease-in text-xl">
 									Contact me
-								</span>
+								</h2>
 							</div>
 						</div>
 					</a>

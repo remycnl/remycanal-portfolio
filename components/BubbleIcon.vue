@@ -4,7 +4,7 @@
 		class="font-[Schoolbell] lg:font-[Orbitron] relative z-50 flex flex-col justify-center items-center text-center skills">
 		<div
 			class="relative z-30 w-20 h-20 md:w-28 md:h-28 rounded-full bg-black border-2 md:border-3 border-gray-light border-opacity-5 flex justify-center items-center">
-			<img
+			<NuxtImg
 				v-if="props.withPath"
 				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.index"
 				:src="props.pathIcon"
@@ -16,7 +16,8 @@
 					'md:h-14': !isGif,
 					'h-16': isGif,
 					'md:h-[5.5rem]': isGif,
-				}" />
+				}"
+				format="webp" />
 			<Icon
 				v-else
 				:id="'skill-bubble-' + props.index"

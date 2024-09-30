@@ -82,10 +82,11 @@ const ancreToSection = (event, targetId) => {
 		<div class="bg-dot-primary hover:brightness-100">
 			<div
 				class="container mx-auto px-4 lg:px-0 pt-40 pb-10 lg:pb-32 flex flex-col items-center gap-y-20 md:gap-y-20 lg:gap-y-32">
-				<img
+				<NuxtImg
 					:src="`/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
-					class="change-img-color hover:saturate-200 transition-all duration-500 w-40 lg:w-48 2xl:w-60 h-auto" />
+					format="webp"
+					class="change-img-color text-shadow w-40 lg:w-48 2xl:w-60 h-auto" />
 				<div
 					class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-2xl md:text-3xl lg:text-4xl tracking-wide">
 					<div class="active:scale-95 transition-all duration-75">

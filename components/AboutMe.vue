@@ -40,14 +40,14 @@ const handleUpdateColor = (newColor) => {
 					</div></span
 				>
 			</h1>
-			<h4
+			<h3
 				style="font-family: Share Tech Mono"
 				class="about-me-paragraph md:opacity-0 text-white text-lg 2xl:text-2xl mx-4 md:mx-0">
 				I'm a student at Epitech, on my way to becoming a software engineer
 				specialized in crafting outstanding and full digital experiences. Based
 				in Lyon, France, I ensure responsive design, SEO optimization, and most
 				importantly, prioritize user satisfaction above all else.
-			</h4>
+			</h3>
 			<div
 				class="flex flex-col-reverse gap-10 2xl:flex-row mt-10 mb-7 lg:mb-0 justify-center items-center lg:items-end 2xl:items-center lg:justify-between">
 				<ToggleColorsButton

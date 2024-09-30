@@ -16,15 +16,15 @@ useSeoMeta({
 	title: activeTitle,
 	ogTitle: "Rémy Canal | Web Developer Portfolio",
 	description:
-		"Discover the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end, full-stack, and mobile development. Explore my projects, skills, and experiences in modern web technologies.",
+		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogDescription:
-		"Explore the portfolio of Rémy Canal, showcasing web development projects, expertise, and skills in front-end, full-stack, and mobile development.",
+		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogImage: "/img/messageSent.gif",
 	ogUrl: "https://remycanal.me",
 	ogType: "website",
 	twitterTitle: "Rémy Canal - Portfolio | Web Developer",
 	twitterDescription:
-		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end, full-stack, and mobile development.",
+		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
 	twitterImage: "/img/messageSent.gif",
 	twitterUrl: "https://remycanal.me",
 	twitterCard: "summary_large_image",
@@ -130,14 +130,14 @@ const setCSP = () => {
 				<div
 					class="flex justify-center items-center mt-32 lg:mt-60 mb-24 lg:mb-48">
 					<div class="group flex justify-center items-center flex-col gap-y-3 w-fit">
-						<h4
+						<h3
 							class="w-fit text-center text-gray-light group-hover:text-white transition-color duration-500 text-2xl md:text-3xl lg:text-4xl">
 							&ldquo; Simplicity is the ultimate sophistication. &rdquo;
-						</h4>
-						<h4
+						</h3>
+						<h3
 							class="w-fit text-xs text-gray-light group-hover:text-white transition-color duration-500 md:text-base lg:text-lg">
 							Leonardo da Vinci
-						</h4>
+						</h3>
 					</div>
 				</div>
 				<div

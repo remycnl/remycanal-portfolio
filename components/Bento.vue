@@ -34,9 +34,9 @@ const ancreToSection = (event, targetId) => {
 		<div class="bento grid gap-5 w-full h-full">
 			<article
 				id="experience-nbr"
-				class="article opacity-0 hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
+				class="article group opacity-0 hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 				<div
-					class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-gray-light hover:text-white transition-colors duration-500">
+					class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-gray-light group-hover:text-white transition-colors duration-500">
 					<p
 						id="experience"
 						class="font-[Orbitron] pt-10 text-[10rem] lg:text-[8rem] 2xl:text-[15rem]">
@@ -79,9 +79,9 @@ const ancreToSection = (event, targetId) => {
 			</article>
 			<article
 				id="projects-nbr"
-				class="article opacity-0 hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
+				class="article group opacity-0 hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 				<div
-					class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-gray-light hover:text-white transition-colors duration-500 text-3xl lg:text-xl 2xl:text-4xl">
+					class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-gray-light group-hover:text-white transition-colors duration-500 text-3xl lg:text-xl 2xl:text-4xl">
 					<div
 						class="flex flex-col gap-y-1 items-start justify-center h-full w-full">
 						<p class="font-[Orbitron]">Contributed</p>
@@ -99,12 +99,12 @@ const ancreToSection = (event, targetId) => {
 				</div>
 			</article>
 			<article
-				class="article opacity-0 relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
+				class="article group opacity-0 relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
 				<div
 					class="w-full h-full gap-x-5 gap-y-16 flex flex-col md:flex-row justify-between items-center px-7 py-10 text-lg md:text-sm 2xl:text-lg text-secondary transition-colors duration-[1s]">
 					<div class="md:hidden w-full h-full flex justify-center items-center">
 						<p
-							class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-gray-light hover:text-white transition-colors duration-500">
+							class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-gray-light group-hover:text-white transition-colors duration-500">
 							Some of my<span class="text-[4rem] leading-[4rem]">Values</span>
 						</p>
 					</div>
@@ -163,7 +163,7 @@ const ancreToSection = (event, targetId) => {
 					</div>
 					<div class="hidden w-1/3 h-full md:flex justify-center items-start">
 						<p
-							class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light hover:text-white transition-colors duration-500">
+							class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light group-hover:text-white transition-colors duration-500">
 							Some of my<span
 								class="text-[3rem] 2xl:text-[5rem] leading-[3rem] 2xl:leading-[5rem]"
 								>Values</span
@@ -236,10 +236,10 @@ const ancreToSection = (event, targetId) => {
 					@click="ancreToSection($event, 'Contact me')"
 					href="Contact me"
 					class="clickable hover-scale-effect cursor-none">
-					<h3
+					<h4
 						class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-[3rem] text-white hover:tracking-widest transition-all duration-500">
 						Wanna work with me ?
-					</h3>
+					</h4>
 				</a>
 			</div>
 		</div>

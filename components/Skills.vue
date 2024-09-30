@@ -51,6 +51,7 @@
 					v-if="currentSkill.withPath"
 					:src="currentSkill.pathIcon"
 					:alt="currentSkill.text"
+					format="webp"
 					:class="{
 						'icon-select-event': true,
 						'w-auto': true,

@@ -27,25 +27,25 @@
 						<div
 							class="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 p-2"></div>
 					</div>
-					<h3
+					<h5
 						class="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-neutral-500">
 						{{ item.date }}
-					</h3>
-					<h4
+					</h5>
+					<h6
 						class="hidden md:block text-xl md:pl-20 md:text-xl font-bold text-neutral-500">
 						{{ item.type }}
-					</h4>
+					</h6>
 				</div>
 
 				<div class="timeline-element relative pl-20 pr-4 md:pl-4 w-full">
 					<div class="flex flex-row gap-x-4 items-center">
-						<h3
+						<h5
 							class="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500">
 							{{ item.date }}
-						</h3>
-						<h4 class="md:hidden text-xs -mt-2 font-bold text-neutral-500">
+						</h5>
+						<h6 class="md:hidden text-xs -mt-2 font-bold text-neutral-500">
 							{{ item.type }}
-						</h4>
+						</h6>
 					</div>
 					<div class="mb-8 flex flex-col gap-y-5 lg:gap-y-8">
 						<div class="flex flex-col gap-y-2">
@@ -67,11 +67,12 @@
 						</div>
 						<div
 							class="group overflow-hidden bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full lg:w-1/3 h-40 lg:h-60 rounded-[1.5rem] flex justify-center items-center p-5 lg:p-10">
-							<img
+							<NuxtImg
 								v-for="(img, imgIdx) in item.images"
 								:key="imgIdx"
 								:src="img.src"
 								:alt="img.alt"
+								format="webp"
 								class="object-contain h-full w-full group-hover:scale-[1.15] transition-transform duration-500" />
 						</div>
 					</div>

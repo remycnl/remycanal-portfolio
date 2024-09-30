@@ -35,9 +35,10 @@
 					</div>
 					<div
 						class="relative my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden">
-						<img
+						<NuxtImg
 							:src="project.img"
 							:alt="`Mockup - ${project.img}`"
+							format="webp"
 							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
 					</div>
 					<p class="text-gray-light w-[86%]">
@@ -129,9 +130,10 @@
 					@mouseenter="showImage(project.img), startHover(project.slug)"
 					@mouseleave="hideImages(), stopHover()"
 					class="group relative z-30 link-type flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
-					<img
+					<NuxtImg
 						:src="project.logo"
 						:alt="`Logo - ${project.logo}`"
+						format="webp"
 						class="absolute top-4 right-[-10%] hover-scale-effect clickable cursor-none scale-50 group-hover:scale-100 opacity-0 group-hover:opacity-10 w-auto h-60 transition-all duration-[0.8s]" />
 					<div
 						class="text-secondary group hover-scale-effect clickable cursor-none w-full h-full flex flex-col justify-between items-start">
