@@ -2,7 +2,7 @@
 	<div class="w-full">
 		<div class="mt-40 lg:mt-96 py-20">
 			<h2
-				id="timeline"
+				id="Timeline"
 				class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
 				Timeline
 			</h2>
@@ -43,14 +43,14 @@
 							class="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500">
 							{{ item.date }}
 						</h3>
-						<h4
-							class="md:hidden text-xs -mt-2 font-bold text-neutral-500">
+						<h4 class="md:hidden text-xs -mt-2 font-bold text-neutral-500">
 							{{ item.type }}
 						</h4>
 					</div>
 					<div class="mb-8 flex flex-col gap-y-5 lg:gap-y-8">
 						<div class="flex flex-col gap-y-2">
-							<h3 class="text-color-saturate text-lg md:text-2xl lg:text-3xl text-secondary">
+							<h3
+								class="text-color-saturate text-lg md:text-2xl lg:text-3xl text-secondary">
 								{{ item.title }}
 							</h3>
 							<h4
@@ -92,18 +92,80 @@
 <script setup>
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import {
-	appearTimeline
-} from "@/plugins/gsap";
+import { appearTimeline } from "@/plugins/gsap";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const props = defineProps({
-	data: {
-		type: Array,
-		required: true,
+const data = [
+	{
+		date: "2020",
+		type: "certification",
+		title: "Cambridge English Language Assessment",
+		subtitle: "Certification Cambridge - B2 First",
+		images: [
+			{
+				src: "/img/cambridge-logo.png",
+				alt: "Cambridge Logo",
+			},
+		],
 	},
-});
+	{
+		date: "2021",
+		type: "formation",
+		title: "Institution Saint-Alyre | Clermont-Ferrand",
+		subtitle: "General Baccalaureate | Honors (AB)",
+		paragraph: [
+			"Specialization in Mathematics, Physics & Chemistry, and Computer Science with Advanced Mathematics Option",
+		],
+		images: [
+			{
+				src: "/img/saint-alyre-logo.png",
+				alt: "Saint-Alyre Logo",
+			},
+		],
+	},
+	{
+		date: "2022",
+		type: "formation",
+		title: "EPITECH - European Institute of Technology | Lyon",
+		subtitle: "Promo 2022-2027 - Program Grande Ecole (currently)",
+		paragraph: [
+			"5-Year Program Post-Baccalaureate to Become an Expert in Software Engineering Recognized by the State at Level 7 on the RNCP",
+		],
+		images: [
+			{
+				src: "/img/epitech-logo.png",
+				alt: "Epitech Logo",
+			},
+		],
+	},
+	{
+		date: "2023",
+		type: "experience",
+		title: "Sharewood",
+		subtitle: "Front-End Web Developer",
+		paragraph: ["Internship - July to December 2023 (6 months)"],
+		images: [
+			{
+				src: "/img/sharewood-logo.png",
+				alt: "Sharewood Logo",
+			},
+		],
+	},
+	{
+		date: "2024",
+		type: "experience",
+		title: "Letmotiv",
+		subtitle: "Full-Stack Web Developer (currently)",
+		paragraph: ["Internship - September 2024 to March 2025 (7 months)"],
+		images: [
+			{
+				src: "/img/letmotiv-logo.png",
+				alt: "Letmotiv Logo",
+			},
+		],
+	},
+];
 
 const timelineRef = ref(null);
 const progressBar = ref(null);

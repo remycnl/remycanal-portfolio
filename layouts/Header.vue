@@ -3,7 +3,7 @@
 		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-10">
 		<div
 			class="px-1 relative toolbar lg:hidden flex justify-between items-center pointer-events-none">
-			<a href="#" @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
+			<a @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
 				<img
 					:src="`/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
@@ -34,7 +34,6 @@
 				:class="headerClasses"
 				class="pointer-events-auto overflow-y-auto lg:overflow-y-visible max-h-[95vh] lg-custom-width">
 				<a
-					href="#"
 					id="logo-zoom"
 					@click="executeFunctionsMenu($event, 'top')"
 					class="hover-scale-effect clickable cursor-none active:scale-105 transition-all duration-100">
@@ -52,21 +51,21 @@
 						class="magnet pointer-events-auto">
 						<a
 							@click="
-								executeFunctionsMenu($event, 'top');
+								executeFunctionsMenu($event, menu);
 								applyGradientText(index);
 								applyZoomEffect(index);
 							"
-							href="#"
+							:href="menu"
 							class="menu-sm text-shadow transition-all duration-300 ease-in-out text-xl hover-scale-effect clickable cursor-none">
 							{{ menu }}
 						</a>
 					</span>
 					<a
 						@click="
-							executeFunctionsMenu($event, 'top');
+							executeFunctionsMenu($event, 'Contact me');
 							applyGradientText(4);
 						"
-						href="#"
+						href="Contact me"
 						class="active:scale-95 transition-all duration-75">
 						<div
 							class="hover-scale-effect clickable cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
@@ -145,8 +144,6 @@ const executeFunctionsMenu = (event, targetId) => {
 };
 
 const ancreToSection = (event, targetId) => {
-	event.preventDefault();
-
 	const targetElement = document.getElementById(targetId);
 
 	if (targetElement) {

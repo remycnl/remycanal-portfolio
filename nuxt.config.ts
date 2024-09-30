@@ -11,7 +11,6 @@ export default defineNuxtConfig({
   css: [
     '@/assets/css/main.css',
     '@/assets/css/button.css',
-    '@/assets/css/valueCard.css',
     '@/assets/css/mouseEffect.css',
     '@/assets/css/backToTopButton.css',
     '@/assets/css/scrollBar.css',

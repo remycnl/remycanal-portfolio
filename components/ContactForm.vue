@@ -5,6 +5,7 @@
 			id="container-contact"
 			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
 			<h2
+				id="Contact me"
 				class="text-color-saturate text-[2rem] md:text-[3rem] 2xl:text-[3.5rem] font-bold text-secondary md:mb-1 text-start">
 				Just say Hello !
 			</h2>
@@ -211,7 +212,10 @@
 								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
 								By email
 							</h3>
-							<p class="time text-xs md:text-sm text-gray-light whitespace-nowrap">Now</p>
+							<p
+								class="time text-xs md:text-sm text-gray-light whitespace-nowrap">
+								Now
+							</p>
 						</div>
 						<h4
 							ref="emailText"
@@ -262,7 +266,10 @@
 								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
 								By phone
 							</h3>
-							<p class="time text-xs md:text-sm text-gray-light whitespace-nowrap">Now</p>
+							<p
+								class="time text-xs md:text-sm text-gray-light whitespace-nowrap">
+								Now
+							</p>
 						</div>
 						<h4
 							ref="phoneText"
@@ -313,7 +320,10 @@
 								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
 								My adress
 							</h3>
-							<p class="time text-xs md:text-sm text-gray-light whitespace-nowrap">Now</p>
+							<p
+								class="time text-xs md:text-sm text-gray-light whitespace-nowrap">
+								Now
+							</p>
 						</div>
 						<h4
 							ref="locationText"
