@@ -8,7 +8,7 @@
 			</h2>
 			<h3
 				style="font-family: Share Tech Mono"
-				class="mt-5 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+				class="mt-5 lg:mt-10 w-full lg:w-7/12 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
 				Explore my journey, including my certifications, academic training, and
 				professional experiences, showcasing my growth in software development
 				and engineering.

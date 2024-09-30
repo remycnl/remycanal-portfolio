@@ -1,138 +1,3 @@
-<script setup lang="ts">
-import {
-	showImage,
-	hideImages,
-	showProject,
-	hideProject,
-	stickyProject,
-	apparitionMobileProjectCards,
-} from "@/plugins/gsap";
-
-onMounted(() => {
-	stickyProject();
-	apparitionMobileProjectCards();
-});
-
-interface Project {
-	slug: string;
-	title: string;
-	description: string;
-	link: string;
-	img: string;
-	logo: string;
-	type: string;
-	last?: boolean;
-	date: string;
-	technos?: string[];
-}
-
-const projects: Project[] = [
-	{
-		slug: "portfolio",
-		title: "Portfolio of Rémy Canal",
-		description: "Creation 'from scratch' of my portfolio.",
-		link: "https://example.com/project1",
-		img: "/img/mockup-portfolio-remycanal.png",
-		logo: "/img/logo-blue.png",
-		type: "website",
-		date: "2024",
-		technos: [
-			"Vue.js",
-			"Nuxt.js",
-			"HTML",
-			"CSS",
-			"JavaScript",
-			"GSAP",
-			"TailwindCSS",
-			"Vercel",
-		],
-	},
-	{
-		slug: "sharewood",
-		title: "Sharewood",
-		description: "Redesign of the entire front part of the Sharewood website.",
-		link: "https://sharewood.team/",
-		img: "/img/mockup-sharewood.png",
-		logo: "/img/logo-sharewood.png",
-		type: "website",
-		date: "2023",
-		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
-	},
-	{
-		slug: "ecofid",
-		title: "Éco-fidélité",
-		description:
-			"Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
-		link: "https://www.eco-fidelite.com/",
-		img: "/img/mockup-ecofid.png",
-		logo: "/img/logo-ecofid.png",
-		type: "website",
-		date: "2023",
-		technos: [
-			"Vue.js",
-			"Nuxt.js",
-			"HTML",
-			"CSS",
-			"JavaScript",
-			"GSAP",
-			"TailwindCSS",
-		],
-	},
-	{
-		slug: "odl",
-		title: "Office des Lumières",
-		description: "Creation and animation of a website for a notary firm.",
-		link: "https://officedeslumieres.com/",
-		img: "/img/mockup-odl.png",
-		logo: "/img/logo-odl.png",
-		type: "website",
-		date: "2023",
-		technos: [
-			"Vue.js",
-			"Nuxt.js",
-			"HTML",
-			"CSS",
-			"JavaScript",
-			"GSAP",
-			"TailwindCSS",
-		],
-	},
-	{
-		slug: "lappart",
-		title: "L'Appart Fitness",
-		description:
-			"Participation in the full redesign of the L'Appart Fitness website.",
-		link: "https://www.lappartfitness.com/",
-		img: "/img/mockup-lappart.png",
-		logo: "/img/logo-lappart.png",
-		type: "website",
-		last: true,
-		date: "2023",
-		technos: [
-			"Wordpress",
-			"Elementor",
-			"HTML",
-			"CSS",
-			"JavaScript",
-			"TailwindCSS",
-		],
-	},
-];
-
-const isSomethingHover = ref(false);
-const hoveredProject = ref<string | null>(null);
-
-const startHover = (projectSlug: string) => {
-	isSomethingHover.value = true;
-	hoveredProject.value = projectSlug;
-};
-
-const stopHover = () => {
-	isSomethingHover.value = false;
-	hoveredProject.value = null;
-};
-</script>
-
 <template>
 	<div class="relative overflow-visible projects-container my-60 lg:my-96">
 		<h2
@@ -142,7 +7,7 @@ const stopHover = () => {
 		</h2>
 		<h3
 			style="font-family: Share Tech Mono"
-			class="mt-5 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+			class="mt-5 lg:mt-10 w-full lg:w-7/12 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
 			Throughout my journey as a developer, I've worked on a variety of projects
 			that demonstrate my technical skills and problem-solving abilities. Below
 			is a selection of projects that showcase my expertise in modern
@@ -302,3 +167,138 @@ const stopHover = () => {
 		</div>
 	</div>
 </template>
+
+<script setup lang="ts">
+import {
+	showImage,
+	hideImages,
+	showProject,
+	hideProject,
+	stickyProject,
+	apparitionMobileProjectCards,
+} from "@/plugins/gsap";
+
+onMounted(() => {
+	stickyProject();
+	apparitionMobileProjectCards();
+});
+
+interface Project {
+	slug: string;
+	title: string;
+	description: string;
+	link: string;
+	img: string;
+	logo: string;
+	type: string;
+	last?: boolean;
+	date: string;
+	technos?: string[];
+}
+
+const projects: Project[] = [
+	{
+		slug: "portfolio",
+		title: "Portfolio of Rémy Canal",
+		description: "Creation 'from scratch' of my portfolio.",
+		link: "https://example.com/project1",
+		img: "/img/mockup-portfolio-remycanal.png",
+		logo: "/img/logo-blue.png",
+		type: "website",
+		date: "2024",
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+			"Vercel",
+		],
+	},
+	{
+		slug: "sharewood",
+		title: "Sharewood",
+		description: "Redesign of the entire front part of the Sharewood website.",
+		link: "https://sharewood.team/",
+		img: "/img/mockup-sharewood.png",
+		logo: "/img/logo-sharewood.png",
+		type: "website",
+		date: "2023",
+		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
+	},
+	{
+		slug: "ecofid",
+		title: "Éco-fidélité",
+		description:
+			"Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
+		link: "https://www.eco-fidelite.com/",
+		img: "/img/mockup-ecofid.png",
+		logo: "/img/logo-ecofid.png",
+		type: "website",
+		date: "2023",
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+		],
+	},
+	{
+		slug: "odl",
+		title: "Office des Lumières",
+		description: "Creation and animation of a website for a notary firm.",
+		link: "https://officedeslumieres.com/",
+		img: "/img/mockup-odl.png",
+		logo: "/img/logo-odl.png",
+		type: "website",
+		date: "2023",
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+		],
+	},
+	{
+		slug: "lappart",
+		title: "L'Appart Fitness",
+		description:
+			"Participation in the full redesign of the L'Appart Fitness website.",
+		link: "https://www.lappartfitness.com/",
+		img: "/img/mockup-lappart.png",
+		logo: "/img/logo-lappart.png",
+		type: "website",
+		last: true,
+		date: "2023",
+		technos: [
+			"Wordpress",
+			"Elementor",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"TailwindCSS",
+		],
+	},
+];
+
+const isSomethingHover = ref(false);
+const hoveredProject = ref<string | null>(null);
+
+const startHover = (projectSlug: string) => {
+	isSomethingHover.value = true;
+	hoveredProject.value = projectSlug;
+};
+
+const stopHover = () => {
+	isSomethingHover.value = false;
+	hoveredProject.value = null;
+};
+</script>

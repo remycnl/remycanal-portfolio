@@ -1,3 +1,115 @@
+<template>
+	<h2
+		id="Skills"
+		class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
+		Skills
+	</h2>
+	<h3
+		style="font-family: Share Tech Mono"
+		class="mt-5 w-full lg:w-7/12 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+		From front-end frameworks to back-end systems, I have honed my skills in a
+		wide range of technologies, enabling me to build efficient and scalable web
+		applications. Below is a curated list of tools and technologies that are
+		part of my developer toolkit.
+	</h3>
+	<div
+		class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center lg:items-start gap-40 lg:gap-x-20 2xl:gap-x-60 gap-y-20 my-20">
+		<div
+			id="skill-card"
+			class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary rounded-3xl flex flex-row justify-between">
+			<div
+				class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary w-[12%] md:w-[9%] h-fit">
+				<div
+					:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
+					@transitionend="finishUpdate"
+					class="flex flex-col my-10 transition-opacity duration-300">
+					<div
+						v-for="star in currentSkill.stars"
+						:key="'filled-' + star"
+						class="star star-card">
+						<Icon
+							name="teenyicons:star-small-solid"
+							class="w-auto h-8 md:h-9"
+							color="#1f293b" />
+					</div>
+					<div
+						v-for="star in 5 - currentSkill.stars"
+						:key="'empty-' + star"
+						class="star star-card">
+						<Icon
+							name="teenyicons:star-small-outline"
+							class="w-auto h-8 md:h-9"
+							color="#1f293b" />
+					</div>
+				</div>
+			</div>
+			<div
+				:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
+				@transitionend="finishUpdate"
+				class="flex flex-col items-center w-[88%] h-full py-4 px-8 transition-opacity duration-300">
+				<NuxtImg
+					v-if="currentSkill.withPath"
+					:src="currentSkill.pathIcon"
+					:alt="currentSkill.text"
+					:class="{
+						'icon-select-event': true,
+						'w-auto': true,
+						'h-16': !currentSkill.isGif,
+						'md:h-24': !currentSkill.isGif,
+						'h-24': currentSkill.isGif,
+						'md:h-36': currentSkill.isGif,
+					}"
+					class="my-10" />
+				<div v-else class="w-auto h-16 md:h-24 my-10">
+					<Icon
+						:name="currentSkill.icon || ''"
+						class="w-full h-full"
+						size="16rem"
+						color="var(--white)" />
+				</div>
+				<div class="text-color-saturate">
+					<h3
+						v-if="currentSkill.text !== 'but still human...'"
+						class="pb-5 text-3xl lg:text-[2rem] font-bold">
+						{{ currentSkill.text }}
+					</h3>
+					<p class="pb-10 text-sm md:text-lg font-bold w-full">
+						{{ currentSkill.description }}
+					</p>
+				</div>
+			</div>
+		</div>
+		<div
+			id="container-skills"
+			class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center items-start pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
+			<NuxtImg
+				:src="`/img/details-skills-${selectedColor}.png`"
+				format="webp"
+				alt="Click on bubbles to see details (mobile)"
+				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-21rem] 2xl:top-[-30.5rem] right-[30%] md:right-[10%] lg:right-[40%] z-10" />
+			<NuxtImg
+				:src="`/img/stars-info-${selectedColor}.png`"
+				format="webp"
+				alt="Stars = Proficiency level"
+				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-22rem] 2xl:top-[-30.5rem] left-[30%] md:left-[30%] lg:left-[30%] z-10" />
+			<BubbleIcon
+				v-for="(skill, index) in skills"
+				class="rounded-full lg:scale-90 2xl:scale-100"
+				:key="index"
+				:index="index"
+				:text="skill.text"
+				:color="skill.color"
+				:iconColor="skill.iconColor"
+				:icon="skill.icon"
+				:stars="skill.stars"
+				:withPath="skill.withPath"
+				:pathIcon="skill.pathIcon"
+				:isGif="skill.isGif"
+				@click="fillCardSkills(index), animStarsRotation()" />
+		</div>
+	</div>
+</template>
+
 <script setup>
 import { stickySkills, animationStarsCardSkill } from "@/plugins/gsap";
 
@@ -237,115 +349,3 @@ onMounted(() => {
 	stickySkills();
 });
 </script>
-
-<template>
-	<h2
-		id="Skills"
-		class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
-		Skills
-	</h2>
-	<h3
-		style="font-family: Share Tech Mono"
-		class="mt-5 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
-		From front-end frameworks to back-end systems, I have honed my skills in a
-		wide range of technologies, enabling me to build efficient and scalable web
-		applications. Below is a curated list of tools and technologies that are
-		part of my developer toolkit.
-	</h3>
-	<div
-		class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center lg:items-start gap-40 lg:gap-x-20 2xl:gap-x-60 gap-y-20 my-20">
-		<div
-			id="skill-card"
-			class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary rounded-3xl flex flex-row justify-between">
-			<div
-				class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary w-[12%] md:w-[9%] h-fit">
-				<div
-					:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
-					@transitionend="finishUpdate"
-					class="flex flex-col my-10 transition-opacity duration-300">
-					<div
-						v-for="star in currentSkill.stars"
-						:key="'filled-' + star"
-						class="star star-card">
-						<Icon
-							name="teenyicons:star-small-solid"
-							class="w-auto h-8 md:h-9"
-							color="#1f293b" />
-					</div>
-					<div
-						v-for="star in 5 - currentSkill.stars"
-						:key="'empty-' + star"
-						class="star star-card">
-						<Icon
-							name="teenyicons:star-small-outline"
-							class="w-auto h-8 md:h-9"
-							color="#1f293b" />
-					</div>
-				</div>
-			</div>
-			<div
-				:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
-				@transitionend="finishUpdate"
-				class="flex flex-col items-center w-[88%] h-full py-4 px-8 transition-opacity duration-300">
-				<NuxtImg
-					v-if="currentSkill.withPath"
-					:src="currentSkill.pathIcon"
-					:alt="currentSkill.text"
-					:class="{
-						'icon-select-event': true,
-						'w-auto': true,
-						'h-16': !currentSkill.isGif,
-						'md:h-24': !currentSkill.isGif,
-						'h-24': currentSkill.isGif,
-						'md:h-36': currentSkill.isGif,
-					}"
-					class="my-10" />
-				<div v-else class="w-auto h-16 md:h-24 my-10">
-					<Icon
-						:name="currentSkill.icon || ''"
-						class="w-full h-full"
-						size="16rem"
-						color="var(--white)" />
-				</div>
-				<div class="text-color-saturate">
-					<h3
-						v-if="currentSkill.text !== 'but still human...'"
-						class="pb-5 text-3xl lg:text-[2rem] font-bold">
-						{{ currentSkill.text }}
-					</h3>
-					<p class="pb-10 text-sm md:text-lg font-bold w-full">
-						{{ currentSkill.description }}
-					</p>
-				</div>
-			</div>
-		</div>
-		<div
-			id="container-skills"
-			class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center items-start pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
-			<NuxtImg
-				:src="`/img/details-skills-${selectedColor}.png`"
-				format="webp"
-				alt="Click on bubbles to see details (mobile)"
-				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-21rem] 2xl:top-[-30.5rem] right-[30%] md:right-[10%] lg:right-[40%] z-10" />
-			<NuxtImg
-				:src="`/img/stars-info-${selectedColor}.png`"
-				format="webp"
-				alt="Stars = Proficiency level"
-				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-22rem] 2xl:top-[-30.5rem] left-[30%] md:left-[30%] lg:left-[30%] z-10" />
-			<BubbleIcon
-				v-for="(skill, index) in skills"
-				class="rounded-full lg:scale-90 2xl:scale-100"
-				:key="index"
-				:index="index"
-				:text="skill.text"
-				:color="skill.color"
-				:iconColor="skill.iconColor"
-				:icon="skill.icon"
-				:stars="skill.stars"
-				:withPath="skill.withPath"
-				:pathIcon="skill.pathIcon"
-				:isGif="skill.isGif"
-				@click="fillCardSkills(index), animStarsRotation()" />
-		</div>
-	</div>
-</template>
