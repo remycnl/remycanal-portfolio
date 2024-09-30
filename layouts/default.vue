@@ -129,7 +129,7 @@ const setCSP = () => {
 				<Footer id="footer" />
 				<div
 					class="flex justify-center items-center mt-32 lg:mt-60 mb-24 lg:mb-48">
-					<div class="group flex justify-center items-center flex-col gap-y-3 w-fit">
+					<div class="z-50 group flex justify-center items-center flex-col gap-y-3 w-fit">
 						<h3
 							class="w-fit text-center text-gray-light group-hover:text-white transition-color duration-500 text-2xl md:text-3xl lg:text-4xl">
 							&ldquo; Simplicity is the ultimate sophistication. &rdquo;
