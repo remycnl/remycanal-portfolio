@@ -52,7 +52,7 @@
 						<a
 							@click="
 								executeFunctionsMenu($event, menu);
-								applyGradientText(index);
+								applySaturationText(index);
 								applyZoomEffect(index);
 							"
 							:href="menu"
@@ -63,7 +63,7 @@
 					<a
 						@click="
 							executeFunctionsMenu($event, 'Contact me');
-							applyGradientText(4);
+							applySaturationText(4);
 						"
 						href="Contact me"
 						class="active:scale-95 transition-all duration-75">
@@ -94,7 +94,7 @@
 </template>
 
 <script setup>
-import { toggleDropdown, applyZoomEffect } from "@/plugins/gsap";
+import { toggleDropdown, applyZoomEffect, applySaturationTextOnScroll } from "@/plugins/gsap";
 import { magnetEffect } from "@/plugins/global.js";
 
 let isScreenSM = ref(false);
@@ -158,7 +158,7 @@ const ancreToSection = (event, targetId) => {
 	}
 };
 
-const applyGradientText = (index) => {
+const applySaturationText = (index) => {
 	const textMenus = document.querySelectorAll("[id^='text-menu']");
 
 	textMenus.forEach((menu, idx) => {
@@ -175,10 +175,14 @@ const applyGradientText = (index) => {
 const primaryColor = ref("purple");
 
 onMounted(() => {
+	const mediaQuery = window.matchMedia('(min-width: 768px)');
 	window.addEventListener("scroll", handleScroll);
 	handleScroll();
-	magnetEffect();
-	applyGradientText(0);
+	if (mediaQuery.matches) {
+        magnetEffect();
+        applySaturationTextOnScroll();
+        applySaturationText(0);
+	}
 
 	const updatePrimaryColor = () => {
 		const element = document.querySelector(".change-img-color");

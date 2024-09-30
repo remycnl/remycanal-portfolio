@@ -3,15 +3,25 @@
 	<div
 		class="bg-gradient-to-b lg:rounded-t-[4rem] overflow-hidden shadow-around shadow-black from-black via-primary to-black">
 		<div class="bg-dot-primary lg:mx-20 2xl:mx-0 hover:brightness-100">
-			<div class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
-				<AboutMe :selectedColor="selectedColor" @update-color="updateSelectedColor" />
+			<section id="section-1" class="container mx-auto px-4 lg:px-0 pt-28 lg:pt-40 pb-48">
+				<AboutMe
+					:selectedColor="selectedColor"
+					@update-color="updateSelectedColor" />
 				<Bento />
-			</div>
-			<div class="container mx-auto px-4 lg:mt-56 lg:px-0">
-				<Skills :selectedColor="selectedColor" />
-				<Timeline />
-				<Projects />
-				<ContactForm />
+			</section>
+			<div class="container mx-auto px-4 lg:px-0 lg:mt-56">
+				<section id="section-2">
+					<Skills :selectedColor="selectedColor" />
+				</section>
+				<section id="section-3">
+					<Timeline />
+				</section>
+				<section id="section-4">
+					<Projects />
+				</section>
+				<section id="section-5">
+					<ContactForm />
+				</section>
 			</div>
 		</div>
 	</div>

@@ -9,6 +9,7 @@ export default defineNuxtPlugin(() => {
 		applyUnzoom,
 		animationFooter,
 		customCursor,
+		applySaturationTextOnScroll,
 		animationFooterBottom,
 		animationCheckboxColor,
 		showImage,
@@ -353,6 +354,39 @@ export function customCursor() {
 			});
 		});
 	});
+}
+
+export function applySaturationTextOnScroll() {
+	const sections = [
+		"section-1",
+		"section-2",
+		"section-3",
+		"section-4",
+		"section-5",
+	];
+
+	sections.forEach((section, index) => {
+		const sectionEl = document.getElementById(section);
+		const menuEl = document.getElementById(`text-menu-${index}`);
+
+		ScrollTrigger.create({
+			trigger: sectionEl,
+			start: "top 70%",
+			end: "bottom 30%",
+			onEnter: () => activateMenuItem(menuEl),
+			onEnterBack: () => activateMenuItem(menuEl),
+		});
+	});
+	const activateMenuItem = (activeMenuEl) => {
+		const allMenuItems = document.querySelectorAll('[id^="text-menu-"]');
+		allMenuItems.forEach((menuItem) => {
+			menuItem.classList.remove("text-color-saturate");
+		});
+
+		if (activeMenuEl) {
+			activeMenuEl.classList.add("text-color-saturate");
+		}
+	};
 }
 
 export function animationCheckboxColor(isOpen) {
