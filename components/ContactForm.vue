@@ -192,13 +192,13 @@
 		</div>
 		<div
 			id="contact"
-			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-dark shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
+			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-dark group shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
 			<h2
-				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-gray-light mb-5 text-start">
+				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-gray-light group-hover:text-white transition-colors duration-500 mb-5 text-start">
 				Get in touch
 			</h2>
 			<div
-				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<Icon
@@ -220,7 +220,7 @@
 						<h4
 							ref="emailText"
 							style="font-family: Share Tech Mono"
-							class="whitespace-nowrap text-sm md:text-base text-[#435166] tracking-tight md:tracking-wider">
+							class="whitespace-nowrap text-sm md:text-base tracking-tight md:tracking-wider">
 							remy.canal@epitech.eu
 						</h4>
 					</div>
@@ -252,7 +252,7 @@
 				</div>
 			</div>
 			<div
-				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<Icon
@@ -274,7 +274,7 @@
 						<h4
 							ref="phoneText"
 							style="font-family: Share Tech Mono"
-							class="whitespace-nowrap text-sm md:text-base text-[#435166] tracking-tight md:tracking-wider">
+							class="whitespace-nowrap text-sm md:text-base tracking-tight md:tracking-wider">
 							+33 (0)6 19 25 82 99
 						</h4>
 					</div>
@@ -306,7 +306,7 @@
 				</div>
 			</div>
 			<div
-				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5">
+				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<Icon
@@ -328,7 +328,7 @@
 						<h4
 							ref="locationText"
 							style="font-family: Share Tech Mono"
-							class="whitespace-nowrap text-sm md:text-base text-[#435166] tracking-tight md:tracking-wider">
+							class="whitespace-nowrap text-sm md:text-base tracking-tight md:tracking-wider">
 							69007 Lyon, France
 						</h4>
 					</div>
