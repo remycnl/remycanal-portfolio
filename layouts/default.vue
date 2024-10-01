@@ -20,15 +20,15 @@ useSeoMeta({
 	ogDescription:
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogImage: "/img/messageSent.gif",
-	ogUrl: "https://remycanal.me",
+	ogUrl: "https://www.remycanal.me",
 	ogType: "website",
 	twitterTitle: "Rémy Canal - Portfolio | Web Developer",
 	twitterDescription:
 		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
 	twitterImage: "/img/messageSent.gif",
-	twitterUrl: "https://remycanal.me",
+	twitterUrl: "https://www.remycanal.me",
 	twitterCard: "summary_large_image",
-	canonical: "https://remycanal.me",
+	canonical: "https://www.remycanal.me",
 	keywords:
 		"Web Developer, Portfolio, Lyon, Front-End, Full-Stack, Mobile Developer, JavaScript, Nuxt.js, Vue.js, Next.js, React, Laravel, GSAP, Tailwind, Strapi, Wordpress, PHP, Github, Freelance, Rémy Canal",
 });

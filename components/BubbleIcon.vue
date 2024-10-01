@@ -17,7 +17,7 @@
 					'h-16': isGif,
 					'md:h-[5.5rem]': isGif,
 				}"
-				format="webp" />
+				:format="isGif ? 'gif' : 'webp'" />
 			<Icon
 				v-else
 				:id="'skill-bubble-' + props.index"

@@ -51,7 +51,7 @@
 					v-if="currentSkill.withPath"
 					:src="currentSkill.pathIcon"
 					:alt="currentSkill.text"
-					format="webp"
+					:format="currentSkill.isGif ? 'gif' : 'webp'"
 					:class="{
 						'icon-select-event': true,
 						'w-auto': true,
