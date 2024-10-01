@@ -203,7 +203,7 @@ const projects: Project[] = [
 		slug: "portfolio",
 		title: "Portfolio of Rémy Canal",
 		description: "Creation 'from scratch' of my portfolio.",
-		link: "https://example.com/project1",
+		link: "https://www.remycanal.me",
 		img: "/img/mockup-portfolio-remycanal.png",
 		logo: "/img/logo-blue.png",
 		type: "website",
