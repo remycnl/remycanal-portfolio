@@ -545,42 +545,37 @@ export function appearBento() {
 	const isMobile = window.matchMedia("(max-width: 768px)").matches;
 	const wannaWorkWithMe = document.getElementById("wanna-work-with-me");
 
-	if (isMobile) {
-		gsap.set(wannaWorkWithMe, {
-			opacity: 0,
-			y: -100,
-		});
-		articles.forEach((article) => {
-			gsap.fromTo(
-				article,
-				{
-					opacity: 0,
-					scale: 0.5,
+	gsap.set(bento, { opacity: 0 });
+
+	const animateArticles = (article, index = 0, delay = 0) => {
+		gsap.fromTo(
+			article,
+			{
+				opacity: 0,
+				scale: 0.5,
+			},
+			{
+				opacity: 1,
+				scale: 1,
+				duration: isMobile ? 1 : 1.5,
+				delay: delay,
+				ease: "elastic.out(1, 0.4)",
+				scrollTrigger: {
+					trigger: isMobile ? article : bento,
+					start: isMobile ? "top 90%" : "top 70%",
+					once: true,
 				},
-				{
-					opacity: 1,
-					scale: 1,
-					duration: 1,
-					ease: "elastic.out(1, 0.4)",
-					scrollTrigger: {
-						trigger: article,
-						start: "top 90%",
-						once: true,
-						onEnter: () => {
-							if (article.id === "experience-nbr") {
-								setTimeout(() => {
-									setExperienceTime();
-								}, 500);
-							} else if (article.id === "projects-nbr") {
-								setTimeout(() => {
-									setProjectsCounter();
-								}, 500);
-							}
-						},
-					},
-				}
-			);
-		});
+				onStart: () => {
+					if (article.id === "experience-nbr")
+						setTimeout(setExperienceTime, 500);
+					if (article.id === "projects-nbr")
+						setTimeout(setProjectsCounter, 500);
+				},
+			}
+		);
+	};
+
+	const animateWannaWorkWithMe = () => {
 		gsap.to(wannaWorkWithMe, {
 			opacity: 1,
 			y: 0,
@@ -591,62 +586,32 @@ export function appearBento() {
 				start: "top 80%",
 				once: true,
 			},
-			onComplete: () => {
-				wannaWorkWithMe.classList.add("animate-pulse");
-			},
+			onComplete: () => wannaWorkWithMe.classList.add("animate-pulse"),
 		});
-	} else {
-		let randomOrder = [...articles].sort(() => Math.random() - 0.5);
+	};
 
-		gsap.set(wannaWorkWithMe, {
-			opacity: 0,
-			y: -100,
-		});
+	gsap.set(wannaWorkWithMe, { opacity: 0, y: -100 });
 
-		randomOrder.forEach((article, index) => {
-			gsap.fromTo(
-				article,
-				{
-					opacity: 0,
-					scale: 0.5,
-				},
-				{
-					opacity: 1,
-					scale: 1,
-					duration: 1.5,
-					delay: index * 0.3,
-					ease: "elastic.out(1, 0.4)",
-					scrollTrigger: {
-						trigger: bento,
-						start: "top 70%",
-						once: true,
-					},
-					onStart: () => {
-						if (article.id === "experience-nbr") {
-							setTimeout(() => {
-								setExperienceTime();
-							}, 500);
-						} else if (article.id === "projects-nbr") {
-							setTimeout(() => {
-								setProjectsCounter();
-							}, 500);
-						}
-					},
-					onComplete: () => {
-						setTimeout(() => {
-							gsap.to(wannaWorkWithMe, {
-								opacity: 1,
-								y: 0,
-								duration: 2,
-								ease: "elastic.out(1, 0.3)",
-							});
-							wannaWorkWithMe.classList.add("animate-pulse");
-						}, 500);
-					},
+	gsap.to(bento, {
+		opacity: 1,
+		scrollTrigger: {
+			trigger: bento,
+			start: "top 70%",
+			once: true,
+			onEnter: () => {
+				if (isMobile) {
+					articles.forEach((article) => animateArticles(article));
+					animateWannaWorkWithMe();
+				} else {
+					const randomOrder = [...articles].sort(() => Math.random() - 0.5);
+					randomOrder.forEach((article, index) =>
+						animateArticles(article, index, index * 0.3)
+					);
+					setTimeout(animateWannaWorkWithMe, randomOrder.length * 0.3 * 1000);
 				}
-			);
-		});
-	}
+			},
+		},
+	});
 }
 
 export function appearStart() {

@@ -31,7 +31,7 @@ const ancreToSection = (event, targetId) => {
 <template>
 	<div
 		class="flex flex-col gap-y-20 justify-center items-center w-full mt-20 lg:mt-32 2xl:mt-40 h-fit">
-		<div class="bento grid gap-5 w-full h-full">
+		<div class="bento opacity-0 grid gap-5 w-full h-full">
 			<article
 				id="experience-nbr"
 				class="article group opacity-0 hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">

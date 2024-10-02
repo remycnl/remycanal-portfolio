@@ -21,29 +21,29 @@
 				:key="index"
 				class="flex justify-start pt-10 lg:pt-20 md:gap-10">
 				<div
-					class="sticky flex flex-col z-40 items-start top-40 self-start max-w-xs lg:max-w-sm md:w-full">
+					class="group sticky flex flex-col z-40 items-start top-40 self-start max-w-xs lg:max-w-sm md:w-full">
 					<div
 						class="h-10 left-0 absolute w-10 rounded-full bg-black flex items-center justify-center">
 						<div
 							class="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 p-2"></div>
 					</div>
 					<h5
-						class="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-neutral-500">
+						class="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-neutral-500 group-hover:text-white transition-colors duration-500">
 						{{ item.date }}
 					</h5>
 					<h6
-						class="hidden md:block text-xl md:pl-20 md:text-xl font-bold text-neutral-500">
+						class="hidden md:block text-xl md:pl-20 md:text-xl font-bold text-neutral-500 group-hover:text-white transition-colors duration-500">
 						{{ item.type }}
 					</h6>
 				</div>
 
 				<div class="timeline-element relative pl-20 pr-4 md:pl-4 w-full">
-					<div class="flex flex-row gap-x-4 items-center">
+					<div class="gorup flex flex-row gap-x-4 items-center">
 						<h5
-							class="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500">
+							class="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 group-hover:text-white transition-colors duration-500">
 							{{ item.date }}
 						</h5>
-						<h6 class="md:hidden text-xs -mt-2 font-bold text-neutral-500">
+						<h6 class="md:hidden text-xs -mt-2 font-bold text-neutral-500 group-hover:text-white transition-colors duration-500">
 							{{ item.type }}
 						</h6>
 					</div>
@@ -81,10 +81,10 @@
 
 			<div
 				:style="{ height: height + 'px' }"
-				class="absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
+				class="group absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
 				<div
 					ref="progressBar"
-					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-secondary via-secondary-dark to-transparent rounded-full"></div>
+					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-secondary via-secondary-dark to-transparent rounded-full group-hover:saturate-200 transition-all duration-500"></div>
 			</div>
 		</div>
 	</div>
