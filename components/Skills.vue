@@ -139,7 +139,7 @@ const skills = [
 		icon: "vscode-icons:file-type-css",
 		stars: 4,
 		description:
-			"Expertise in CSS for designing and styling user interfaces, using Flexbox, Grid, and advanced layout techniques.",
+			"Expertise in CSS for designing and styling user interfaces, using advanced layout techniques.",
 	},
 	{
 		text: "Tailwind",
@@ -155,7 +155,7 @@ const skills = [
 		icon: "logos:sass",
 		stars: 3,
 		description:
-			"Advanced use of Sass for creating modular, reusable, and maintainable CSS stylesheets, with features like variables, mixins, and imports.",
+			"Modular CSS with variables and mixins for reusable and maintainable code.",
 	},
 	{
 		text: "Nuxt",
@@ -179,7 +179,7 @@ const skills = [
 		icon: "logos:nextjs-icon",
 		stars: 3,
 		description:
-			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+			"Building high-performance React applications with SSR and SSG for fast, optimized rendering.",
 	},
 	{
 		text: "React",
@@ -187,7 +187,7 @@ const skills = [
 		icon: "skill-icons:react-dark",
 		stars: 3,
 		description:
-			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+			"Creating dynamic, reactive UIs with components and effective state management.",
 	},
 	{
 		text: "React Native",
@@ -195,7 +195,7 @@ const skills = [
 		icon: "skill-icons:react-light",
 		stars: 2,
 		description:
-			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+			"Developing cross-platform mobile apps with React for native performance.",
 	},
 	{
 		text: "Laravel",
@@ -203,7 +203,7 @@ const skills = [
 		icon: "logos:laravel",
 		stars: 3,
 		description:
-			"Skills in Laravel for rapid development of robust PHP web applications, with MVC architecture, database migrations, and RESTful APIs.",
+			"Skills in Laravel for rapid development of robust PHP web applications.",
 	},
 	{
 		text: "WordPress",
@@ -212,7 +212,7 @@ const skills = [
 		icon: "fa6-brands:wordpress",
 		stars: 3,
 		description:
-			"Experience with WordPress for creating dynamic websites and blogs, with custom themes, plugins, and effective content management.",
+			"Experience with WordPress for creating dynamic websites, with custom themes, plugins, and effective content management.",
 	},
 	{
 		text: "Elementor",
@@ -238,7 +238,7 @@ const skills = [
 		icon: "logos:strapi-icon",
 		stars: 4,
 		description:
-			"Development of headless CMS applications with Strapi, creating RESTful and GraphQL APIs for managing and distributing digital content.",
+			"Development of headless CMS applications with Strapi for managing and distributing digital content.",
 	},
 	{
 		text: "PHP",
@@ -254,7 +254,7 @@ const skills = [
 		icon: "logos:python",
 		stars: 3,
 		description:
-			"Use of Python for web application development, task automation, and data analysis, with frameworks like Django and Flask.",
+			"Use of Python for web application development and data analysis.",
 	},
 	{
 		text: "GitHub",
@@ -263,7 +263,7 @@ const skills = [
 		pathIcon: "/img/github.png",
 		stars: 3,
 		description:
-			"Advanced use of GitHub for version control, collaboration on open-source projects, and continuous deployment.",
+			"Advanced use of GitHub for version control, collaboration on projects, and continuous deployment.",
 	},
 	{
 		text: "GSAP",
@@ -272,7 +272,7 @@ const skills = [
 		pathIcon: "/img/gsap.png",
 		stars: 4,
 		description:
-			"Proficiency in GreenSock Animation Platform (GSAP) for creating fluid and interactive animations in web applications.",
+			"Proficiency in GreenSock Animation Platform (GSAP) for creating smooth and interactive animations in web applications.",
 	},
 	{
 		text: "C",
@@ -288,7 +288,7 @@ const skills = [
 		color: "#00C4CC",
 		withPath: true,
 		pathIcon: "/img/canva.png",
-		stars: 3,
+		stars: 4,
 		description:
 			"Use of Canva for creating professional graphic designs, including illustrations, infographics, and visual presentations.",
 	},
