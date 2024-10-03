@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  target: 'static',
   devtools: {
     enabled: true,
 
@@ -43,6 +44,7 @@ export default defineNuxtConfig({
   plugins: [
     { src: '@/plugins/gsap.js', mode: 'client' },
     { src: '@/plugins/global.js', mode: 'client' },
+    { src: '@/plugins/vercelanalytics.client.js', mode: 'client' },
   ],
 
   compatibilityDate: '2024-07-04',
