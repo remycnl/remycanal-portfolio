@@ -8,6 +8,12 @@ export default defineNuxtConfig({
     },
   },
 
+  nitro: {
+    prerender: {
+      routes: ['/']
+    }
+  },
+
   css: [
     '@/assets/css/main.css',
     '@/assets/css/button.css',
