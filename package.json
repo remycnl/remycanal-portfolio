@@ -41,7 +41,6 @@
     "gsap": "^3.12.5",
     "mini-svg-data-uri": "^1.4.4",
     "node": "^21.6.1",
-    "nodejs": "^0.0.0",
     "nodemailer": "^6.9.15",
     "tailwind-merge": "^2.5.2"
   }
