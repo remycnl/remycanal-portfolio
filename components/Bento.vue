@@ -121,7 +121,7 @@ const ancreToSection = (event, targetId) => {
 									<Icon
 										name="game-icons:small-fire"
 										color="var(--primary-color)"
-										class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
+										class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]"> </Icon>
 									<p class="font-[Orbitron] font-bold uppercase">
 										Simplicity <br class="md:hidden" />Sophistication
 									</p>

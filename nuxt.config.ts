@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  target: 'static',
   devtools: {
     enabled: true,
 
@@ -39,7 +38,7 @@ export default defineNuxtConfig({
         "Share Tech Mono": true,
         Schoolbell: true,
       }
-  }], 'nuxt-icon', '@nuxt/image'],
+  }], '@nuxt/image', '@nuxt/icon'],
 
   plugins: [
     { src: '@/plugins/gsap.js', mode: 'client' },
