@@ -22,8 +22,8 @@
 				v-else
 				:id="'skill-bubble-' + props.index"
 				:name="props.icon"
-				:color="props.iconColor"
-				class="w-auto h-10 md:h-14" />
+				:style="'color:' + props.iconColor"
+				class="w-10 md:w-14 h-10 md:h-14" />
 			<div
 				@mouseenter="handleMouseEnter"
 				:style="{ 'border-color': props.color }"
@@ -45,7 +45,7 @@
 				class="flex flex-row">
 				<Icon
 					name="teenyicons:star-small-solid"
-					class="w-auto h-5 star-pulse"
+					class="w-5 h-5 star-pulse"
 					:style="{ animationDelay: index * 0.2 + 's', color: props.color }" />
 			</div>
 			<!-- Boucle pour afficher les étoiles vides -->
@@ -56,7 +56,7 @@
 				<Icon
 					name="teenyicons:star-small-outline"
 					color="yellow"
-					class="w-auto h-5 star-pulse"
+					class="w-5 h-5 star-pulse"
 					:style="{
 						animationDelay: (stars + index) * 0.2 + 's',
 						color: props.color,

@@ -16,9 +16,9 @@
 		<!-- Mobile -->
 		<div class="lg:hidden relative mt-10">
 			<Icon
-				name="game-icons:wind-slap"
-				color="var(--secondary-color)"
-				class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-auto transition-all duration-300" />
+				name="i-game-icons:wind-slap"
+				style="color: var(--secondary-color)"
+				class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-[50rem] transition-all duration-300" />
 			<div v-for="project in projects" :key="project.slug">
 				<div
 					class="cards-project-mobile group flex mt-10 flex-col items-center bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full h-[35rem] rounded-[1.5rem]">
@@ -60,9 +60,9 @@
 							class="focus:scale-90 transition-transform duration-75 flex rounded-xl text-white bg-secondary p-3 flex-row gap-2 items-center">
 							Visit {{ project.type }}
 							<Icon
-								name="formkit:linkexternal"
-								color="var(--white)"
-								class="w-5 h-auto" />
+								name="i-formkit:linkexternal"
+								style="color: var(--white)"
+								class="w-5 h-5" />
 						</NuxtLink>
 					</div>
 				</div>
@@ -72,9 +72,9 @@
 		<div
 			class="hidden lg:flex relative overflow-visible mt-40 justify-between gap-x-20 2xl:gap-x-28 items-start">
 			<Icon
-				name="game-icons:wind-slap"
-				color="var(--secondary-color)"
-				class="absolute top-0 left-[-15%] 2xl:left-[-40%] w-[50rem] 2xl:w-[70rem] opacity-30 h-auto transition-all duration-300" />
+				name="i-game-icons:wind-slap"
+				style="color: var(--secondary-color)"
+				class="absolute top-0 left-[-15%] 2xl:left-[-40%] w-[50rem] 2xl:w-[70rem] opacity-30 h-[50rem] 2xl:h-[70rem] transition-all duration-300" />
 			<div
 				class="relative overflow-visible container-project opacity-0 bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-1/2 h-[35rem] rounded-[1.5rem]">
 				<Transition name="fade">
@@ -145,9 +145,9 @@
 									{{ project.title }}
 								</h4>
 								<Icon
-									name="formkit:linkexternal"
-									color="var(--primary-color)"
-									class="link-type-hover w-6 h-auto mb-1 transition-all duration-300" />
+									name="i-formkit:linkexternal"
+									style="color: var(--primary-color)"
+									class="link-type-hover w-6 h-6 mb-1 transition-all duration-300" />
 							</div>
 							<h5 class="relative leading-[2rem] text-gray-light opacity-55">
 								{{ project.type }}

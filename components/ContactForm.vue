@@ -137,12 +137,14 @@
 				<div class="flex justify-end">
 					<button
 						type="submit"
-						class="hover-scale-effect clickable mix-darken cursor-none button group w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
+						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-none text-white text-xl tracking-widest">
 						Send
-						<Icon
-							name="mingcute:send-plane-line"
-							color="var(--primary-color)"
-							class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
+						<div class="icon">
+							<Icon
+								name="i-mingcute:send-plane-line"
+								style="color: var(--primary-color)"
+								class="w-[2.2em] h-[2.2em] transition-all duration-[1s]" />
+						</div>
 					</button>
 				</div>
 			</form>
@@ -155,7 +157,7 @@
 				@leave="leave">
 				<div
 					v-if="showPopup"
-					class="z-20 absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-primary">
+					class="z-[100] absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-primary">
 					<!-- Loader pendant l'envoi -->
 					<div v-if="!isMessageSent" class="dot-spinner mb-40 md:mb-0">
 						<div class="dot-spinner__dot"></div>
@@ -201,10 +203,12 @@
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
-					<Icon
-						name="material-symbols:alternate-email"
-						color="var(--primary-color)"
-						class="p-1 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-lg bg-secondary-dark" />
+					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+						<Icon
+							name="i-material-symbols:alternate-email"
+							style="color: var(--primary-color)"
+							class="w-12 h-12 md:w-14 md:h-14" />
+					</div>
 					<div class="w-full flex flex-col items-start">
 						<div class="w-full flex flex-row justify-between items-center">
 							<h3
@@ -255,10 +259,12 @@
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
-					<Icon
-						name="ic:outline-local-phone"
-						color="var(--primary-color)"
-						class="p-1 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-lg bg-secondary-dark" />
+					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+						<Icon
+							name="i-ic:outline-local-phone"
+							style="color: var(--primary-color)"
+							class="w-12 h-12 md:w-14 md:h-14" />
+					</div>
 					<div class="w-full flex flex-col items-start">
 						<div class="w-full flex flex-row justify-between items-center">
 							<h3
@@ -309,10 +315,12 @@
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
-					<Icon
-						name="material-symbols:location-on-outline"
-						color="var(--primary-color)"
-						class="p-1 flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-lg bg-secondary-dark" />
+					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+						<Icon
+							name="i-material-symbols:location-on-outline"
+							style="color: var(--primary-color)"
+							class="w-12 h-12 md:w-14 md:h-14" />
+					</div>
 					<div class="w-full flex flex-col items-start">
 						<div class="w-full flex flex-row justify-between items-center">
 							<h3

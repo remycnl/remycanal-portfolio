@@ -119,9 +119,9 @@ const ancreToSection = (event, targetId) => {
 									class="flex flex-row gap-x-3 justify-start items-center"
 									key="icon-text">
 									<Icon
-										name="game-icons:small-fire"
-										color="var(--primary-color)"
-										class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]"> </Icon>
+										name="i-game-icons:small-fire"
+										style="color: var(--primary-color)"
+										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 									<p class="font-[Orbitron] font-bold uppercase">
 										Simplicity <br class="md:hidden" />Sophistication
 									</p>
@@ -144,9 +144,9 @@ const ancreToSection = (event, targetId) => {
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-start items-center text-end md:text-start"
 									key="icon-text">
 									<Icon
-										name="game-icons:rocket"
-										color="var(--primary-color)"
-										class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
+										name="i-game-icons:rocket"
+										style="color: var(--primary-color)"
+										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 									<p class="font-[Orbitron] font-bold uppercase">
 										Innovative <br class="md:hidden" />Meticulous
 									</p>
@@ -183,9 +183,9 @@ const ancreToSection = (event, targetId) => {
 										Autonomous <br class="md:hidden" />Listening
 									</p>
 									<Icon
-										name="game-icons:suckered-tentacle"
-										color="var(--primary-color)"
-										class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
+										name="i-game-icons:suckered-tentacle"
+										style="color: var(--primary-color)"
+										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 								</div>
 								<p
 									v-else
@@ -206,9 +206,9 @@ const ancreToSection = (event, targetId) => {
 										Open-minded <br class="md:hidden" />Passionate
 									</p>
 									<Icon
-										name="game-icons:techno-heart"
-										color="var(--primary-color)"
-										class="w-14 2xl:w-20 h-auto transition-colors duration-[1s]" />
+										name="i-game-icons:techno-heart"
+										style="color: var(--primary-color)"
+										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 								</div>
 								<p
 									v-else
