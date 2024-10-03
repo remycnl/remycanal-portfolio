@@ -92,13 +92,11 @@ const setSEO = () => {
 	}
 };
 
-// Configuration de la Content Security Policy (CSP)
 const setCSP = () => {
 	const meta = document.createElement("meta");
 	meta.httpEquiv = "Content-Security-Policy";
 	meta.content = "script-src 'self' https://apis.google.com";
 
-	// Ajoute la balise meta à head seulement si elle n'existe pas déjà
 	const existingMeta = document.head.querySelector(
 		'meta[http-equiv="Content-Security-Policy"]'
 	);
@@ -126,6 +124,7 @@ const setCSP = () => {
 				</div>
 				<div id="slot">
 					<slot />
+					<SpeedInsights />
 				</div>
 				<Footer id="footer" />
 				<div
