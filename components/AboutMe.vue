@@ -55,15 +55,17 @@ const handleUpdateColor = (newColor) => {
 					@update-color="handleUpdateColor" />
 				<div id="download-cv" class="md:opacity-0">
 					<a
+						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-none text-white text-xl tracking-widest"
 						href="/doc/Rémy Canal - curriculum vitae.pdf"
 						target="_blank"
-						download
-						class="hover-scale-effect clickable mix-darken cursor-none button group w-fit flex items-center border-none relative py-3.5 pl-4 pr-16 p-1.5 text-white text-xl tracking-widest rounded-2xl bg-secondary">
+						download>
 						Download CV
-						<Icon
-							name="material-symbols:download-rounded"
-							color="var(--primary-color)"
-							class="absolute group-active:scale-95 p-1 flex items-center justify-center w-[2.2em] h-[2.2em] rounded-xl bg-white" />
+						<div class="icon">
+							<Icon
+								name="i-material-symbols:download-rounded"
+								style="color: var(--primary-color)"
+								class="w-[2.2em] h-[2.2em] transition-all duration-[1s]" />
+						</div>
 					</a>
 				</div>
 			</div>

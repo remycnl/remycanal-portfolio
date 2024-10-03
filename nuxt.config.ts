@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     },
   },
 
+  ssr: false,
+
   css: [
     '@/assets/css/main.css',
     '@/assets/css/button.css',
@@ -38,11 +40,12 @@ export default defineNuxtConfig({
         "Share Tech Mono": true,
         Schoolbell: true,
       }
-  }], 'nuxt-icon', '@nuxt/image'],
+  }], '@nuxt/image', '@nuxt/icon'],
 
   plugins: [
     { src: '@/plugins/gsap.js', mode: 'client' },
     { src: '@/plugins/global.js', mode: 'client' },
+    { src: '@/plugins/vercelanalytics.client.js', mode: 'client' },
   ],
 
   compatibilityDate: '2024-07-04',

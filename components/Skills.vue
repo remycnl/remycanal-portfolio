@@ -28,18 +28,18 @@
 						:key="'filled-' + star"
 						class="star star-card">
 						<Icon
-							name="teenyicons:star-small-solid"
-							class="w-auto h-8 md:h-9"
-							color="#1f293b" />
+							name="i-teenyicons:star-small-solid"
+							class="w-8 md:w-9 h-8 md:h-9"
+							style="color: #1f293b" />
 					</div>
 					<div
 						v-for="star in 5 - currentSkill.stars"
 						:key="'empty-' + star"
 						class="star star-card">
 						<Icon
-							name="teenyicons:star-small-outline"
-							class="w-auto h-8 md:h-9"
-							color="#1f293b" />
+							name="i-teenyicons:star-small-outline"
+							class="w-8 md:w-9 h-8 md:h-9"
+							style="color: #1f293b" />
 					</div>
 				</div>
 			</div>
@@ -61,12 +61,11 @@
 						'md:h-36': currentSkill.isGif,
 					}"
 					class="my-10" />
-				<div v-else class="w-auto h-16 md:h-24 my-10">
+				<div v-else class="w-16 md:w-24 h-16 md:h-24 my-10">
 					<Icon
 						:name="currentSkill.icon || ''"
 						class="w-full h-full"
-						size="16rem"
-						color="var(--white)" />
+						style="color: var(--white)" />
 				</div>
 				<div class="text-color-saturate">
 					<h3
@@ -120,7 +119,7 @@ const skills = [
 	{
 		text: "HTML",
 		color: "#f1662a",
-		icon: "vscode-icons:file-type-html",
+		icon: "i-vscode-icons:file-type-html",
 		stars: 4,
 		description:
 			"Proficiency in HTML for structuring and organizing web content in a semantic way.",
@@ -128,7 +127,7 @@ const skills = [
 	{
 		text: "JavaScript",
 		color: "#f0db4f",
-		icon: "skill-icons:javascript",
+		icon: "i-skill-icons:javascript",
 		stars: 4,
 		description:
 			"Advanced skills in JavaScript for frontend and backend development, DOM manipulation, and creating dynamic interactions.",
@@ -136,15 +135,15 @@ const skills = [
 	{
 		text: "CSS",
 		color: "#248cc8",
-		icon: "vscode-icons:file-type-css",
+		icon: "i-vscode-icons:file-type-css",
 		stars: 4,
 		description:
-			"Expertise in CSS for designing and styling user interfaces, using Flexbox, Grid, and advanced layout techniques.",
+			"Expertise in CSS for designing and styling user interfaces, using advanced layout techniques.",
 	},
 	{
 		text: "Tailwind",
 		color: "#45bbbd",
-		icon: "logos:tailwindcss-icon",
+		icon: "i-logos:tailwindcss-icon",
 		stars: 5,
 		description:
 			"Extensive experience with Tailwind CSS for rapid and efficient development, using utility-first classes to style components.",
@@ -152,15 +151,15 @@ const skills = [
 	{
 		text: "Sass",
 		color: "#cd6799",
-		icon: "logos:sass",
+		icon: "i-logos:sass",
 		stars: 3,
 		description:
-			"Advanced use of Sass for creating modular, reusable, and maintainable CSS stylesheets, with features like variables, mixins, and imports.",
+			"Modular CSS with variables and mixins for reusable and maintainable code.",
 	},
 	{
 		text: "Nuxt",
 		color: "#67dd82",
-		icon: "logos:nuxt-icon",
+		icon: "i-logos:nuxt-icon",
 		stars: 4,
 		description:
 			"In-depth knowledge of Nuxt.js for building universal Vue.js applications, with routing, server-side rendering (SSR), and static site generation.",
@@ -168,7 +167,7 @@ const skills = [
 	{
 		text: "Vue",
 		color: "#51b883",
-		icon: "logos:vue",
+		icon: "i-logos:vue",
 		stars: 4,
 		description:
 			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
@@ -176,43 +175,43 @@ const skills = [
 	{
 		text: "Next",
 		color: "#000000",
-		icon: "logos:nextjs-icon",
+		icon: "i-logos:nextjs-icon",
 		stars: 3,
 		description:
-			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+			"Building high-performance React applications with SSR and SSG for fast, optimized rendering.",
 	},
 	{
 		text: "React",
 		color: "#00D8FF",
-		icon: "skill-icons:react-dark",
+		icon: "i-skill-icons:react-dark",
 		stars: 3,
 		description:
-			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+			"Creating dynamic, reactive UIs with components and effective state management.",
 	},
 	{
 		text: "React Native",
 		color: "#F4F2ED",
-		icon: "skill-icons:react-light",
+		icon: "i-skill-icons:react-light",
 		stars: 2,
 		description:
-			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
+			"Developing cross-platform mobile apps with React for native performance.",
 	},
 	{
 		text: "Laravel",
 		color: "#f24423",
-		icon: "logos:laravel",
+		icon: "i-logos:laravel",
 		stars: 3,
 		description:
-			"Skills in Laravel for rapid development of robust PHP web applications, with MVC architecture, database migrations, and RESTful APIs.",
+			"Skills in Laravel for rapid development of robust PHP web applications.",
 	},
 	{
 		text: "WordPress",
 		color: "#D0D4DB",
 		iconColor: "#D0D4DB",
-		icon: "fa6-brands:wordpress",
+		icon: "i-fa6-brands:wordpress",
 		stars: 3,
 		description:
-			"Experience with WordPress for creating dynamic websites and blogs, with custom themes, plugins, and effective content management.",
+			"Experience with WordPress for creating dynamic websites, with custom themes, plugins, and effective content management.",
 	},
 	{
 		text: "Elementor",
@@ -235,15 +234,15 @@ const skills = [
 	{
 		text: "Strapi",
 		color: "#556afa",
-		icon: "logos:strapi-icon",
+		icon: "i-logos:strapi-icon",
 		stars: 4,
 		description:
-			"Development of headless CMS applications with Strapi, creating RESTful and GraphQL APIs for managing and distributing digital content.",
+			"Development of headless CMS applications with Strapi for managing and distributing digital content.",
 	},
 	{
 		text: "PHP",
 		color: "#6181B6",
-		icon: "logos:php",
+		icon: "i-logos:php",
 		stars: 2,
 		description:
 			"Skills in PHP for backend development, data manipulation, and integration with relational databases.",
@@ -251,10 +250,10 @@ const skills = [
 	{
 		text: "Python",
 		color: "#FFD141",
-		icon: "logos:python",
+		icon: "i-logos:python",
 		stars: 3,
 		description:
-			"Use of Python for web application development, task automation, and data analysis, with frameworks like Django and Flask.",
+			"Use of Python for web application development and data analysis.",
 	},
 	{
 		text: "GitHub",
@@ -263,7 +262,7 @@ const skills = [
 		pathIcon: "/img/github.png",
 		stars: 3,
 		description:
-			"Advanced use of GitHub for version control, collaboration on open-source projects, and continuous deployment.",
+			"Advanced use of GitHub for version control, collaboration on projects, and continuous deployment.",
 	},
 	{
 		text: "GSAP",
@@ -272,7 +271,7 @@ const skills = [
 		pathIcon: "/img/gsap.png",
 		stars: 4,
 		description:
-			"Proficiency in GreenSock Animation Platform (GSAP) for creating fluid and interactive animations in web applications.",
+			"Proficiency in GreenSock Animation Platform (GSAP) for creating smooth and interactive animations in web applications.",
 	},
 	{
 		text: "C",
@@ -288,7 +287,7 @@ const skills = [
 		color: "#00C4CC",
 		withPath: true,
 		pathIcon: "/img/canva.png",
-		stars: 3,
+		stars: 4,
 		description:
 			"Use of Canva for creating professional graphic designs, including illustrations, infographics, and visual presentations.",
 	},
