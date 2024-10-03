@@ -8,11 +8,7 @@ export default defineNuxtConfig({
     },
   },
 
-  nitro: {
-    prerender: {
-      routes: ['/']
-    }
-  },
+  ssr: false,
 
   css: [
     '@/assets/css/main.css',
