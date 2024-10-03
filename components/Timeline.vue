@@ -187,6 +187,7 @@ onMounted(() => {
 				trigger: timelineRef.value,
 				start: "top 50%",
 				end: "bottom 50%",
+				markers:true,
 				scrub: true,
 			},
 		});

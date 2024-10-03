@@ -124,7 +124,7 @@ const setCSP = () => {
 				</div>
 				<div id="slot">
 					<slot />
-					<SpeedInsights />
+					<!-- <SpeedInsights /> -->
 				</div>
 				<Footer id="footer" />
 				<div
