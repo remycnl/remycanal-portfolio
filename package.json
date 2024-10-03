@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@iconify-json/game-icons": "^1.1.10",
+    "@nuxt/icon": "^1.5.2",
     "@nuxt/image": "^1.7.0",
     "@nuxt/types": "^2.18.1",
     "@nuxtjs/google-fonts": "^3.2.0",
