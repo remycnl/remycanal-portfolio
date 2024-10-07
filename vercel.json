@@ -2,7 +2,7 @@
 	"version": 2,
 	"functions": {
 		"api/send-email.js": {
-			"runtime": "20.x"
+			"runtime": "nodejs18.x"
 		}
 	}
 }
