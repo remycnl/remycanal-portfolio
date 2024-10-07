@@ -43,5 +43,8 @@
     "node": "^21.6.1",
     "nodemailer": "^6.9.15",
     "tailwind-merge": "^2.5.2"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
