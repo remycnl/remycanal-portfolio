@@ -8,8 +8,6 @@ export default defineNuxtConfig({
     },
   },
 
-  ssr: true,
-
   css: [
     '@/assets/css/main.css',
     '@/assets/css/button.css',
