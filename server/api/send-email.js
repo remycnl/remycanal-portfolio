@@ -1,7 +1,12 @@
 import nodemailer from "nodemailer";
 
-export default defineEventHandler(async (event) => {
-	const body = await readBody(event);
+export default async function handler(req, res) {
+	if (req.method !== "POST") {
+		res.status(405).json({ message: "Method Not Allowed" });
+		return;
+	}
+
+	const body = req.body;
 
 	const transporter = nodemailer.createTransport({
 		service: "gmail",
@@ -28,11 +33,12 @@ Entreprise : ${body.company}
 ${body.message}
 `,
 	};
+
 	try {
 		await transporter.sendMail(mailOptions);
-		return { status: "success" };
+		res.status(200).json({ status: "success" });
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de l'email:", error);
-		return { status: "error", message: error.message };
+		res.status(500).json({ status: "error", message: error.message });
 	}
-});
+}
