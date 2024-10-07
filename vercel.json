@@ -1,7 +1,3 @@
 {
-	"functions": {
-		"api/*.js": {
-			"runtime": "vercel/node@18.0.0"
-		}
-	}
+	"functions": {}
 }
