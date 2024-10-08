@@ -25,6 +25,7 @@ export default defineNuxtPlugin(() => {
 		stickySkills,
 		appearContact,
 		appearTimeline,
+		dynamicProgressBar,
 	};
 });
 
@@ -830,4 +831,22 @@ export function appearTimeline() {
 			},
 		});
 	});
+}
+
+export function dynamicProgressBar() {
+	const timelineRef = document.getElementById("timelineRef");
+	const progressBar = document.getElementById("progressBar");
+
+	if (progressBar && timelineRef) {
+		gsap.to(progressBar, {
+			height: "100%",
+			ease: "none",
+			scrollTrigger: {
+				trigger: timelineRef,
+				start: "top 50%",
+				end: "bottom 50%",
+				scrub: true,
+			},
+		});
+	}
 }

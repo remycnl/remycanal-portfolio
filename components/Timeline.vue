@@ -15,7 +15,7 @@
 			</h3>
 		</div>
 
-		<div ref="timelineRef" class="relative pb-20">
+		<div id="timelineRef" class="relative pb-20">
 			<div
 				v-for="(item, index) in data"
 				:key="index"
@@ -43,7 +43,8 @@
 							class="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 group-hover:text-white transition-colors duration-500">
 							{{ item.date }}
 						</h5>
-						<h6 class="md:hidden text-xs -mt-2 font-bold text-neutral-500 group-hover:text-white transition-colors duration-500">
+						<h6
+							class="md:hidden text-xs -mt-2 font-bold text-neutral-500 group-hover:text-white transition-colors duration-500">
 							{{ item.type }}
 						</h6>
 					</div>
@@ -83,7 +84,7 @@
 				:style="{ height: height + 'px' }"
 				class="group absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
 				<div
-					ref="progressBar"
+					id="progressBar"
 					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-secondary via-secondary-dark to-transparent rounded-full group-hover:saturate-200 transition-all duration-500"></div>
 			</div>
 		</div>
@@ -91,11 +92,7 @@
 </template>
 
 <script setup>
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-import { appearTimeline } from "@/plugins/gsap";
-
-gsap.registerPlugin(ScrollTrigger);
+import { appearTimeline, dynamicProgressBar } from "@/plugins/gsap";
 
 const data = [
 	{
@@ -168,28 +165,14 @@ const data = [
 	},
 ];
 
-const timelineRef = ref(null);
-const progressBar = ref(null);
 const height = ref(0);
 
 onMounted(() => {
+	const timelineRef = document.getElementById("timelineRef");
+	if (timelineRef) {
+		height.value = timelineRef.getBoundingClientRect().height;
+	}
 	appearTimeline();
-
-	if (timelineRef.value) {
-		height.value = timelineRef.value.getBoundingClientRect().height;
-	}
-
-	if (progressBar.value && timelineRef.value) {
-		gsap.to(progressBar.value, {
-			height: "100%",
-			ease: "none",
-			scrollTrigger: {
-				trigger: timelineRef.value,
-				start: "top 50%",
-				end: "bottom 50%",
-				scrub: true,
-			},
-		});
-	}
+	dynamicProgressBar();
 });
 </script>
