@@ -1,7 +1,6 @@
 .change-color-button {
 	font-family: Orbitron;
 	font-weight: 600;
-	box-shadow: 0px 0px 0px 4px var(--primary-color-transparent);
 }
 
 @media (min-width: 1024px) {

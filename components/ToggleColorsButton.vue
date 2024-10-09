@@ -2,7 +2,7 @@
 	<div id="color-button" class="lg:opacity-0">
 		<button
 			@click="toggleColors"
-			class="group circle-container relative hover-scale-effect clickable cursor-none w-fit lg:w-[50px] h-fit lg:h-[50px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center shadow-around shadow-black hover:bg-secondary-dark bg-black transition-all duration-500">
+			class="group circle-container relative hover-scale-effect clickable cursor-none w-fit lg:w-[50px] h-fit lg:h-[50px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary-dark bg-black transition-all shadow-custom-outline duration-500">
 			<div>
 				<Icon
 					name="i-material-symbols:format-color-fill-rounded"
