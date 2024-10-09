@@ -44,7 +44,7 @@
 				:key="'filled-' + index"
 				class="flex flex-row">
 				<Icon
-					name="teenyicons:star-small-solid"
+					name="i-teenyicons:star-small-solid"
 					class="w-5 h-5 star-pulse"
 					:style="{ animationDelay: index * 0.2 + 's', color: props.color }" />
 			</div>
@@ -54,7 +54,7 @@
 				:key="'empty-' + index"
 				class="flex flex-row">
 				<Icon
-					name="teenyicons:star-small-outline"
+					name="i-teenyicons:star-small-outline"
 					color="yellow"
 					class="w-5 h-5 star-pulse"
 					:style="{

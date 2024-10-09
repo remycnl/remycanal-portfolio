@@ -86,8 +86,8 @@
 					class="group lg:hidden flex flex-col items-center pb-5"
 					@click="toggleDropdown">
 					<Icon
-						name="fluent-emoji-high-contrast:cross-mark"
-						color="var(--white)"
+						name="i-fluent-emoji-high-contrast:cross-mark"
+						style="color: var(--white);"
 						class="w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
 				</div>
 			</div>
