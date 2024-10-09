@@ -40,6 +40,9 @@ export default {
 			},
 		},
 	},
+	options: {
+		safelist: ['box-shadow'],
+	},
 	plugins: [
 		addVariablesForColors,
 		function ({ matchUtilities, theme }) {

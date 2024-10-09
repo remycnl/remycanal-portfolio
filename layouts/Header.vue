@@ -8,7 +8,7 @@
 					:src="`/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
 					format="webp"
-					class="change-img-color text-shadow pointer-events-auto hover:saturate-200 hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
+					class="change-img-color text-shadow pointer-events-auto hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="z-50 flex pointer-events-auto items-center justify-center">
 				<div
