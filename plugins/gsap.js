@@ -444,7 +444,6 @@ export function hideImages() {
 			},
 		});
 	});
-	this.currentImage = null;
 }
 
 export function animationStarsCardSkill() {
