@@ -174,7 +174,7 @@ const skills = [
 	},
 	{
 		text: "Next",
-		color: "#000000",
+		color: "#ffffff",
 		icon: "i-logos:nextjs-icon",
 		stars: 3,
 		description:
