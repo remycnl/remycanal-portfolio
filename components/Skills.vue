@@ -188,14 +188,14 @@ const skills = [
 		description:
 			"Creating dynamic, reactive UIs with components and effective state management.",
 	},
-	{
-		text: "React Native",
-		color: "#F4F2ED",
-		icon: "i-skill-icons:react-light",
-		stars: 2,
-		description:
-			"Developing cross-platform mobile apps with React for native performance.",
-	},
+	// {
+	// 	text: "React Native",
+	// 	color: "#F4F2ED",
+	// 	icon: "i-skill-icons:react-light",
+	// 	stars: 2,
+	// 	description:
+	// 		"Developing cross-platform mobile apps with React for native performance.",
+	// },
 	{
 		text: "Laravel",
 		color: "#f24423",
