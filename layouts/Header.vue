@@ -32,12 +32,12 @@
 		<div
 			class="relative dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div
-				class="z-[99999] group lg:hidden flex flex-col items-center pb-5"
+				class="z-[99999] absolute top-10 right-10 group lg:hidden flex flex-col items-center"
 				@click="toggleDropdown">
 				<Icon
 					name="i-fluent-emoji-high-contrast:cross-mark"
 					style="color: var(--white)"
-					class="absolute top-14 right-10 w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
+					class="w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
 			</div>
 			<div
 				:class="headerClasses"
