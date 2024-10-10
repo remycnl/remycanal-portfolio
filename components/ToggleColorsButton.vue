@@ -39,8 +39,8 @@
 <script setup>
 import { animationCheckboxColor } from "@/plugins/gsap";
 
-defineProps(['selectedColor']);
-const emit = defineEmits(['update-color']);
+defineProps(["selectedColor"]);
+const emit = defineEmits(["update-color"]);
 
 const isValueHover1 = ref(false);
 const isValueHover2 = ref(false);
@@ -146,18 +146,15 @@ const updateCheckbox = (
 		});
 		element.classList.add(selectedFamily);
 	});
-    emit('update-color', selectedFamily);
+	emit("update-color", selectedFamily);
 };
 
 let isOpenColorMenu = ref(false);
 
 const toggleColors = () => {
 	if (window.innerWidth < 1024) {
-		// setTimeout pour éviter les bugs sur petits écrans
-		setTimeout(() => {
-			isOpenColorMenu.value = !isOpenColorMenu.value;
-			animationCheckboxColor(isOpenColorMenu.value);
-		}, 200);
+		isOpenColorMenu.value = !isOpenColorMenu.value;
+		animationCheckboxColor(isOpenColorMenu.value);
 
 		const button = document.querySelector(".change-color-button");
 		const checkboxs = document.querySelectorAll(".cyberpunk-checkbox-label");
