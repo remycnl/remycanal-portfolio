@@ -32,7 +32,7 @@
 		<div
 			class="dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div
-				class="group lg:hidden flex flex-col items-center pb-5"
+				class="z-[999] group lg:hidden flex flex-col items-center pb-5"
 				@click="toggleDropdown">
 				<Icon
 					name="i-fluent-emoji-high-contrast:cross-mark"
