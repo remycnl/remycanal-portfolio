@@ -123,7 +123,7 @@ const setCSP = () => {
 				class="absolute -z-0 pointer-events-none hidden lg:block"></div>
 			<div
 				class="bg-secondary-dark lg:p-8 lg:pt-36 overflow-hidden transition-colors duration-[1s]">
-				<div id="top" class="container mx-auto lg:mx-0 z-[9999]">
+				<div id="top" class="container mx-auto lg:mx-0 z-[999]">
 					<Header class="fixed top-5" />
 				</div>
 				<div id="slot">
