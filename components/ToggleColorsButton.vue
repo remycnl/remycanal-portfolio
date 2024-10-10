@@ -153,8 +153,10 @@ let isOpenColorMenu = ref(false);
 
 const toggleColors = () => {
 	if (window.innerWidth < 1024) {
-		isOpenColorMenu.value = !isOpenColorMenu.value;
-		animationCheckboxColor(isOpenColorMenu.value);
+		setTimeout(() => {
+			isOpenColorMenu.value = !isOpenColorMenu.value;
+			animationCheckboxColor(isOpenColorMenu.value);
+		}, 200);
 
 		const button = document.querySelector(".change-color-button");
 		const checkboxs = document.querySelectorAll(".cyberpunk-checkbox-label");
