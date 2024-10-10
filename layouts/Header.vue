@@ -32,6 +32,14 @@
 		<div
 			class="dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div
+				class="group lg:hidden flex flex-col items-center pb-5"
+				@click="toggleDropdown">
+				<Icon
+					name="i-fluent-emoji-high-contrast:cross-mark"
+					style="color: var(--white)"
+					class="absolute top-14 right-10 w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
+			</div>
+			<div
 				:class="headerClasses"
 				class="pointer-events-auto overflow-y-auto lg:overflow-y-visible max-h-[95vh] lg-custom-width">
 				<a
@@ -42,7 +50,7 @@
 						:src="`/img/logo-${primaryColor}.png`"
 						alt="Rémy Canal"
 						format="webp"
-						class="change-img-color text-shadow hover-scale-effect hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-4 lg:mt-0 pointer-events-auto" />
+						class="change-img-color text-shadow hover-scale-effect hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-8 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
 					class="flex flex-col lg:flex-row tracking-widest lg:tracking-normal 2xl:tracking-widest gap-x-20 gap-y-8 text-white uppercase items-center">
@@ -68,7 +76,7 @@
 							applySaturationText(4);
 						"
 						href="Contact me"
-						class="active:scale-95 transition-all duration-75">
+						class="mb-10 lg:mb-0 active:scale-95 transition-all duration-75">
 						<div
 							class="hover-scale-effect clickable cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
 							<div
@@ -81,22 +89,17 @@
 						</div>
 					</a>
 				</div>
-
-				<div
-					class="group lg:hidden flex flex-col items-center pb-5"
-					@click="toggleDropdown">
-					<Icon
-						name="i-fluent-emoji-high-contrast:cross-mark"
-						style="color: var(--white);"
-						class="w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
-				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { toggleDropdown, applyZoomEffect, applySaturationTextOnScroll } from "@/plugins/gsap";
+import {
+	toggleDropdown,
+	applyZoomEffect,
+	applySaturationTextOnScroll,
+} from "@/plugins/gsap";
 import { magnetEffect } from "@/plugins/global.js";
 
 let isScreenSM = ref(false);
@@ -108,7 +111,7 @@ const headerClasses = computed(() => ({
 	flex: true,
 	"flex-col": true,
 	"lg:flex-row": true,
-	"gap-y-20": true,
+	"gap-y-10": true,
 	"justify-between": true,
 	"items-center": true,
 	"p-4": true,
@@ -177,13 +180,13 @@ const applySaturationText = (index) => {
 const primaryColor = ref("purple");
 
 onMounted(() => {
-	const mediaQuery = window.matchMedia('(min-width: 768px)');
+	const mediaQuery = window.matchMedia("(min-width: 768px)");
 	window.addEventListener("scroll", handleScroll);
 	handleScroll();
 	if (mediaQuery.matches) {
-        magnetEffect();
-        applySaturationTextOnScroll();
-        applySaturationText(0);
+		magnetEffect();
+		applySaturationTextOnScroll();
+		applySaturationText(0);
 	}
 
 	const updatePrimaryColor = () => {
