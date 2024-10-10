@@ -31,6 +31,7 @@ const isFinalText = ref(false);
 const chars =
 	"!<>-_\\/[]{}—=+*^?#1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+// Cette fonction gère le scrambling du texte
 function scrambleText(newText) {
 	if (!newText) return;
 
@@ -42,6 +43,7 @@ function scrambleText(newText) {
 	const startTime = Date.now();
 	isFinalText.value = false;
 
+	// Initialisation avec des caractères aléatoires
 	displayedText.value = Array.from(newText).map(
 		() => chars[Math.floor(Math.random() * chars.length)]
 	);
@@ -51,7 +53,8 @@ function scrambleText(newText) {
 		const progress = Math.min(elapsed / scrambleDuration, 1);
 
 		displayedText.value = Array.from(newText).map((char, i) => {
-			if (char === " ") return "\u00A0";
+			if (char === " ") return "\u00A0"; // Gère les espaces
+			// Remplace progressivement les lettres aléatoires par les vraies
 			return elapsed < scrambleDuration &&
 				frame % totalFrames < Math.floor(totalFrames * progress)
 				? chars[Math.floor(Math.random() * chars.length)]
@@ -61,16 +64,23 @@ function scrambleText(newText) {
 		frame++;
 
 		if (elapsed >= scrambleDuration) {
-			clearInterval(interval);
-			displayedText.value = Array.from(newText);
+			clearInterval(interval); // Arrête l'intervalle une fois l'animation terminée
+			displayedText.value = Array.from(newText); // Affiche le texte final
 			isFinalText.value = true;
 		}
 	}, frameInterval);
 }
 
+let previousText = ref("");
+
 watch(
 	() => props.text,
-	(newText) => scrambleText(newText),
+	(newText) => {
+		displayedText.value = [];
+		isFinalText.value = false;
+		previousText.value = newText;
+		setTimeout(() => scrambleText(newText), 0);
+	},
 	{ immediate: true }
 );
 </script>
