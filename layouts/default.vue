@@ -8,7 +8,7 @@ import {
 	animationFooterBottom,
 } from "@/plugins/gsap";
 import { mouseEffect } from "@/plugins/global.js";
-import { SpeedInsights } from "@vercel/speed-insights/nuxt"
+import { SpeedInsights } from "@vercel/speed-insights/nuxt";
 
 const activeTitle = ref("Rémy Canal | Web Developer Portfolio");
 const inactiveTitle = ref("I miss you !!!");
@@ -20,13 +20,13 @@ useSeoMeta({
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogDescription:
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
-	ogImage: "/img/messageSent.gif",
+	ogImage: "/img/metaImg.png",
 	ogUrl: "https://www.remycanal.me",
 	ogType: "website",
 	twitterTitle: "Rémy Canal - Portfolio | Web Developer",
 	twitterDescription:
 		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
-	twitterImage: "/img/messageSent.gif",
+	twitterImage: "/img/metaImg.png",
 	twitterUrl: "https://www.remycanal.me",
 	twitterCard: "summary_large_image",
 	canonical: "https://www.remycanal.me",
@@ -46,8 +46,12 @@ useHead({
 	link: [
 		{
 			rel: "icon",
-			type: "image/gif",
-			href: "/img/messageSent.gif",
+			type: "image/png",
+			href: "/img/metaImg.png",
+		},
+		{
+			rel: "canonical",
+			href: "https://www.remycanal.me",
 		},
 	],
 });
@@ -129,7 +133,8 @@ const setCSP = () => {
 				<Footer id="footer" />
 				<div
 					class="flex justify-center items-center mt-32 lg:mt-60 mb-24 lg:mb-48">
-					<div class="z-50 group flex justify-center items-center flex-col gap-y-3 w-fit">
+					<div
+						class="z-50 group flex justify-center items-center flex-col gap-y-3 w-fit">
 						<h3
 							class="w-fit text-center text-gray-light group-hover:text-white transition-color duration-500 text-2xl md:text-3xl lg:text-4xl">
 							&ldquo; Simplicity is the ultimate sophistication. &rdquo;

@@ -15,7 +15,7 @@
 			</h3>
 		</div>
 
-		<div id="timelineRef" class="relative pb-20">
+		<div ref="timelineRef" class="relative pb-20">
 			<div
 				v-for="(item, index) in data"
 				:key="index"
@@ -82,10 +82,10 @@
 
 			<div
 				:style="{ height: height + 'px' }"
-				class="group absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)]">
+				class="absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] hover:saturate-200 transition-all duration-500">
 				<div
-					id="progressBar"
-					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-secondary via-secondary-dark to-transparent rounded-full group-hover:saturate-200 transition-all duration-500"></div>
+					ref="progressBar"
+					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-secondary via-secondary-dark to-transparent rounded-full"></div>
 			</div>
 		</div>
 	</div>
@@ -93,6 +93,18 @@
 
 <script setup>
 import { appearTimeline, dynamicProgressBar } from "@/plugins/gsap";
+
+const timelineRef = ref(null);
+const progressBar = ref(null);
+const height = ref(0);
+
+onMounted(() => {
+	if (timelineRef.value) {
+		height.value = timelineRef.value.getBoundingClientRect().height;
+	}
+	appearTimeline();
+	dynamicProgressBar(timelineRef.value, progressBar.value);
+});
 
 const data = [
 	{
@@ -164,15 +176,4 @@ const data = [
 		],
 	},
 ];
-
-const height = ref(0);
-
-onMounted(() => {
-	const timelineRef = document.getElementById("timelineRef");
-	if (timelineRef) {
-		height.value = timelineRef.getBoundingClientRect().height;
-	}
-	appearTimeline();
-	dynamicProgressBar();
-});
 </script>
