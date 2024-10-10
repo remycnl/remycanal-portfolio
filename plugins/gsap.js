@@ -829,10 +829,7 @@ export function appearTimeline() {
 	});
 }
 
-export function dynamicProgressBar() {
-	const timelineRef = document.getElementById("timelineRef");
-	const progressBar = document.getElementById("progressBar");
-
+export function dynamicProgressBar(timelineRef, progressBar) {
 	if (progressBar && timelineRef) {
 		gsap.to(progressBar, {
 			height: "100%",
