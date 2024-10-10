@@ -30,9 +30,9 @@
 				class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[120vh] left-0 h-[5.5rem]"></div>
 		</div>
 		<div
-			class="dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
+			class="relative dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div
-				class="z-[9999] group lg:hidden flex flex-col items-center pb-5"
+				class="z-[99999] group lg:hidden flex flex-col items-center pb-5"
 				@click="toggleDropdown">
 				<Icon
 					name="i-fluent-emoji-high-contrast:cross-mark"
