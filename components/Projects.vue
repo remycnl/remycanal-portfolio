@@ -253,7 +253,7 @@ const projects: Project[] = [
 	{
 		slug: "odl",
 		title: "Office des Lumières",
-		description: "Creation and animation of a website for a notary firm.",
+		description: "Participation in the creation and animation of a website for a notary firm.",
 		link: "https://officedeslumieres.com/",
 		img: "/img/mockup-odl.png",
 		logo: "/img/logo-odl.png",
