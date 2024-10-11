@@ -127,7 +127,7 @@ const ancreToSection = (event, targetId) => {
 									</p>
 								</div>
 								<p
-									v-else
+									v-else-if="isValueHover1"
 									@click="isValueHover1 = false"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 									key="description">
@@ -152,7 +152,7 @@ const ancreToSection = (event, targetId) => {
 									</p>
 								</div>
 								<p
-									v-else
+									v-else-if="isValueHover2"
 									@click="isValueHover2 = false"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 									key="description">
@@ -188,7 +188,7 @@ const ancreToSection = (event, targetId) => {
 										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 								</div>
 								<p
-									v-else
+									v-else-if="isValueHover3"
 									@click="isValueHover3 = false"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 									Independently developed with a focus on user feedback
@@ -211,7 +211,7 @@ const ancreToSection = (event, targetId) => {
 										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 								</div>
 								<p
-									v-else
+									v-else-if="isValueHover4"
 									@click="isValueHover4 = false"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 									Crafted with an open heart and driven by passion
