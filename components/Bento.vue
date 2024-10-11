@@ -174,7 +174,7 @@ const ancreToSection = (event, targetId) => {
 						class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-end text-end">
 						<div
 							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
-							<Transition name="fade-translate-up" mode="in-out">
+							<Transition name="fade-translate-up" mode="out-in">
 								<div
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
 									v-if="!isValueHover3"
