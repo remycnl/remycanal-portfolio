@@ -112,7 +112,7 @@ const ancreToSection = (event, targetId) => {
 						class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-start text-start">
 						<div
 							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
-							<transition name="fade-translate-up" mode="out-in">
+							<Transition name="fade-translate-up" mode="out-in">
 								<div
 									v-if="!isValueHover1"
 									@click="isValueHover1 = true"
@@ -127,17 +127,17 @@ const ancreToSection = (event, targetId) => {
 									</p>
 								</div>
 								<p
-									v-else-if="isValueHover1"
+									v-else
 									@click="isValueHover1 = false"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 									key="description">
 									For a smooth user's experience and clean codebase
 								</p>
-							</transition>
+							</Transition>
 						</div>
 						<div
 							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
-							<transition name="fade-translate-down" mode="out-in">
+							<Transition name="fade-translate-down" mode="out-in">
 								<div
 									v-if="!isValueHover2"
 									@click="isValueHover2 = true"
@@ -152,13 +152,13 @@ const ancreToSection = (event, targetId) => {
 									</p>
 								</div>
 								<p
-									v-else-if="isValueHover2"
+									v-else
 									@click="isValueHover2 = false"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 									key="description">
 									Engineered with creativity and attention to detail
 								</p>
-							</transition>
+							</Transition>
 						</div>
 					</div>
 					<div class="hidden w-1/3 h-full md:flex justify-center items-start">
@@ -174,7 +174,7 @@ const ancreToSection = (event, targetId) => {
 						class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-end text-end">
 						<div
 							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
-							<transition name="fade-translate-up" mode="out-in">
+							<Transition name="fade-translate-up" mode="out-in">
 								<div
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
 									v-if="!isValueHover3"
@@ -188,16 +188,16 @@ const ancreToSection = (event, targetId) => {
 										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 								</div>
 								<p
-									v-else-if="isValueHover3"
+									v-else
 									@click="isValueHover3 = false"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 									Independently developed with a focus on user feedback
 								</p>
-							</transition>
+							</Transition>
 						</div>
 						<div
 							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
-							<transition name="fade-translate-down" mode="out-in">
+							<Transition name="fade-translate-down" mode="out-in">
 								<div
 									class="flex flex-row gap-x-3 justify-end items-center"
 									v-if="!isValueHover4"
@@ -211,12 +211,12 @@ const ancreToSection = (event, targetId) => {
 										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 								</div>
 								<p
-									v-else-if="isValueHover4"
+									v-else
 									@click="isValueHover4 = false"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 									Crafted with an open heart and driven by passion
 								</p>
-							</transition>
+							</Transition>
 						</div>
 					</div>
 				</div>
