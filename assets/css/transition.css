@@ -59,7 +59,7 @@
 .fade-translate-up-leave-active,
 .fade-translate-down-enter-active,
 .fade-translate-down-leave-active {
-	transition: opacity 0.2s ease, transform 0.2s ease;
+	transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .fade-translate-up-enter-from {
