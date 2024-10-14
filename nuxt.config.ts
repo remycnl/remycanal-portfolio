@@ -40,6 +40,25 @@ export default defineNuxtConfig({
       }
   }], '@nuxt/image', '@nuxt/icon'],
 
+  icon: {
+    serverBundle: {
+      collections: [
+        'fa6-brands', 
+        'fluent-emoji-high-contrast', 
+        'formkit', 
+        'game-icons', 
+        'ic', 
+        'logos', 
+        'material-symbols', 
+        'mingcute', 
+        'skill-icons', 
+        'teenyicons', 
+        'uil', 
+        'vscode-icons'
+      ]
+    }
+  },
+
   plugins: [
     { src: '@/plugins/gsap.js', mode: 'client' },
     { src: '@/plugins/global.js', mode: 'client' },
