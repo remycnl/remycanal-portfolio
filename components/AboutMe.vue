@@ -63,6 +63,8 @@ const handleUpdateColor = (newColor) => {
 						<div class="icon">
 							<Icon
 								name="i-material-symbols:download-rounded"
+								ssr="true"
+								mode="svg"
 								style="color: var(--primary-color)"
 								class="w-[2.2em] h-[2.2em] transition-all duration-[1s]" />
 						</div>

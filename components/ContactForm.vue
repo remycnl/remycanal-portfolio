@@ -142,6 +142,8 @@
 						<div class="icon">
 							<Icon
 								name="i-mingcute:send-plane-line"
+								ssr="true"
+								mode="svg"
 								style="color: var(--primary-color)"
 								class="w-[2.2em] h-[2.2em] transition-all duration-[1s]" />
 						</div>
@@ -206,6 +208,8 @@
 					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
 						<Icon
 							name="i-material-symbols:alternate-email"
+							ssr="true"
+							mode="svg"
 							style="color: var(--primary-color)"
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>
@@ -262,6 +266,8 @@
 					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
 						<Icon
 							name="i-ic:outline-local-phone"
+							ssr="true"
+							mode="svg"
 							style="color: var(--primary-color)"
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>
@@ -318,6 +324,8 @@
 					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
 						<Icon
 							name="i-material-symbols:location-on-outline"
+							ssr="true"
+							mode="svg"
 							style="color: var(--primary-color)"
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>

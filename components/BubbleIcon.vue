@@ -23,6 +23,8 @@
 				:id="'skill-bubble-' + props.index"
 				:name="props.icon"
 				:style="'color:' + props.iconColor"
+				ssr="true"
+				mode="svg"
 				class="w-10 md:w-14 h-10 md:h-14" />
 			<div
 				@mouseenter="handleMouseEnter"
@@ -45,6 +47,8 @@
 				class="flex flex-row">
 				<Icon
 					name="i-teenyicons:star-small-solid"
+					ssr="true"
+					mode="svg"
 					class="w-5 h-5 star-pulse"
 					:style="{ animationDelay: index * 0.2 + 's', color: props.color }" />
 			</div>
@@ -55,6 +59,8 @@
 				class="flex flex-row">
 				<Icon
 					name="i-teenyicons:star-small-outline"
+					ssr="true"
+					mode="svg"
 					color="yellow"
 					class="w-5 h-5 star-pulse"
 					:style="{

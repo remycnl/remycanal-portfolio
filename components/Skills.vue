@@ -29,6 +29,8 @@
 						class="star star-card">
 						<Icon
 							name="i-teenyicons:star-small-solid"
+							ssr="true"
+							mode="svg"
 							class="w-8 md:w-9 h-8 md:h-9"
 							style="color: #1f293b" />
 					</div>
@@ -38,6 +40,8 @@
 						class="star star-card">
 						<Icon
 							name="i-teenyicons:star-small-outline"
+							ssr="true"
+							mode="svg"
 							class="w-8 md:w-9 h-8 md:h-9"
 							style="color: #1f293b" />
 					</div>
@@ -65,6 +69,8 @@
 					<Icon
 						:name="currentSkill.icon || ''"
 						class="w-full h-full"
+						ssr="true"
+						mode="svg"
 						style="color: var(--white)" />
 				</div>
 				<div class="text-color-saturate">

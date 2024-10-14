@@ -138,6 +138,8 @@ const ancreToSection = (event, targetId) => {
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 							<Icon
 								name="i-uil:phone"
+								ssr="true"
+								mode="svg"
 								style="color: var(--white);"
 								class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 						</div>
@@ -149,6 +151,8 @@ const ancreToSection = (event, targetId) => {
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 							<Icon
 								name="i-material-symbols:mail-outline-rounded"
+								ssr="true"
+								mode="svg"
 								style="color: var(--white);"
 								class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 						</div>
@@ -162,6 +166,8 @@ const ancreToSection = (event, targetId) => {
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 							<Icon
 								name="i-uil:github"
+								ssr="true"
+								mode="svg"
 								style="color: var(--white);"
 								class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 						</div>
@@ -175,6 +181,8 @@ const ancreToSection = (event, targetId) => {
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 							<Icon
 								name="i-uil:linkedin"
+								ssr="true"
+								mode="svg"
 								style="color: var(--white);"
 								class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 						</div>

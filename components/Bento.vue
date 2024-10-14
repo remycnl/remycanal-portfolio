@@ -120,6 +120,8 @@ const ancreToSection = (event, targetId) => {
 									key="icon-text">
 									<Icon
 										name="i-game-icons:small-fire"
+										ssr="true"
+										mode="svg"
 										style="color: var(--primary-color)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 									<p class="font-[Orbitron] font-bold uppercase">
@@ -145,6 +147,8 @@ const ancreToSection = (event, targetId) => {
 									key="icon-text">
 									<Icon
 										name="i-game-icons:rocket"
+										ssr="true"
+										mode="svg"
 										style="color: var(--primary-color)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 									<p class="font-[Orbitron] font-bold uppercase">
@@ -184,6 +188,8 @@ const ancreToSection = (event, targetId) => {
 									</p>
 									<Icon
 										name="i-game-icons:suckered-tentacle"
+										ssr="true"
+										mode="svg"
 										style="color: var(--primary-color)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 								</div>
@@ -207,6 +213,8 @@ const ancreToSection = (event, targetId) => {
 									</p>
 									<Icon
 										name="i-game-icons:techno-heart"
+										ssr="true"
+										mode="svg"
 										style="color: var(--primary-color)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
 								</div>

@@ -6,6 +6,8 @@
 			<div>
 				<Icon
 					name="i-material-symbols:format-color-fill-rounded"
+					ssr="true"
+					mode="svg"
 					style="color: var(--white)"
 					class="w-5 h-5 group-hover:lg:opacity-0 lg:-ml-1 transition-all duration-300" />
 			</div>

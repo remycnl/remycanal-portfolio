@@ -17,6 +17,8 @@
 		<div class="lg:hidden relative mt-10">
 			<Icon
 				name="i-game-icons:wind-slap"
+				ssr="true"
+				mode="svg"
 				style="color: var(--secondary-color)"
 				class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-[50rem] transition-all duration-300" />
 			<div v-for="project in projects" :key="project.slug">
@@ -61,6 +63,8 @@
 							Visit {{ project.type }}
 							<Icon
 								name="i-formkit:linkexternal"
+								ssr="true"
+								mode="svg"
 								style="color: var(--white)"
 								class="w-5 h-5" />
 						</NuxtLink>
@@ -73,6 +77,8 @@
 			class="hidden lg:flex relative overflow-visible mt-40 justify-between gap-x-20 2xl:gap-x-28 items-start">
 			<Icon
 				name="i-game-icons:wind-slap"
+				ssr="true"
+				mode="svg"
 				style="color: var(--secondary-color)"
 				class="absolute top-0 left-[-15%] 2xl:left-[-40%] w-[50rem] 2xl:w-[70rem] opacity-30 h-[50rem] 2xl:h-[70rem] transition-all duration-300" />
 			<div
@@ -146,6 +152,8 @@
 								</h4>
 								<Icon
 									name="i-formkit:linkexternal"
+									ssr="true"
+									mode="svg"
 									style="color: var(--primary-color)"
 									class="link-type-hover w-6 h-6 mb-1 transition-all duration-300" />
 							</div>
