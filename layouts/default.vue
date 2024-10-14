@@ -16,6 +16,7 @@ const inactiveTitle = ref("I miss you !!!");
 useSeoMeta({
 	title: activeTitle,
 	ogTitle: "Rémy Canal | Web Developer Portfolio",
+	ogSiteName: 'Rémy Canal | Web Developer Portfolio',
 	description:
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogDescription:
