@@ -23,6 +23,8 @@ This portfolio project is built using Nuxt 3, a powerful framework for building 
 - JavaScript
 - CSS
 - TypeScript
+- GSAP
+- TailwindCSS
 
 ## Setup
 Make sure to install the dependencies:
@@ -97,12 +99,10 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 
 
 ## Usage
-
 Visit the live site at [https://www.remycanal.me](https://www.remycanal.me) to see the portfolio in action.
 
 
 ## Contact
-
 For any questions or support, please contact me at [remy.canal@epitech.eu].
 
 
