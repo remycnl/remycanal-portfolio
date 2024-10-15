@@ -22,9 +22,11 @@ This portfolio project is built using Nuxt 3, a powerful framework for building 
 - Vue.js
 - JavaScript
 - CSS
+- HTML
 - TypeScript
 - GSAP
 - TailwindCSS
+- Node.js
 
 ## Setup
 Make sure to install the dependencies:
