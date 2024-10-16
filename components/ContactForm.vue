@@ -161,7 +161,9 @@
 					v-if="showPopup"
 					class="z-[100] absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-primary">
 					<!-- Loader pendant l'envoi -->
-					<div v-if="!isMessageSent" class="dot-spinner mb-40 md:mb-0">
+					<div
+						v-if="!isMessageSent && !isError"
+						class="dot-spinner mb-40 md:mb-0">
 						<div class="dot-spinner__dot"></div>
 						<div class="dot-spinner__dot"></div>
 						<div class="dot-spinner__dot"></div>
@@ -191,12 +193,31 @@
 							</div>
 						</div>
 					</Transition>
+					<Transition
+						name="fade-reverse-scale"
+						@before-enter="beforeEnter"
+						@enter="enter"
+						@leave="leave">
+						<div
+							v-if="isError"
+							class="flex flex-col justify-center items-center gap-y-10">
+							<NuxtImg
+								src="/img/error.gif"
+								format="gif"
+								alt="Error!"
+								class="w-[15rem] h-auto" />
+							<div
+								class="font-bold text-red-600 text-[2rem] md:text-[3rem] mb-40 md:mb-0">
+								Failed to Send Message!
+							</div>
+						</div>
+					</Transition>
 				</div>
 			</Transition>
 		</div>
 		<div
 			id="contact"
-			class="p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-dark group shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
+			class="relative p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-dark group shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
 			<h2
 				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-gray-light group-hover:text-white transition-colors duration-500 mb-5 text-start">
 				Get in touch
@@ -205,7 +226,8 @@
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
-					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+					<div
+						class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
 						<Icon
 							name="i-material-symbols:alternate-email"
 							ssr="true"
@@ -237,7 +259,8 @@
 					<div
 						@click="copyToClipboard('emailText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-						<label class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
+						<label
+							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
 							<input type="checkbox" v-model="copiedEmail" />
 							<svg
 								viewBox="0 0 384 512"
@@ -263,7 +286,8 @@
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
-					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+					<div
+						class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
 						<Icon
 							name="i-ic:outline-local-phone"
 							ssr="true"
@@ -295,7 +319,8 @@
 					<div
 						@click="copyToClipboard('phoneText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-						<label class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
+						<label
+							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
 							<input checked="" type="checkbox" v-model="copiedPhone" />
 							<svg
 								viewBox="0 0 384 512"
@@ -321,7 +346,8 @@
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
-					<div class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+					<div
+						class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
 						<Icon
 							name="i-material-symbols:location-on-outline"
 							ssr="true"
@@ -353,7 +379,8 @@
 					<div
 						@click="copyToClipboard('locationText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-						<label class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
+						<label
+							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
 							<input checked="" type="checkbox" v-model="copiedLocation" />
 							<svg
 								viewBox="0 0 384 512"
@@ -375,6 +402,21 @@
 					</div>
 				</div>
 			</div>
+			<Transition
+				name="fade-reverse-scale"
+				@before-enter="beforeEnter"
+				@enter="enter"
+				@leave="leave">
+				<div
+					v-if="showCopyPopup"
+					style="font-family: Share Tech Mono"
+					class="absolute -bottom-24 right-0 bg-secondary text-white p-4 rounded-lg shadow-lg">
+					{{ copySuccessMessage }}
+					<div
+						class="h-2 timed-popup bg-white rounded-full mt-2"
+						:style="{ width: progressBarWidth + '%' }"></div>
+				</div>
+			</Transition>
 		</div>
 	</div>
 </template>
@@ -399,8 +441,11 @@ const form = reactive({
 
 const showPopup = ref(false);
 const isMessageSent = ref(false);
-
+const isError = ref(false);
 const showConsentError = ref(false);
+const copySuccessMessage = ref("");
+const showCopyPopup = ref(false);
+const progressBarWidth = ref(100);
 
 const submitForm = async () => {
 	if (!form.rgpdConsent) {
@@ -410,6 +455,7 @@ const submitForm = async () => {
 
 	showConsentError.value = false;
 	showPopup.value = true;
+	isError.value = false;
 
 	const formData = {
 		firstname: form.firstname,
@@ -433,15 +479,18 @@ const submitForm = async () => {
 		if (result.status === "success") {
 			isMessageSent.value = true;
 		} else {
+			isError.value = true;
 			console.error("Erreur lors de l'envoi:", result.message);
 		}
 	} catch (error) {
 		console.error("Erreur lors de la requête:", error);
+		isError.value = true;
 	}
 
 	setTimeout(() => {
 		showPopup.value = false;
 		isMessageSent.value = false;
+		isError.value = false;
 	}, 2000);
 };
 
@@ -479,7 +528,11 @@ function copyToClipboard(refName) {
 	navigator.clipboard.writeText(textToCopy).then(() => {
 		if (refName === "emailText") {
 			copiedEmail.value = true;
+			copySuccessMessage.value = "Email adress copied!";
+			showCopyPopup.value = true;
+			startProgressBar();
 			setTimeout(() => {
+				showCopyPopup.value = false;
 				copiedEmail.value = false;
 			}, 2000);
 			copiedPhone.value = false;
@@ -487,7 +540,11 @@ function copyToClipboard(refName) {
 		} else if (refName === "phoneText") {
 			copiedEmail.value = false;
 			copiedPhone.value = true;
+			copySuccessMessage.value = "Phone number copied!";
+			showCopyPopup.value = true;
+			startProgressBar();
 			setTimeout(() => {
+				showCopyPopup.value = false;
 				copiedPhone.value = false;
 			}, 2000);
 			copiedLocation.value = false;
@@ -495,10 +552,42 @@ function copyToClipboard(refName) {
 			copiedEmail.value = false;
 			copiedPhone.value = false;
 			copiedLocation.value = true;
+			copySuccessMessage.value = "Location copied!";
+			showCopyPopup.value = true;
+			startProgressBar();
 			setTimeout(() => {
+				showCopyPopup.value = false;
 				copiedLocation.value = false;
 			}, 2000);
 		}
 	});
 }
+
+function startProgressBar() {
+	progressBarWidth.value = 100;
+	const duration = 2000;
+	const startTime = performance.now();
+
+	const animate = (currentTime) => {
+		const elapsed = currentTime - startTime;
+		const progress = Math.max(0, 100 - (elapsed / duration) * 100);
+		progressBarWidth.value = progress;
+
+		if (elapsed < duration) {
+			requestAnimationFrame(animate);
+		} else {
+			progressBarWidth.value = 0;
+			showCopyPopup.value = false;
+		}
+	};
+
+	requestAnimationFrame(animate);
+}
 </script>
+
+<style scoped>
+.timed-popup {
+	height: 0.5rem;
+	transition: width 0.1s linear;
+}
+</style>
