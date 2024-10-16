@@ -8,10 +8,6 @@ export default defineNuxtConfig({
     },
   },
 
-  nitro: {
-    preset: 'vercel',
-  },
-
   css: [
     '@/assets/css/main.css',
     '@/assets/css/button.css',
