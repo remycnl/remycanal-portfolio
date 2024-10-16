@@ -67,7 +67,7 @@
 								applySaturationText(index);
 								applyZoomEffect(index);
 							"
-							:href="menu"
+							:href="'#' + menu"
 							class="menu-sm text-shadow transition-all duration-300 ease-in-out text-xl hover-scale-effect clickable cursor-none">
 							{{ menu }}
 						</a>
@@ -77,7 +77,7 @@
 							executeFunctionsMenu($event, 'Contact me');
 							applySaturationText(4);
 						"
-						href="Contact me"
+						href="#contact-me"
 						class="mb-10 lg:mb-0 active:scale-95 transition-all duration-75">
 						<div
 							class="hover-scale-effect clickable cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">

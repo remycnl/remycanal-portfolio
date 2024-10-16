@@ -242,7 +242,7 @@ const ancreToSection = (event, targetId) => {
 				class="scale-100 hover:scale-105 active:scale-95 transform transition-transform duration-75 lg:duration-500">
 				<a
 					@click="ancreToSection($event, 'Contact me')"
-					href="Contact me"
+					href="#Contact-me"
 					class="clickable hover-scale-effect cursor-none">
 					<h4
 						class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-[3rem] text-white hover:tracking-widest transition-all duration-500">
