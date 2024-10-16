@@ -2,14 +2,14 @@
 	<div id="color-button" class="lg:opacity-0">
 		<button
 			@click="toggleColors"
-			class="group circle-container relative hover-scale-effect clickable cursor-none w-fit lg:w-[50px] h-fit lg:h-[50px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary-dark bg-black transition-all shadow-custom-outline duration-500">
+			class="group circle-container relative hover-scale-effect clickable cursor-none w-[60px] h-[60px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary-dark bg-black transition-all shadow-custom-outline duration-500">
 			<div>
 				<Icon
 					name="i-material-symbols:format-color-fill-rounded"
 					ssr="true"
 					mode="svg"
 					style="color: var(--white)"
-					class="w-5 h-5 group-hover:lg:opacity-0 lg:-ml-1 transition-all duration-300" />
+					class="w-7 h-7 group-hover:lg:opacity-0 lg:-ml-1 transition-all duration-300" />
 			</div>
 			<div
 				class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-none flex justify-center items-center gap-x-4">
