@@ -1,6 +1,5 @@
 import { Resend } from "resend";
 
-// Créez une instance de Resend avec votre clé API
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default defineEventHandler(async (event) => {
