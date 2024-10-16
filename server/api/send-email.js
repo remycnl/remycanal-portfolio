@@ -1,35 +1,29 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+// Créez une instance de Resend avec votre clé API
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default defineEventHandler(async (event) => {
 	const body = await readBody(event);
 
-	const transporter = nodemailer.createTransport({
-		service: "gmail",
-		auth: {
-			user: process.env.GMAIL_USER,
-			pass: process.env.GMAIL_PASS,
-		},
-	});
-
 	const mailOptions = {
-		from: body.email,
+		from: process.env.GMAIL_USER,
 		to: process.env.GMAIL_USER,
 		subject: `Message from ${body.firstname} ${body.lastname}`,
-		text: `
-Vous avez reçu un nouveau message depuis votre Portfolio :
-
-------------------------------------------------------
-Prénom : ${body.firstname}
-Nom : ${body.lastname}
-Email : ${body.email}
-Entreprise : ${body.company || 'Non spécifié'}
-------------------------------------------------------
-
-${body.message}
-`,
+		html: `
+		<p>Vous avez reçu un nouveau message depuis votre Portfolio :</p>
+		<p>------------------------------------------------------</p>
+		<p><strong>Prénom :</strong> ${body.firstname}</p>
+		<p><strong>Nom :</strong> ${body.lastname}</p>
+		<p><strong>Email :</strong> ${body.email}</p>
+		<p><strong>Entreprise :</strong> ${body.company || "Non spécifié"}</p>
+		<p>------------------------------------------------------</p>
+		<p>${body.message}</p>
+    `,
 	};
+
 	try {
-		await transporter.sendMail(mailOptions);
+		await resend.emails.send(mailOptions);
 		return { status: "success" };
 	} catch (error) {
 		console.error("Erreur lors de l'envoi de l'email:", error);

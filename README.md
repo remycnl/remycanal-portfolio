@@ -105,7 +105,7 @@ Visit the live site at [https://www.remycanal.me](https://www.remycanal.me) to s
 
 
 ## Contact
-For any questions or support, please contact me at [remy.canal@epitech.eu].
+For any questions or support, please contact me at [hello@remycanal.me].
 
 
 ## License

@@ -145,7 +145,7 @@ const ancreToSection = (event, targetId) => {
 						</div>
 					</a>
 					<a
-						href="mailto:remy.canal@epitech.eu"
+						href="mailto:hello@remycanal.me"
 						class="hover-scale-effect clickable cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">

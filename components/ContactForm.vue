@@ -229,7 +229,7 @@
 							ref="emailText"
 							style="font-family: Share Tech Mono"
 							class="whitespace-nowrap text-sm md:text-base tracking-tight md:tracking-wider">
-							remy.canal@epitech.eu
+							hello@remycanal.me
 						</h4>
 					</div>
 				</div>
@@ -420,7 +420,7 @@ const submitForm = async () => {
 	};
 
 	try {
-		const response = await fetch("https://www.remycanal.me/api/send-email", {
+		const response = await fetch("/api/send-email", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
