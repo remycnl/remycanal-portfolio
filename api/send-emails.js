@@ -11,15 +11,15 @@ export default async function handler(req, res) {
 			to: process.env.GMAIL_USER,
 			subject: `Message from ${body.firstname} ${body.lastname}`,
 			html: `
-					<p>Vous avez reçu un nouveau message depuis votre Portfolio :</p>
-					<p>------------------------------------------------------</p>
-					<p><strong>Prénom :</strong> ${body.firstname}</p>
-					<p><strong>Nom :</strong> ${body.lastname}</p>
-					<p><strong>Email :</strong> ${body.email}</p>
-					<p><strong>Entreprise :</strong> ${body.company || "Non spécifié"}</p>
-					<p>------------------------------------------------------</p>
-					<p>${body.message}</p>
-				`,
+        <p>Vous avez reçu un nouveau message depuis votre Portfolio :</p>
+        <p>------------------------------------------------------</p>
+        <p><strong>Prénom :</strong> ${body.firstname}</p>
+        <p><strong>Nom :</strong> ${body.lastname}</p>
+        <p><strong>Email :</strong> ${body.email}</p>
+        <p><strong>Entreprise :</strong> ${body.company || "Non spécifié"}</p>
+        <p>------------------------------------------------------</p>
+        <p>${body.message}</p>
+      `,
 		};
 
 		try {
