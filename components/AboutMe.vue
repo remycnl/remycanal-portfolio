@@ -55,7 +55,7 @@ const handleUpdateColor = (newColor) => {
 					@update-color="handleUpdateColor" />
 				<div id="download-cv" class="md:opacity-0">
 					<a
-						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-none text-white text-xl tracking-widest"
+						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest"
 						href="/doc/Rémy Canal - curriculum vitae.pdf"
 						target="_blank"
 						download>

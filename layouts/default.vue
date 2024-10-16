@@ -112,7 +112,7 @@ const setCSP = () => {
 </script>
 
 <template>
-	<div class="cursor-none">
+	<div class="lg:cursor-none">
 		<div
 			class="hidden lg:block custom-cursor shadow-around bg-secondary rounded-full pointer-events-none z-[1000]"></div>
 		<div class="scroll-smooth relative max-w-screen overflow-hidden">

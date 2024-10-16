@@ -29,11 +29,11 @@
 			<div
 				@mouseenter="handleMouseEnter"
 				:style="{ 'border-color': props.color }"
-				class="clickable cursor-none hover-scale-effect absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin"></div>
+				class="clickable cursor-pointer lg:cursor-none hover-scale-effect absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin"></div>
 		</div>
 		<div
 			:id="'toggle-text-white-' + props.index"
-			class="clickable cursor-none hover-scale-effect w-fit mt-4 text-lg md:text-xl text-gray-medium transition-colors duration-200 whitespace-nowrap">
+			class="clickable cursor-pointer lg:cursor-none hover-scale-effect w-fit mt-4 text-lg md:text-xl text-gray-medium transition-colors duration-200 whitespace-nowrap">
 			{{ props.text }}
 		</div>
 		<div

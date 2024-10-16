@@ -12,7 +12,7 @@
 			</a>
 			<div class="z-50 flex pointer-events-auto items-center justify-center">
 				<div
-					class="cursor-none hover:saturate-200 transition-all transform-gpu duration-500"
+					class="cursor-pointer lg:cursor-none hover:saturate-200 transition-all transform-gpu duration-500"
 					@click="toggleDropdown">
 					<div class="flex justify-end">
 						<div
@@ -47,7 +47,7 @@
 				<a
 					id="logo-zoom"
 					@click="executeFunctionsMenu($event, 'top')"
-					class="hover-scale-effect clickable cursor-none active:scale-105 transition-all duration-100">
+					class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-105 transition-all duration-100">
 					<NuxtImg
 						:src="`/img/logo-${primaryColor}.png`"
 						alt="Rémy Canal"
@@ -68,7 +68,7 @@
 								applyZoomEffect(index);
 							"
 							:href="'#' + menu"
-							class="menu-sm text-shadow transition-all duration-300 ease-in-out text-xl hover-scale-effect clickable cursor-none">
+							class="menu-sm text-shadow transition-all duration-300 ease-in-out text-xl hover-scale-effect clickable cursor-pointer lg:cursor-none">
 							{{ menu }}
 						</a>
 					</span>
@@ -80,7 +80,7 @@
 						href="#contact-me"
 						class="mb-10 lg:mb-0 active:scale-95 transition-all duration-75">
 						<div
-							class="hover-scale-effect clickable cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
+							class="hover-scale-effect clickable cursor-pointer lg:cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
 							<div
 								class="p-4 bg-black-dark bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 lg:ease-in rounded-xl">
 								<h2

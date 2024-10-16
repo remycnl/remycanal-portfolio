@@ -26,7 +26,7 @@
 						id="firstname"
 						type="text"
 						v-model="form.firstname"
-						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Firstname*"
 						autocomplete="off"
 						required />
@@ -34,7 +34,7 @@
 						id="lastname"
 						type="text"
 						v-model="form.lastname"
-						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Lastname*"
 						autocomplete="off"
 						required />
@@ -47,7 +47,7 @@
 						id="email"
 						type="email"
 						v-model="form.email"
-						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Email*"
 						autocomplete="off"
 						required />
@@ -55,7 +55,7 @@
 						id="company"
 						type="text"
 						v-model="form.company"
-						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Company"
 						autocomplete="off" />
 				</div>
@@ -65,7 +65,7 @@
 					<textarea
 						id="message"
 						v-model="form.message"
-						class="hover-scale-effect tracking-wider clickable cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
 						placeholder="Message*"
 						autocomplete="off"
 						required></textarea>
@@ -77,7 +77,7 @@
 						class="cntr hover-scale-effect clickable rounded-[10px] shadow-around shadow-black">
 						<input
 							v-model="form.rgpdConsent"
-							class="hidden-xs-up cursor-none"
+							class="hidden-xs-up cursor-pointer lg:cursor-none"
 							id="cbx"
 							type="checkbox"
 							checked="" />
@@ -86,7 +86,7 @@
 					<label
 						for="cbx"
 						style="font-family: Share Tech Mono"
-						class="hover-scale-effect clickable cursor-none ml-2 text-sm md:text-base text-white">
+						class="hover-scale-effect clickable cursor-pointer lg:cursor-none ml-2 text-sm md:text-base text-white">
 						I consent to the use of my personal data for the purpose of
 						responding to my inquiry.
 					</label>
@@ -137,7 +137,7 @@
 				<div class="flex justify-end">
 					<button
 						type="submit"
-						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-none text-white text-xl tracking-widest">
+						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest">
 						Send
 						<div class="icon">
 							<Icon
@@ -237,7 +237,7 @@
 					<div
 						@click="copyToClipboard('emailText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-						<label class="container-clipboard cursor-none p-4 md:p-5">
+						<label class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
 							<input type="checkbox" v-model="copiedEmail" />
 							<svg
 								viewBox="0 0 384 512"
@@ -295,7 +295,7 @@
 					<div
 						@click="copyToClipboard('phoneText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-						<label class="container-clipboard cursor-none p-4 md:p-5">
+						<label class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
 							<input checked="" type="checkbox" v-model="copiedPhone" />
 							<svg
 								viewBox="0 0 384 512"
@@ -353,7 +353,7 @@
 					<div
 						@click="copyToClipboard('locationText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
-						<label class="container-clipboard cursor-none p-4 md:p-5">
+						<label class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
 							<input checked="" type="checkbox" v-model="copiedLocation" />
 							<svg
 								viewBox="0 0 384 512"

@@ -2,7 +2,7 @@
 	<div id="color-button" class="lg:opacity-0">
 		<button
 			@click="toggleColors"
-			class="group circle-container relative hover-scale-effect clickable cursor-none w-[60px] h-[60px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary-dark bg-black transition-all shadow-custom-outline duration-500">
+			class="group circle-container relative hover-scale-effect clickable cursor-pointer lg:cursor-none w-[60px] h-[60px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary-dark bg-black transition-all shadow-custom-outline duration-500">
 			<div>
 				<Icon
 					name="i-material-symbols:format-color-fill-rounded"
@@ -12,14 +12,14 @@
 					class="w-7 h-7 group-hover:lg:opacity-0 lg:-ml-1 transition-all duration-300" />
 			</div>
 			<div
-				class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-none flex justify-center items-center gap-x-4">
+				class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-pointer lg:cursor-none flex justify-center items-center gap-x-4">
 				<label
 					v-for="(color, index) in colorOptions"
 					:key="index"
-					class="absolute cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
+					class="absolute cursor-pointer lg:cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
 					<input
 						type="checkbox"
-						class="cursor-none"
+						class="cursor-pointer lg:cursor-none"
 						:class="`color-${index + 1} cyberpunk-checkbox`"
 						v-model="checkboxes[index]"
 						@change="

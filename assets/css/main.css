@@ -29,7 +29,7 @@ html {
 }
 
 body {
-	cursor: none;
+	@apply lg:cursor-none;
 	background-color: var(--black);
 	font-family: Orbitron;
 	scrollbar-width: thin; /* Pour Firefox */

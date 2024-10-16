@@ -93,7 +93,7 @@ const ancreToSection = (event, targetId) => {
 						<a
 							@click="ancreToSection($event, 'About me')"
 							href="#about-me"
-							class="menu-line-animation hover-scale-effect clickable cursor-none text-base lg:text-lg">
+							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							About me
 						</a>
 					</div>
@@ -101,7 +101,7 @@ const ancreToSection = (event, targetId) => {
 						<a
 							@click="ancreToSection($event, 'Skills')"
 							href="#skills"
-							class="menu-line-animation hover-scale-effect clickable cursor-none text-base lg:text-lg">
+							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Skills
 						</a>
 					</div>
@@ -109,7 +109,7 @@ const ancreToSection = (event, targetId) => {
 						<a
 						@click="ancreToSection($event, 'Timeline')"
 							href="#timeline"
-							class="menu-line-animation hover-scale-effect clickable cursor-none text-base lg:text-lg">
+							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Timeline
 						</a>
 					</div>
@@ -117,7 +117,7 @@ const ancreToSection = (event, targetId) => {
 						<a
 						@click="ancreToSection($event, 'Projects')"
 							href="#projects"
-							class="menu-line-animation hover-scale-effect clickable cursor-none text-base lg:text-lg">
+							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Projects
 						</a>
 					</div>
@@ -125,7 +125,7 @@ const ancreToSection = (event, targetId) => {
 						<a
 						@click="ancreToSection($event, 'Contact me')"
 							href="#contact-me"
-							class="menu-line-animation hover-scale-effect clickable cursor-none text-base lg:text-lg">
+							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Contact me
 						</a>
 					</div>
@@ -133,7 +133,7 @@ const ancreToSection = (event, targetId) => {
 				<div class="flex justify-center gap-x-5 md:gap-x-10">
 					<a
 						href="tel:+330619258299"
-						class="hover-scale-effect clickable cursor-none active:scale-90 transition-all duration-100">
+						class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 							<Icon
@@ -146,7 +146,7 @@ const ancreToSection = (event, targetId) => {
 					</a>
 					<a
 						href="mailto:hello@remycanal.me"
-						class="hover-scale-effect clickable cursor-none active:scale-90 transition-all duration-100">
+						class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 							<Icon
@@ -161,7 +161,7 @@ const ancreToSection = (event, targetId) => {
 						href="https://github.com/remycnl"
 						target="_blank"
 						rel="noopener noreferrer"
-						class="hover-scale-effect clickable cursor-none active:scale-90 transition-all duration-100">
+						class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 							<Icon
@@ -176,7 +176,7 @@ const ancreToSection = (event, targetId) => {
 						href="https://www.linkedin.com/in/remy-canal"
 						target="_blank"
 						rel="noopener noreferrer"
-						class="hover-scale-effect clickable cursor-none active:scale-90 transition-all duration-100">
+						class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
 							<Icon
