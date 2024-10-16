@@ -235,7 +235,7 @@ const skills = [
 		pathIcon: "/img/swiper.svg",
 		stars: 4,
 		description:
-			"Implementation of Swiper.js for interactive image carousels and galleries, with advanced customization options and multi-touch support.",
+			"Implementation of Swiper.js for interactive image carousels and galleries, with advanced customization options.",
 	},
 	{
 		text: "Strapi",
@@ -304,7 +304,7 @@ const skills = [
 		pathIcon: "/img/chatgpt.png",
 		stars: 5,
 		description:
-			"Experience with ChatGPT for integrating conversational artificial intelligence into web applications, enhancing user engagement and automating responses.",
+			"Mastering ChatGPT enables me to code more efficiently and quickly by crafting precise prompts, serving as a valuable coding companion.",
 	},
 	{
 		text: "but still human...",
