@@ -60,7 +60,8 @@ useHead({
 					"https://www.linkedin.com/in/remy-canal",
 				],
 				image: "https://www.remycanal.me/img/metaImg.png",
-				description: "Web developer based in Lyon specializing in front-end development.",
+				description:
+					"Web developer based in Lyon specializing in front-end development.",
 				alumniOf: {
 					"@type": "CollegeOrUniversity",
 					name: "EPITECH Lyon",
@@ -69,8 +70,22 @@ useHead({
 					"@type": "Organization",
 					name: "Freelance",
 				},
+				birthDate: "2004-06-02",
+				address: {
+					"@type": "PostalAddress",
+					addressLocality: "Lyon",
+					addressCountry: "France",
+				},
+				contactPoint: {
+					"@type": "ContactPoint",
+					contactType: "Customer Support",
+					email: "hello@remycanal.me",
+					telephone: "+33-6-19-25-82-99",
+					availableLanguage: ["French", "English"],
+				},
 			}),
 		},
+
 		{
 			type: "application/ld+json",
 			innerHTML: JSON.stringify({
@@ -83,6 +98,22 @@ useHead({
 				publisher: {
 					"@type": "Person",
 					name: "Rémy Canal",
+				},
+			}),
+		},
+
+		{
+			type: "application/ld+json",
+			innerHTML: JSON.stringify({
+				"@context": "https://schema.org",
+				"@type": "WebPage",
+				url: "https://www.remycanal.me",
+				name: "Rémy Canal | Web Developer • Portfolio",
+				description:
+					"Explore the projects, skills, and expertise of Rémy Canal, a front-end web developer.",
+				mainEntity: {
+					"@type": "WebPageElement",
+					name: "Portfolio",
 				},
 			}),
 		},
