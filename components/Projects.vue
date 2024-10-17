@@ -40,7 +40,7 @@
 						<NuxtImg
 							:src="project.img"
 							:alt="`Mockup - ${project.img}`"
-							format="webp"
+							preset="portfolioImage"
 							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
 					</div>
 					<p class="text-gray-light w-[86%]">
@@ -57,7 +57,7 @@
 					</div>
 					<div class="flex flex-row justify-end items-center w-[90%] mt-4 mb-7">
 						<NuxtLink
-							:to="project.link"
+							:to="'https://remycanal.me' + project.link"
 							target="_blank"
 							class="focus:scale-90 transition-transform duration-75 flex rounded-xl text-white bg-secondary p-3 flex-row gap-2 items-center">
 							Visit {{ project.type }}
@@ -137,9 +137,9 @@
 					@mouseleave="hideImages(), stopHover()"
 					class="group relative z-30 link-type flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
 					<NuxtImg
-						:src="project.logo"
+						:src="'https://remycanal.me' + project.logo"
 						:alt="`Logo - ${project.logo}`"
-						format="webp"
+						preset="portfolioImage"
 						class="absolute top-4 right-[-10%] hover-scale-effect clickable cursor-pointer lg:cursor-none scale-50 group-hover:scale-100 opacity-0 group-hover:opacity-10 w-auto h-60 transition-all duration-[0.8s]" />
 					<div
 						class="text-secondary group hover-scale-effect clickable cursor-pointer lg:cursor-none w-full h-full flex flex-col justify-between items-start">

@@ -83,6 +83,18 @@ export default defineNuxtConfig({
 		},
 	},
 
+	image: {
+		domains: ["remycanal.me"],
+		presets: {
+			portfolioImage: {
+				modifiers: {
+					format: "webp",
+					quality: 80,
+				},
+			},
+		},
+	},
+
 	plugins: [
 		{ src: "@/plugins/gsap.js", mode: "client" },
 		{ src: "@/plugins/global.js", mode: "client" },

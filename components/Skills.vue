@@ -89,13 +89,13 @@
 			id="container-skills"
 			class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center items-start pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
 			<NuxtImg
-				:src="`/img/details-skills-${selectedColor}.png`"
-				format="webp"
+				:src="`https://remycanal.me/img/details-skills-${selectedColor}.png`"
+				preset="portfolioImage"
 				alt="Click on bubbles to see details (mobile)"
 				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-21rem] 2xl:top-[-30.5rem] right-[30%] md:right-[10%] lg:right-[40%] z-10" />
 			<NuxtImg
-				:src="`/img/stars-info-${selectedColor}.png`"
-				format="webp"
+				:src="`https://remycanal.me/img/stars-info-${selectedColor}.png`"
+				preset="portfolioImage"
 				alt="Stars = Proficiency level"
 				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-22rem] 2xl:top-[-30.5rem] left-[30%] md:left-[30%] lg:left-[30%] z-10" />
 			<BubbleIcon

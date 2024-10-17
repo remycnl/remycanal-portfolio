@@ -71,9 +71,9 @@
 							<NuxtImg
 								v-for="(img, imgIdx) in item.images"
 								:key="imgIdx"
-								:src="img.src"
+								:src="'https://remycanal.me' + img.src"
 								:alt="img.alt"
-								format="webp"
+								preset="portfolioImage"
 								class="object-contain h-full w-full group-hover:scale-[1.15] transition-transform duration-500" />
 						</div>
 					</div>

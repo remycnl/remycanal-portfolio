@@ -22,8 +22,10 @@ useSeoMeta({
 	ogDescription:
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogImage: "https://www.remycanal.me/img/metaImg.png",
+	ogImageAlt: "Rémy Canal Portfolio Preview",
 	ogUrl: "https://www.remycanal.me",
 	ogType: "website",
+	ogLocale: "en_US",
 	twitterTitle: "Rémy Canal - Portfolio | Web Developer",
 	twitterDescription:
 		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
@@ -44,6 +46,47 @@ useHead({
 	htmlAttrs: {
 		lang: "en",
 	},
+	script: [
+		{
+			type: "application/ld+json",
+			innerHTML: JSON.stringify({
+				"@context": "https://schema.org",
+				"@type": "Person",
+				name: "Rémy Canal",
+				jobTitle: "Web Developer",
+				url: "https://www.remycanal.me",
+				sameAs: [
+					"https://github.com/remycnl",
+					"https://www.linkedin.com/in/remy-canal",
+				],
+				image: "https://www.remycanal.me/img/metaImg.png",
+				description: "Web developer based in Lyon specializing in front-end development.",
+				alumniOf: {
+					"@type": "CollegeOrUniversity",
+					name: "EPITECH Lyon",
+				},
+				worksFor: {
+					"@type": "Organization",
+					name: "Freelance",
+				},
+			}),
+		},
+		{
+			type: "application/ld+json",
+			innerHTML: JSON.stringify({
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				url: "https://www.remycanal.me",
+				name: "Rémy Canal | Web Developer Portfolio",
+				description:
+					"Portfolio showcasing the web development projects, skills, and experiences of Rémy Canal.",
+				publisher: {
+					"@type": "Person",
+					name: "Rémy Canal",
+				},
+			}),
+		},
+	],
 	link: [
 		{
 			rel: "icon",
@@ -60,6 +103,13 @@ useHead({
 			href: "https://www.remycanal.me",
 		},
 	],
+	meta: [
+		{
+			name: "viewport",
+			content: "width=device-width, initial-scale=1.0",
+		},
+	],
+	__dangerouslyDisableSanitizers: ["script"],
 });
 
 const applyEffects = () => {

@@ -5,9 +5,9 @@
 			class="px-1 relative toolbar lg:hidden flex justify-between items-center pointer-events-none">
 			<a @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
 				<NuxtImg
-					:src="`/img/logo-${primaryColor}.png`"
+					:src="`https://remycanal.me/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
-					format="webp"
+					preset="portfolioImage"
 					class="change-img-color text-shadow pointer-events-auto hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</a>
 			<div class="z-50 flex pointer-events-auto items-center justify-center">
@@ -49,9 +49,9 @@
 					@click="executeFunctionsMenu($event, 'top')"
 					class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-105 transition-all duration-100">
 					<NuxtImg
-						:src="`/img/logo-${primaryColor}.png`"
+						:src="`https://remycanal.me/img/logo-${primaryColor}.png`"
 						alt="Rémy Canal"
-						format="webp"
+						preset="portfolioImage"
 						class="change-img-color text-shadow hover-scale-effect hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-8 lg:mt-0 pointer-events-auto" />
 				</a>
 				<div
