@@ -59,7 +59,7 @@
 .fade-translate-up-leave-active,
 .fade-translate-down-enter-active,
 .fade-translate-down-leave-active {
-	transition: opacity 0.3s ease, transform 0.3s ease;
+	transition: opacity 0.2s ease 0.2s, transform 0.2s ease 0.2s;
 }
 
 .fade-translate-up-enter-from {
@@ -97,7 +97,7 @@
 
 /* Transition "fade-letter-by-letter" */
 .fade-letter-by-letter-enter-active {
-	transition: opacity 0.6s ease, transform 0.6s ease; /* Apparition normale (0.6s) */
+	transition: opacity 0.6s ease, transform 0.6s ease;
 }
 .fade-letter-by-letter-enter-from {
 	opacity: 0;
@@ -109,7 +109,7 @@
 }
 
 .fade-letter-by-letter-leave-active {
-	transition: opacity 0.2s ease, transform 0.2s ease; /* Sortie très rapide (0.1s) */
+	transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .fade-letter-by-letter-leave-from {
 	opacity: 1;
