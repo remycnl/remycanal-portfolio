@@ -10,13 +10,13 @@ import {
 import { mouseEffect } from "@/plugins/global.js";
 import { SpeedInsights } from "@vercel/speed-insights/nuxt";
 
-const activeTitle = ref("Rémy Canal | Web Developer Portfolio");
+const activeTitle = ref("Rémy Canal | Web Developer • Portfolio");
 const inactiveTitle = ref("I miss you !!!");
 
 useSeoMeta({
 	title: activeTitle,
-	ogTitle: "Rémy Canal | Web Developer Portfolio",
-	ogSiteName: "Rémy Canal | Web Developer Portfolio",
+	ogTitle: "Rémy Canal | Web Developer • Portfolio",
+	ogSiteName: "Rémy Canal | Web Developer • Portfolio",
 	description:
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogDescription:
@@ -26,7 +26,7 @@ useSeoMeta({
 	ogUrl: "https://www.remycanal.me",
 	ogType: "website",
 	ogLocale: "en_US",
-	twitterTitle: "Rémy Canal - Portfolio | Web Developer",
+	twitterTitle: "Portfolio • Rémy Canal | Web Developer",
 	twitterDescription:
 		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
 	twitterImage: "https://www.remycanal.me/img/metaImg.png",
@@ -77,7 +77,7 @@ useHead({
 				"@context": "https://schema.org",
 				"@type": "WebSite",
 				url: "https://www.remycanal.me",
-				name: "Rémy Canal | Web Developer Portfolio",
+				name: "Rémy Canal | Web Developer • Portfolio",
 				description:
 					"Portfolio showcasing the web development projects, skills, and experiences of Rémy Canal.",
 				publisher: {

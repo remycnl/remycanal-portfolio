@@ -9,7 +9,7 @@ export default defineNuxtConfig({
 
 	app: {
 		head: {
-			title: "Rémy Canal | Web Developer Portfolio",
+			title: "Rémy Canal | Web Developer • Portfolio",
 			meta: [
 				{
 					name: "description",
@@ -22,7 +22,7 @@ export default defineNuxtConfig({
 				},
 				{
 					property: "og:title",
-					content: "Rémy Canal | Web Developer Portfolio",
+					content: "Rémy Canal | Web Developer • Portfolio",
 				},
 				{
 					property: "og:description",
@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 				},
 				{
 					property: "twitter:title",
-					content: "Rémy Canal - Portfolio | Web Developer",
+					content: "Portfolio • Rémy Canal | Web Developer",
 				},
 				{
 					property: "twitter:description",
