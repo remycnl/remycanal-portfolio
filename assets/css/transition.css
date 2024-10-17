@@ -62,38 +62,46 @@
 	transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+.fade-translate-up-enter-active {
+	transition-delay: 0.3s; /* Délai uniquement pour l'entrée vers le haut */
+}
+
 .fade-translate-up-enter-from {
 	opacity: 0;
-	transform: translateY(20px);
+	transform: translateY(20px); /* Déplacer vers le bas au départ */
+}
+
+.fade-translate-up-enter-to {
+	opacity: 1;
+	transform: translateY(0); /* Position finale */
 }
 
 .fade-translate-down-enter-from {
 	opacity: 0;
-	transform: translateY(-20px);
+	transform: translateY(-20px); /* Déplacer vers le haut au départ */
 }
 
-.fade-translate-up-enter-to,
 .fade-translate-down-enter-to {
 	opacity: 1;
-	transform: translateY(0);
+	transform: translateY(0); /* Position finale */
 }
 
 .fade-translate-up-leave-from,
 .fade-translate-down-leave-from {
 	opacity: 1;
-	transform: translateY(0);
+	transform: translateY(0); /* Position initiale avant la sortie */
 }
 
 .fade-translate-up-leave-to {
 	opacity: 0;
-	transform: translateY(-20px);
+	transform: translateY(-20px); /* Déplacer vers le haut en sortant */
 }
-
 
 .fade-translate-down-leave-to {
 	opacity: 0;
-	transform: translateY(20px);
+	transform: translateY(20px); /* Déplacer vers le bas en sortant */
 }
+
 
 /* Transition "fade-letter-by-letter" */
 .fade-letter-by-letter-enter-active {
