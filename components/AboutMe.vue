@@ -59,7 +59,7 @@ const handleUpdateColor = (newColor) => {
 						href="/doc/Rémy Canal - curriculum vitae.pdf"
 						target="_blank"
 						download>
-						Download CV
+						<span class="text-shadow"> Download CV </span>
 						<div class="icon">
 							<Icon
 								name="i-material-symbols:download-rounded"
