@@ -128,7 +128,10 @@ const ancreToSection = (event, targetId) => {
 										Simplicity <br class="md:hidden" />Sophistication
 									</p>
 								</div>
-								<div v-else @click="isValueHover1 = !isValueHover1">
+								<div
+									v-else
+									@click="isValueHover1 = !isValueHover1"
+									class="flex justify-center">
 									<p
 										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 										key="description">
@@ -155,7 +158,10 @@ const ancreToSection = (event, targetId) => {
 										Innovative <br class="md:hidden" />Meticulous
 									</p>
 								</div>
-								<div v-else @click="isValueHover2 = !isValueHover2">
+								<div
+									v-else
+									@click="isValueHover2 = !isValueHover2"
+									class="flex justify-center">
 									<p
 										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 										key="description">
@@ -193,7 +199,10 @@ const ancreToSection = (event, targetId) => {
 										style="color: var(--primary-color)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 								</div>
-								<div v-else @click="isValueHover3 = !isValueHover3">
+								<div
+									v-else
+									@click="isValueHover3 = !isValueHover3"
+									class="flex justify-center">
 									<p
 										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 										Independently developed with a focus on user feedback
@@ -218,7 +227,10 @@ const ancreToSection = (event, targetId) => {
 										style="color: var(--primary-color)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 								</div>
-								<div v-else @click="isValueHover4 = !isValueHover4">
+								<div
+									v-else
+									@click="isValueHover4 = !isValueHover4"
+									class="flex justify-center">
 									<p
 										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 										Crafted with an open heart and driven by passion
