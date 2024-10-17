@@ -58,7 +58,7 @@ useHead({
 		{
 			rel: "icon",
 			type: "image/png",
-			href: "https://www.remycanal.me/img/metaImg.png",
+			href: "https://www.remycanal.me/img/logo-purple.png",
 		},
 		{
 			rel: "canonical",
