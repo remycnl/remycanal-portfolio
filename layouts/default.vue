@@ -16,23 +16,23 @@ const inactiveTitle = ref("I miss you !!!");
 useSeoMeta({
 	title: activeTitle,
 	ogTitle: "Rémy Canal | Web Developer Portfolio",
-	ogSiteName: 'Rémy Canal | Web Developer Portfolio',
+	ogSiteName: "Rémy Canal | Web Developer Portfolio",
 	description:
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogDescription:
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
-	ogImage: "/img/metaImg.png",
+	ogImage: "https://www.remycanal.me/img/metaImg.png",
 	ogUrl: "https://www.remycanal.me",
 	ogType: "website",
 	twitterTitle: "Rémy Canal - Portfolio | Web Developer",
 	twitterDescription:
 		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
-	twitterImage: "/img/metaImg.png",
+	twitterImage: "https://www.remycanal.me/img/metaImg.png",
 	twitterUrl: "https://www.remycanal.me",
 	twitterCard: "summary_large_image",
 	canonical: "https://www.remycanal.me",
 	keywords:
-		"Web Developer, Portfolio, Lyon, Front-End, Full-Stack, Mobile Developer, JavaScript, Nuxt.js, Vue.js, Next.js, React, Laravel, GSAP, Tailwind, Strapi, Wordpress, PHP, Github, Freelance, Rémy Canal",
+		"Rémy Canal, Web Developer, Portfolio, Lyon, Front-End, Full-Stack, Mobile Developer, JavaScript, Nuxt.js, Vue.js, Next.js, React, Laravel, GSAP, Tailwind, Strapi, Wordpress, PHP, Github, Freelance",
 });
 
 useServerSeoMeta({
@@ -47,8 +47,18 @@ useHead({
 	link: [
 		{
 			rel: "icon",
+			type: "image/x-icon",
+			href: "https://www.remycanal.me/favicon-purple.ico",
+		},
+		{
+			rel: "apple-touch-icon",
+			sizes: "180x180",
+			href: "https://www.remycanal.me/img/logo-purple.png",
+		},
+		{
+			rel: "icon",
 			type: "image/png",
-			href: "/img/metaImg.png",
+			href: "https://www.remycanal.me/img/metaImg.png",
 		},
 		{
 			rel: "canonical",

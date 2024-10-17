@@ -1,69 +1,96 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: {
-    enabled: true,
+	devtools: {
+		enabled: true,
 
-    timeline: {
-      enabled: true,
-    },
-  },
+		timeline: {
+			enabled: true,
+		},
+	},
 
-  css: [
-    '@/assets/css/main.css',
-    '@/assets/css/button.css',
-    '@/assets/css/mouseEffect.css',
-    '@/assets/css/backToTopButton.css',
-    '@/assets/css/scrollBar.css',
-    '@/assets/css/cursor.css',
-    '@/assets/css/changeColorButton.css',
-    '@/assets/css/transition.css',
-    '@/assets/css/project.css',
-    '@/assets/css/bento.css',
-    '@/assets/css/checkbox.css',
-    '@/assets/css/loader.css',
-    '@/assets/css/clipboard.css',
-  ],
+	app: {
+		head: {
+			title: "Rémy Canal | Web Developer Portfolio",
+			meta: [
+				{
+					name: "description",
+					content:
+						"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
+				},
+				{
+					property: "og:image",
+					content: "https://www.remycanal.me/img/metaImg.png",
+				},
+			],
+			link: [
+				{ rel: "icon", href: "https://www.remycanal.me/favicon-purple.ico" },
+			],
+		},
+	},
 
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
-  },
+	css: [
+		"@/assets/css/main.css",
+		"@/assets/css/button.css",
+		"@/assets/css/mouseEffect.css",
+		"@/assets/css/backToTopButton.css",
+		"@/assets/css/scrollBar.css",
+		"@/assets/css/cursor.css",
+		"@/assets/css/changeColorButton.css",
+		"@/assets/css/transition.css",
+		"@/assets/css/project.css",
+		"@/assets/css/bento.css",
+		"@/assets/css/checkbox.css",
+		"@/assets/css/loader.css",
+		"@/assets/css/clipboard.css",
+	],
 
-  modules: [['@nuxtjs/google-fonts', {
-      families: {
-        Roboto: true,
-        Orbitron: true,
-        "Share Tech Mono": true,
-        Schoolbell: true,
-      }
-  }], '@nuxt/image', '@nuxt/icon'],
+	postcss: {
+		plugins: {
+			tailwindcss: {},
+			autoprefixer: {},
+		},
+	},
 
-  icon: {
-    serverBundle: {
-      collections: [
-        'fa6-brands', 
-        'fluent-emoji-high-contrast', 
-        'formkit', 
-        'game-icons', 
-        'ic', 
-        'logos', 
-        'material-symbols', 
-        'mingcute', 
-        'skill-icons', 
-        'teenyicons', 
-        'uil', 
-        'vscode-icons'
-      ]
-    }
-  },
+	modules: [
+		[
+			"@nuxtjs/google-fonts",
+			{
+				families: {
+					Roboto: true,
+					Orbitron: true,
+					"Share Tech Mono": true,
+					Schoolbell: true,
+				},
+			},
+		],
+		"@nuxt/image",
+		"@nuxt/icon",
+	],
 
-  plugins: [
-    { src: '@/plugins/gsap.js', mode: 'client' },
-    { src: '@/plugins/global.js', mode: 'client' },
-    { src: '@/plugins/vercelanalytics.client.js', mode: 'client' },
-  ],
+	icon: {
+		serverBundle: {
+			collections: [
+				"fa6-brands",
+				"fluent-emoji-high-contrast",
+				"formkit",
+				"game-icons",
+				"ic",
+				"logos",
+				"material-symbols",
+				"mingcute",
+				"skill-icons",
+				"teenyicons",
+				"uil",
+				"vscode-icons",
+			],
+		},
+	},
 
-  compatibilityDate: '2024-07-04',
-})
+	plugins: [
+		{ src: "@/plugins/gsap.js", mode: "client" },
+		{ src: "@/plugins/global.js", mode: "client" },
+		{ src: "@/plugins/vercelanalytics.client.js", mode: "client" },
+	],
+
+	compatibilityDate: "2024-07-04",
+});
