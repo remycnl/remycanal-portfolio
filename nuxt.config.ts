@@ -22,9 +22,6 @@ export default defineNuxtConfig({
 					content: "https://www.remycanal.me/img/metaImg.png",
 				},
 			],
-			link: [
-				{ rel: "icon", href: "https://www.remycanal.me/favicon-purple.ico" },
-			],
 		},
 	},
 
