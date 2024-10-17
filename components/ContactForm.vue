@@ -183,7 +183,7 @@
 							v-if="isMessageSent"
 							class="flex flex-col justify-center items-center">
 							<NuxtImg
-								src="/img/messageSent.gif"
+								src="https://www.remycanal.me/img/messageSent.gif"
 								format="gif"
 								alt="Message Sent!"
 								class="w-[30rem] h-auto" />
@@ -202,7 +202,7 @@
 							v-if="isError"
 							class="flex flex-col justify-center items-center gap-y-10">
 							<NuxtImg
-								src="/img/error.gif"
+								src="https://www.remycanal.me/img/error.gif"
 								format="gif"
 								alt="Error!"
 								class="w-[15rem] h-auto" />

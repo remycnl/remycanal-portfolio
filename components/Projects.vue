@@ -38,7 +38,7 @@
 					<div
 						class="relative my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden">
 						<NuxtImg
-							:src="project.img"
+							:src="'https://www.remycanal.me/' + project.img"
 							:alt="`Mockup - ${project.img}`"
 							preset="portfolioImage"
 							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
