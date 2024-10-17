@@ -14,11 +14,33 @@ export default defineNuxtConfig({
 				{
 					name: "description",
 					content:
-						"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
+						"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development.",
 				},
 				{
 					property: "og:image",
 					content: "https://www.remycanal.me/img/metaImg.png",
+				},
+				{
+					property: "og:title",
+					content: "Rémy Canal | Web Developer Portfolio",
+				},
+				{
+					property: "og:description",
+					content:
+						"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development.",
+				},
+				{
+					property: "twitter:image",
+					content: "https://www.remycanal.me/img/metaImg.png",
+				},
+				{
+					property: "twitter:title",
+					content: "Rémy Canal - Portfolio | Web Developer",
+				},
+				{
+					property: "twitter:description",
+					content:
+						"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
 				},
 			],
 		},
