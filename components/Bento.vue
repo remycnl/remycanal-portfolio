@@ -128,13 +128,13 @@ const ancreToSection = (event, targetId) => {
 										Simplicity <br class="md:hidden" />Sophistication
 									</p>
 								</div>
-								<p
-									v-else
-									@click="isValueHover1 = !isValueHover1"
-									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
-									key="description">
-									For a smooth user's experience and clean codebase
-								</p>
+								<div v-else @click="isValueHover1 = !isValueHover1">
+									<p
+										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
+										key="description">
+										For a smooth user's experience and clean codebase
+									</p>
+								</div>
 							</Transition>
 						</div>
 						<div
@@ -155,13 +155,13 @@ const ancreToSection = (event, targetId) => {
 										Innovative <br class="md:hidden" />Meticulous
 									</p>
 								</div>
-								<p
-									v-else
-									@click="isValueHover2 = !isValueHover2"
-									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
-									key="description">
-									Engineered with creativity and attention to detail
-								</p>
+								<div v-else @click="isValueHover2 = !isValueHover2">
+									<p
+										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
+										key="description">
+										Engineered with creativity and attention to detail
+									</p>
+								</div>
 							</Transition>
 						</div>
 					</div>
@@ -193,12 +193,12 @@ const ancreToSection = (event, targetId) => {
 										style="color: var(--primary-color)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 								</div>
-								<p
-									v-else
-									@click="isValueHover3 = !isValueHover3"
-									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
-									Independently developed with a focus on user feedback
-								</p>
+								<div v-else @click="isValueHover3 = !isValueHover3">
+									<p
+										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
+										Independently developed with a focus on user feedback
+									</p>
+								</div>
 							</Transition>
 						</div>
 						<div
