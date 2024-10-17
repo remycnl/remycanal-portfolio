@@ -123,7 +123,7 @@ const ancreToSection = (event, targetId) => {
 										ssr="true"
 										mode="svg"
 										style="color: var(--primary-color)"
-										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
+										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 									<p class="font-[Orbitron] font-bold uppercase">
 										Simplicity <br class="md:hidden" />Sophistication
 									</p>
@@ -150,7 +150,7 @@ const ancreToSection = (event, targetId) => {
 										ssr="true"
 										mode="svg"
 										style="color: var(--primary-color)"
-										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
+										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 									<p class="font-[Orbitron] font-bold uppercase">
 										Innovative <br class="md:hidden" />Meticulous
 									</p>
@@ -191,7 +191,7 @@ const ancreToSection = (event, targetId) => {
 										ssr="true"
 										mode="svg"
 										style="color: var(--primary-color)"
-										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
+										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 								</div>
 								<p
 									v-else
@@ -216,14 +216,14 @@ const ancreToSection = (event, targetId) => {
 										ssr="true"
 										mode="svg"
 										style="color: var(--primary-color)"
-										class="w-14 2xl:w-20 h-14 2xl:h-20 transition-colors duration-[1s]" />
+										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 								</div>
-								<p
-									v-else
-									@click="isValueHover4 = !isValueHover4"
-									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
-									Crafted with an open heart and driven by passion
-								</p>
+								<div v-else @click="isValueHover4 = !isValueHover4">
+									<p
+										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
+										Crafted with an open heart and driven by passion
+									</p>
+								</div>
 							</Transition>
 						</div>
 					</div>
