@@ -115,7 +115,7 @@ const ancreToSection = (event, targetId) => {
 							<Transition name="fade-translate-up" mode="out-in">
 								<div
 									v-if="!isValueHover1"
-									@click="isValueHover1 = true"
+									@click="isValueHover1 = !isValueHover1"
 									class="flex flex-row gap-x-3 justify-start items-center"
 									key="icon-text">
 									<Icon
@@ -130,7 +130,7 @@ const ancreToSection = (event, targetId) => {
 								</div>
 								<p
 									v-else
-									@click="isValueHover1 = false"
+									@click="isValueHover1 = !isValueHover1"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 									key="description">
 									For a smooth user's experience and clean codebase
@@ -142,7 +142,7 @@ const ancreToSection = (event, targetId) => {
 							<Transition name="fade-translate-down" mode="out-in">
 								<div
 									v-if="!isValueHover2"
-									@click="isValueHover2 = true"
+									@click="isValueHover2 = !isValueHover2"
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-start items-center text-end md:text-start"
 									key="icon-text">
 									<Icon
@@ -157,7 +157,7 @@ const ancreToSection = (event, targetId) => {
 								</div>
 								<p
 									v-else
-									@click="isValueHover2 = false"
+									@click="isValueHover2 = !isValueHover2"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 									key="description">
 									Engineered with creativity and attention to detail
@@ -182,7 +182,7 @@ const ancreToSection = (event, targetId) => {
 								<div
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
 									v-if="!isValueHover3"
-									@click="isValueHover3 = true">
+									@click="isValueHover3 = !isValueHover3">
 									<p class="font-[Orbitron] font-bold uppercase">
 										Autonomous <br class="md:hidden" />Listening
 									</p>
@@ -195,7 +195,7 @@ const ancreToSection = (event, targetId) => {
 								</div>
 								<p
 									v-else
-									@click="isValueHover3 = false"
+									@click="isValueHover3 = !isValueHover3"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 									Independently developed with a focus on user feedback
 								</p>
@@ -207,7 +207,7 @@ const ancreToSection = (event, targetId) => {
 								<div
 									class="flex flex-row gap-x-3 justify-end items-center"
 									v-if="!isValueHover4"
-									@click="isValueHover4 = true">
+									@click="isValueHover4 = !isValueHover4">
 									<p class="font-[Orbitron] font-bold uppercase">
 										Open-minded <br class="md:hidden" />Passionate
 									</p>
@@ -220,7 +220,7 @@ const ancreToSection = (event, targetId) => {
 								</div>
 								<p
 									v-else
-									@click="isValueHover4 = false"
+									@click="isValueHover4 = !isValueHover4"
 									class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 									Crafted with an open heart and driven by passion
 								</p>
