@@ -17,6 +17,14 @@ export default defineNuxtConfig({
 						"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development.",
 				},
 				{
+					name: "viewport",
+					content: "width=device-width, initial-scale=1.0, viewport-fit=cover",
+				},
+				{
+					property: "og:type",
+					content: "website",
+				},
+				{
 					property: "og:image",
 					content: "https://www.remycanal.me/img/metaImg.png",
 				},
@@ -43,6 +51,12 @@ export default defineNuxtConfig({
 						"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
 				},
 			],
+		},
+	},
+
+	nitro: {
+		prerender: {
+			routes: ["/"],
 		},
 	},
 
