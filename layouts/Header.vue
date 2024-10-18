@@ -3,7 +3,7 @@
 		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-10">
 		<div
 			class="px-1 relative toolbar lg:hidden flex justify-between items-center pointer-events-none">
-			<a @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
+			<a @click="ancreToSection($event, 'top')" href="#" class="z-50 -mt-1">
 				<NuxtImg
 					:src="`https://remycanal.me/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
