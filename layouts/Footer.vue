@@ -108,7 +108,7 @@ const ancreToSection = (event, targetId) => {
 					</div>
 					<div class="active:scale-95 transition-all duration-75">
 						<a
-						@click="ancreToSection($event, 'Timeline')"
+							@click="ancreToSection($event, 'Timeline')"
 							href="#timeline"
 							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Timeline
@@ -116,7 +116,7 @@ const ancreToSection = (event, targetId) => {
 					</div>
 					<div class="active:scale-95 transition-all duration-75">
 						<a
-						@click="ancreToSection($event, 'Projects')"
+							@click="ancreToSection($event, 'Projects')"
 							href="#projects"
 							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Projects
@@ -124,7 +124,7 @@ const ancreToSection = (event, targetId) => {
 					</div>
 					<div class="active:scale-95 transition-all duration-75">
 						<a
-						@click="ancreToSection($event, 'Contact me')"
+							@click="ancreToSection($event, 'Contact me')"
 							href="#contact-me"
 							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Contact me
@@ -134,6 +134,7 @@ const ancreToSection = (event, targetId) => {
 				<div class="flex justify-center gap-x-5 md:gap-x-10">
 					<a
 						href="tel:+330619258299"
+						aria-label="Call Remy Canal"
 						class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
@@ -141,12 +142,14 @@ const ancreToSection = (event, targetId) => {
 								name="i-uil:phone"
 								ssr="true"
 								mode="svg"
-								style="color: var(--white);"
+								style="color: var(--white)"
 								class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 						</div>
 					</a>
+
 					<a
 						href="mailto:hello@remycanal.me"
+						aria-label="Email Remy Canal"
 						class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
@@ -154,14 +157,16 @@ const ancreToSection = (event, targetId) => {
 								name="i-material-symbols:mail-outline-rounded"
 								ssr="true"
 								mode="svg"
-								style="color: var(--white);"
+								style="color: var(--white)"
 								class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 						</div>
 					</a>
+
 					<a
 						href="https://github.com/remycnl"
 						target="_blank"
 						rel="noopener noreferrer"
+						aria-label="Visit Remy Canal's GitHub"
 						class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
@@ -169,14 +174,16 @@ const ancreToSection = (event, targetId) => {
 								name="i-uil:github"
 								ssr="true"
 								mode="svg"
-								style="color: var(--white);"
+								style="color: var(--white)"
 								class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 						</div>
 					</a>
+
 					<a
 						href="https://www.linkedin.com/in/remy-canal"
 						target="_blank"
 						rel="noopener noreferrer"
+						aria-label="Visit Remy Canal's LinkedIn"
 						class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 						<div
 							class="flex justify-center items-center group z-10 bg-primary rounded-full border border-secondary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-primary w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
@@ -184,11 +191,12 @@ const ancreToSection = (event, targetId) => {
 								name="i-uil:linkedin"
 								ssr="true"
 								mode="svg"
-								style="color: var(--white);"
+								style="color: var(--white)"
 								class="w-6 h-6 lg:w-8 lg:h-8 transition-transform transform-gpu group-hover:scale-75 duration-500" />
 						</div>
 					</a>
 				</div>
+
 				<div
 					class="container-s lg:hidden flex text-start w-screen mt-1 md:-mt-5 -mb-9 overflow-hidden select-none">
 					<div
