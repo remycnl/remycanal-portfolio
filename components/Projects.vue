@@ -38,7 +38,7 @@
 					<div
 						class="relative my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden">
 						<NuxtImg
-							:src="'https://www.remycanal.me/' + project.img"
+							:src="'https://www.remycanal.me' + project.img"
 							:alt="`Mockup - ${project.img}`"
 							preset="portfolioImage"
 							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -212,7 +212,7 @@ const projects: Project[] = [
 		title: "Portfolio of Rémy Canal",
 		description: "Creation 'from scratch' of my portfolio.",
 		link: "https://www.remycanal.me",
-		img: "/img/mockup-portfolio-remycanal.png",
+		img: "/img/mockup-portfolio-remycanal.webp",
 		logo: "/img/logo-blue.png",
 		type: "website",
 		date: "2024",
@@ -232,7 +232,7 @@ const projects: Project[] = [
 		title: "Sharewood",
 		description: "Redesign of the entire front part of the Sharewood website.",
 		link: "https://sharewood.team/",
-		img: "/img/mockup-sharewood.png",
+		img: "/img/mockup-sharewood.webp",
 		logo: "/img/logo-sharewood.png",
 		type: "website",
 		date: "2023",
@@ -244,7 +244,7 @@ const projects: Project[] = [
 		description:
 			"Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
 		link: "https://www.eco-fidelite.com/",
-		img: "/img/mockup-ecofid.png",
+		img: "/img/mockup-ecofid.webp",
 		logo: "/img/logo-ecofid.png",
 		type: "website",
 		date: "2023",
@@ -263,7 +263,7 @@ const projects: Project[] = [
 		title: "Office des Lumières",
 		description: "Participation in the creation and animation of a website for a notary firm.",
 		link: "https://officedeslumieres.com/",
-		img: "/img/mockup-odl.png",
+		img: "/img/mockup-odl.webp",
 		logo: "/img/logo-odl.png",
 		type: "website",
 		date: "2023",
@@ -283,7 +283,7 @@ const projects: Project[] = [
 		description:
 			"Participation in the full redesign of the L'Appart Fitness website.",
 		link: "https://www.lappartfitness.com/",
-		img: "/img/mockup-lappart.png",
+		img: "/img/mockup-lappart.webp",
 		logo: "/img/logo-lappart.png",
 		type: "website",
 		last: true,
