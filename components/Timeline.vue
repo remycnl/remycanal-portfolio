@@ -71,7 +71,7 @@
 							<NuxtImg
 								v-for="(img, imgIdx) in item.images"
 								:key="imgIdx"
-								:src="'https://www.remycanal.me' + img.src"
+								:src="'https://remycanal.me' + img.src"
 								:alt="img.alt"
 								preset="portfolioImage"
 								loading="lazy"

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.remycanal.me/sitemap.xml
+Sitemap: https://remycanal.me/sitemap.xml

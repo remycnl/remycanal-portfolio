@@ -38,7 +38,7 @@
 					<div
 						class="relative my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden">
 						<NuxtImg
-							:src="'https://www.remycanal.me' + project.img"
+							:src="'https://remycanal.me' + project.img"
 							:alt="`Mockup - ${project.img}`"
 							preset="portfolioImage"
 							loading="lazy"
@@ -58,7 +58,7 @@
 					</div>
 					<div class="flex flex-row justify-end items-center w-[90%] mt-4 mb-7">
 						<NuxtLink
-							:to="'https://www.remycanal.me' + project.link"
+							:to="'https://remycanal.me' + project.link"
 							target="_blank"
 							class="focus:scale-90 transition-transform duration-75 flex rounded-xl text-white bg-secondary p-3 flex-row gap-2 items-center">
 							Visit {{ project.type }}
@@ -138,7 +138,7 @@
 					@mouseleave="hideImages(), stopHover()"
 					class="group relative z-30 link-type flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
 					<NuxtImg
-						:src="'https://www.remycanal.me' + project.logo"
+						:src="'https://remycanal.me' + project.logo"
 						:alt="`Logo - ${project.logo}`"
 						preset="portfolioImage"
 						loading="lazy"
@@ -213,7 +213,7 @@ const projects: Project[] = [
 		slug: "portfolio",
 		title: "Portfolio of Rémy Canal",
 		description: "Creation 'from scratch' of my portfolio.",
-		link: "https://www.remycanal.me",
+		link: "https://remycanal.me",
 		img: "/img/mockup-portfolio-remycanal.webp",
 		logo: "/img/logo-blue.png",
 		type: "website",
