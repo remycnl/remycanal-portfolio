@@ -214,7 +214,7 @@ export function animationFooter() {
 			);
 		let index = 0;
 
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < 1; i++) {
 			generateLetters();
 		}
 
