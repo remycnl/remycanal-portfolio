@@ -222,12 +222,7 @@ export function animationFooter() {
 			const span = document.createElement("span");
 			span.textContent = letter;
 
-			if (lettersContainer.firstChild) {
-				lettersContainer.insertBefore(span, lettersContainer.firstChild);
-			} else {
-				lettersContainer.appendChild(span);
-			}
-
+			lettersContainer.insertBefore(span, lettersContainer.firstChild || null);
 			return span;
 		}
 
@@ -246,7 +241,7 @@ export function animationFooter() {
 
 		function generateLetters() {
 			alphabet.forEach((letter) => {
-				const span = createLetterSpan(letter);
+				createLetterSpan(letter);
 			});
 		}
 
@@ -277,11 +272,7 @@ export function animationFooterBottom() {
 			const span = document.createElement("span");
 			span.textContent = letter;
 
-			if (lettersContainer.firstChild) {
-				lettersContainer.insertBefore(span, lettersContainer.firstChild);
-			} else {
-				lettersContainer.appendChild(span);
-			}
+			lettersContainer.insertBefore(span, lettersContainer.firstChild || null);
 
 			return span;
 		}
@@ -301,13 +292,14 @@ export function animationFooterBottom() {
 
 		function generateLetters() {
 			alphabet.forEach((letter) => {
-				const span = createLetterSpan(letter);
+				createLetterSpan(letter);
 			});
 		}
 
 		function generateAndAnimateLetters() {
 			animateLetter(alphabet[index]);
 			index = (index + 1) % alphabet.length;
+
 			setTimeout(generateAndAnimateLetters, 250);
 		}
 
