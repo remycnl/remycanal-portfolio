@@ -159,28 +159,22 @@ export function toggleTextWhite(propsIndex) {
 }
 
 export function setExperienceTime() {
-    // Définir la date de début de l'expérience : septembre 2022
     const startYear = 2022;
-    const startMonth = 9; // Septembre = mois 9
+    const startMonth = 9;
 
-    // Obtenir la date actuelle
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1; // Mois actuel (0 = janvier, donc +1 pour un mois de 1 à 12)
+    const currentMonth = currentDate.getMonth() + 1;
 
-    // Calculer les années d'expérience en tenant compte du fait que l'année commence en septembre
     let experienceYears = currentYear - startYear;
 
-    // Ajouter une année d'expérience si on est en ou après septembre
     if (currentMonth >= startMonth) {
         experienceYears++;
     }
 
-    // Initialiser le compteur
     let currentDisplayValue = 0;
-    const incrementSpeed = 200; // Vitesse d'incrémentation en millisecondes
+    const incrementSpeed = 200;
 
-    // Fonction pour incrémenter le nombre progressivement
     function incrementExperience() {
         if (currentDisplayValue < experienceYears) {
             currentDisplayValue++;
@@ -189,7 +183,6 @@ export function setExperienceTime() {
         }
     }
 
-    // Démarrer l'animation
     incrementExperience();
 }
 

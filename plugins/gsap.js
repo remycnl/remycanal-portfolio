@@ -347,6 +347,22 @@ export function customCursor() {
 			});
 		});
 	});
+
+	// Anime le curseur lorsque l'utilisateur clique
+	document.addEventListener("click", () => {
+		gsap.to(customCursor, {
+			scale: 0.7,
+			duration: 0.2,
+			ease: "power1.inOut"
+		});
+		
+		gsap.to(customCursor, {
+			scale: 1,
+			duration: 0.7,
+			delay: 0.2,
+			ease: "elastic.out(1, 0.4)"
+		});
+	});
 }
 
 export function applySaturationTextOnScroll() {
