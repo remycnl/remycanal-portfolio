@@ -21,18 +21,18 @@ useSeoMeta({
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
 	ogDescription:
 		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
-	ogImage: "https://remycanal.me/img/metaImg.png",
+	ogImage: "https://www.remycanal.me/img/metaImg.png",
 	ogImageAlt: "Rémy Canal Portfolio Preview",
-	ogUrl: "https://remycanal.me",
+	ogUrl: "https://www.remycanal.me",
 	ogType: "website",
 	ogLocale: "en_US",
 	twitterTitle: "Portfolio • Rémy Canal | Web Developer",
 	twitterDescription:
 		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
-	twitterImage: "https://remycanal.me/img/metaImg.png",
-	twitterUrl: "https://remycanal.me",
+	twitterImage: "https://www.remycanal.me/img/metaImg.png",
+	twitterUrl: "https://www.remycanal.me",
 	twitterCard: "summary_large_image",
-	canonical: "https://remycanal.me",
+	canonical: "https://www.remycanal.me",
 	keywords:
 		"Rémy Canal, Web Developer, Portfolio, Lyon, Front-End, Full-Stack, Mobile Developer, JavaScript, Nuxt.js, Vue.js, Next.js, React, Laravel, GSAP, Tailwind, Strapi, Wordpress, PHP, Github, Freelance",
 });
@@ -54,12 +54,12 @@ useHead({
 				"@type": "Person",
 				name: "Rémy Canal",
 				jobTitle: "Web Developer",
-				url: "https://remycanal.me",
+				url: "https://www.remycanal.me",
 				sameAs: [
 					"https://github.com/remycnl",
 					"https://www.linkedin.com/in/remy-canal",
 				],
-				image: "https://remycanal.me/img/metaImg.png",
+				image: "https://www.remycanal.me/img/metaImg.png",
 				description:
 					"Web developer based in Lyon specializing in front-end development.",
 				alumniOf: {
@@ -79,7 +79,7 @@ useHead({
 				contactPoint: {
 					"@type": "ContactPoint",
 					contactType: "Customer Support",
-					email: "hello@remycanal.me",
+					email: "hello@www.remycanal.me",
 					telephone: "+33-6-19-25-82-99",
 					availableLanguage: ["French", "English"],
 				},
@@ -91,7 +91,7 @@ useHead({
 			innerHTML: JSON.stringify({
 				"@context": "https://schema.org",
 				"@type": "WebSite",
-				url: "https://remycanal.me",
+				url: "https://www.remycanal.me",
 				name: "Rémy Canal | Web Developer • Portfolio",
 				description:
 					"Portfolio showcasing the web development projects, skills, and experiences of Rémy Canal.",
@@ -107,7 +107,7 @@ useHead({
 			innerHTML: JSON.stringify({
 				"@context": "https://schema.org",
 				"@type": "WebPage",
-				url: "https://remycanal.me",
+				url: "https://www.remycanal.me",
 				name: "Rémy Canal | Web Developer • Portfolio",
 				description:
 					"Explore the projects, skills, and expertise of Rémy Canal, a front-end web developer.",
@@ -122,16 +122,16 @@ useHead({
 		{
 			rel: "icon",
 			type: "image/x-icon",
-			href: "https://remycanal.me/favicon-purple.ico",
+			href: "https://www.remycanal.me/favicon-purple.ico",
 		},
 		{
 			rel: "apple-touch-icon",
 			sizes: "180x180",
-			href: "https://remycanal.me/img/logo-purple.png",
+			href: "https://www.remycanal.me/img/logo-purple.png",
 		},
 		{
 			rel: "canonical",
-			href: "https://remycanal.me",
+			href: "https://www.remycanal.me",
 		},
 	],
 	__dangerouslyDisableSanitizers: ["script"],

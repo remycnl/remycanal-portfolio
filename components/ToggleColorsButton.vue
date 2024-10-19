@@ -193,6 +193,6 @@ const updateFavicon = (color) => {
 	}
 
 	link.type = "image/x-icon";
-	link.href = `https://remycanal.me/${faviconName}`;
+	link.href = `https://www.remycanal.me/${faviconName}`;
 };
 </script>
