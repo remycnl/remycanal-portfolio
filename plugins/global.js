@@ -10,7 +10,7 @@ export default defineNuxtPlugin(() => {
 });
 
 export function magnetEffect() {
-	if (process.client && window.innerWidth >= 1024) {
+	if (import.meta.client && window.innerWidth >= 1024) {
 		const magnetElements = document.querySelectorAll(".magnet");
 
 		const hoverMouse = (elements) => {
@@ -92,7 +92,7 @@ export function magnetEffect() {
 }
 
 export function mouseEffect() {
-	if (process.client && window.innerWidth >= 1024) {
+	if (import.meta.client && window.innerWidth >= 1024) {
 		const blob = document.getElementById("blob");
 
 		const updateBlobPosition = (event) => {

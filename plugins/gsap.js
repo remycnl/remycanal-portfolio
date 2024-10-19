@@ -308,61 +308,63 @@ export function animationFooterBottom() {
 }
 
 export function customCursor() {
-	const customCursor = document.querySelector(".custom-cursor");
+	if (import.meta.client && window.innerWidth >= 1024) {
+		const customCursor = document.querySelector(".custom-cursor");
 
-	// Met à jour la position du curseur personnalisé en fonction des mouvements de la souris
-	document.addEventListener("mousemove", (e) => {
-		gsap.to(customCursor, {
-			x: e.clientX,
-			y: e.clientY,
-			duration: 0,
-		});
-	});
-
-	// Anime le curseur lorsque la souris entre et quitte un élément cliquable
-	document.querySelectorAll(".clickable").forEach((el) => {
-		el.addEventListener("mouseenter", () => {
-			if (el.classList.contains("mix-darken")) {
-				customCursor.classList.add("mix-blend-darken");
-			} else {
-				customCursor.classList.add("mix-blend-lighten");
-			}
+		// Met à jour la position du curseur personnalisé en fonction des mouvements de la souris
+		document.addEventListener("mousemove", (e) => {
 			gsap.to(customCursor, {
-				width: 40,
-				height: 40,
-				duration: 0.3,
+				x: e.clientX,
+				y: e.clientY,
+				duration: 0,
 			});
 		});
 
-		el.addEventListener("mouseleave", () => {
-			if (el.classList.contains("mix-darken")) {
-				customCursor.classList.remove("mix-blend-darken");
-			} else {
-				customCursor.classList.remove("mix-blend-lighten");
-			}
-			gsap.to(customCursor, {
-				width: 20,
-				height: 20,
-				duration: 0.3,
+		// Anime le curseur lorsque la souris entre et quitte un élément cliquable
+		document.querySelectorAll(".clickable").forEach((el) => {
+			el.addEventListener("mouseenter", () => {
+				if (el.classList.contains("mix-darken")) {
+					customCursor.classList.add("mix-blend-darken");
+				} else {
+					customCursor.classList.add("mix-blend-lighten");
+				}
+				gsap.to(customCursor, {
+					width: 40,
+					height: 40,
+					duration: 0.3,
+				});
+			});
+
+			el.addEventListener("mouseleave", () => {
+				if (el.classList.contains("mix-darken")) {
+					customCursor.classList.remove("mix-blend-darken");
+				} else {
+					customCursor.classList.remove("mix-blend-lighten");
+				}
+				gsap.to(customCursor, {
+					width: 20,
+					height: 20,
+					duration: 0.3,
+				});
 			});
 		});
-	});
 
-	// Anime le curseur lorsque l'utilisateur clique
-	document.addEventListener("click", () => {
-		gsap.to(customCursor, {
-			scale: 0.7,
-			duration: 0.2,
-			ease: "power1.inOut"
+		// Anime le curseur lorsque l'utilisateur clique
+		document.addEventListener("click", () => {
+			gsap.to(customCursor, {
+				scale: 0.7,
+				duration: 0.2,
+				ease: "power1.inOut",
+			});
+
+			gsap.to(customCursor, {
+				scale: 1,
+				duration: 0.7,
+				delay: 0.2,
+				ease: "elastic.out(1, 0.4)",
+			});
 		});
-		
-		gsap.to(customCursor, {
-			scale: 1,
-			duration: 0.7,
-			delay: 0.2,
-			ease: "elastic.out(1, 0.4)"
-		});
-	});
+	}
 }
 
 export function applySaturationTextOnScroll() {

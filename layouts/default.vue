@@ -153,7 +153,7 @@ onMounted(() => {
 	setCSP();
 	applyEffects();
 	animationFooterBottom();
-	if (process.client) {
+	if (import.meta.client) {
 		console.log(`
         ******************************************
         *                                        *
@@ -166,7 +166,7 @@ onMounted(() => {
 });
 
 const setSEO = () => {
-	if (process.client) {
+	if (import.meta.client) {
 		document.addEventListener("visibilitychange", function () {
 			if (document.visibilityState === "hidden") {
 				document.title = inactiveTitle.value;
