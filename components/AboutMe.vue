@@ -16,6 +16,7 @@ const handleUpdateColor = (newColor) => {
 			src="https://remycanal.me/img/avatar.png"
 			preset="portfolioImage"
 			alt="Rémy Canal"
+			loading="lazy"
 			class="opacity-0 icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
 		<div
 			class="flex flex-col justify-center text-center w-full lg:w-7/12 lg:text-start lg:gap-y-14 z-50">

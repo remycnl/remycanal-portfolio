@@ -86,6 +86,7 @@ const ancreToSection = (event, targetId) => {
 					:src="`https://remycanal.me/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
 					preset="portfolioImage"
+					loading="lazy"
 					class="change-img-color text-shadow w-40 lg:w-48 2xl:w-60 h-auto" />
 				<div
 					class="flex flex-col gap-y-3 justify-center text-center text-gray-light text-2xl md:text-3xl lg:text-4xl tracking-wide">

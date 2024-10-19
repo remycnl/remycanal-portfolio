@@ -64,6 +64,7 @@
 						'h-24': currentSkill.isGif,
 						'md:h-36': currentSkill.isGif,
 					}"
+					loading="lazy"
 					class="my-10" />
 				<div v-else class="w-16 md:w-24 h-16 md:h-24 my-10">
 					<Icon

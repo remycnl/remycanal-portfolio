@@ -185,6 +185,7 @@
 							<NuxtImg
 								src="https://remycanal.me/img/messageSent.gif"
 								format="gif"
+								loading="lazy"
 								alt="Message Sent!"
 								class="w-[30rem] h-auto" />
 							<div
@@ -204,6 +205,7 @@
 							<NuxtImg
 								src="https://remycanal.me/img/error.gif"
 								format="gif"
+								loading="lazy"
 								alt="Error!"
 								class="w-[15rem] h-auto" />
 							<div

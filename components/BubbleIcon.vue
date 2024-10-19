@@ -17,6 +17,7 @@
 					'h-16': isGif,
 					'md:h-[5.5rem]': isGif,
 				}"
+				loading="lazy"
 				:format="isGif ? 'gif' : 'webp'" />
 			<Icon
 				v-else

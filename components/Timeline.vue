@@ -74,6 +74,7 @@
 								:src="'https://remycanal.me' + img.src"
 								:alt="img.alt"
 								preset="portfolioImage"
+								loading="lazy"
 								class="object-contain h-full w-full group-hover:scale-[1.15] transition-transform duration-500" />
 						</div>
 					</div>
