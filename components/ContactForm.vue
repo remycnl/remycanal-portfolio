@@ -429,10 +429,12 @@
 				<div
 					v-if="showCopyPopup"
 					style="font-family: Share Tech Mono"
-					class="absolute -bottom-24 right-0 bg-secondary text-white p-4 rounded-lg shadow-lg">
-					{{ copySuccessMessage }}
+					class="absolute -bottom-24 right-0 bg-secondary shadow-around shadow-black text-white p-4 rounded-lg">
+					<span class="text-shadow">
+						{{ copySuccessMessage }}
+					</span>
 					<div
-						class="h-2 timed-popup bg-white rounded-full mt-2"
+						class="h-2 timed-popup shadow-around shadow-black bg-white rounded-full mt-2"
 						:style="{ width: progressBarWidth + '%' }"></div>
 				</div>
 			</Transition>
@@ -522,17 +524,14 @@ watch(
 	}
 );
 
-// Références pour chaque élément à copier
 const emailText = ref(null);
 const phoneText = ref(null);
 const locationText = ref(null);
 
-// Variables réactives pour gérer les états de copie
 const copiedEmail = ref(false);
 const copiedPhone = ref(false);
 const copiedLocation = ref(false);
 
-// Fonction pour copier le contenu dans le presse-papier
 function copyToClipboard(refName) {
 	let textToCopy = "";
 	if (refName === "emailText") {
@@ -543,7 +542,6 @@ function copyToClipboard(refName) {
 		textToCopy = locationText.value.innerText;
 	}
 
-	// Copier le texte dans le presse-papier
 	navigator.clipboard.writeText(textToCopy).then(() => {
 		if (refName === "emailText") {
 			copiedEmail.value = true;
