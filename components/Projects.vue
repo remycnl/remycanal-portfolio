@@ -38,7 +38,7 @@
 					<div
 						class="relative my-5 rounded-[1.5rem] w-[90%] h-[20rem] overflow-hidden">
 						<NuxtImg
-							:src="'https://www.remycanal.me' + project.img"
+							:src="'https://remycanal.me' + project.img"
 							:alt="`Mockup - ${project.img}`"
 							preset="portfolioImage"
 							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -211,7 +211,7 @@ const projects: Project[] = [
 		slug: "portfolio",
 		title: "Portfolio of Rémy Canal",
 		description: "Creation 'from scratch' of my portfolio.",
-		link: "https://www.remycanal.me",
+		link: "https://remycanal.me",
 		img: "/img/mockup-portfolio-remycanal.webp",
 		logo: "/img/logo-blue.png",
 		type: "website",

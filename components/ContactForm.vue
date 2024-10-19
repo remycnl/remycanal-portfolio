@@ -183,7 +183,7 @@
 							v-if="isMessageSent"
 							class="flex flex-col justify-center items-center">
 							<NuxtImg
-								src="https://www.remycanal.me/img/messageSent.gif"
+								src="https://remycanal.me/img/messageSent.gif"
 								format="gif"
 								alt="Message Sent!"
 								class="w-[30rem] h-auto" />
@@ -202,7 +202,7 @@
 							v-if="isError"
 							class="flex flex-col justify-center items-center gap-y-10">
 							<NuxtImg
-								src="https://www.remycanal.me/img/error.gif"
+								src="https://remycanal.me/img/error.gif"
 								format="gif"
 								alt="Error!"
 								class="w-[15rem] h-auto" />
@@ -483,7 +483,7 @@ const submitForm = async () => {
 	};
 
 	try {
-		const response = await fetch("https://www.remycanal.me/api/send-emails", {
+		const response = await fetch("https://remycanal.me/api/send-emails", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

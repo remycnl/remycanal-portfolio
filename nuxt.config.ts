@@ -26,7 +26,7 @@ export default defineNuxtConfig({
 				},
 				{
 					property: "og:image",
-					content: "https://www.remycanal.me/img/metaImg.png",
+					content: "https://remycanal.me/img/metaImg.png",
 				},
 				{
 					property: "og:title",
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
 				},
 				{
 					property: "twitter:image",
-					content: "https://www.remycanal.me/img/metaImg.png",
+					content: "https://remycanal.me/img/metaImg.png",
 				},
 				{
 					property: "twitter:title",

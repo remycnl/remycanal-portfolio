@@ -53,7 +53,7 @@
 				class="flex flex-col items-center w-[88%] h-full py-4 px-8 transition-opacity duration-300">
 				<NuxtImg
 					v-if="currentSkill.withPath"
-					:src="'https://www.remycanal.me' + currentSkill.pathIcon"
+					:src="'https://remycanal.me' + currentSkill.pathIcon"
 					:alt="currentSkill.text"
 					:format="currentSkill.isGif ? 'gif' : 'webp'"
 					:class="{
