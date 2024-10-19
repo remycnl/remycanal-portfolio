@@ -127,6 +127,31 @@ export function mouseEffect() {
 		document.body.onpointermove = updateBlobPosition;
 		window.addEventListener("scroll", updateBlobPosition);
 
+		const isHoveringScaleEffect = () => {
+			return [...document.querySelectorAll(".hover-scale-effect")].some(
+				(el) => {
+					return el.matches(":hover");
+				}
+			);
+		};
+
+		document.addEventListener("click", () => {
+			if (!isHoveringScaleEffect()) {
+				gsap.to(blob, {
+					scale: 0.9,
+					duration: 0.2,
+					ease: "power1.inOut",
+				});
+
+				gsap.to(blob, {
+					scale: 1,
+					duration: 0.7,
+					delay: 0.2,
+					ease: "elastic.out(1, 0.4)",
+				});
+			}
+		});
+
 		const hoverElements = document.querySelectorAll(".hover-scale-effect");
 		hoverElements.forEach((element) => {
 			element.addEventListener("mouseenter", handleMouseEnter);
@@ -159,46 +184,47 @@ export function toggleTextWhite(propsIndex) {
 }
 
 export function setExperienceTime() {
-    const startYear = 2022;
-    const startMonth = 9;
+	const startYear = 2022;
+	const startMonth = 9;
 
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
+	const currentDate = new Date();
+	const currentYear = currentDate.getFullYear();
+	const currentMonth = currentDate.getMonth() + 1;
 
-    let experienceYears = currentYear - startYear;
+	let experienceYears = currentYear - startYear;
 
-    if (currentMonth >= startMonth) {
-        experienceYears++;
-    }
+	if (currentMonth >= startMonth) {
+		experienceYears++;
+	}
 
-    let currentDisplayValue = 0;
-    const incrementSpeed = 200;
+	let currentDisplayValue = 0;
+	const incrementSpeed = 200;
 
-    function incrementExperience() {
-        if (currentDisplayValue < experienceYears) {
-            currentDisplayValue++;
-            document.getElementById("experience").textContent = currentDisplayValue;
-            setTimeout(incrementExperience, incrementSpeed);
-        }
-    }
+	function incrementExperience() {
+		if (currentDisplayValue < experienceYears) {
+			currentDisplayValue++;
+			document.getElementById("experience").textContent = currentDisplayValue;
+			setTimeout(incrementExperience, incrementSpeed);
+		}
+	}
 
-    incrementExperience();
+	incrementExperience();
 }
 
 export function setProjectsCounter() {
-    let nbrProjects = 10;
+	let nbrProjects = 10;
 
-    let currentDisplayValue = 0;
-    const incrementSpeed = 100;
+	let currentDisplayValue = 0;
+	const incrementSpeed = 100;
 
-    function incrementProjectsNbr() {
-        if (currentDisplayValue < nbrProjects) {
-            currentDisplayValue++;
-            document.getElementById("projects-number").textContent = currentDisplayValue;
-            setTimeout(incrementProjectsNbr, incrementSpeed);
-        }
-    }
+	function incrementProjectsNbr() {
+		if (currentDisplayValue < nbrProjects) {
+			currentDisplayValue++;
+			document.getElementById("projects-number").textContent =
+				currentDisplayValue;
+			setTimeout(incrementProjectsNbr, incrementSpeed);
+		}
+	}
 
-    incrementProjectsNbr();
+	incrementProjectsNbr();
 }
