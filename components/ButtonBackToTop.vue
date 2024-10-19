@@ -2,6 +2,7 @@
 	<div class="hidden lg:block">
 		<div class="flex justify-center">
 			<button
+				aria-label="Back to top"
 				class="clickable mix-darken cursor-pointer lg:cursor-none active:scale-95 text-white flex items-center justify-center fixed z-[100] tracking-widest rounded-full overflow-hidden origin-center hover:bg-secondary bg-black opacity-0 pointer-events-none shadow-custom-outline back-to-top hover-scale-effect lg:ml-[140vh] 2xl:ml-[176vh] lg:mt-[70vh] transition-all duration-500">
 				<svg class="svgIcon" viewBox="0 0 384 512">
 					<path
