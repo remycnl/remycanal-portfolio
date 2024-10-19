@@ -53,7 +53,7 @@
 				class="flex flex-col items-center w-[88%] h-full py-4 px-8 transition-opacity duration-300">
 				<NuxtImg
 					v-if="currentSkill.withPath"
-					:src="'https://remycanal.me' + currentSkill.pathIcon"
+					:src="'https://www.remycanal.me' + currentSkill.pathIcon"
 					:alt="currentSkill.text"
 					:format="currentSkill.isGif ? 'gif' : 'webp'"
 					:class="{
@@ -90,13 +90,13 @@
 			id="container-skills"
 			class="relative flex lg:grid lg:w-4/5 2xl:w-3/5 flex-wrap grid-cols-4 justify-center items-start pt-28 md:pt-60 lg:pt-0 gap-10 gap-y-7 md:gap-x-20 md:gap-y-12">
 			<NuxtImg
-				:src="`https://remycanal.me/img/details-skills-${selectedColor}.png`"
+				:src="`https://www.remycanal.me/img/details-skills-${selectedColor}.png`"
 				preset="portfolioImage"
 				loading="lazy"
 				alt="Click on bubbles to see details (mobile)"
 				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-21rem] 2xl:top-[-30.5rem] right-[30%] md:right-[10%] lg:right-[40%] z-10" />
 			<NuxtImg
-				:src="`https://remycanal.me/img/stars-info-${selectedColor}.png`"
+				:src="`https://www.remycanal.me/img/stars-info-${selectedColor}.png`"
 				preset="portfolioImage"
 				loading="lazy"
 				alt="Stars = Proficiency level"

@@ -13,7 +13,7 @@ const handleUpdateColor = (newColor) => {
 		class="flex flex-col lg:flex-row justify-between items-center gap-y-10">
 		<NuxtImg
 			id="avatar"
-			src="https://remycanal.me/img/avatar.png"
+			src="https://www.remycanal.me/img/avatar.png"
 			preset="portfolioImage"
 			alt="Rémy Canal"
 			loading="lazy"

@@ -83,7 +83,7 @@ const ancreToSection = (event, targetId) => {
 			<div
 				class="container mx-auto px-4 lg:px-0 pt-40 pb-10 lg:pb-32 flex flex-col items-center gap-y-20 md:gap-y-20 lg:gap-y-32">
 				<NuxtImg
-					:src="`https://remycanal.me/img/logo-${primaryColor}.png`"
+					:src="`https://www.remycanal.me/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
 					preset="portfolioImage"
 					loading="lazy"
