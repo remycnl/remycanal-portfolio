@@ -91,11 +91,13 @@
 			<NuxtImg
 				:src="`https://remycanal.me/img/details-skills-${selectedColor}.png`"
 				preset="portfolioImage"
+				loading="lazy"
 				alt="Click on bubbles to see details (mobile)"
 				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-21rem] 2xl:top-[-30.5rem] right-[30%] md:right-[10%] lg:right-[40%] z-10" />
 			<NuxtImg
 				:src="`https://remycanal.me/img/stars-info-${selectedColor}.png`"
 				preset="portfolioImage"
+				loading="lazy"
 				alt="Stars = Proficiency level"
 				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-15rem] lg:top-[-22rem] 2xl:top-[-30.5rem] left-[30%] md:left-[30%] lg:left-[30%] z-10" />
 			<BubbleIcon
