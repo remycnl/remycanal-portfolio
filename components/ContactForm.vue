@@ -260,8 +260,13 @@
 						@click="copyToClipboard('emailText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
-							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
-							<input type="checkbox" v-model="copiedEmail" />
+							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
+							for="email-checkbox">
+							<input
+								id="email-checkbox"
+								type="checkbox"
+								v-model="copiedEmail"
+								aria-label="Copy email to clipboard" />
 							<svg
 								viewBox="0 0 384 512"
 								height="1em"
@@ -320,8 +325,14 @@
 						@click="copyToClipboard('phoneText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
-							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
-							<input checked="" type="checkbox" v-model="copiedPhone" />
+							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
+							for="phone-checkbox">
+							<input
+								id="phone-checkbox"
+								type="checkbox"
+								v-model="copiedPhone"
+								aria-label="Copy phone number to clipboard"
+								checked="" />
 							<svg
 								viewBox="0 0 384 512"
 								height="1em"
@@ -380,8 +391,14 @@
 						@click="copyToClipboard('locationText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
-							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5">
-							<input checked="" type="checkbox" v-model="copiedLocation" />
+							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
+							for="location-checkbox">
+							<input
+								id="location-checkbox"
+								type="checkbox"
+								v-model="copiedLocation"
+								aria-label="Copy location to clipboard"
+								checked="" />
 							<svg
 								viewBox="0 0 384 512"
 								height="1em"
