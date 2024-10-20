@@ -373,7 +373,7 @@
 							<h3
 								style="font-family: Share Tech Mono"
 								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
-								My adress
+								My address
 							</h3>
 							<p
 								class="time text-xs md:text-sm text-gray-light whitespace-nowrap">
@@ -545,7 +545,7 @@ function copyToClipboard(refName) {
 	navigator.clipboard.writeText(textToCopy).then(() => {
 		if (refName === "emailText") {
 			copiedEmail.value = true;
-			copySuccessMessage.value = "Email adress copied!";
+			copySuccessMessage.value = "Email address copied!";
 			showCopyPopup.value = true;
 			startProgressBar();
 			setTimeout(() => {

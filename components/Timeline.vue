@@ -141,7 +141,7 @@ const data = [
 		title: "EPITECH - European Institute of Technology | Lyon",
 		subtitle: "Promo 2022-2027 - Program Grande Ecole (currently)",
 		paragraph: [
-			"5-Year Program Post-Baccalaureate to Become an Expert in Software Engineering Recognized by the State at Level 7 on the RNCP",
+			"5-Year Post-Baccalaureate Program to Become a Software Engineering Expert, recognized by the French Ministry of Higher Education at RNCP Level 7",
 		],
 		images: [
 			{
