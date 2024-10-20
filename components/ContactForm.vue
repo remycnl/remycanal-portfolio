@@ -238,17 +238,11 @@
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>
 					<div class="w-full flex flex-col items-start">
-						<div class="w-full flex flex-row justify-between items-center">
-							<h3
-								style="font-family: Share Tech Mono"
-								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
-								By email
-							</h3>
-							<p
-								class="time text-xs md:text-sm text-gray-light whitespace-nowrap">
-								Now
-							</p>
-						</div>
+						<h3
+							style="font-family: Share Tech Mono"
+							class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
+							By email
+						</h3>
 						<h4
 							ref="emailText"
 							style="font-family: Share Tech Mono"
@@ -303,17 +297,11 @@
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>
 					<div class="w-full flex flex-col items-start">
-						<div class="w-full flex flex-row justify-between items-center">
-							<h3
-								style="font-family: Share Tech Mono"
-								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
-								By phone
-							</h3>
-							<p
-								class="time text-xs md:text-sm text-gray-light whitespace-nowrap">
-								Now
-							</p>
-						</div>
+						<h3
+							style="font-family: Share Tech Mono"
+							class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
+							By phone
+						</h3>
 						<h4
 							ref="phoneText"
 							style="font-family: Share Tech Mono"
@@ -369,17 +357,11 @@
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>
 					<div class="w-full flex flex-col items-start">
-						<div class="w-full flex flex-row justify-between items-center">
-							<h3
-								style="font-family: Share Tech Mono"
-								class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
-								My address
-							</h3>
-							<p
-								class="time text-xs md:text-sm text-gray-light whitespace-nowrap">
-								Now
-							</p>
-						</div>
+						<h3
+							style="font-family: Share Tech Mono"
+							class="whitespace-nowrap text-lg md:text-2xl text-gray-light font-bold">
+							My address
+						</h3>
 						<h4
 							ref="locationText"
 							style="font-family: Share Tech Mono"

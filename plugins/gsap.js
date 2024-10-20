@@ -758,7 +758,6 @@ export function appearContact() {
 	const contact = document.getElementById("contact");
 	const notifs = document.querySelectorAll(".notif");
 	const clipboards = document.querySelectorAll(".copy");
-	const times = document.querySelectorAll(".time");
 
 	gsap.set(notifs, {
 		x: 100,
@@ -796,24 +795,6 @@ export function appearContact() {
 		},
 		"-=1"
 	);
-
-	tl.call(() => {
-		updateTimeElements(times);
-	});
-}
-
-function updateTimeElements(elements) {
-	const now = Date.now();
-
-	elements.forEach((el) => {
-		el.textContent = "Now";
-
-		setInterval(() => {
-			const elapsedMinutes = Math.floor((Date.now() - now) / 60000);
-			el.textContent =
-				elapsedMinutes === 0 ? "Now" : `${elapsedMinutes} min ago`;
-		}, 60000);
-	});
 }
 
 export function appearTimeline() {
