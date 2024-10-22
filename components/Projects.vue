@@ -58,7 +58,7 @@
 					</div>
 					<div class="flex flex-row justify-end items-center w-[90%] mt-4 mb-7">
 						<NuxtLink
-							:to="'https://www.remycanal.me' + project.link"
+							:to="project.link"
 							target="_blank"
 							class="focus:scale-90 transition-transform duration-75 flex rounded-xl text-white bg-secondary p-3 flex-row gap-2 items-center">
 							Visit {{ project.type }}
