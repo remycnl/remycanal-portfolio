@@ -574,7 +574,7 @@ export function appearBento() {
 				scale: 1,
 				duration: isMobile ? 1 : 1.5,
 				delay: delay,
-				ease: "elastic.out(1, 0.4)",
+				ease: isMobile ? "elastic.out(1, 1)" : "elastic.out(1, 0.4)",
 				scrollTrigger: {
 					trigger: isMobile ? article : bento,
 					start: isMobile ? "top 90%" : "top 70%",
