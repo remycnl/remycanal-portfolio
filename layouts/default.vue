@@ -209,7 +209,13 @@ const setCSP = () => {
 <template>
 	<div class="lg:cursor-none">
 		<div
-			class="hidden lg:block custom-cursor shadow-around bg-secondary rounded-full pointer-events-none z-[1000]"></div>
+			class="hidden relative lg:block custom-cursor shadow-around bg-secondary rounded-full pointer-events-none z-[1000]">
+			<div
+				style="font-family: Share Tech Mono"
+				class="text-cursor absolute scale-0 -top-8 left-1/2 px-2 py-1 bg-black border border-gray-dark rounded-full whitespace-nowrap text-sm text-white">
+				Click to visit
+			</div>
+		</div>
 		<div class="scroll-smooth relative max-w-screen overflow-hidden">
 			<div
 				@click="toggleDropdown"

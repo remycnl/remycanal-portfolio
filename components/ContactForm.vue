@@ -95,9 +95,7 @@
 				<!-- Message d'erreur pour consentement RGPD -->
 				<Transition
 					name="fade-reverse-scale"
-					@before-enter="beforeEnter"
-					@enter="enter"
-					@leave="leave">
+					mode="out-in">
 					<div
 						v-if="showConsentError"
 						class="w-full flex justify-start md:justify-end">
@@ -154,9 +152,7 @@
 			<!-- Popup modale avec loader et message envoyé -->
 			<Transition
 				name="fade-reverse-scale"
-				@before-enter="beforeEnter"
-				@enter="enter"
-				@leave="leave">
+				mode="out-in">
 				<div
 					v-if="showPopup"
 					class="z-[100] absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-primary">
@@ -196,9 +192,7 @@
 					</Transition>
 					<Transition
 						name="fade-reverse-scale"
-						@before-enter="beforeEnter"
-						@enter="enter"
-						@leave="leave">
+						mode="out-in">
 						<div
 							v-if="isError"
 							class="flex flex-col justify-center items-center gap-y-10">
@@ -405,9 +399,7 @@
 			</div>
 			<Transition
 				name="fade-reverse-scale"
-				@before-enter="beforeEnter"
-				@enter="enter"
-				@leave="leave">
+				mode="out-in">
 				<div
 					v-if="showCopyPopup"
 					style="font-family: Share Tech Mono"

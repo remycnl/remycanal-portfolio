@@ -128,7 +128,7 @@
 			<div
 				@mouseenter="showProject()"
 				@mouseleave="hideProject()"
-				class="relative projects-link flex flex-col w-1/2 h-fit">
+				class="relative hover-scale-effect clickable clickable-project projects-link flex flex-col w-1/2 h-fit">
 				<NuxtLink
 					:to="project.link"
 					target="_blank"
@@ -136,15 +136,15 @@
 					:key="index"
 					@mouseenter="showImage(project.img), startHover(project.slug)"
 					@mouseleave="hideImages(), stopHover()"
-					class="group relative z-30 link-type flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
+					class="group relative z-30 link-type cursor-pointer lg:cursor-none flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
 					<NuxtImg
 						:src="'https://www.remycanal.me' + project.logo"
 						:alt="`Logo - ${project.logo}`"
 						preset="portfolioImage"
 						loading="lazy"
-						class="absolute top-4 right-[-10%] hover-scale-effect clickable cursor-pointer lg:cursor-none scale-50 group-hover:scale-100 opacity-0 group-hover:opacity-10 w-auto h-60 transition-all duration-[0.8s]" />
+						class="absolute top-4 right-[-10%] scale-50 group-hover:scale-100 opacity-0 group-hover:opacity-10 w-auto h-60 transition-all duration-[0.8s]" />
 					<div
-						class="text-secondary group hover-scale-effect clickable cursor-pointer lg:cursor-none w-full h-full flex flex-col justify-between items-start">
+						class="text-secondary group w-full h-full flex flex-col justify-between items-start">
 						<div
 							class="w-full h-full flex flex-row justify-between items-center">
 							<div class="flex flex-row gap-x-4 items-center justify-start">

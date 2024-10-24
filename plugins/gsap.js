@@ -314,6 +314,7 @@ export function animationFooterBottom() {
 export function customCursor() {
 	if (import.meta.client) {
 		const customCursor = document.querySelector(".custom-cursor");
+		const textCursor = document.querySelector(".text-cursor");
 
 		// Met à jour la position du curseur personnalisé en fonction des mouvements de la souris
 		document.addEventListener("mousemove", (e) => {
@@ -352,6 +353,32 @@ export function customCursor() {
 				});
 			});
 		});
+
+		// Anime le curseur lorsque la souris entre et quitte un projet
+		const projectElement = document.querySelector(".clickable-project");
+
+		if (projectElement && window.innerWidth >= 1024) {
+			projectElement.addEventListener("mouseenter", () => {
+				customCursor.classList.remove("mix-blend-lighten");
+				gsap.to(textCursor, {
+					opacity: 1,
+					scale: 1,
+					transformOrigin: "left",
+					duration: 1,
+					ease: "elastic.out(1, 0.4)",
+				});
+			});
+
+			projectElement.addEventListener("mouseleave", () => {
+				gsap.to(textCursor, {
+					opacity: 0,
+					scale: 0,
+					transformOrigin: "left",
+					duration: 1,
+					ease: "power4.out",
+				});
+			});
+		}
 
 		// Anime le curseur lorsque l'utilisateur clique
 		document.addEventListener("click", () => {
