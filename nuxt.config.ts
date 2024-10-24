@@ -88,7 +88,6 @@ export default defineNuxtConfig({
 			"@nuxtjs/google-fonts",
 			{
 				families: {
-					Roboto: true,
 					Orbitron: true,
 					"Share Tech Mono": true,
 					Schoolbell: true,
