@@ -190,9 +190,24 @@ import {
 	apparitionMobileProjectCards,
 } from "@/plugins/gsap";
 
+const isDesktop = () => {
+	return window.innerWidth >= 1024;
+};
+
 onMounted(() => {
-	stickyProject();
-	apparitionMobileProjectCards();
+	if (isDesktop()) {
+		stickyProject();
+	} else {
+		apparitionMobileProjectCards();
+	}
+
+	window.addEventListener("resize", () => {
+		if (isDesktop()) {
+			stickyProject();
+		} else {
+			apparitionMobileProjectCards();
+		}
+	});
 });
 
 interface Project {
@@ -263,7 +278,8 @@ const projects: Project[] = [
 	{
 		slug: "odl",
 		title: "Office des Lumières",
-		description: "Participation in the creation and animation of a website for a notary firm.",
+		description:
+			"Participation in the creation and animation of a website for a notary firm.",
 		link: "https://officedeslumieres.com/",
 		img: "/img/mockup-odl.webp",
 		logo: "/img/logo-odl.png",

@@ -193,6 +193,14 @@ onMounted(() => {
 		applySaturationText(0);
 	}
 
+	window.addEventListener("resize", () => {
+		if (mediaQuery.matches) {
+			magnetEffect();
+			applySaturationTextOnScroll();
+			applySaturationText(0);
+		}
+	});
+
 	const updatePrimaryColor = () => {
 		const element = document.querySelector(".change-img-color");
 		if (element) {

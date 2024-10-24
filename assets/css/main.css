@@ -186,3 +186,7 @@ input:-webkit-autofill {
 #progressBar {
 	will-change: height;
 }
+
+.dropdown-animation {
+	will-change: transform, opacity;
+}

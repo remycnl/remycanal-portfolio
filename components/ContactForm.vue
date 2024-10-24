@@ -428,9 +428,21 @@
 import { reactive, ref, watch } from "vue";
 import { stickyContact, appearContact } from "@/plugins/gsap.js";
 
+const isDesktop = () => {
+	return window.innerWidth >= 1024;
+};
+
 onMounted(() => {
-	stickyContact();
+	if (isDesktop()) {
+		stickyContact();
+	}
 	appearContact();
+
+	window.addEventListener("resize", () => {
+		if (isDesktop()) {
+			stickyContact();
+		}
+	});
 });
 
 const form = reactive({

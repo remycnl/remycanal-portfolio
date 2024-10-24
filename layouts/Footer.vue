@@ -1,10 +1,14 @@
 <script setup>
 import { animationFooter } from "@/plugins/gsap";
 
+const isNotDesktop = () => {
+	return window.innerWidth < 1024;
+};
+
 const primaryColor = ref("purple");
 
 onMounted(() => {
-	if (typeof animationFooter === "function") {
+	if (isNotDesktop && typeof animationFooter === "function") {
 		animationFooter();
 	}
 

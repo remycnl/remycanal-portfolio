@@ -325,7 +325,10 @@ const currentSkill = ref(skills[skills.length - 1]);
 const isUpdating = ref(false);
 const lastSkillIndex = ref(null);
 
-// Fonction pour gérer le changement de compétence
+const isDesktop = () => {
+	return window.innerWidth >= 1024;
+};
+
 const fillCardSkills = (index) => {
 	isUpdating.value = true;
 	setTimeout(() => {
@@ -337,17 +340,15 @@ const fillCardSkills = (index) => {
 			lastSkillIndex.value = index;
 		}
 		isUpdating.value = false;
-	}, 300); // Durée de la transition d'opacité
+	}, 300);
 };
 
-// Fonction pour animer les étoiles
 const animStarsRotation = () => {
 	setTimeout(() => {
 		animationStarsCardSkill();
-	}, 300); // Durée de la transition d'opacité
+	}, 300);
 };
 
-// Fonction pour terminer la mise à jour
 const finishUpdate = () => {
 	if (isUpdating.value) {
 		isUpdating.value = false;
@@ -355,6 +356,14 @@ const finishUpdate = () => {
 };
 
 onMounted(() => {
-	stickySkills();
+	if (isDesktop) {
+		stickySkills();
+	}
+
+	window.addEventListener("resize", () => {
+		if (isDesktop()) {
+			stickySkills();
+		}
+	});
 });
 </script>

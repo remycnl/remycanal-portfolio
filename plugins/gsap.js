@@ -3,30 +3,44 @@ import { gsap } from "gsap";
 import { Elastic, ScrollTrigger } from "gsap/all";
 export { gsap };
 export default defineNuxtPlugin(() => {
-	return {
-		toggleDropdown,
-		applyZoomEffect,
-		applyUnzoom,
-		animationFooter,
-		customCursor,
-		applySaturationTextOnScroll,
-		animationFooterBottom,
-		animationCheckboxColor,
-		showImage,
-		hideImages,
-		animationStarsCardSkill,
-		showProject,
-		hideProject,
-		stickyProject,
-		apparitionMobileProjectCards,
-		appearBento,
-		appearStart,
-		stickyContact,
-		stickySkills,
-		appearContact,
-		appearTimeline,
-		dynamicProgressBar,
-	};
+	if (window.innerWidth >= 1024) {
+		return {
+			applyZoomEffect,
+			applyUnzoom,
+			customCursor,
+			applySaturationTextOnScroll,
+			animationFooterBottom,
+			animationCheckboxColor,
+			showImage,
+			hideImages,
+			animationStarsCardSkill,
+			showProject,
+			hideProject,
+			stickyProject,
+			appearBento,
+			appearStart,
+			stickyContact,
+			stickySkills,
+			appearContact,
+			appearTimeline,
+			dynamicProgressBar,
+		};
+	} else {
+		return {
+			toggleDropdown,
+			applyZoomEffect,
+			applyUnzoom,
+			animationFooter,
+			animationCheckboxColor,
+			animationStarsCardSkill,
+			apparitionMobileProjectCards,
+			appearBento,
+			appearStart,
+			appearContact,
+			appearTimeline,
+			dynamicProgressBar,
+		};
+	}
 });
 
 gsap.registerPlugin(ScrollTrigger, Elastic);
@@ -34,140 +48,134 @@ gsap.registerPlugin(ScrollTrigger, Elastic);
 let isDropdownOpen = false;
 
 export function toggleDropdown() {
-	if (window.innerWidth < 1024) {
-		isDropdownOpen = !isDropdownOpen;
-		const slotElement = document.getElementById("slot");
-		const footerElement = document.getElementById("footer");
+	isDropdownOpen = !isDropdownOpen;
+	const slotElement = document.getElementById("slot");
+	const footerElement = document.getElementById("footer");
 
-		if (isDropdownOpen) {
-			document.body.classList.add("overflow-hidden");
-			gsap.to(slotElement, {
-				duration: 0.8,
-				filter: "blur(10px)",
-				backdropFilter: "blur(10px)",
-				ease: "power2.out",
-			});
-			gsap.to(footerElement, {
-				duration: 0.8,
-				filter: "blur(10px)",
-				backdropFilter: "blur(10px)",
-				ease: "power2.out",
-			});
+	if (isDropdownOpen) {
+		document.body.classList.add("overflow-hidden");
+		gsap.to(slotElement, {
+			duration: 0.8,
+			filter: "blur(10px)",
+			backdropFilter: "blur(10px)",
+			ease: "power2.out",
+		});
+		gsap.to(footerElement, {
+			duration: 0.8,
+			filter: "blur(10px)",
+			backdropFilter: "blur(10px)",
+			ease: "power2.out",
+		});
 
-			gsap.to(".third-line", {
-				scaleX: 0,
-				transformOrigin: "left",
-				duration: 0.2,
-			});
-			gsap.to(".second-line", {
-				scaleX: 0,
-				transformOrigin: "center",
-				duration: 0.2,
-				delay: 0.2,
-			});
-			gsap.to(".first-line", {
-				scaleX: 0,
-				transformOrigin: "right",
-				duration: 0.2,
-				delay: 0.4,
-			});
-			gsap.to(".toolbar", {
-				opacity: 0,
-				duration: 0.8,
-				onComplete: function () {
-					document
-						.querySelector(".toolbar")
-						.classList.remove("pointer-events-auto");
-				},
-			});
-			gsap.to(".dropdown-animation", {
-				y: "0%",
-				duration: 0.8,
-				ease: "easeOut",
-				delay: 0.4,
-			});
-			gsap.to(".blur-background-menu", {
-				opacity: 1,
-				duration: 0.5,
-				onComplete: function () {
-					document
-						.querySelector(".blur-background-menu")
-						.classList.remove("pointer-events-none");
-				},
-				delay: 0.4,
-			});
-			gsap.to(".header", {
-				onComplete: function () {
-					document
-						.querySelector(".header")
-						.classList.remove("pointer-events-none");
-				},
-			});
-		} else {
-			document.body.classList.remove("overflow-hidden");
-			gsap.to(slotElement, {
-				duration: 0.8,
-				filter: "blur(0px)",
-				backdropFilter: "blur(0px)",
-				ease: "power2.in",
-			});
-			gsap.to(footerElement, {
-				duration: 0.8,
-				filter: "blur(0px)",
-				backdropFilter: "blur(0px)",
-				ease: "power2.in",
-			});
+		gsap.to(".third-line", {
+			scaleX: 0,
+			transformOrigin: "left",
+			duration: 0.2,
+		});
+		gsap.to(".second-line", {
+			scaleX: 0,
+			transformOrigin: "center",
+			duration: 0.2,
+			delay: 0.2,
+		});
+		gsap.to(".first-line", {
+			scaleX: 0,
+			transformOrigin: "right",
+			duration: 0.2,
+			delay: 0.4,
+		});
+		gsap.to(".toolbar", {
+			opacity: 0,
+			duration: 0.8,
+			onComplete: function () {
+				document
+					.querySelector(".toolbar")
+					.classList.remove("pointer-events-auto");
+			},
+		});
+		gsap.to(".dropdown-animation", {
+			y: "0%",
+			duration: 0.8,
+			ease: "easeOut",
+			delay: 0.4,
+		});
+		gsap.to(".blur-background-menu", {
+			opacity: 1,
+			duration: 0.5,
+			onComplete: function () {
+				document
+					.querySelector(".blur-background-menu")
+					.classList.remove("pointer-events-none");
+			},
+			delay: 0.4,
+		});
+		gsap.to(".header", {
+			onComplete: function () {
+				document
+					.querySelector(".header")
+					.classList.remove("pointer-events-none");
+			},
+		});
+	} else {
+		document.body.classList.remove("overflow-hidden");
+		gsap.to(slotElement, {
+			duration: 0.8,
+			filter: "blur(0px)",
+			backdropFilter: "blur(0px)",
+			ease: "power2.in",
+		});
+		gsap.to(footerElement, {
+			duration: 0.8,
+			filter: "blur(0px)",
+			backdropFilter: "blur(0px)",
+			ease: "power2.in",
+		});
 
-			gsap.to(".first-line", {
-				scaleX: 1,
-				transformOrigin: "right",
-				duration: 0.2,
-				delay: 0.6,
-			});
-			gsap.to(".second-line", {
-				scaleX: 1,
-				transformOrigin: "center",
-				duration: 0.2,
-				delay: 0.8,
-			});
-			gsap.to(".third-line", {
-				scaleX: 1,
-				transformOrigin: "left",
-				duration: 0.2,
-				delay: 1,
-			});
-			gsap.to(".toolbar", {
-				opacity: 1,
-				duration: 0.8,
-				onComplete: function () {
-					document
-						.querySelector(".toolbar")
-						.classList.add("pointer-events-auto");
-				},
-			});
-			gsap.to(".dropdown-animation", {
-				y: "-150%",
-				duration: 0.8,
-				ease: "easeIn",
-				delay: 0.2,
-			});
-			gsap.to(".blur-background-menu", {
-				opacity: 0,
-				duration: 0.5,
-				onComplete: function () {
-					document
-						.querySelector(".blur-background-menu")
-						.classList.add("pointer-events-none");
-				},
-			});
-			gsap.to(".header", {
-				onComplete: function () {
-					document
-						.querySelector(".header")
-						.classList.add("pointer-events-none");
-				},
-			});
-		}
+		gsap.to(".first-line", {
+			scaleX: 1,
+			transformOrigin: "right",
+			duration: 0.2,
+			delay: 0.6,
+		});
+		gsap.to(".second-line", {
+			scaleX: 1,
+			transformOrigin: "center",
+			duration: 0.2,
+			delay: 0.8,
+		});
+		gsap.to(".third-line", {
+			scaleX: 1,
+			transformOrigin: "left",
+			duration: 0.2,
+			delay: 1,
+		});
+		gsap.to(".toolbar", {
+			opacity: 1,
+			duration: 0.8,
+			onComplete: function () {
+				document.querySelector(".toolbar").classList.add("pointer-events-auto");
+			},
+		});
+		gsap.to(".dropdown-animation", {
+			y: "-150%",
+			duration: 0.8,
+			ease: "easeIn",
+			delay: 0.2,
+		});
+		gsap.to(".blur-background-menu", {
+			opacity: 0,
+			duration: 0.5,
+			onComplete: function () {
+				document
+					.querySelector(".blur-background-menu")
+					.classList.add("pointer-events-none");
+			},
+		});
+		gsap.to(".header", {
+			onComplete: function () {
+				document.querySelector(".header").classList.add("pointer-events-none");
+			},
+		});
 	}
 }
 
@@ -206,109 +214,105 @@ export function applyUnzoom(index, isGif) {
 }
 
 export function animationFooter() {
-	if (window.innerWidth < 1024) {
-		const lettersContainer = document.getElementById("letters");
-		const alphabet =
-			"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_▞▚▞▚▞▚▞_EEFFOC_DNA_♡_HTIW_EDAM_".split(
-				""
-			);
-		let index = 0;
+	const lettersContainer = document.getElementById("letters");
+	const alphabet =
+		"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_▞▚▞▚▞▚▞_EEFFOC_DNA_♡_HTIW_EDAM_".split(
+			""
+		);
+	let index = 0;
 
-		for (let i = 0; i < 1; i++) {
-			generateLetters();
-		}
-
-		function createLetterSpan(letter) {
-			const span = document.createElement("span");
-			span.textContent = letter;
-
-			lettersContainer.insertBefore(span, lettersContainer.firstChild || null);
-			return span;
-		}
-
-		function animateLetter(letter) {
-			const span = createLetterSpan(letter);
-
-			gsap.to(span, {
-				x: "100%",
-				repeat: -1,
-				ease: "linear",
-				onComplete: () => {
-					span.remove();
-				},
-			});
-		}
-
-		function generateLetters() {
-			alphabet.forEach((letter) => {
-				createLetterSpan(letter);
-			});
-		}
-
-		function generateAndAnimateLetters() {
-			animateLetter(alphabet[index]);
-			index = (index + 1) % alphabet.length;
-			setTimeout(generateAndAnimateLetters, 250);
-		}
-
-		generateAndAnimateLetters();
+	for (let i = 0; i < 1; i++) {
+		generateLetters();
 	}
+
+	function createLetterSpan(letter) {
+		const span = document.createElement("span");
+		span.textContent = letter;
+
+		lettersContainer.insertBefore(span, lettersContainer.firstChild || null);
+		return span;
+	}
+
+	function animateLetter(letter) {
+		const span = createLetterSpan(letter);
+
+		gsap.to(span, {
+			x: "100%",
+			repeat: -1,
+			ease: "linear",
+			onComplete: () => {
+				span.remove();
+			},
+		});
+	}
+
+	function generateLetters() {
+		alphabet.forEach((letter) => {
+			createLetterSpan(letter);
+		});
+	}
+
+	function generateAndAnimateLetters() {
+		animateLetter(alphabet[index]);
+		index = (index + 1) % alphabet.length;
+		setTimeout(generateAndAnimateLetters, 250);
+	}
+
+	generateAndAnimateLetters();
 }
 
 export function animationFooterBottom() {
-	if (window.innerWidth >= 1024) {
-		const lettersContainer = document.getElementById("letters-bottom");
-		const alphabet =
-			"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_▞▚▞▚▞▚▞_EEFFOC_DNA_♡_HTIW_EDAM_".split(
-				""
-			);
-		let index = 0;
+	const lettersContainer = document.getElementById("letters-bottom");
+	const alphabet =
+		"▞▚▞▚▞▚▞_LANAC_YMÉR_▞▚▞▚▞▚▞_EM_YB_DETFARCDNAH_▞▚▞▚▞▚▞_DEVRESER_STHGIR_LLA_▞▚▞▚▞▚▞_4202_THGIRYPOC_©_▞▚▞▚▞▚▞_EEFFOC_DNA_♡_HTIW_EDAM_".split(
+			""
+		);
+	let index = 0;
 
-		for (let i = 0; i < 4; i++) {
-			generateLetters();
-		}
-
-		function createLetterSpan(letter) {
-			const span = document.createElement("span");
-			span.textContent = letter;
-
-			lettersContainer.insertBefore(span, lettersContainer.firstChild || null);
-
-			return span;
-		}
-
-		function animateLetter(letter) {
-			const span = createLetterSpan(letter);
-
-			gsap.to(span, {
-				x: "100%",
-				repeat: -1,
-				ease: "linear",
-				onComplete: () => {
-					span.remove();
-				},
-			});
-		}
-
-		function generateLetters() {
-			alphabet.forEach((letter) => {
-				createLetterSpan(letter);
-			});
-		}
-
-		function generateAndAnimateLetters() {
-			animateLetter(alphabet[index]);
-			index = (index + 1) % alphabet.length;
-
-			setTimeout(generateAndAnimateLetters, 250);
-		}
-
-		generateAndAnimateLetters();
+	for (let i = 0; i < 4; i++) {
+		generateLetters();
 	}
+
+	function createLetterSpan(letter) {
+		const span = document.createElement("span");
+		span.textContent = letter;
+
+		lettersContainer.insertBefore(span, lettersContainer.firstChild || null);
+
+		return span;
+	}
+
+	function animateLetter(letter) {
+		const span = createLetterSpan(letter);
+
+		gsap.to(span, {
+			x: "100%",
+			repeat: -1,
+			ease: "linear",
+			onComplete: () => {
+				span.remove();
+			},
+		});
+	}
+
+	function generateLetters() {
+		alphabet.forEach((letter) => {
+			createLetterSpan(letter);
+		});
+	}
+
+	function generateAndAnimateLetters() {
+		animateLetter(alphabet[index]);
+		index = (index + 1) % alphabet.length;
+
+		setTimeout(generateAndAnimateLetters, 250);
+	}
+
+	generateAndAnimateLetters();
 }
 
 export function customCursor() {
-	if (import.meta.client && window.innerWidth >= 1024) {
+	if (import.meta.client) {
 		const customCursor = document.querySelector(".custom-cursor");
 
 		// Met à jour la position du curseur personnalisé en fonction des mouvements de la souris
@@ -549,12 +553,16 @@ export function apparitionMobileProjectCards() {
 export function appearBento() {
 	const bento = document.querySelector(".bento");
 	const articles = Array.from(document.querySelectorAll(".article"));
-	const isMobile = window.matchMedia("(max-width: 768px)").matches;
 	const wannaWorkWithMe = document.getElementById("wanna-work-with-me");
 
-	gsap.set(bento, { opacity: 0 });
+	if (!bento || articles.length === 0 || !wannaWorkWithMe) return;
 
-	const animateArticles = (article, index = 0, delay = 0) => {
+	const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+	gsap.set([bento, wannaWorkWithMe], { opacity: 0 });
+	gsap.set(wannaWorkWithMe, { y: -100 });
+
+	const animateArticles = (article, delay = 0) => {
 		gsap.fromTo(
 			article,
 			{
@@ -597,8 +605,6 @@ export function appearBento() {
 		});
 	};
 
-	gsap.set(wannaWorkWithMe, { opacity: 0, y: -100 });
-
 	gsap.to(bento, {
 		opacity: 1,
 		scrollTrigger: {
@@ -608,14 +614,13 @@ export function appearBento() {
 			onEnter: () => {
 				if (isMobile) {
 					articles.forEach((article) => animateArticles(article));
-					animateWannaWorkWithMe();
 				} else {
-					const randomOrder = [...articles].sort(() => Math.random() - 0.5);
+					const randomOrder = articles.sort(() => Math.random() - 0.5);
 					randomOrder.forEach((article, index) =>
-						animateArticles(article, index, index * 0.3)
+						animateArticles(article, index * 0.3)
 					);
-					setTimeout(animateWannaWorkWithMe, randomOrder.length * 0.3 * 1000);
 				}
+				animateWannaWorkWithMe();
 			},
 		},
 	});

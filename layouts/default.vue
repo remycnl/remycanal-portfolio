@@ -142,27 +142,42 @@ const applyEffects = () => {
 	mouseEffect();
 };
 
+const isDesktop = () => {
+	return window.innerWidth >= 1024;
+};
+
 const route = useRoute();
 
 watch(route, () => {
-	applyEffects();
+	if (isDesktop()) {
+		applyEffects();
+	}
 });
 
 onMounted(() => {
 	setSEO();
 	setCSP();
-	applyEffects();
-	animationFooterBottom();
+	if (isDesktop()) {
+		applyEffects();
+		animationFooterBottom();
+	}
+
 	if (import.meta.client) {
 		console.log(`
-        ******************************************
-        *                                        *
-        *    Appreciate scrolling through my     *
-        *            portfolio! :)               *
-        *                                        *
-        ******************************************
-        `);
+    ******************************************
+    *                                        *
+    *    Appreciate scrolling through my     *
+    *            portfolio! :)               *
+    *                                        *
+    ******************************************
+    `);
 	}
+
+	window.addEventListener("resize", () => {
+		if (isDesktop()) {
+			applyEffects();
+		}
+	});
 });
 
 const setSEO = () => {
