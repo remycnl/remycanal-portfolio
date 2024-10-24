@@ -19,7 +19,7 @@
 			<div
 				v-for="(item, index) in data"
 				:key="index"
-				class="flex justify-start pt-10 lg:pt-20 md:gap-10">
+				class="flex justify-start pt-10 lg:pt-20 lg:gap-10">
 				<div
 					class="group sticky flex flex-col z-40 items-start top-40 self-start max-w-xs lg:max-w-sm md:w-full">
 					<div
@@ -67,7 +67,7 @@
 							</p>
 						</div>
 						<div
-							class="group overflow-hidden bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full lg:w-1/3 h-40 lg:h-60 rounded-[1.5rem] flex justify-center items-center p-5 lg:p-10">
+							class="group overflow-hidden bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full lg:w-2/3 2xl:w-1/3 h-40 lg:h-56 2xl:h-60 rounded-[1.5rem] flex justify-center items-center p-5 lg:p-10">
 							<NuxtImg
 								v-for="(img, imgIdx) in item.images"
 								:key="imgIdx"

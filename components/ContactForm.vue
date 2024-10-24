@@ -6,11 +6,11 @@
 			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
 			<h2
 				id="Contact me"
-				class="text-color-saturate text-[2rem] md:text-[3rem] 2xl:text-[3.5rem] font-bold text-secondary md:mb-1 text-start">
+				class="text-color-saturate text-[2.1rem] md:text-[3rem] lg:text-[2.8rem] 2xl:text-[3.5rem] md:leading-[4rem] lg:leading-[3.5rem] 2xl:leading-[4.5rem] font-bold text-secondary md:mb-1 text-start">
 				Just say Hello !
 			</h2>
 			<h3
-				class="text-[1.2rem] md:text-[1.5rem] -mt-5 md:-mt-2 lg:-mt-0 text-gray-light mb-5 lg:mb-10 text-start md:tracking-widest">
+				class="text-[1.1rem] md:text-[1.5rem] lg:text-[1.2rem] 2xl:text-[1.5rem] -mt-5 md:-mt-2 lg:-mt-0 text-gray-light mb-5 lg:mb-10 text-start md:tracking-widest hover:text-white transition-colors duration-500">
 				Let me know more about you
 			</h3>
 
@@ -215,7 +215,7 @@
 			id="contact"
 			class="relative p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-dark group shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
 			<h2
-				class="text-[1.7rem] md:text-[2rem] lg:text-[3.5rem] leading-[1.7rem] md:leading-[2rem] lg:leading-[3.5rem] font-bold text-gray-light group-hover:text-white transition-colors duration-500 mb-5 text-start">
+				class="text-[2rem] md:text-[2.8rem] 2xl:text-[3.5rem] leading-[2rem] md:leading-[2.8rem] font-bold text-gray-light group-hover:text-white transition-colors duration-500 mb-5 text-start">
 				Get in touch
 			</h2>
 			<div
