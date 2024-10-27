@@ -6,7 +6,7 @@
 			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
 			<h2
 				id="Contact me"
-				class="text-color-saturate text-[2.1rem] md:text-[3rem] lg:text-[2.8rem] 2xl:text-[3.5rem] md:leading-[4rem] lg:leading-[3.5rem] 2xl:leading-[4.5rem] font-bold text-secondary md:mb-1 text-start">
+				class="text-color-saturate text-[2rem] md:text-[3rem] lg:text-[2.8rem] 2xl:text-[3.5rem] md:leading-[4rem] lg:leading-[3.5rem] 2xl:leading-[4.5rem] font-bold text-secondary md:mb-1 text-start">
 				Just say Hello !
 			</h2>
 			<h3
