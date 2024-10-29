@@ -2,12 +2,12 @@
 	<div class="relative overflow-visible projects-container my-60 lg:my-96">
 		<h2
 			id="Projects"
-			class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
+			class="text-color-saturate text-[2.5rem] md:text-[4rem] uppercase w-fit">
 			Projects
 		</h2>
 		<h3
 			style="font-family: Share Tech Mono"
-			class="mt-5 lg:mt-10 w-full lg:w-7/12 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+			class="mt-5 lg:mt-10 w-full lg:w-7/12 text-gray-light text-base md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
 			Throughout my journey as a developer, I've worked on a variety of projects
 			that demonstrate my technical skills and problem-solving abilities. Below
 			is a selection of projects that showcase my expertise in modern

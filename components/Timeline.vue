@@ -3,12 +3,12 @@
 		<div class="mt-40 lg:mt-96 py-20">
 			<h2
 				id="Timeline"
-				class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
+				class="text-color-saturate text-[2.5rem] md:text-[4rem] uppercase w-fit">
 				Timeline
 			</h2>
 			<h3
 				style="font-family: Share Tech Mono"
-				class="mt-5 lg:mt-10 w-full lg:w-7/12 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+				class="mt-5 lg:mt-10 w-full lg:w-7/12 text-gray-light text-base md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
 				Explore my journey, including my certifications, academic training, and
 				professional experiences, showcasing my growth in software development
 				and engineering.

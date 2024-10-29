@@ -1,12 +1,12 @@
 <template>
 	<h2
 		id="Skills"
-		class="text-color-saturate text-[3rem] md:text-[4rem] uppercase w-fit">
+		class="text-color-saturate text-[2.5rem] md:text-[4rem] uppercase w-fit">
 		Skills
 	</h2>
 	<h3
 		style="font-family: Share Tech Mono"
-		class="mt-5 w-full lg:w-7/12 lg:mt-10 text-gray-light text-lg md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
+		class="mt-5 w-full lg:w-7/12 lg:mt-10 text-gray-light text-base md:text-xl lg:text-[1.3rem] hover:text-white transition-colors duration-500">
 		From front-end frameworks to back-end systems, I have honed my skills in a
 		wide range of technologies, enabling me to build efficient and scalable web
 		applications. Below is a curated list of tools and technologies that are
