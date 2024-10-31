@@ -404,7 +404,7 @@
 					v-if="showCopyPopup"
 					style="font-family: Share Tech Mono"
 					class="absolute -bottom-24 right-0 bg-secondary shadow-around shadow-black text-white p-4 rounded-lg">
-					<span class="text-shadow">
+					<span class="font-semibold tracking-wider">
 						{{ copySuccessMessage }}
 					</span>
 					<div
