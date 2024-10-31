@@ -11,7 +11,7 @@ import { mouseEffect } from "@/plugins/global.js";
 import { SpeedInsights } from "@vercel/speed-insights/nuxt";
 
 const activeTitle = ref("Rémy Canal | Web Developer • Portfolio");
-const inactiveTitle = ref("I miss you !!!");
+const inactiveTitle = ref("I miss you... 🥺");
 
 useSeoMeta({
 	title: activeTitle,
