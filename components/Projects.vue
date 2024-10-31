@@ -60,13 +60,13 @@
 						<NuxtLink
 							:to="project.link"
 							target="_blank"
-							class="focus:scale-90 transition-transform duration-75 flex rounded-xl text-white bg-secondary p-3 flex-row gap-2 items-center">
+							class="focus:scale-90 transition-transform duration-75 flex rounded-xl text-[#FFFFFF] bg-secondary p-3 flex-row gap-2 items-center">
 							Visit {{ project.type }}
 							<Icon
 								name="i-formkit:linkexternal"
 								ssr="true"
 								mode="svg"
-								style="color: var(--white)"
+								style="color: #FFFFFF"
 								class="w-5 h-5" />
 						</NuxtLink>
 					</div>
