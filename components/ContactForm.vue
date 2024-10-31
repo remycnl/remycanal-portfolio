@@ -136,7 +136,7 @@
 					<button
 						type="submit"
 						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest">
-						<span class="font-semibold"> Send </span>
+						<span class="font-semibold text-[#FFFFFF]"> Send </span>
 						<div class="icon">
 							<Icon
 								name="i-mingcute:send-plane-line"
