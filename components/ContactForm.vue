@@ -408,7 +408,7 @@
 						{{ copySuccessMessage }}
 					</span>
 					<div
-						class="h-2 timed-popup shadow-around shadow-black bg-white rounded-full mt-2"
+						class="h-2 timed-popup bg-white rounded-full mt-2"
 						:style="{ width: progressBarWidth + '%' }"></div>
 				</div>
 			</Transition>
