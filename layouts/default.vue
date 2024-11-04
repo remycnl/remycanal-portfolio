@@ -195,7 +195,7 @@ const setSEO = () => {
 const setCSP = () => {
 	const meta = document.createElement("meta");
 	meta.httpEquiv = "Content-Security-Policy";
-	meta.content = "script-src 'self' https://apis.google.com";
+	meta.content = "script-src 'self' https://apis.google.com https://vercel.live";
 
 	const existingMeta = document.head.querySelector(
 		'meta[http-equiv="Content-Security-Policy"]'
