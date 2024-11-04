@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 import { Elastic, ScrollTrigger } from "gsap/all";
 export { gsap };
 export default defineNuxtPlugin(() => {
-	if (window.innerWidth >= 1024) {
+	if (import.meta.client && window.innerWidth >= 1024) {
 		return {
 			applyZoomEffect,
 			applyUnzoom,
@@ -654,135 +654,141 @@ export function appearBento() {
 }
 
 export function appearStart() {
-	const width = window.innerWidth;
-	const isMobile = width <= 640;
-	const isTablet = width > 640 && width < 1024;
-	const isDesktop = width >= 1024;
+	if (import.meta.client) {
+		const width = window.innerWidth;
+		const isMobile = width <= 640;
+		const isTablet = width > 640 && width < 1024;
+		const isDesktop = width >= 1024;
 
-	const avatar = document.getElementById("avatar");
-	const buttonCV = document.getElementById("download-cv");
-	const buttonColor = document.getElementById("color-button");
+		const avatar = document.getElementById("avatar");
+		const buttonCV = document.getElementById("download-cv");
+		const buttonColor = document.getElementById("color-button");
 
-	// Fonction réutilisable pour animer un élément
-	function animateElement(selector, fromProps, toProps) {
-		gsap.fromTo(selector, fromProps, toProps);
-	}
+		// Fonction réutilisable pour animer un élément
+		function animateElement(selector, fromProps, toProps) {
+			gsap.fromTo(selector, fromProps, toProps);
+		}
 
-	// Configuration des paramètres en fonction de l'appareil
-	const easeValueAvatar = isMobile
-		? "elastic.out(0.8, 1)"
-		: isTablet
-		? "elastic.out(0.85, 1)"
-		: "elastic.out(1, 0.60)";
+		// Configuration des paramètres en fonction de l'appareil
+		const easeValueAvatar = isMobile
+			? "elastic.out(0.8, 1)"
+			: isTablet
+			? "elastic.out(0.85, 1)"
+			: "elastic.out(1, 0.60)";
 
-	// Animation de l'avatar
-	animateElement(
-		avatar,
-		{ y: 1000, opacity: 0 },
-		{ y: 0, opacity: 1, duration: 3, ease: easeValueAvatar }
-	);
-
-	// Animation pour firstname et lastname
-	const commonAnimation = { duration: 3, ease: "elastic.out(1, 0.5)" };
-	animateElement(
-		".firstname-about-me",
-		{ x: 700, opacity: 0 },
-		{ x: 0, opacity: 1, ...commonAnimation }
-	);
-	animateElement(
-		".lastname-about-me",
-		{ x: -900, opacity: 0 },
-		{ x: 0, opacity: 1, ...commonAnimation }
-	);
-
-	// Animations spécifiques pour Desktop et Tablet
-	if (isDesktop) {
+		// Animation de l'avatar
 		animateElement(
-			".web",
-			{ x: 900, opacity: 0 },
+			avatar,
+			{ y: 1000, opacity: 0 },
+			{ y: 0, opacity: 1, duration: 3, ease: easeValueAvatar }
+		);
+
+		// Animation pour firstname et lastname
+		const commonAnimation = { duration: 3, ease: "elastic.out(1, 0.5)" };
+		animateElement(
+			".firstname-about-me",
+			{ x: 700, opacity: 0 },
 			{ x: 0, opacity: 1, ...commonAnimation }
 		);
 		animateElement(
-			".developer",
-			{ x: -700, opacity: 0 },
+			".lastname-about-me",
+			{ x: -900, opacity: 0 },
 			{ x: 0, opacity: 1, ...commonAnimation }
 		);
-		animateElement(
-			".about-me-paragraph",
-			{ x: 400, opacity: 0 },
-			{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
-		);
-		animateElement(
-			buttonCV,
-			{ x: 500, opacity: 0 },
-			{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
-		);
-		animateElement(
-			buttonColor,
-			{ x: -500, opacity: 0 },
-			{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
-		);
-	} else if (isTablet) {
-		animateElement(
-			".web",
-			{ y: 400, opacity: 0 },
-			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
-		);
-		animateElement(
-			".developer",
-			{ y: 400, opacity: 0 },
-			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
-		);
-		animateElement(
-			".about-me-paragraph",
-			{ y: 500, opacity: 0 },
-			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
-		);
-		animateElement(
-			buttonCV,
-			{ y: 600, opacity: 0 },
-			{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
-		);
+
+		// Animations spécifiques pour Desktop et Tablet
+		if (isDesktop) {
+			animateElement(
+				".web",
+				{ x: 900, opacity: 0 },
+				{ x: 0, opacity: 1, ...commonAnimation }
+			);
+			animateElement(
+				".developer",
+				{ x: -700, opacity: 0 },
+				{ x: 0, opacity: 1, ...commonAnimation }
+			);
+			animateElement(
+				".about-me-paragraph",
+				{ x: 400, opacity: 0 },
+				{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+			);
+			animateElement(
+				buttonCV,
+				{ x: 500, opacity: 0 },
+				{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+			);
+			animateElement(
+				buttonColor,
+				{ x: -500, opacity: 0 },
+				{ x: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+			);
+		} else if (isTablet) {
+			animateElement(
+				".web",
+				{ y: 400, opacity: 0 },
+				{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+			);
+			animateElement(
+				".developer",
+				{ y: 400, opacity: 0 },
+				{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+			);
+			animateElement(
+				".about-me-paragraph",
+				{ y: 500, opacity: 0 },
+				{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+			);
+			animateElement(
+				buttonCV,
+				{ y: 600, opacity: 0 },
+				{ y: 0, opacity: 1, duration: 2, ease: "elastic.out(1, 0.5)" }
+			);
+		}
 	}
 }
 
 export function stickyContact() {
-	const container = document.getElementById("container-contact");
-	const contact = document.getElementById("contact");
-	const width = window.innerWidth;
-	const isDesktop = width > 1024;
+	if (import.meta.client) {
+		const container = document.getElementById("container-contact");
+		const contact = document.getElementById("contact");
+		const width = window.innerWidth;
+		const isDesktop = width > 1024;
 
-	if (isDesktop && container.offsetHeight > contact.offsetHeight) {
-		gsap.to(contact, {
-			y: () => `${container.offsetHeight - contact.offsetHeight}px`,
-			ease: "none",
-			scrollTrigger: {
-				trigger: container,
-				start: "top 30%",
-				end: "bottom 80%",
-				scrub: 0.5,
-			},
-		});
+		if (isDesktop && container.offsetHeight > contact.offsetHeight) {
+			gsap.to(contact, {
+				y: () => `${container.offsetHeight - contact.offsetHeight}px`,
+				ease: "none",
+				scrollTrigger: {
+					trigger: container,
+					start: "top 30%",
+					end: "bottom 80%",
+					scrub: 0.5,
+				},
+			});
+		}
 	}
 }
 
 export function stickySkills() {
-	const container = document.getElementById("container-skills");
-	const skillCard = document.getElementById("skill-card");
-	const width = window.innerWidth;
-	const isDesktop = width > 1024;
+	if (import.meta.client) {
+		const container = document.getElementById("container-skills");
+		const skillCard = document.getElementById("skill-card");
+		const width = window.innerWidth;
+		const isDesktop = width > 1024;
 
-	if (isDesktop && container.offsetHeight > skillCard.offsetHeight) {
-		gsap.to(skillCard, {
-			y: () => `${container.offsetHeight - skillCard.offsetHeight}px`,
-			ease: "none",
-			scrollTrigger: {
-				trigger: container,
-				start: "top 30%",
-				end: "bottom 80%",
-				scrub: 0.5,
-			},
-		});
+		if (isDesktop && container.offsetHeight > skillCard.offsetHeight) {
+			gsap.to(skillCard, {
+				y: () => `${container.offsetHeight - skillCard.offsetHeight}px`,
+				ease: "none",
+				scrollTrigger: {
+					trigger: container,
+					start: "top 30%",
+					end: "bottom 80%",
+					scrub: 0.5,
+				},
+			});
+		}
 	}
 }
 

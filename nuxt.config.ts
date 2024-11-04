@@ -51,6 +51,13 @@ export default defineNuxtConfig({
 						"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
 				},
 			],
+			script: [
+				{
+					src: "/plugins/vercelanalytics.client.js",
+					type: "text/partytown",
+					async: true,
+				},
+			],
 		},
 	},
 
@@ -132,7 +139,6 @@ export default defineNuxtConfig({
 	plugins: [
 		{ src: "@/plugins/gsap.js", mode: "client" },
 		{ src: "@/plugins/global.js", mode: "client" },
-		{ src: "@/plugins/vercelanalytics.client.js", mode: "client" },
 	],
 
 	compatibilityDate: "2024-07-04",
