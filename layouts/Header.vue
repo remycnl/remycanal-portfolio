@@ -31,6 +31,7 @@
 				class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[120vh] left-0 h-[5.5rem]"></div>
 		</div>
 		<div
+			:class="{ 'backdrop-blur-sm': scrolled && !isScreenSM }"
 			class="relative dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div
 				class="z-[99999] absolute top-10 right-10 group lg:hidden flex flex-col items-center"
@@ -125,7 +126,6 @@ const headerClasses = computed(() => ({
 	"rounded-3xl": true,
 	"shadow-around": scrolled.value,
 	"shadow-black-dark": scrolled.value,
-	"backdrop-blur-sm": scrolled.value,
 	"bg-black-dark": scrolled.value || isScreenSM.value,
 	"lg:bg-opacity-90": true,
 	"bg-opacity-95": true,
