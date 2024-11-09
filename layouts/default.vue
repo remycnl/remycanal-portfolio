@@ -34,7 +34,7 @@ useSeoMeta({
 	twitterCard: "summary_large_image",
 	canonical: "https://www.remycanal.me",
 	keywords:
-		"Rémy Canal, remy canal, Web Developer, Portfolio, Lyon, Front-End, Full-Stack, Mobile Developer, JavaScript, Nuxt.js, Vue.js, Next.js, React, Laravel, GSAP, Tailwind, Strapi, Wordpress, PHP, Github, Freelance",
+		"Rémy Canal, Développeur web, Portfolio, Lyon, Développeur front-end, Développeur full-stack, Développeur mobile, Développeur Vue.js, Freelance",
 });
 
 useServerSeoMeta({
