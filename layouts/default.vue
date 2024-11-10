@@ -15,26 +15,25 @@ const inactiveTitle = ref("I miss you... 🥺");
 
 useSeoMeta({
 	title: activeTitle,
-	ogTitle: "Rémy Canal | Web Developer • Portfolio",
-	ogSiteName: "Rémy Canal | Web Developer • Portfolio",
 	description:
-		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
+		"Discover the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
+	canonical: "https://www.remycanal.me",
+	keywords:
+		"Rémy Canal, Développeur web, Portfolio, Lyon, Développeur front-end, Développeur full-stack, Développeur mobile, Développeur Vue.js, Freelance",
+	ogTitle: "Rémy Canal | Web Developer • Portfolio",
 	ogDescription:
-		"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
+		"Discover the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development. Explore my projects, skills, and experiences in modern web technologies.",
+	ogUrl: "https://www.remycanal.me",
+	ogSiteName: "Rémy Canal | Web Developer • Portfolio",
+	ogType: "website",
 	ogImage: "https://www.remycanal.me/img/metaImg.png",
 	ogImageAlt: "Rémy Canal Portfolio Preview",
-	ogUrl: "https://www.remycanal.me",
-	ogType: "website",
 	ogLocale: "en_US",
 	twitterTitle: "Portfolio • Rémy Canal | Web Developer",
 	twitterDescription:
 		"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
 	twitterImage: "https://www.remycanal.me/img/metaImg.png",
 	twitterUrl: "https://www.remycanal.me",
-	twitterCard: "summary_large_image",
-	canonical: "https://www.remycanal.me",
-	keywords:
-		"Rémy Canal, Développeur web, Portfolio, Lyon, Développeur front-end, Développeur full-stack, Développeur mobile, Développeur Vue.js, Freelance",
 });
 
 useServerSeoMeta({
@@ -46,76 +45,10 @@ useHead({
 	htmlAttrs: {
 		lang: "en",
 	},
-	script: [
+	meta: [
 		{
-			type: "application/ld+json",
-			innerHTML: JSON.stringify({
-				"@context": "https://schema.org",
-				"@type": "Person",
-				name: "Rémy Canal",
-				jobTitle: "Web Developer",
-				url: "https://www.remycanal.me",
-				sameAs: [
-					"https://github.com/remycnl",
-					"https://www.linkedin.com/in/remy-canal",
-				],
-				image: "https://www.remycanal.me/img/metaImg.png",
-				description:
-					"Web developer based in Lyon specializing in front-end development.",
-				alumniOf: {
-					"@type": "CollegeOrUniversity",
-					name: "EPITECH Lyon",
-				},
-				worksFor: {
-					"@type": "Organization",
-					name: "Freelance",
-				},
-				birthDate: "2004-06-02",
-				address: {
-					"@type": "PostalAddress",
-					addressLocality: "Lyon",
-					addressCountry: "France",
-				},
-				contactPoint: {
-					"@type": "ContactPoint",
-					contactType: "Customer Support",
-					email: "hello@remycanal.me",
-					telephone: "+33-6-19-25-82-99",
-					availableLanguage: ["French", "English"],
-				},
-			}),
-		},
-
-		{
-			type: "application/ld+json",
-			innerHTML: JSON.stringify({
-				"@context": "https://schema.org",
-				"@type": "WebSite",
-				url: "https://www.remycanal.me",
-				name: "Rémy Canal | Web Developer • Portfolio",
-				description:
-					"Portfolio showcasing the web development projects, skills, and experiences of Rémy Canal.",
-				publisher: {
-					"@type": "Person",
-					name: "Rémy Canal",
-				},
-			}),
-		},
-
-		{
-			type: "application/ld+json",
-			innerHTML: JSON.stringify({
-				"@context": "https://schema.org",
-				"@type": "WebPage",
-				url: "https://www.remycanal.me",
-				name: "Rémy Canal | Web Developer • Portfolio",
-				description:
-					"Explore the projects, skills, and expertise of Rémy Canal, a front-end web developer.",
-				mainEntity: {
-					"@type": "WebPageElement",
-					name: "Portfolio",
-				},
-			}),
+			name: "viewport",
+			content: "width=device-width, initial-scale=1.0, viewport-fit=cover",
 		},
 	],
 	link: [
@@ -134,8 +67,85 @@ useHead({
 			href: "https://www.remycanal.me",
 		},
 	],
-	__dangerouslyDisableSanitizers: ["script"],
 });
+
+useSchemaOrg([
+	defineWebPage({
+		url: "https://www.remycanal.me",
+		name: "Rémy Canal | Web Developer • Portfolio",
+		description:
+			"Explore the projects, skills, and expertise of Rémy Canal, a front-end web developer.",
+		mainEntity: {
+			"@type": "WebPageElement",
+			name: "Portfolio",
+		},
+		breadcrumb: {
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{
+					"@type": "ListItem",
+					position: 1,
+					name: "Home",
+					item: "https://www.remycanal.me",
+				},
+			],
+		},
+	}),
+	defineWebSite({
+		url: "https://www.remycanal.me",
+		name: "Rémy Canal | Web Developer • Portfolio",
+		description:
+			"Portfolio showcasing the web development projects, skills, and experiences of Rémy Canal.",
+		publisher: {
+			"@type": "Person",
+			name: "Rémy Canal",
+		},
+		mainEntityOfPage: {
+			"@type": "WebPage",
+			"@id": "https://www.remycanal.me",
+		},
+	}),
+	definePerson({
+		name: "Rémy Canal",
+		jobTitle: "Web Developer",
+		url: "https://www.remycanal.me",
+		image: "https://www.remycanal.me/img/avatar.png",
+		sameAs: [
+			"https://www.linkedin.com/in/remy-canal",
+			"https://github.com/remycnl",
+		],
+		description:
+			"Web developer based in Lyon specializing in front-end development.",
+		alumniOf: {
+			"@type": "CollegeOrUniversity",
+			name: "EPITECH Lyon",
+		},
+		worksFor: {
+			"@type": "Organization",
+			name: "Freelance",
+		},
+		birthDate: "2004-06-02",
+		address: {
+			"@type": "PostalAddress",
+			addressLocality: "Lyon",
+			addressCountry: "France",
+		},
+		contactPoint: {
+			"@type": "ContactPoint",
+			contactType: "Customer Support",
+			email: "hello@remycanal.me",
+			telephone: "+33-6-19-25-82-99",
+			availableLanguage: ["French", "English"],
+			areaServed: "FR",
+			serviceArea: {
+				"@type": "Place",
+				name: "France",
+			},
+		},
+	}),
+]);
+
+defineOgImageComponent('NuxtSeo');
 
 const applyEffects = () => {
 	customCursor();
@@ -195,7 +205,8 @@ const setSEO = () => {
 const setCSP = () => {
 	const meta = document.createElement("meta");
 	meta.httpEquiv = "Content-Security-Policy";
-	meta.content = "script-src 'self' https://apis.google.com https://vercel.live";
+	meta.content =
+		"script-src 'self' https://apis.google.com https://vercel.live";
 
 	const existingMeta = document.head.querySelector(
 		'meta[http-equiv="Content-Security-Policy"]'

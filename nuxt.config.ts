@@ -9,48 +9,7 @@ export default defineNuxtConfig({
 
 	app: {
 		head: {
-			title: "Rémy Canal | Web Developer • Portfolio",
-			meta: [
-				{
-					name: "description",
-					content:
-						"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development.",
-				},
-				{
-					name: "viewport",
-					content: "width=device-width, initial-scale=1.0, viewport-fit=cover",
-				},
-				{
-					property: "og:type",
-					content: "website",
-				},
-				{
-					property: "og:image",
-					content: "https://www.remycanal.me/img/metaImg.png",
-				},
-				{
-					property: "og:title",
-					content: "Rémy Canal | Web Developer • Portfolio",
-				},
-				{
-					property: "og:description",
-					content:
-						"Explore the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development.",
-				},
-				{
-					property: "twitter:image",
-					content: "https://www.remycanal.me/img/metaImg.png",
-				},
-				{
-					property: "twitter:title",
-					content: "Portfolio • Rémy Canal | Web Developer",
-				},
-				{
-					property: "twitter:description",
-					content:
-						"Check out Rémy Canal's portfolio, a web developer from Lyon specializing in front-end development.",
-				},
-			],
+			titleTemplate: '%s',
 			script: [
 				{
 					src: "/plugins/vercelanalytics.client.js",
@@ -103,25 +62,26 @@ export default defineNuxtConfig({
 		],
 		"@nuxt/image",
 		"@nuxt/icon",
+		"@nuxtjs/seo",
 	],
 
 	icon: {
-		serverBundle: {
-			collections: [
-				"fa6-brands",
-				"fluent-emoji-high-contrast",
-				"formkit",
-				"game-icons",
-				"ic",
-				"logos",
-				"material-symbols",
-				"mingcute",
-				"skill-icons",
-				"teenyicons",
-				"uil",
-				"vscode-icons",
-			],
-		},
+		provider: "server",
+		fallbackToApi: true,
+		collections: [
+			"fa6-brands",
+			"fluent-emoji-high-contrast",
+			"formkit",
+			"game-icons",
+			"ic",
+			"logos",
+			"material-symbols",
+			"mingcute",
+			"skill-icons",
+			"teenyicons",
+			"uil",
+			"vscode-icons",
+		],
 	},
 
 	image: {
@@ -134,6 +94,18 @@ export default defineNuxtConfig({
 				},
 			},
 		},
+	},
+
+	site: {
+		url: "https://www.remycanal.me",
+		name: "Rémy Canal | Web Developer • Portfolio",
+		description:
+			"Discover the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development.",
+	},
+
+	seo: {
+		canonicalQueryWhitelist: ["search"],
+		redirectToCanonicalSiteUrl: true,
 	},
 
 	plugins: [

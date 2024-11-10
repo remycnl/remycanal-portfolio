@@ -42,7 +42,6 @@ export default {
 		},
 	},
 	plugins: [
-		addVariablesForColors,
 		function ({ matchUtilities, theme }) {
 			matchUtilities(
 				{
@@ -57,15 +56,3 @@ export default {
 		},
 	],
 };
-
-// Function to add color variables as CSS custom properties
-function addVariablesForColors({ addBase, theme }) {
-	const allColors = flattenColorPalette(theme("colors"));
-	const newVars = Object.fromEntries(
-		Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
-	);
-
-	addBase({
-		":root": newVars,
-	});
-}
