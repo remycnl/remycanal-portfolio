@@ -228,7 +228,7 @@ const projects: Project[] = [
 		slug: "portfolio",
 		title: "Portfolio of Rémy Canal",
 		description: "Creation 'from scratch' of my portfolio.",
-		link: "https://www.remycanal.me",
+		link: "/",
 		img: "/img/mockup-portfolio-remycanal.webp",
 		logo: "/img/logo-blue.png",
 		type: "website",

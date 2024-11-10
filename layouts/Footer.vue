@@ -97,7 +97,7 @@ const ancreToSection = (event, targetId) => {
 					<div class="active:scale-95 transition-all duration-75">
 						<a
 							@click="ancreToSection($event, 'About me')"
-							href="#about-me"
+							href="#About me"
 							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							About me
 						</a>
@@ -105,7 +105,7 @@ const ancreToSection = (event, targetId) => {
 					<div class="active:scale-95 transition-all duration-75">
 						<a
 							@click="ancreToSection($event, 'Skills')"
-							href="#skills"
+							href="#Skills"
 							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Skills
 						</a>
@@ -113,7 +113,7 @@ const ancreToSection = (event, targetId) => {
 					<div class="active:scale-95 transition-all duration-75">
 						<a
 							@click="ancreToSection($event, 'Timeline')"
-							href="#timeline"
+							href="#Timeline"
 							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Timeline
 						</a>
@@ -121,7 +121,7 @@ const ancreToSection = (event, targetId) => {
 					<div class="active:scale-95 transition-all duration-75">
 						<a
 							@click="ancreToSection($event, 'Projects')"
-							href="#projects"
+							href="#Projects"
 							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Projects
 						</a>
@@ -129,7 +129,7 @@ const ancreToSection = (event, targetId) => {
 					<div class="active:scale-95 transition-all duration-75">
 						<a
 							@click="ancreToSection($event, 'Contact me')"
-							href="#contact-me"
+							href="#Contact me"
 							class="menu-line-animation hover-scale-effect clickable cursor-pointer lg:cursor-none text-base lg:text-lg">
 							Contact me
 						</a>
