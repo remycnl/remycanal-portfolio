@@ -66,7 +66,7 @@
 								name="i-formkit:linkexternal"
 								ssr="true"
 								mode="svg"
-								style="color: #FFFFFF"
+								style="color: #ffffff"
 								class="w-5 h-5" />
 						</NuxtLink>
 					</div>
@@ -180,7 +180,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {
 	showImage,
 	hideImages,
@@ -210,20 +210,7 @@ onMounted(() => {
 	});
 });
 
-interface Project {
-	slug: string;
-	title: string;
-	description: string;
-	link: string;
-	img: string;
-	logo: string;
-	type: string;
-	last?: boolean;
-	date: string;
-	technos?: string[];
-}
-
-const projects: Project[] = [
+const projects = [
 	{
 		slug: "portfolio",
 		title: "Portfolio of Rémy Canal",
@@ -318,9 +305,9 @@ const projects: Project[] = [
 ];
 
 const isSomethingHover = ref(false);
-const hoveredProject = ref<string | null>(null);
+const hoveredProject = ref(null);
 
-const startHover = (projectSlug: string) => {
+const startHover = (projectSlug) => {
 	isSomethingHover.value = true;
 	hoveredProject.value = projectSlug;
 };

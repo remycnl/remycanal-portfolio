@@ -55,6 +55,7 @@
 					v-if="currentSkill.withPath"
 					:src="'https://www.remycanal.me' + currentSkill.pathIcon"
 					:alt="currentSkill.text"
+					data-nosnippet
 					:format="currentSkill.isGif ? 'gif' : 'webp'"
 					:class="{
 						'icon-select-event': true,
