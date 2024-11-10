@@ -3,14 +3,14 @@
 		class="header pointer-events-none container mx-auto px-4 lg:px-0 lg:pl-4 2xl:pl-10">
 		<div
 			class="px-1 relative toolbar lg:hidden flex justify-between items-center pointer-events-none">
-			<a @click="ancreToSection($event, 'top')" href="#top" class="z-50 -mt-1">
+			<div @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
 				<NuxtImg
 					:src="`https://www.remycanal.me/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal"
 					preset="portfolioImage"
 					loading="lazy"
 					class="change-img-color text-shadow pointer-events-auto hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
-			</a>
+			</div>
 			<div class="z-50 flex pointer-events-auto items-center justify-center">
 				<div
 					class="cursor-pointer lg:cursor-none hover:saturate-200 transition-all transform-gpu duration-500"
@@ -32,7 +32,7 @@
 		</div>
 		<div
 			:class="{ 'backdrop-blur-sm': scrolled && !isScreenSM }"
-			class="relative dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
+			class="relative rounded-3xl lg:w-fit dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div
 				class="z-[99999] absolute top-10 right-10 group lg:hidden flex flex-col items-center"
 				@click="toggleDropdown">
