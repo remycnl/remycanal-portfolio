@@ -145,8 +145,6 @@ useSchemaOrg([
 	}),
 ]);
 
-defineOgImage({ url: 'https://www.remycanal.me/img/metaImg.png', alt: 'Rémy Canal Portfolio Preview' })
-
 const applyEffects = () => {
 	customCursor();
 	mouseEffect();
