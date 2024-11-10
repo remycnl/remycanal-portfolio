@@ -15,7 +15,8 @@ const handleUpdateColor = (newColor) => {
 			id="avatar"
 			src="https://www.remycanal.me/img/avatar.png"
 			preset="portfolioImage"
-			alt="Rémy Canal"
+			title="Rémy Canal's avatar"
+			alt="Rémy Canal's avatar"
 			loading="lazy"
 			class="opacity-0 icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
 		<div

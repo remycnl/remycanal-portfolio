@@ -183,6 +183,7 @@
 								format="gif"
 								loading="lazy"
 								alt="Message Sent!"
+								title="Message Sent!"
 								class="w-[30rem] h-auto" />
 							<div
 								class="font-bold text-secondary text-[2rem] md:text-[3rem] mb-40 md:mb-0">
@@ -201,6 +202,7 @@
 								format="gif"
 								loading="lazy"
 								alt="Error!"
+								title="Error!"
 								class="w-[15rem] h-auto" />
 							<div
 								class="font-bold text-red-600 text-[2rem] md:text-[3rem] mb-40 md:mb-0">

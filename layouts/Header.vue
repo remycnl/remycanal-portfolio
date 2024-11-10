@@ -6,7 +6,8 @@
 			<div @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
 				<NuxtImg
 					:src="`https://www.remycanal.me/img/logo-${primaryColor}.png`"
-					alt="Rémy Canal"
+					alt="Rémy Canal's Logo"
+					title="Rémy Canal's Logo"
 					preset="portfolioImage"
 					loading="lazy"
 					class="change-img-color text-shadow pointer-events-auto hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
@@ -52,7 +53,8 @@
 					class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-105 transition-all duration-100">
 					<NuxtImg
 						:src="`https://www.remycanal.me/img/logo-${primaryColor}.png`"
-						alt="Rémy Canal"
+						alt="Rémy Canal's Logo"
+						title="Rémy Canal's Logo"
 						preset="portfolioImage"
 						loading="lazy"
 						class="change-img-color text-shadow hover-scale-effect hover:translate-x-2 transition-all duration-500 w-20 lg:w-14 h-auto mt-8 lg:mt-0 pointer-events-auto" />

@@ -40,6 +40,7 @@
 						<NuxtImg
 							:src="'https://www.remycanal.me' + project.img"
 							:alt="`Mockup - ${project.img}`"
+							:title="`Mockup - ${project.img}`"
 							preset="portfolioImage"
 							loading="lazy"
 							class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -140,6 +141,7 @@
 					<NuxtImg
 						:src="'https://www.remycanal.me' + project.logo"
 						:alt="`Logo - ${project.logo}`"
+						:title="`Logo - ${project.logo}`"
 						preset="portfolioImage"
 						loading="lazy"
 						class="absolute top-4 right-[-10%] scale-50 group-hover:scale-100 opacity-0 group-hover:opacity-10 w-auto h-60 transition-all duration-[0.8s] pointer-events-none" />

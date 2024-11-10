@@ -54,7 +54,8 @@
 				<NuxtImg
 					v-if="currentSkill.withPath"
 					:src="'https://www.remycanal.me' + currentSkill.pathIcon"
-					:alt="currentSkill.text"
+					:alt="currentSkill.text + ' icon'"
+					:title="currentSkill.text + ' icon'"
 					data-nosnippet
 					:format="currentSkill.isGif ? 'gif' : 'webp'"
 					:class="{
@@ -95,12 +96,14 @@
 				preset="portfolioImage"
 				loading="lazy"
 				alt="Click on bubbles to see details (mobile)"
+				title="Click on bubbles to see details (mobile)"
 				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-10rem] lg:top-[-23rem] 2xl:top-[-30.5rem] right-[30%] md:right-[45%] lg:right-[35%] 2xl:right-[40%] 3xl:right-[60%] z-10" />
 			<NuxtImg
 				:src="`https://www.remycanal.me/img/stars-info-${selectedColor}.png`"
 				preset="portfolioImage"
 				loading="lazy"
 				alt="Stars = Proficiency level"
+				title="Stars = Proficiency level"
 				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] top-[-8rem] md:top-[-10rem] lg:top-[-24rem] 2xl:top-[-30.5rem] left-[30%] md:left-[35%] lg:left-[30%] z-10" />
 			<BubbleIcon
 				v-for="(skill, index) in skills"

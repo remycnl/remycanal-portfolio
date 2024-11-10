@@ -8,7 +8,8 @@
 				v-if="props.withPath"
 				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.index"
 				:src="'https://www.remycanal.me' + props.pathIcon"
-				:alt="props.text"
+				:alt="props.text + ' icon'"
+				:title="props.text + ' icon'"
 				:class="{
 					'icon-select-event': true,
 					'w-auto': true,
