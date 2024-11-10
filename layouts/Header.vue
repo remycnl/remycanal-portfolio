@@ -80,7 +80,7 @@
 							executeFunctionsMenu($event, 'Contact me');
 							applySaturationText(4);
 						"
-						href="#contact-me"
+						href="#Contact me"
 						class="mb-10 lg:mb-0 active:scale-95 transition-all duration-75">
 						<div
 							class="hover-scale-effect clickable cursor-pointer lg:cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
