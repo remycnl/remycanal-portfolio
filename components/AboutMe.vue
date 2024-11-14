@@ -36,15 +36,15 @@ const handleUpdateColor = (newColor) => {
 				>
 				<span
 					class="text-color-saturate flex flex-row lg:flex-col gap-x-5 text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
-					><div class="web md:opacity-0 text-shadow">Web</div>
-					<div class="developer md:opacity-0 lg:ml-16 text-shadow">
+					><div class="web opacity-0 text-shadow">Web</div>
+					<div class="developer opacity-0 lg:ml-16 text-shadow">
 						Developer
 					</div></span
 				>
 			</h1>
 			<h3
 				style="font-family: Share Tech Mono"
-				class="about-me-paragraph md:opacity-0 text-white text-base md:text-lg 2xl:text-2xl mx-4 md:mx-0">
+				class="about-me-paragraph opacity-0 text-white text-base md:text-lg 2xl:text-2xl mx-4 md:mx-0">
 				I'm a student at Epitech, on my way to becoming a software engineer
 				specialized in crafting outstanding and full digital experiences. Based
 				in Lyon, France, I ensure responsive design, SEO optimization, and most
@@ -55,7 +55,7 @@ const handleUpdateColor = (newColor) => {
 				<ToggleColorsButton
 					:selectedColor="selectedColor"
 					@update-color="handleUpdateColor" />
-				<div id="download-cv" class="md:opacity-0">
+				<div id="download-cv" class="opacity-0">
 					<a
 						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest"
 						href="/doc/Rémy Canal - curriculum vitae.pdf"

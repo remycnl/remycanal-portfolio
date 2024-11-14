@@ -657,7 +657,8 @@ export function appearStart() {
 	if (import.meta.client) {
 		const width = window.innerWidth;
 		const isMobile = width <= 640;
-		const isTablet = width > 640 && width < 1024;
+		const isTablet = width < 1024;
+		const isOnlyTablet = width > 640 && width < 1024;
 		const isDesktop = width >= 1024;
 
 		const avatar = document.getElementById("avatar");
@@ -672,7 +673,7 @@ export function appearStart() {
 		// Configuration des paramètres en fonction de l'appareil
 		const easeValueAvatar = isMobile
 			? "elastic.out(0.8, 1)"
-			: isTablet
+			: isOnlyTablet
 			? "elastic.out(0.85, 1)"
 			: "elastic.out(1, 0.60)";
 
