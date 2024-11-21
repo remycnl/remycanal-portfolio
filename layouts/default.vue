@@ -109,7 +109,7 @@ useSchemaOrg([
 		name: "Rémy Canal",
 		jobTitle: "Web Developer",
 		url: "https://www.remycanal.me",
-		image: "https://www.remycanal.me/img/avatar.png",
+		image: "https://www.remycanal.me/img/pdpAvatar.png",
 		sameAs: [
 			"https://www.linkedin.com/in/remy-canal",
 			"https://github.com/remycnl",
