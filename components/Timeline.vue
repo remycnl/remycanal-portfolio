@@ -125,7 +125,7 @@ const data = [
 		date: "2021",
 		type: "formation",
 		title: "Institution Saint-Alyre | Clermont-Ferrand",
-		subtitle: "General Baccalaureate | Honors (AB)",
+		subtitle: "General Baccalaureate",
 		paragraph: [
 			"Specialization in Mathematics, Physics & Chemistry, and Computer Science with Advanced Mathematics Option",
 		],
