@@ -1,3 +1,90 @@
+<script setup>
+import { appearTimeline, dynamicProgressBar } from "@/plugins/gsap";
+
+const timelineRef = ref(null);
+const progressBar = ref(null);
+const height = ref(0);
+
+onMounted(() => {
+	if (timelineRef.value) {
+		height.value = timelineRef.value.getBoundingClientRect().height;
+	}
+	appearTimeline();
+	dynamicProgressBar(timelineRef.value, progressBar.value);
+});
+
+const data = [
+	{
+		date: "2020",
+		type: "certification",
+		title: "Cambridge English Language Assessment",
+		subtitle: "Certification Cambridge - B2 First",
+		images: [
+			{
+				src: "/img/cambridge-logo.png",
+				alt: "Cambridge Logo",
+			},
+		],
+	},
+	{
+		date: "2021",
+		type: "formation",
+		title: "Institution Saint-Alyre | Clermont-Ferrand",
+		subtitle: "General Baccalaureate",
+		paragraph: [
+			"Specialization in Mathematics, Physics & Chemistry, and Computer Science with Advanced Mathematics Option",
+		],
+		images: [
+			{
+				src: "/img/saint-alyre-logo.png",
+				alt: "Saint-Alyre Logo",
+			},
+		],
+	},
+	{
+		date: "2022",
+		type: "formation",
+		title: "EPITECH - European Institute of Technology | Lyon",
+		subtitle: "Promo 2022-2027 - Program Grande Ecole (currently)",
+		paragraph: [
+			"5-Year Post-Baccalaureate Program to Become a Software Engineering Expert, recognized by the French Ministry of Higher Education at RNCP Level 7",
+		],
+		images: [
+			{
+				src: "/img/epitech-logo.png",
+				alt: "Epitech Logo",
+			},
+		],
+	},
+	{
+		date: "2023",
+		type: "experience",
+		title: "Sharewood",
+		subtitle: "Front-End Web Developer",
+		paragraph: ["Internship - July to December 2023 (6 months)"],
+		images: [
+			{
+				src: "/img/sharewood-logo.png",
+				alt: "Sharewood Logo",
+			},
+		],
+	},
+	{
+		date: "2024",
+		type: "experience",
+		title: "Letmotiv",
+		subtitle: "Full-Stack Web Developer (currently)",
+		paragraph: ["Internship - September 2024 to March 2025 (7 months)"],
+		images: [
+			{
+				src: "/img/letmotiv-logo.png",
+				alt: "Letmotiv Logo",
+			},
+		],
+	},
+];
+</script>
+
 <template>
 	<div class="w-full">
 		<div class="mt-40 lg:mt-96 py-20">
@@ -92,90 +179,3 @@
 		</div>
 	</div>
 </template>
-
-<script setup>
-import { appearTimeline, dynamicProgressBar } from "@/plugins/gsap";
-
-const timelineRef = ref(null);
-const progressBar = ref(null);
-const height = ref(0);
-
-onMounted(() => {
-	if (timelineRef.value) {
-		height.value = timelineRef.value.getBoundingClientRect().height;
-	}
-	appearTimeline();
-	dynamicProgressBar(timelineRef.value, progressBar.value);
-});
-
-const data = [
-	{
-		date: "2020",
-		type: "certification",
-		title: "Cambridge English Language Assessment",
-		subtitle: "Certification Cambridge - B2 First",
-		images: [
-			{
-				src: "/img/cambridge-logo.png",
-				alt: "Cambridge Logo",
-			},
-		],
-	},
-	{
-		date: "2021",
-		type: "formation",
-		title: "Institution Saint-Alyre | Clermont-Ferrand",
-		subtitle: "General Baccalaureate",
-		paragraph: [
-			"Specialization in Mathematics, Physics & Chemistry, and Computer Science with Advanced Mathematics Option",
-		],
-		images: [
-			{
-				src: "/img/saint-alyre-logo.png",
-				alt: "Saint-Alyre Logo",
-			},
-		],
-	},
-	{
-		date: "2022",
-		type: "formation",
-		title: "EPITECH - European Institute of Technology | Lyon",
-		subtitle: "Promo 2022-2027 - Program Grande Ecole (currently)",
-		paragraph: [
-			"5-Year Post-Baccalaureate Program to Become a Software Engineering Expert, recognized by the French Ministry of Higher Education at RNCP Level 7",
-		],
-		images: [
-			{
-				src: "/img/epitech-logo.png",
-				alt: "Epitech Logo",
-			},
-		],
-	},
-	{
-		date: "2023",
-		type: "experience",
-		title: "Sharewood",
-		subtitle: "Front-End Web Developer",
-		paragraph: ["Internship - July to December 2023 (6 months)"],
-		images: [
-			{
-				src: "/img/sharewood-logo.png",
-				alt: "Sharewood Logo",
-			},
-		],
-	},
-	{
-		date: "2024",
-		type: "experience",
-		title: "Letmotiv",
-		subtitle: "Full-Stack Web Developer (currently)",
-		paragraph: ["Internship - September 2024 to March 2025 (7 months)"],
-		images: [
-			{
-				src: "/img/letmotiv-logo.png",
-				alt: "Letmotiv Logo",
-			},
-		],
-	},
-];
-</script>

@@ -1,79 +1,3 @@
-<template>
-	<div
-		@click="toggleStars(); toggleTextWhite(props.index)"
-		class="font-[Schoolbell] lg:font-[Orbitron] relative z-50 flex flex-col justify-center items-center text-center skills">
-		<div
-			class="relative z-30 w-20 h-20 md:w-28 md:h-28 rounded-full bg-black border-2 md:border-3 border-gray-light border-opacity-5 flex justify-center items-center">
-			<NuxtImg
-				v-if="props.withPath"
-				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.index"
-				:src="'https://www.remycanal.me' + props.pathIcon"
-				:alt="props.text + ' icon'"
-				:title="props.text + ' icon'"
-				:class="{
-					'icon-select-event': true,
-					'w-auto': true,
-					'h-10': !isGif,
-					'md:h-14': !isGif,
-					'h-16': isGif,
-					'md:h-[5.5rem]': isGif,
-				}"
-				loading="lazy"
-				:format="isGif ? 'gif' : 'webp'" />
-			<Icon
-				v-else
-				:id="'skill-bubble-' + props.index"
-				:name="props.icon"
-				:style="'color:' + props.iconColor"
-				ssr="true"
-				mode="svg"
-				class="w-10 md:w-14 h-10 md:h-14" />
-			<div
-				@mouseenter="handleMouseEnter"
-				:style="{ 'border-color': props.color }"
-				class="clickable cursor-pointer lg:cursor-none hover-scale-effect absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin"></div>
-		</div>
-		<div
-			:id="'toggle-text-white-' + props.index"
-			class="clickable cursor-pointer lg:cursor-none hover-scale-effect w-fit mt-4 text-lg md:text-xl text-gray-medium transition-colors duration-200 whitespace-nowrap">
-			{{ props.text }}
-		</div>
-		<div
-			v-if="!isGif"
-			:class="'star-' + props.index"
-			class="star absolute mt-7 flex flex-row bg-black p-2 rounded-full">
-			<!-- Boucle pour afficher les étoiles remplies -->
-			<div
-				v-for="index in stars"
-				:key="'filled-' + index"
-				class="flex flex-row">
-				<Icon
-					name="i-teenyicons:star-small-solid"
-					ssr="true"
-					mode="svg"
-					class="w-5 h-5 star-pulse"
-					:style="{ animationDelay: index * 0.2 + 's', color: props.color }" />
-			</div>
-			<!-- Boucle pour afficher les étoiles vides -->
-			<div
-				v-for="index in 5 - stars"
-				:key="'empty-' + index"
-				class="flex flex-row">
-				<Icon
-					name="i-teenyicons:star-small-outline"
-					ssr="true"
-					mode="svg"
-					color="yellow"
-					class="w-5 h-5 star-pulse"
-					:style="{
-						animationDelay: (stars + index) * 0.2 + 's',
-						color: props.color,
-					}" />
-			</div>
-		</div>
-	</div>
-</template>
-
 <script setup>
 import { applyUnzoom } from "@/plugins/gsap";
 import { toggleTextWhite } from "@/plugins/global";
@@ -174,6 +98,82 @@ const toggleStars = () => {
 	}
 };
 </script>
+
+<template>
+	<div
+		@click="toggleStars(); toggleTextWhite(props.index)"
+		class="font-[Schoolbell] lg:font-[Orbitron] relative z-50 flex flex-col justify-center items-center text-center skills">
+		<div
+			class="relative z-30 w-20 h-20 md:w-28 md:h-28 rounded-full bg-black border-2 md:border-3 border-gray-light border-opacity-5 flex justify-center items-center">
+			<NuxtImg
+				v-if="props.withPath"
+				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.index"
+				:src="'https://www.remycanal.me' + props.pathIcon"
+				:alt="props.text + ' icon'"
+				:title="props.text + ' icon'"
+				:class="{
+					'icon-select-event': true,
+					'w-auto': true,
+					'h-10': !isGif,
+					'md:h-14': !isGif,
+					'h-16': isGif,
+					'md:h-[5.5rem]': isGif,
+				}"
+				loading="lazy"
+				:format="isGif ? 'gif' : 'webp'" />
+			<Icon
+				v-else
+				:id="'skill-bubble-' + props.index"
+				:name="props.icon"
+				:style="'color:' + props.iconColor"
+				ssr="true"
+				mode="svg"
+				class="w-10 md:w-14 h-10 md:h-14" />
+			<div
+				@mouseenter="handleMouseEnter"
+				:style="{ 'border-color': props.color }"
+				class="clickable cursor-pointer lg:cursor-none hover-scale-effect absolute z-50 -top-[0.172rem] -left-[0.172rem] w-20 h-20 md:w-28 md:h-28 rounded-full border-t-2 md:border-t-3 opacity-50 hover:opacity-100 hover:saturate-200 ease-in-out transition duration-500 spin"></div>
+		</div>
+		<div
+			:id="'toggle-text-white-' + props.index"
+			class="clickable cursor-pointer lg:cursor-none hover-scale-effect w-fit mt-4 text-lg md:text-xl text-gray-medium transition-colors duration-200 whitespace-nowrap">
+			{{ props.text }}
+		</div>
+		<div
+			v-if="!isGif"
+			:class="'star-' + props.index"
+			class="star absolute mt-7 flex flex-row bg-black p-2 rounded-full">
+			<!-- Boucle pour afficher les étoiles remplies -->
+			<div
+				v-for="index in stars"
+				:key="'filled-' + index"
+				class="flex flex-row">
+				<Icon
+					name="i-teenyicons:star-small-solid"
+					ssr="true"
+					mode="svg"
+					class="w-5 h-5 star-pulse"
+					:style="{ animationDelay: index * 0.2 + 's', color: props.color }" />
+			</div>
+			<!-- Boucle pour afficher les étoiles vides -->
+			<div
+				v-for="index in 5 - stars"
+				:key="'empty-' + index"
+				class="flex flex-row">
+				<Icon
+					name="i-teenyicons:star-small-outline"
+					ssr="true"
+					mode="svg"
+					color="yellow"
+					class="w-5 h-5 star-pulse"
+					:style="{
+						animationDelay: (stars + index) * 0.2 + 's',
+						color: props.color,
+					}" />
+			</div>
+		</div>
+	</div>
+</template>
 
 <style scoped>
 .spin {

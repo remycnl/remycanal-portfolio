@@ -1,3 +1,175 @@
+<script setup>
+import { reactive, ref, watch } from "vue";
+import { stickyContact, appearContact } from "@/plugins/gsap.js";
+
+const isDesktop = () => {
+	return window.innerWidth >= 1024;
+};
+
+onMounted(() => {
+	if (isDesktop()) {
+		stickyContact();
+	}
+	appearContact();
+
+	window.addEventListener("resize", () => {
+		if (isDesktop()) {
+			stickyContact();
+		}
+	});
+});
+
+const form = reactive({
+	firstname: "",
+	lastname: "",
+	email: "",
+	company: "",
+	message: "",
+	rgpdConsent: false,
+});
+
+const showPopup = ref(false);
+const isMessageSent = ref(false);
+const isError = ref(false);
+const showConsentError = ref(false);
+const copySuccessMessage = ref("");
+const showCopyPopup = ref(false);
+const progressBarWidth = ref(100);
+
+const submitForm = async () => {
+	if (!form.rgpdConsent) {
+		showConsentError.value = true;
+		return;
+	}
+
+	showConsentError.value = false;
+	showPopup.value = true;
+	isError.value = false;
+
+	const formData = {
+		firstname: form.firstname,
+		lastname: form.lastname,
+		email: form.email,
+		company: form.company,
+		message: form.message,
+	};
+
+	try {
+		const response = await fetch("https://www.remycanal.me/api/send-emails", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+
+		const result = await response.json();
+
+		if (result.status === "success") {
+			isMessageSent.value = true;
+		} else {
+			isError.value = true;
+			console.error("Erreur lors de l'envoi:", result.message);
+		}
+	} catch (error) {
+		console.error("Erreur lors de la requête:", error);
+		isError.value = true;
+	}
+
+	setTimeout(() => {
+		showPopup.value = false;
+		isMessageSent.value = false;
+		isError.value = false;
+	}, 2000);
+};
+
+watch(
+	() => form.rgpdConsent,
+	(newValue) => {
+		if (newValue) {
+			showConsentError.value = false;
+		}
+	}
+);
+
+const emailText = ref(null);
+const phoneText = ref(null);
+const locationText = ref(null);
+
+const copiedEmail = ref(false);
+const copiedPhone = ref(false);
+const copiedLocation = ref(false);
+
+function copyToClipboard(refName) {
+	let textToCopy = "";
+	if (refName === "emailText") {
+		textToCopy = emailText.value.innerText;
+	} else if (refName === "phoneText") {
+		textToCopy = phoneText.value.innerText;
+	} else if (refName === "locationText") {
+		textToCopy = locationText.value.innerText;
+	}
+
+	navigator.clipboard.writeText(textToCopy).then(() => {
+		if (refName === "emailText") {
+			copiedEmail.value = true;
+			copySuccessMessage.value = "Email address copied!";
+			showCopyPopup.value = true;
+			startProgressBar();
+			setTimeout(() => {
+				showCopyPopup.value = false;
+				copiedEmail.value = false;
+			}, 2000);
+			copiedPhone.value = false;
+			copiedLocation.value = false;
+		} else if (refName === "phoneText") {
+			copiedEmail.value = false;
+			copiedPhone.value = true;
+			copySuccessMessage.value = "Phone number copied!";
+			showCopyPopup.value = true;
+			startProgressBar();
+			setTimeout(() => {
+				showCopyPopup.value = false;
+				copiedPhone.value = false;
+			}, 2000);
+			copiedLocation.value = false;
+		} else if (refName === "locationText") {
+			copiedEmail.value = false;
+			copiedPhone.value = false;
+			copiedLocation.value = true;
+			copySuccessMessage.value = "Location copied!";
+			showCopyPopup.value = true;
+			startProgressBar();
+			setTimeout(() => {
+				showCopyPopup.value = false;
+				copiedLocation.value = false;
+			}, 2000);
+		}
+	});
+}
+
+function startProgressBar() {
+	progressBarWidth.value = 100;
+	const duration = 2000;
+	const startTime = performance.now();
+
+	const animate = (currentTime) => {
+		const elapsed = currentTime - startTime;
+		const progress = Math.max(0, 100 - (elapsed / duration) * 100);
+		progressBarWidth.value = progress;
+
+		if (elapsed < duration) {
+			requestAnimationFrame(animate);
+		} else {
+			progressBarWidth.value = 0;
+			showCopyPopup.value = false;
+		}
+	};
+
+	requestAnimationFrame(animate);
+}
+</script>
+
 <template>
 	<div
 		class="relative w-full pb-40 flex flex-col lg:flex-row gap-20 items-start justify-between">
@@ -93,9 +265,7 @@
 				</div>
 
 				<!-- Message d'erreur pour consentement RGPD -->
-				<Transition
-					name="fade-reverse-scale"
-					mode="out-in">
+				<Transition name="fade-reverse-scale" mode="out-in">
 					<div
 						v-if="showConsentError"
 						class="w-full flex justify-start md:justify-end">
@@ -150,9 +320,7 @@
 			</form>
 
 			<!-- Popup modale avec loader et message envoyé -->
-			<Transition
-				name="fade-reverse-scale"
-				mode="out-in">
+			<Transition name="fade-reverse-scale" mode="out-in">
 				<div
 					v-if="showPopup"
 					class="z-[100] absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-primary">
@@ -191,9 +359,7 @@
 							</div>
 						</div>
 					</Transition>
-					<Transition
-						name="fade-reverse-scale"
-						mode="out-in">
+					<Transition name="fade-reverse-scale" mode="out-in">
 						<div
 							v-if="isError"
 							class="flex flex-col justify-center items-center gap-y-10">
@@ -399,9 +565,7 @@
 					</div>
 				</div>
 			</div>
-			<Transition
-				name="fade-reverse-scale"
-				mode="out-in">
+			<Transition name="fade-reverse-scale" mode="out-in">
 				<div
 					v-if="showCopyPopup"
 					style="font-family: Share Tech Mono"
@@ -417,178 +581,6 @@
 		</div>
 	</div>
 </template>
-
-<script setup>
-import { reactive, ref, watch } from "vue";
-import { stickyContact, appearContact } from "@/plugins/gsap.js";
-
-const isDesktop = () => {
-	return window.innerWidth >= 1024;
-};
-
-onMounted(() => {
-	if (isDesktop()) {
-		stickyContact();
-	}
-	appearContact();
-
-	window.addEventListener("resize", () => {
-		if (isDesktop()) {
-			stickyContact();
-		}
-	});
-});
-
-const form = reactive({
-	firstname: "",
-	lastname: "",
-	email: "",
-	company: "",
-	message: "",
-	rgpdConsent: false,
-});
-
-const showPopup = ref(false);
-const isMessageSent = ref(false);
-const isError = ref(false);
-const showConsentError = ref(false);
-const copySuccessMessage = ref("");
-const showCopyPopup = ref(false);
-const progressBarWidth = ref(100);
-
-const submitForm = async () => {
-	if (!form.rgpdConsent) {
-		showConsentError.value = true;
-		return;
-	}
-
-	showConsentError.value = false;
-	showPopup.value = true;
-	isError.value = false;
-
-	const formData = {
-		firstname: form.firstname,
-		lastname: form.lastname,
-		email: form.email,
-		company: form.company,
-		message: form.message,
-	};
-
-	try {
-		const response = await fetch("https://www.remycanal.me/api/send-emails", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-
-		const result = await response.json();
-
-		if (result.status === "success") {
-			isMessageSent.value = true;
-		} else {
-			isError.value = true;
-			console.error("Erreur lors de l'envoi:", result.message);
-		}
-	} catch (error) {
-		console.error("Erreur lors de la requête:", error);
-		isError.value = true;
-	}
-
-	setTimeout(() => {
-		showPopup.value = false;
-		isMessageSent.value = false;
-		isError.value = false;
-	}, 2000);
-};
-
-watch(
-	() => form.rgpdConsent,
-	(newValue) => {
-		if (newValue) {
-			showConsentError.value = false;
-		}
-	}
-);
-
-const emailText = ref(null);
-const phoneText = ref(null);
-const locationText = ref(null);
-
-const copiedEmail = ref(false);
-const copiedPhone = ref(false);
-const copiedLocation = ref(false);
-
-function copyToClipboard(refName) {
-	let textToCopy = "";
-	if (refName === "emailText") {
-		textToCopy = emailText.value.innerText;
-	} else if (refName === "phoneText") {
-		textToCopy = phoneText.value.innerText;
-	} else if (refName === "locationText") {
-		textToCopy = locationText.value.innerText;
-	}
-
-	navigator.clipboard.writeText(textToCopy).then(() => {
-		if (refName === "emailText") {
-			copiedEmail.value = true;
-			copySuccessMessage.value = "Email address copied!";
-			showCopyPopup.value = true;
-			startProgressBar();
-			setTimeout(() => {
-				showCopyPopup.value = false;
-				copiedEmail.value = false;
-			}, 2000);
-			copiedPhone.value = false;
-			copiedLocation.value = false;
-		} else if (refName === "phoneText") {
-			copiedEmail.value = false;
-			copiedPhone.value = true;
-			copySuccessMessage.value = "Phone number copied!";
-			showCopyPopup.value = true;
-			startProgressBar();
-			setTimeout(() => {
-				showCopyPopup.value = false;
-				copiedPhone.value = false;
-			}, 2000);
-			copiedLocation.value = false;
-		} else if (refName === "locationText") {
-			copiedEmail.value = false;
-			copiedPhone.value = false;
-			copiedLocation.value = true;
-			copySuccessMessage.value = "Location copied!";
-			showCopyPopup.value = true;
-			startProgressBar();
-			setTimeout(() => {
-				showCopyPopup.value = false;
-				copiedLocation.value = false;
-			}, 2000);
-		}
-	});
-}
-
-function startProgressBar() {
-	progressBarWidth.value = 100;
-	const duration = 2000;
-	const startTime = performance.now();
-
-	const animate = (currentTime) => {
-		const elapsed = currentTime - startTime;
-		const progress = Math.max(0, 100 - (elapsed / duration) * 100);
-		progressBarWidth.value = progress;
-
-		if (elapsed < duration) {
-			requestAnimationFrame(animate);
-		} else {
-			progressBarWidth.value = 0;
-			showCopyPopup.value = false;
-		}
-	};
-
-	requestAnimationFrame(animate);
-}
-</script>
 
 <style scoped>
 .timed-popup {

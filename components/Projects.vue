@@ -1,3 +1,141 @@
+<script setup>
+import {
+	showImage,
+	hideImages,
+	showProject,
+	hideProject,
+	stickyProject,
+	apparitionMobileProjectCards,
+} from "@/plugins/gsap";
+
+const isDesktop = () => {
+	return window.innerWidth >= 1024;
+};
+
+onMounted(() => {
+	if (isDesktop()) {
+		stickyProject();
+	} else {
+		apparitionMobileProjectCards();
+	}
+
+	window.addEventListener("resize", () => {
+		if (isDesktop()) {
+			stickyProject();
+		} else {
+			apparitionMobileProjectCards();
+		}
+	});
+});
+
+const projects = [
+	{
+		slug: "portfolio",
+		title: "Portfolio of Rémy Canal",
+		description: "Creation 'from scratch' of my portfolio.",
+		link: "/",
+		img: "/img/mockup-portfolio-remycanal.webp",
+		logo: "/img/logo-blue.png",
+		type: "website",
+		date: "2024",
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+			"Vercel",
+		],
+	},
+	{
+		slug: "sharewood",
+		title: "Sharewood",
+		description: "Redesign of the entire front part of the Sharewood website.",
+		link: "https://sharewood.team/",
+		img: "/img/mockup-sharewood.webp",
+		logo: "/img/logo-sharewood.png",
+		type: "website",
+		date: "2023",
+		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
+	},
+	{
+		slug: "ecofid",
+		title: "Éco-fidélité",
+		description:
+			"Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
+		link: "https://www.eco-fidelite.com/",
+		img: "/img/mockup-ecofid.webp",
+		logo: "/img/logo-ecofid.png",
+		type: "website",
+		date: "2023",
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+		],
+	},
+	{
+		slug: "odl",
+		title: "Office des Lumières",
+		description:
+			"Participation in the creation and animation of a website for a notary firm.",
+		link: "https://officedeslumieres.com/",
+		img: "/img/mockup-odl.webp",
+		logo: "/img/logo-odl.png",
+		type: "website",
+		date: "2023",
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"GSAP",
+			"TailwindCSS",
+		],
+	},
+	{
+		slug: "lappart",
+		title: "L'Appart Fitness",
+		description:
+			"Participation in the full redesign of the L'Appart Fitness website.",
+		link: "https://www.lappartfitness.com/",
+		img: "/img/mockup-lappart.webp",
+		logo: "/img/logo-lappart.png",
+		type: "website",
+		last: true,
+		date: "2023",
+		technos: [
+			"Wordpress",
+			"Elementor",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"TailwindCSS",
+		],
+	},
+];
+
+const isSomethingHover = ref(false);
+const hoveredProject = ref(null);
+
+const startHover = (projectSlug) => {
+	isSomethingHover.value = true;
+	hoveredProject.value = projectSlug;
+};
+
+const stopHover = () => {
+	isSomethingHover.value = false;
+	hoveredProject.value = null;
+};
+</script>
+
 <template>
 	<div class="relative overflow-visible projects-container my-60 lg:my-96">
 		<h2
@@ -181,141 +319,3 @@
 		</div>
 	</div>
 </template>
-
-<script setup>
-import {
-	showImage,
-	hideImages,
-	showProject,
-	hideProject,
-	stickyProject,
-	apparitionMobileProjectCards,
-} from "@/plugins/gsap";
-
-const isDesktop = () => {
-	return window.innerWidth >= 1024;
-};
-
-onMounted(() => {
-	if (isDesktop()) {
-		stickyProject();
-	} else {
-		apparitionMobileProjectCards();
-	}
-
-	window.addEventListener("resize", () => {
-		if (isDesktop()) {
-			stickyProject();
-		} else {
-			apparitionMobileProjectCards();
-		}
-	});
-});
-
-const projects = [
-	{
-		slug: "portfolio",
-		title: "Portfolio of Rémy Canal",
-		description: "Creation 'from scratch' of my portfolio.",
-		link: "/",
-		img: "/img/mockup-portfolio-remycanal.webp",
-		logo: "/img/logo-blue.png",
-		type: "website",
-		date: "2024",
-		technos: [
-			"Vue.js",
-			"Nuxt.js",
-			"HTML",
-			"CSS",
-			"JavaScript",
-			"GSAP",
-			"TailwindCSS",
-			"Vercel",
-		],
-	},
-	{
-		slug: "sharewood",
-		title: "Sharewood",
-		description: "Redesign of the entire front part of the Sharewood website.",
-		link: "https://sharewood.team/",
-		img: "/img/mockup-sharewood.webp",
-		logo: "/img/logo-sharewood.png",
-		type: "website",
-		date: "2023",
-		technos: ["Wordpress", "Elementor", "Sass", "HTML", "CSS", "JavaScript"],
-	},
-	{
-		slug: "ecofid",
-		title: "Éco-fidélité",
-		description:
-			"Creation of an entire website for Letmotiv’s Éco-fidélité® solution.",
-		link: "https://www.eco-fidelite.com/",
-		img: "/img/mockup-ecofid.webp",
-		logo: "/img/logo-ecofid.png",
-		type: "website",
-		date: "2023",
-		technos: [
-			"Vue.js",
-			"Nuxt.js",
-			"HTML",
-			"CSS",
-			"JavaScript",
-			"GSAP",
-			"TailwindCSS",
-		],
-	},
-	{
-		slug: "odl",
-		title: "Office des Lumières",
-		description:
-			"Participation in the creation and animation of a website for a notary firm.",
-		link: "https://officedeslumieres.com/",
-		img: "/img/mockup-odl.webp",
-		logo: "/img/logo-odl.png",
-		type: "website",
-		date: "2023",
-		technos: [
-			"Vue.js",
-			"Nuxt.js",
-			"HTML",
-			"CSS",
-			"JavaScript",
-			"GSAP",
-			"TailwindCSS",
-		],
-	},
-	{
-		slug: "lappart",
-		title: "L'Appart Fitness",
-		description:
-			"Participation in the full redesign of the L'Appart Fitness website.",
-		link: "https://www.lappartfitness.com/",
-		img: "/img/mockup-lappart.webp",
-		logo: "/img/logo-lappart.png",
-		type: "website",
-		last: true,
-		date: "2023",
-		technos: [
-			"Wordpress",
-			"Elementor",
-			"HTML",
-			"CSS",
-			"JavaScript",
-			"TailwindCSS",
-		],
-	},
-];
-
-const isSomethingHover = ref(false);
-const hoveredProject = ref(null);
-
-const startHover = (projectSlug) => {
-	isSomethingHover.value = true;
-	hoveredProject.value = projectSlug;
-};
-
-const stopHover = () => {
-	isSomethingHover.value = false;
-	hoveredProject.value = null;
-};
-</script>

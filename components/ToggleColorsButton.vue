@@ -1,60 +1,8 @@
-<template>
-	<div id="color-button" class="lg:opacity-0">
-		<button
-			@click="toggleColors"
-			aria-label="Change theme color"
-			class="group circle-container relative hover-scale-effect clickable cursor-pointer lg:cursor-none w-[60px] h-[60px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary-dark bg-black transition-all shadow-custom-outline duration-500">
-			<div>
-				<Icon
-					name="i-material-symbols:format-color-fill-rounded"
-					ssr="true"
-					mode="svg"
-					style="color: var(--white)"
-					class="w-7 h-7 group-hover:lg:opacity-0 lg:-ml-1 transition-all duration-300" />
-			</div>
-
-			<div
-				class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-pointer lg:cursor-none flex justify-center items-center gap-x-4">
-				<label
-					v-for="(color, index) in colorOptions"
-					:key="index"
-					:aria-label="`Select color ${color.family}`"
-					class="absolute cursor-pointer lg:cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
-					<input
-						type="checkbox"
-						class="cursor-pointer lg:cursor-none"
-						:class="`color-${index + 1} cyberpunk-checkbox`"
-						v-model="checkboxes[index]"
-						@change="
-							updateCheckbox(
-								index,
-								color.primary,
-								color.secondary,
-								color.transparent,
-								color.family
-							);
-							updateFavicon(color.family);
-						"
-						:aria-checked="checkboxes[index] ? 'true' : 'false'" />
-					<span class="sr-only">{{
-						`Color ${index + 1}: ${color.family}`
-					}}</span>
-				</label>
-			</div>
-		</button>
-	</div>
-</template>
-
 <script setup>
 import { animationCheckboxColor } from "@/plugins/gsap";
 
 defineProps(["selectedColor"]);
 const emit = defineEmits(["update-color"]);
-
-const isValueHover1 = ref(false);
-const isValueHover2 = ref(false);
-const isValueHover3 = ref(false);
-const isValueHover4 = ref(false);
 
 const checkboxes = ref([
 	true,
@@ -196,3 +144,50 @@ const updateFavicon = (color) => {
 	link.href = `https://www.remycanal.me/${faviconName}`;
 };
 </script>
+
+<template>
+	<div id="color-button" class="lg:opacity-0">
+		<button
+			@click="toggleColors"
+			aria-label="Change theme color"
+			class="group circle-container relative hover-scale-effect clickable cursor-pointer lg:cursor-none w-[60px] h-[60px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary-dark bg-black transition-all shadow-custom-outline duration-500">
+			<div>
+				<Icon
+					name="i-material-symbols:format-color-fill-rounded"
+					ssr="true"
+					mode="svg"
+					style="color: var(--white)"
+					class="w-7 h-7 group-hover:lg:opacity-0 lg:-ml-1 transition-all duration-300" />
+			</div>
+
+			<div
+				class="absolute lg:pointer-events-none group-hover:lg:pointer-events-auto lg:relative cursor-pointer lg:cursor-none flex justify-center items-center gap-x-4">
+				<label
+					v-for="(color, index) in colorOptions"
+					:key="index"
+					:aria-label="`Select color ${color.family}`"
+					class="absolute cursor-pointer lg:cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
+					<input
+						type="checkbox"
+						class="cursor-pointer lg:cursor-none"
+						:class="`color-${index + 1} cyberpunk-checkbox`"
+						v-model="checkboxes[index]"
+						@change="
+							updateCheckbox(
+								index,
+								color.primary,
+								color.secondary,
+								color.transparent,
+								color.family
+							);
+							updateFavicon(color.family);
+						"
+						:aria-checked="checkboxes[index] ? 'true' : 'false'" />
+					<span class="sr-only">{{
+						`Color ${index + 1}: ${color.family}`
+					}}</span>
+				</label>
+			</div>
+		</button>
+	</div>
+</template>

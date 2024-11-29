@@ -1,16 +1,3 @@
-<template>
-	<span class="scramble-text">
-		<span
-			v-for="(letter, index) in displayedText"
-			:key="index"
-			class="letter"
-			:class="isFinalText ? 'text-white' : 'text-secondary'"
-		>
-			{{ letter === " " ? "\u00A0" : letter }}
-		</span>
-	</span>
-</template>
-
 <script setup>
 import { ref, watch } from "vue";
 
@@ -74,6 +61,18 @@ watch(
 	{ immediate: true }
 );
 </script>
+
+<template>
+	<span class="scramble-text">
+		<span
+			v-for="(letter, index) in displayedText"
+			:key="index"
+			class="letter"
+			:class="isFinalText ? 'text-white' : 'text-secondary'">
+			{{ letter === " " ? "\u00A0" : letter }}
+		</span>
+	</span>
+</template>
 
 <style scoped>
 .scramble-text {
