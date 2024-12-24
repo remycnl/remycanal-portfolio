@@ -217,6 +217,7 @@ const setCSP = () => {
 
 <template>
 	<div class="lg:cursor-none">
+		<GrainEffect />
 		<div
 			class="hidden lg:block custom-cursor shadow-around bg-secondary rounded-full pointer-events-none z-[1000]">
 			<div
@@ -268,3 +269,16 @@ const setCSP = () => {
 		</div>
 	</div>
 </template>
+
+<style>
+ /* Canvas pour effet grain */
+ #grain-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* Ne gêne pas les clics sur le site */
+      z-index: 9999; /* Toujours au-dessus */
+    }
+	</style>
