@@ -20,7 +20,6 @@ const drawGrain = () => {
 	ctx.putImageData(imageData, 0, 0);
 };
 
-
 const initGrainCanvas = () => {
 	const dpr = window.devicePixelRatio || 1;
 	const grainSize = 512;
