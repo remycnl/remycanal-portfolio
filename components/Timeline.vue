@@ -82,6 +82,18 @@ const data = [
 			},
 		],
 	},
+	{
+		date: "2025",
+		type: "experience",
+		title: "Awwwards.",
+		subtitle: "Young jury (currently)",
+		images: [
+			{
+				src: "/img/awwwards-logo.png",
+				alt: "Awwwards Logo",
+			},
+		],
+	},
 ];
 </script>
 
