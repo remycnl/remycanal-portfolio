@@ -354,7 +354,7 @@ function startProgressBar() {
 								title="Message Sent!"
 								class="w-[30rem] h-auto" />
 							<div
-								class="font-bold text-primary text-[2rem] md:text-[3rem] mb-40 md:mb-0">
+								class="font-bold text-blue-dark text-[2rem] md:text-[3rem] mb-40 md:mb-0">
 								Message Sent!
 							</div>
 						</div>
