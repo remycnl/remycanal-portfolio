@@ -55,7 +55,7 @@ article {
 }
 @media screen and (min-width: 1024px) {
 	.bento {
-		grid-template-rows: 4fr 3fr 3fr;
+		grid-template-rows: 4fr 2.5fr 2fr;
 		grid-template-columns: repeat(3, 1fr);
 	}
 	article {

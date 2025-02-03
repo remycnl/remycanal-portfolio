@@ -7,7 +7,7 @@
 				{{ error.statusCode === 404 ? "404" : error.statusCode }}
 			</h1>
 			<div class="rounded-full h-10 w-0.5 bg-[#8c99b0a2]"></div>
-			<p class="text-xl md:text-2xl">
+			<p class="font-['Share_Tech_Mono'] text-xl md:text-2xl">
 				{{ error.statusCode === 404 ? "Page Not Found" : error.message }}
 			</p>
 		</div>

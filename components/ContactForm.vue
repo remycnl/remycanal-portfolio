@@ -175,10 +175,10 @@ function startProgressBar() {
 		class="relative w-full pb-40 flex flex-col lg:flex-row gap-20 items-start justify-between">
 		<div
 			id="container-contact"
-			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start items-start">
+			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start space-y-5 md:space-y-4 items-start">
 			<h2
 				id="Contact me"
-				class="text-color-saturate text-[2rem] md:text-[3rem] lg:text-[2.8rem] 2xl:text-[3.5rem] md:leading-[4rem] lg:leading-[3.5rem] 2xl:leading-[4.5rem] font-bold text-secondary md:mb-1 text-start">
+				class="text-color-saturate text-[2rem] md:text-[3rem] lg:text-[2.8rem] 2xl:text-[3.5rem] md:leading-[4rem] lg:leading-[3.5rem] 2xl:leading-[4.5rem] font-bold text-primary text-start">
 				Just say Hello !
 			</h2>
 			<h3
@@ -198,7 +198,7 @@ function startProgressBar() {
 						id="firstname"
 						type="text"
 						v-model="form.firstname"
-						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-primary focus:ring-2 focus:ring-primary text-white"
 						placeholder="Firstname*"
 						autocomplete="off"
 						required />
@@ -206,7 +206,7 @@ function startProgressBar() {
 						id="lastname"
 						type="text"
 						v-model="form.lastname"
-						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-primary focus:ring-2 focus:ring-primary text-white"
 						placeholder="Lastname*"
 						autocomplete="off"
 						required />
@@ -219,7 +219,7 @@ function startProgressBar() {
 						id="email"
 						type="email"
 						v-model="form.email"
-						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-primary focus:ring-2 focus:ring-primary text-white"
 						placeholder="Email*"
 						autocomplete="off"
 						required />
@@ -227,7 +227,7 @@ function startProgressBar() {
 						id="company"
 						type="text"
 						v-model="form.company"
-						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full md:w-1/2 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-primary focus:ring-2 focus:ring-primary text-white"
 						placeholder="Company"
 						autocomplete="off" />
 				</div>
@@ -237,7 +237,7 @@ function startProgressBar() {
 					<textarea
 						id="message"
 						v-model="form.message"
-						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-secondary focus:ring-2 focus:ring-secondary text-white"
+						class="hover-scale-effect tracking-wider clickable cursor-pointer lg:cursor-none shadow-around shadow-black w-full h-32 px-4 py-4 bg-gray-dark rounded-lg focus:outline-none caret-primary focus:ring-2 focus:ring-primary text-white"
 						placeholder="Message*"
 						autocomplete="off"
 						required></textarea>
@@ -289,8 +289,8 @@ function startProgressBar() {
 										</svg>
 									</div>
 									<div>
-										<p class="text-white text-base">Please accept the terms</p>
-										<p class="text-gray-500 text-sm">
+										<p class="font-['Share_Tech_Mono'] text-white text-base">Please accept the terms</p>
+										<p class="font-['Share_Tech_Mono'] text-gray-500 text-sm">
 											You must agree to the data processing terms before
 											submitting.
 										</p>
@@ -305,15 +305,15 @@ function startProgressBar() {
 				<div class="flex justify-end">
 					<button
 						type="submit"
-						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest">
+						class="cssbutton transition-colors shadow-around shadow-black duration-1000 hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest">
 						<span class="font-semibold text-[#FFFFFF]"> Send </span>
 						<div class="icon">
 							<Icon
 								name="i-mingcute:send-plane-line"
 								ssr="true"
 								mode="svg"
-								style="color: var(--primary-color)"
-								class="w-[2.2em] h-[2.2em] transition-all duration-[1s]" />
+								style="color: var(--color-primary)"
+								class="w-[2.2em] h-[2.2em] transition-all duration-1000" />
 						</div>
 					</button>
 				</div>
@@ -323,7 +323,7 @@ function startProgressBar() {
 			<Transition name="fade-reverse-scale" mode="out-in">
 				<div
 					v-if="showPopup"
-					class="z-[100] absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-primary">
+					class="z-100 absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-primary">
 					<!-- Loader pendant l'envoi -->
 					<div
 						v-if="!isMessageSent && !isError"
@@ -354,7 +354,7 @@ function startProgressBar() {
 								title="Message Sent!"
 								class="w-[30rem] h-auto" />
 							<div
-								class="font-bold text-secondary text-[2rem] md:text-[3rem] mb-40 md:mb-0">
+								class="font-bold text-primary text-[2rem] md:text-[3rem] mb-40 md:mb-0">
 								Message Sent!
 							</div>
 						</div>
@@ -381,7 +381,7 @@ function startProgressBar() {
 		</div>
 		<div
 			id="contact"
-			class="relative p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary-dark group shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
+			class="relative p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary group shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
 			<h2
 				class="text-[2rem] md:text-[2.8rem] 2xl:text-[3.5rem] leading-[2rem] md:leading-[2.8rem] font-bold text-gray-light group-hover:text-white transition-colors duration-500 mb-5 text-start">
 				Get in touch
@@ -391,12 +391,12 @@ function startProgressBar() {
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<div
-						class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon
 							name="i-material-symbols:alternate-email"
 							ssr="true"
 							mode="svg"
-							style="color: var(--primary-color)"
+							style="color: var(--color-primary)"
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>
 					<div class="w-full flex flex-col items-start">
@@ -450,12 +450,12 @@ function startProgressBar() {
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<div
-						class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon
 							name="i-ic:outline-local-phone"
 							ssr="true"
 							mode="svg"
-							style="color: var(--primary-color)"
+							style="color: var(--color-primary)"
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>
 					<div class="w-full flex flex-col items-start">
@@ -510,12 +510,12 @@ function startProgressBar() {
 				<div
 					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<div
-						class="p-1 flex items-center justify-center rounded-lg bg-secondary-dark">
+						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon
 							name="i-material-symbols:location-on-outline"
 							ssr="true"
 							mode="svg"
-							style="color: var(--primary-color)"
+							style="color: var(--color-primary)"
 							class="w-12 h-12 md:w-14 md:h-14" />
 					</div>
 					<div class="w-full flex flex-col items-start">
@@ -569,7 +569,7 @@ function startProgressBar() {
 				<div
 					v-if="showCopyPopup"
 					style="font-family: Share Tech Mono"
-					class="absolute -bottom-24 right-0 bg-secondary shadow-around shadow-black text-white p-4 rounded-lg">
+					class="absolute -bottom-24 right-0 bg-primary shadow-around shadow-black text-white p-4 rounded-lg">
 					<span class="font-semibold tracking-wider">
 						{{ copySuccessMessage }}
 					</span>

@@ -86,7 +86,7 @@ const data = [
 		date: "2025",
 		type: "experience",
 		title: "Awwwards.",
-		subtitle: "Young jury (currently)",
+		subtitle: "Young Jury (currently)",
 		images: [
 			{
 				src: "/img/awwwards-logo.png",
@@ -150,7 +150,7 @@ const data = [
 					<div class="mb-8 flex flex-col gap-y-5 lg:gap-y-8">
 						<div class="flex flex-col gap-y-2">
 							<h3
-								class="text-color-saturate text-lg md:text-2xl lg:text-3xl text-secondary">
+								class="text-color-saturate text-lg md:text-2xl lg:text-3xl text-primary">
 								{{ item.title }}
 							</h3>
 							<h4
@@ -160,13 +160,13 @@ const data = [
 							</h4>
 						</div>
 						<div
-							class="text-gray-light text-sm md:text-lg flex flex-col gap-y-4">
+							class="font-['Share_Tech_Mono'] text-gray-light text-sm md:text-lg flex flex-col gap-y-4">
 							<p v-for="(paragraph, idx) in item.paragraph" :key="idx">
 								{{ paragraph }}
 							</p>
 						</div>
 						<div
-							class="group overflow-hidden bg-gray-dark text-secondary border border-secondary shadow-around shadow-black-dark w-full lg:w-2/3 2xl:w-1/3 h-40 lg:h-56 2xl:h-60 rounded-[1.5rem] flex justify-center items-center p-5 lg:p-10">
+							class="group overflow-hidden bg-gray-dark text-primary border border-primary shadow-around shadow-black-dark w-full lg:w-2/3 2xl:w-1/3 h-40 lg:h-56 2xl:h-60 rounded-3xl flex justify-center items-center p-5 lg:p-10">
 							<NuxtImg
 								v-for="(img, imgIdx) in item.images"
 								:key="imgIdx"
@@ -186,7 +186,7 @@ const data = [
 				class="absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] hover:saturate-200 transition-all duration-500">
 				<div
 					ref="progressBar"
-					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-secondary via-secondary-dark to-transparent rounded-full"></div>
+					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-primary via-secondary to-transparent rounded-full"></div>
 			</div>
 		</div>
 	</div>

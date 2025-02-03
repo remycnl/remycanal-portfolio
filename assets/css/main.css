@@ -1,52 +1,59 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 html {
 	scroll-behavior: smooth;
 }
 
-:root {
-	--purple: #6c34cc;
-	--red: #dd314e;
-	--pink: #ff3faf;
-	--orange: #dd5f31;
-	--yellow: #e9c925;
-	--green: #67d13d;
-	--cyan: #31bedd;
-	--blue: #32a1da;
-	--gray: #868686;
-	--black: #111319;
-	--white: #d0d4db;
-	--primary-color: #6c34cc;
-	--primary-color-transparent: #6c34cc4f;
-	--secondary-color: #301563;
+@theme {
+	--color-purple: #6c34cc;
+	--color-red: #dd314e;
+	--color-pink: #ff3faf;
+	--color-orange: #dd5f31;
+	--color-yellow: #e9c925;
+	--color-green: #67d13d;
+	--color-cyan: #31bedd;
+	--color-blue: #32a1da;
+	--color-gray: #868686;
+	--color-black: #111319;
+	--color-white: #d0d4db;
+	--color-primary: #6c34cc;
+	--color-primary-transparent: #6c34cc4f;
+	--color-secondary: #301563;
+	--color-black-dark: #020617;
+	--color-blue-dark: #0f172a;
+	--color-gray-light: #8c99b0;
+	--color-gray-medium: #8c99b0a2;
+	--color-gray-semi: #334054;
+	--color-gray-dark: #1f293b;
+
+	--shadow-around: 0 0 30px rgba(0, 0, 0, 0.5);
+	--shadow-custom-outline: 0px 0px 0px 4px var(--color-primary-transparent);
 }
 
 ::selection {
-	background-color: var(--black);
-	color: var(--primary-color);
+	background-color: var(--color-black);
+	color: var(--color-primary);
 }
 
 body {
 	@apply lg:cursor-none;
-	background-color: var(--black);
+	background-color: var(--color-black);
 	font-family: Orbitron;
 	scrollbar-width: thin; /* Pour Firefox */
 	scrollbar-color: #1f293b; /* Pour Firefox */
 }
 
-h1 {
+/* h1 {
 	font-size: 6rem;
 	line-height: 6.4rem;
-}
+} */
 
 h2 {
 	@apply tracking-widest font-bold;
-	font-size: 4rem;
-	line-height: 5rem;
+	/* font-size: 4rem;
+	line-height: 5rem; */
 }
-
+/* 
 h3 {
 	font-size: 2.5rem;
 	line-height: 2.5rem;
@@ -55,11 +62,11 @@ h3 {
 h4 {
 	font-size: 2rem;
 	line-height: 2.5rem;
-}
+} */
 
-p {
+/* p {
 	font-family: Share Tech Mono;
-}
+} */
 
 .header {
 	z-index: 999;
@@ -69,7 +76,7 @@ p {
 	@apply select-none pointer-events-none;
 }
 .container-s:hover .s {
-	background: var(--primary-color);
+	background: var(--color-primary);
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
@@ -80,7 +87,7 @@ p {
 }
 
 .text-color-saturate {
-	color: var(--primary-color);
+	color: var(--color-primary);
 	transition: color 0.3s ease-in-out, filter 0.5s ease-in-out;
 	z-index: 100;
 	@apply transform-gpu;
@@ -91,11 +98,11 @@ p {
 }
 
 .text-shadow {
-	filter: drop-shadow(0 0 5px var(--black));
+	filter: drop-shadow(0 0 5px var(--color-black));
 }
 
 .logo-img {
-	filter: drop-shadow(0 0 10px var(--black));
+	filter: drop-shadow(0 0 10px var(--color-black));
 }
 
 @media screen and (max-width: 1024px) {
@@ -104,26 +111,13 @@ p {
 	}
 }
 
-@media (max-width: 1023px) {
-	.gradient-img {
-		-webkit-mask-image: linear-gradient(
-			to top,
-			transparent 0%,
-			var(--black) 80%
-		);
-		mask-image: linear-gradient(to top, transparent 0%, var(--black) 80%);
-	}
-}
-
-@media (min-width: 1024px) {
-	.gradient-img {
-		-webkit-mask-image: linear-gradient(
-			to top,
-			transparent 0%,
-			var(--black) 10%
-		);
-		mask-image: linear-gradient(to top, transparent 0%, var(--black) 10%);
-	}
+.gradient-img {
+	-webkit-mask-image: linear-gradient(
+		to top,
+		transparent 0%,
+		var(--color-black) 60%
+	);
+	mask-image: linear-gradient(to top, transparent 0%, var(--color-black) 60%);
 }
 
 @media (max-width: 1023px) {
@@ -138,7 +132,7 @@ p {
 		width: 0;
 		height: 2px;
 		border-radius: 2px;
-		background-color: var(--primary-color);
+		background-color: var(--color-primary);
 		position: absolute;
 		bottom: -0.25rem;
 		right: 0;
@@ -162,7 +156,7 @@ p {
 	width: 0;
 	height: 2px;
 	border-radius: 2px;
-	background-color: var(--primary-color);
+	background-color: var(--color-primary);
 	position: absolute;
 	bottom: -0.25rem;
 	right: 0;
@@ -179,8 +173,8 @@ p {
 }
 
 input:-webkit-autofill {
-	background-color: var(--black) !important;
-	color: var(--white) !important;
+	background-color: var(--color-black) !important;
+	color: var(--color-white) !important;
 }
 
 #progressBar {

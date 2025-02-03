@@ -461,7 +461,7 @@ export function showImage(imageSrc) {
 	nuxtImg.src = imageSrc;
 	nuxtImg.alt = `Mockup - ${currentImage}`;
 	nuxtImg.className =
-		"absolute top-0 left-0 rounded-[1.5rem] w-full h-full brightness-[.7] object-fill";
+		"absolute top-0 left-0 rounded-3xl w-full h-full brightness-[.7] object-fill";
 	nuxtImg.style.transform = "translateY(100%)";
 
 	const container = document.querySelector(".image-animation-container");

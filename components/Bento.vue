@@ -34,77 +34,77 @@ const ancreToSection = (event, targetId) => {
 		<div class="bento opacity-0 grid gap-5 w-full h-full">
 			<article
 				id="experience-nbr"
-				class="article group opacity-0 hover:saturate-200 relative overflow-hidden rounded-[1rem] shadow-around p-7 shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
+				class="article group opacity-0 hover:saturate-200 relative overflow-hidden rounded-2xl shadow-around p-7 shadow-black-dark backdrop-blur-md bg-primary-transparent transition-filter-bgcolor duration-1000">
 				<div
 					class="flex flex-row items-center gap-x-7 2xl:gap-x-10 justify-between h-full w-full font-bold text-gray-light group-hover:text-white transition-colors duration-500">
 					<p
 						id="experience"
-						class="font-[Orbitron] pt-10 text-[10rem] lg:text-[8rem] 2xl:text-[15rem]">
+						class="pt-10 text-[10rem] lg:text-[8rem] 2xl:text-[15rem]">
 						0
 					</p>
 					<div
 						class="pt-24 lg:pt-20 2xl:pt-40 flex flex-col w-full h-full justify-center items-start text-[1.5rem] md:text-xl 2xl:text-3xl">
-						<p class="font-[Orbitron]">years of</p>
-						<p class="font-[Orbitron]">experience</p>
+						<p>years of</p>
+						<p>experience</p>
 					</div>
 				</div>
 				<div
-					class="absolute border-[1.25rem] border-black top-[-40%] right-[-40%] h-[80%] w-[80%] rounded-full bg-secondary transition-colors duration-[1s]"></div>
+					class="absolute border-[1.25rem] border-black top-[-40%] right-[-40%] h-[80%] w-[80%] rounded-full bg-primary transition-colors duration-1000"></div>
 			</article>
 			<article
-				class="article opacity-0 hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-filter-bgcolor duration-[1s]">
+				class="article opacity-0 hover:saturate-200 rounded-2xl shadow-around shadow-black-dark backdrop-blur-md bg-primary transition-filter-bgcolor duration-1000">
 				<div
-					class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
+					class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-blue-dark">
 					<p
-						class="text-[1.5rem] lg:text-[1.2rem] 2xl:text-[1.5rem] font-[Orbitron]">
+						class="text-[1.5rem] lg:text-[1.2rem] 2xl:text-[1.5rem]">
 						Developer
 					</p>
 					<p
-						class="text-[3rem] lg:text-[2rem] 2xl:text-[3rem] leading-tight uppercase text-nowrap">
+						class="font-['Share_Tech_Mono'] text-[3rem] lg:text-[2rem] 2xl:text-[3rem] leading-tight uppercase text-nowrap">
 						&ldquo;Full-Stack&rdquo;
 					</p>
 				</div>
 			</article>
 			<article
-				class="article opacity-0 hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary transition-filter-bgcolor duration-[1s]">
+				class="article opacity-0 hover:saturate-200 rounded-2xl shadow-around shadow-black-dark backdrop-blur-md bg-primary transition-filter-bgcolor duration-1000">
 				<div
-					class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-primary">
-					<p class="text-[1.5rem] 2xl:text-[2rem] font-[Orbitron]">
+					class="flex flex-col items-center justify-center h-full w-full p-5 font-bold text-blue-dark">
+					<p class="text-[1.5rem] 2xl:text-[2rem]">
 						Student at
 					</p>
-					<p class="text-[3rem] 2xl:text-[4rem] leading-tight uppercase">
+					<p class="font-['Share_Tech_Mono'] text-[3rem] 2xl:text-[4rem] leading-tight uppercase">
 						{Epitech}
 					</p>
 				</div>
 			</article>
 			<article
 				id="projects-nbr"
-				class="article group opacity-0 hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
+				class="article group opacity-0 hover:saturate-200 rounded-2xl shadow-around shadow-black-dark backdrop-blur-md bg-primary-transparent transition-filter-bgcolor duration-1000">
 				<div
-					class="flex flex-col items-center justify-center h-full w-full px-7 lg:p-7 font-bold text-gray-light group-hover:text-white transition-colors duration-500 text-3xl lg:text-xl 2xl:text-4xl">
+					class="flex flex-col items-center justify-center h-full w-full px-7 pb-7 lg:p-7 font-bold text-gray-light group-hover:text-white transition-colors duration-500 text-3xl lg:text-xl 2xl:text-4xl">
 					<div
 						class="flex flex-col gap-y-1 items-start justify-center h-full w-full">
-						<p class="font-[Orbitron]">Contributed</p>
-						<p class="font-[Orbitron]">to</p>
+						<p>Contributed</p>
+						<p>to</p>
 					</div>
 					<div
-						class="flex flex-col justify-center gap-y-8 lg:gap-y-7 2xl:gap-y-10 w-full h-full items-end">
+						class="flex flex-col justify-center w-full h-full items-end">
 						<p
 							id="projects-number"
-							class="text-[6rem] lg:text-[5rem] 2xl:text-[8rem] font-[Orbitron]">
+							class="text-[6rem] lg:text-[5rem] 2xl:text-[8rem]">
 							0
 						</p>
-						<p class="font-[Orbitron]">websites</p>
+						<p>websites</p>
 					</div>
 				</div>
 			</article>
 			<article
-				class="article group opacity-0 relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-[1rem] shadow-around shadow-black-dark backdrop-blur-md bg-secondary-transparent transition-filter-bgcolor duration-[1s]">
+				class="article group opacity-0 relative pb-44 md:pb-0 group overflow-hidden hover:saturate-200 rounded-2xl shadow-around shadow-black-dark backdrop-blur-md bg-primary-transparent transition-filter-bgcolor duration-1000">
 				<div
-					class="w-full h-full gap-x-5 gap-y-16 flex flex-col md:flex-row justify-between items-center px-7 py-10 text-lg md:text-sm 2xl:text-lg text-secondary transition-colors duration-[1s]">
+					class="w-full h-full gap-x-5 gap-y-16 flex flex-col md:flex-row justify-between items-center px-7 py-10 text-lg md:text-sm 2xl:text-lg text-primary transition-colors duration-1000">
 					<div class="md:hidden w-full h-full flex justify-center items-center">
 						<p
-							class="font-[Orbitron] font-bold text-sm text-center tracking-widest text-gray-light group-hover:text-white transition-colors duration-500">
+							class="font-bold text-sm text-center tracking-widest text-gray-light group-hover:text-white transition-colors duration-500">
 							Some of my<span class="text-[4rem] leading-[4rem]">Values</span>
 						</p>
 					</div>
@@ -122,9 +122,9 @@ const ancreToSection = (event, targetId) => {
 										name="i-game-icons:small-fire"
 										ssr="true"
 										mode="svg"
-										style="color: var(--primary-color)"
+										style="color: var(--color-primary)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20" />
-									<p class="font-[Orbitron] font-bold uppercase">
+									<p class="font-bold uppercase">
 										Simplicity <br class="md:hidden" />Sophistication
 									</p>
 								</div>
@@ -133,7 +133,7 @@ const ancreToSection = (event, targetId) => {
 									@click="isValueHover1 = !isValueHover1"
 									class="flex justify-center">
 									<p
-										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
+										class="font-['Share_Tech_Mono'] text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 										key="description">
 										For a smooth user's experience and clean codebase
 									</p>
@@ -152,9 +152,9 @@ const ancreToSection = (event, targetId) => {
 										name="i-game-icons:rocket"
 										ssr="true"
 										mode="svg"
-										style="color: var(--primary-color)"
+										style="color: var(--color-primary)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20" />
-									<p class="font-[Orbitron] font-bold uppercase">
+									<p class="font-bold uppercase">
 										Innovative <br class="md:hidden" />Meticulous
 									</p>
 								</div>
@@ -163,7 +163,7 @@ const ancreToSection = (event, targetId) => {
 									@click="isValueHover2 = !isValueHover2"
 									class="flex justify-center">
 									<p
-										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
+										class="font-['Share_Tech_Mono'] text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full"
 										key="description">
 										Engineered with creativity and attention to detail
 									</p>
@@ -173,7 +173,7 @@ const ancreToSection = (event, targetId) => {
 					</div>
 					<div class="hidden w-1/3 h-full md:flex justify-center items-start">
 						<p
-							class="font-[Orbitron] font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light group-hover:text-white transition-colors duration-500">
+							class="font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light group-hover:text-white transition-colors duration-500">
 							Some of my<span
 								class="text-[3rem] 2xl:text-[5rem] leading-[3rem] 2xl:leading-[5rem]"
 								>Values</span
@@ -189,14 +189,14 @@ const ancreToSection = (event, targetId) => {
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
 									v-if="!isValueHover3"
 									@click="isValueHover3 = !isValueHover3">
-									<p class="font-[Orbitron] font-bold uppercase">
+									<p class="font-bold uppercase">
 										Autonomous <br class="md:hidden" />Listening
 									</p>
 									<Icon
 										name="i-game-icons:suckered-tentacle"
 										ssr="true"
 										mode="svg"
-										style="color: var(--primary-color)"
+										style="color: var(--color-primary)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 								</div>
 								<div
@@ -204,7 +204,7 @@ const ancreToSection = (event, targetId) => {
 									@click="isValueHover3 = !isValueHover3"
 									class="flex justify-center">
 									<p
-										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
+										class="font-['Share_Tech_Mono'] text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 										Independently developed with a focus on user feedback
 									</p>
 								</div>
@@ -217,14 +217,14 @@ const ancreToSection = (event, targetId) => {
 									class="flex flex-row gap-x-3 justify-end items-center"
 									v-if="!isValueHover4"
 									@click="isValueHover4 = !isValueHover4">
-									<p class="font-[Orbitron] font-bold uppercase">
+									<p class="font-bold uppercase">
 										Open-minded <br class="md:hidden" />Passionate
 									</p>
 									<Icon
 										name="i-game-icons:techno-heart"
 										ssr="true"
 										mode="svg"
-										style="color: var(--primary-color)"
+										style="color: var(--color-primary)"
 										class="w-14 2xl:w-20 h-14 2xl:h-20" />
 								</div>
 								<div
@@ -232,7 +232,7 @@ const ancreToSection = (event, targetId) => {
 									@click="isValueHover4 = !isValueHover4"
 									class="flex justify-center">
 									<p
-										class="text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
+										class="font-['Share_Tech_Mono'] text-center text-gray-light hover:text-white transition-colors duration-500 w-3/4 md:w-full">
 										Crafted with an open heart and driven by passion
 									</p>
 								</div>
@@ -246,7 +246,7 @@ const ancreToSection = (event, targetId) => {
 						left: 50%;
 						transform: translateX(-50%);
 					"
-					class="absolute h-[20rem] w-[17rem] 2xl:w-[30rem] rounded-full bg-secondary transition-colors duration-[1s] border-[1.25rem] border-black"></div>
+					class="absolute h-[20rem] w-[17rem] 2xl:w-[30rem] rounded-full bg-primary transition-colors duration-1000 border-20 border-black"></div>
 			</article>
 		</div>
 		<div id="wanna-work-with-me" class="opacity-0">

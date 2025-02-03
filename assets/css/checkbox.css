@@ -28,7 +28,7 @@
 
 #cbx:checked ~ .cbx {
 	border-color: transparent;
-	background: var(--primary-color);
+	background: var(--color-primary);
 	animation: jelly 0.4s ease;
 }
 

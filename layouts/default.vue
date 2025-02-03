@@ -109,7 +109,7 @@ useSchemaOrg([
 		name: "Rémy Canal",
 		jobTitle: "Web Developer",
 		url: "https://www.remycanal.me",
-		image: "https://www.remycanal.me/img/pdpAvatar.png",
+		image: "https://www.remycanal.me/img/pdpAvatar.jpeg",
 		sameAs: [
 			"https://www.linkedin.com/in/remy-canal",
 			"https://github.com/remycnl",
@@ -219,7 +219,7 @@ const setCSP = () => {
 	<div class="lg:cursor-none">
 		<GrainEffect />
 		<div
-			class="hidden lg:block custom-cursor shadow-around bg-secondary rounded-full pointer-events-none z-[1000]">
+			class="hidden lg:block custom-cursor shadow-around bg-primary rounded-full pointer-events-none z-1000">
 			<div
 				style="font-family: Share Tech Mono"
 				class="text-cursor opacity-0 absolute scale-0 -top-8 left-1/2 px-2 py-1 bg-black border border-gray-dark rounded-full whitespace-nowrap text-sm text-white">
@@ -229,13 +229,13 @@ const setCSP = () => {
 		<div class="scroll-smooth relative max-w-screen overflow-hidden">
 			<div
 				@click="toggleDropdown"
-				class="blur-background-menu z-[100] pointer-events-none blur-none lg:hidden opacity-0 absolute h-full w-full bg-black bg-opacity-90"></div>
+				class="blur-background-menu z-100 pointer-events-none blur-none lg:hidden opacity-0 absolute h-full w-full bg-black/90"></div>
 			<div
 				id="blob"
 				class="absolute -z-0 pointer-events-none hidden lg:block"></div>
 			<div
-				class="bg-secondary-dark lg:p-8 lg:pt-36 overflow-hidden transition-colors duration-[1s]">
-				<div id="top" class="container mx-auto lg:mx-0 z-[999]">
+				class="bg-secondary lg:p-8 lg:pt-36 overflow-hidden transition-colors duration-1000">
+				<div id="top" class="container mx-auto lg:mx-0 z-999">
 					<Header class="fixed top-5" />
 				</div>
 				<div id="slot">

@@ -265,9 +265,9 @@ onMounted(() => {
 		class="flex flex-col lg:flex-row lg:justify-evenly lg:pt-28 2xl:pt-40 items-center lg:items-start gap-40 lg:gap-x-20 2xl:gap-x-60 gap-y-20 my-20">
 		<div
 			id="skill-card"
-			class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border-[1px] text-center border-secondary rounded-3xl flex flex-row justify-between">
+			class="bg-gray-dark h-[24rem] md:h-[27rem] lg:h-[30rem] 2xl:h-[27rem] w-11/12 md:w-4/6 lg:w-3/6 2xl:w-2/5 shadow-around border text-center border-primary rounded-3xl flex flex-row justify-between">
 			<div
-				class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-secondary w-[12%] md:w-[9%] h-fit">
+				class="flex justify-center rounded-tl-[1.35rem] rounded-br-[1.35rem] bg-primary w-[12%] md:w-[9%] h-fit">
 				<div
 					:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
 					@transitionend="finishUpdate"
@@ -323,7 +323,7 @@ onMounted(() => {
 						class="w-full h-full"
 						ssr="true"
 						mode="svg"
-						style="color: var(--white)" />
+						style="color: var(--color-white)" />
 				</div>
 				<div class="text-color-saturate">
 					<h3
@@ -331,7 +331,7 @@ onMounted(() => {
 						class="pb-5 text-3xl lg:text-[2rem] font-bold">
 						{{ currentSkill.text }}
 					</h3>
-					<p class="pb-10 text-sm md:text-lg font-bold w-full">
+					<p class="font-['Share_Tech_Mono'] pb-10 text-sm md:text-lg font-bold w-full">
 						{{ currentSkill.description }}
 					</p>
 				</div>

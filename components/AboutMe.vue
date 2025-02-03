@@ -10,7 +10,7 @@ const handleUpdateColor = (newColor) => {
 <template>
 	<div
 		id="About me"
-		class="flex flex-col lg:flex-row justify-between items-center gap-y-10">
+		class="flex flex-col lg:flex-row justify-between items-center lg:items-start 2xl:items-center gap-y-10">
 		<NuxtImg
 			id="avatar"
 			src="https://www.remycanal.me/img/avatar.png"
@@ -18,11 +18,11 @@ const handleUpdateColor = (newColor) => {
 			title="Rémy Canal's avatar"
 			alt="Rémy Canal's avatar"
 			loading="lazy"
-			class="opacity-0 icon-select-event gradient-img w-5/6 md:w-1/2 lg:w-4/12 h-auto z-40" />
+			class="opacity-0 icon-select-event gradient-img w-full md:w-2/3 lg:w-5/12 h-auto z-40" />
 		<div
 			class="flex flex-col justify-center text-center w-full lg:w-7/12 lg:text-start lg:gap-y-14 z-50">
 			<h1
-				class="-mt-36 md:-mt-40 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
+				class="-mt-25 md:-mt-30 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
 				<span
 					class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[6rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6.5rem] lg:leading-none 2xl:leading-[5.8rem]"
 					><div
@@ -57,7 +57,7 @@ const handleUpdateColor = (newColor) => {
 					@update-color="handleUpdateColor" />
 				<div id="download-cv" class="opacity-0">
 					<a
-						class="cssbutton transition-colors shadow-around shadow-black duration-[1s] hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest"
+						class="cssbutton transition-colors shadow-around shadow-black duration-1000 hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest"
 						href="/doc/Rémy Canal - curriculum vitae.pdf"
 						target="_blank"
 						download>
@@ -67,8 +67,8 @@ const handleUpdateColor = (newColor) => {
 								name="i-material-symbols:download-rounded"
 								ssr="true"
 								mode="svg"
-								style="color: var(--primary-color)"
-								class="w-[2.2em] h-[2.2em] transition-all duration-[1s]" />
+								style="color: var(--color-primary)"
+								class="w-[2.2em] h-[2.2em] transition-all duration-1000" />
 						</div>
 					</a>
 				</div>

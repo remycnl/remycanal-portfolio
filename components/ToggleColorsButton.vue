@@ -83,13 +83,13 @@ const updateCheckbox = (
 	selectedFamily
 ) => {
 	checkboxes.value = checkboxes.value.map((_unused, i) => i === index);
-	document.documentElement.style.setProperty("--primary-color", primaryColor);
+	document.documentElement.style.setProperty("--color-primary", primaryColor);
 	document.documentElement.style.setProperty(
-		"--secondary-color",
+		"--color-secondary",
 		secondaryColor
 	);
 	document.documentElement.style.setProperty(
-		"--primary-color-transparent",
+		"--color-primary-transparent",
 		primaryColorTransparent
 	);
 	selectedColor.value = selectedFamily;
@@ -118,7 +118,7 @@ const toggleColors = () => {
 		const button = document.querySelector(".change-color-button");
 		const checkboxs = document.querySelectorAll(".cyberpunk-checkbox-label");
 		button.classList.toggle("bg-black");
-		button.classList.toggle("bg-primary");
+		button.classList.toggle("bg-secondary");
 		checkboxs.forEach((checkbox) => {
 			checkbox.classList.toggle("opacity-100");
 			checkbox.classList.toggle("pointer-events-none");
@@ -150,13 +150,13 @@ const updateFavicon = (color) => {
 		<button
 			@click="toggleColors"
 			aria-label="Change theme color"
-			class="group circle-container relative hover-scale-effect clickable cursor-pointer lg:cursor-none w-[60px] h-[60px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary-dark bg-black transition-all shadow-custom-outline duration-500">
+			class="group circle-container relative hover-scale-effect clickable cursor-pointer lg:cursor-none w-[60px] h-[60px] items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary bg-black transition-all shadow-custom-outline duration-500">
 			<div>
 				<Icon
 					name="i-material-symbols:format-color-fill-rounded"
 					ssr="true"
 					mode="svg"
-					style="color: var(--white)"
+					style="color: var(--color-white)"
 					class="w-7 h-7 group-hover:lg:opacity-0 lg:-ml-1 transition-all duration-300" />
 			</div>
 
@@ -166,7 +166,7 @@ const updateFavicon = (color) => {
 					v-for="(color, index) in colorOptions"
 					:key="index"
 					:aria-label="`Select color ${color.family}`"
-					class="absolute cursor-pointer lg:cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-[0.1s] group-hover:lg:delay-[0.3s]">
+					class="absolute cursor-pointer lg:cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-100! group-hover:lg:delay-300!">
 					<input
 						type="checkbox"
 						class="cursor-pointer lg:cursor-none"

@@ -21,13 +21,12 @@ const headerClasses = computed(() => ({
 	"p-4": true,
 	border: true,
 	"border-transparent": !scrolled.value,
-	"!border-gray-semi": scrolled.value || isScreenSM.value,
+	"border-gray-semi!": scrolled.value || isScreenSM.value,
 	"rounded-3xl": true,
 	"shadow-around": scrolled.value,
 	"shadow-black-dark": scrolled.value,
-	"bg-black-dark": scrolled.value || isScreenSM.value,
-	"lg:bg-opacity-90": true,
-	"bg-opacity-95": true,
+	"bg-black-dark/95": scrolled.value || isScreenSM.value,
+	"lg:bg-black-dark/90": scrolled.value || isScreenSM.value,
 	"transition-all": true,
 	"duration-500": true,
 }));
@@ -175,13 +174,13 @@ onBeforeUnmount(() => {
 					@click="toggleDropdown">
 					<div class="flex justify-end">
 						<div
-							class="first-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
+							class="first-line w-[1.35rem] h-[0.3rem] rounded-full bg-primary mb-1.5"></div>
 					</div>
 					<div
-						class="second-line w-9 h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
+						class="second-line w-9 h-[0.3rem] rounded-full bg-primary mb-1.5"></div>
 					<div class="flex justify-start">
 						<div
-							class="third-line w-[1.35rem] h-[0.3rem] rounded-full bg-secondary mb-1.5"></div>
+							class="third-line w-[1.35rem] h-[0.3rem] rounded-full bg-primary mb-1.5"></div>
 					</div>
 				</div>
 			</div>
@@ -189,16 +188,16 @@ onBeforeUnmount(() => {
 				class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[120vh] left-0 h-[5.5rem]"></div>
 		</div>
 		<div
-			:class="{ 'backdrop-blur-sm': scrolled && !isScreenSM }"
+			:class="{ 'backdrop-blur-xs': scrolled && !isScreenSM }"
 			class="relative rounded-3xl lg:w-fit dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
 			<div
-				class="z-[99999] absolute top-10 right-10 group lg:hidden flex flex-col items-center"
+				class="z-99999 absolute top-10 right-10 group lg:hidden flex flex-col items-center"
 				@click="toggleDropdown">
 				<Icon
 					name="i-fluent-emoji-high-contrast:cross-mark"
 					ssr="true"
 					mode="svg"
-					style="color: var(--white)"
+					style="color: var(--color-white)"
 					class="w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
 			</div>
 			<div
@@ -242,9 +241,9 @@ onBeforeUnmount(() => {
 						href="#Contact me"
 						class="mb-10 lg:mb-0 active:scale-95 transition-all duration-75">
 						<div
-							class="hover-scale-effect clickable cursor-pointer lg:cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-secondary isolate">
+							class="hover-scale-effect clickable cursor-pointer lg:cursor-none pointer-events-auto group relative p-0.5 transition-all duration-300 lg:ease-in border-none rounded-xl bg-primary isolate">
 							<div
-								class="p-4 bg-black-dark bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 lg:ease-in rounded-xl">
+								class="p-4 bg-black-dark/0 group-hover:bg-black-dark/50 transition-all duration-300 lg:ease-in rounded-xl">
 								<h2
 									class="text-black font-bold group-hover:font-normal group-hover:text-white transition-all duration-300 lg:ease-in text-xl">
 									Contact me

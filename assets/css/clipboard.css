@@ -1,5 +1,5 @@
 .container-clipboard {
-	--color: var(--primary-color);
+	--color: var(--color-primary);
 	--size: 30px;
 	display: flex;
 	justify-content: center;

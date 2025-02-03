@@ -1,3 +1,5 @@
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
 	devtools: {
 		enabled: true,
@@ -26,6 +28,10 @@ export default defineNuxtConfig({
 		},
 	},
 
+	vite: {
+		plugins: [tailwindcss()],
+	},
+
 	css: [
 		"@/assets/css/main.css",
 		"@/assets/css/button.css",
@@ -41,13 +47,6 @@ export default defineNuxtConfig({
 		"@/assets/css/loader.css",
 		"@/assets/css/clipboard.css",
 	],
-
-	postcss: {
-		plugins: {
-			tailwindcss: {},
-			autoprefixer: {},
-		},
-	},
 
 	modules: [
 		[

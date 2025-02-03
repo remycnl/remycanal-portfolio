@@ -68,7 +68,7 @@ watch(
 			v-for="(letter, index) in displayedText"
 			:key="index"
 			class="letter"
-			:class="isFinalText ? 'text-white' : 'text-secondary'">
+			:class="isFinalText ? 'text-white' : 'text-primary'">
 			{{ letter === " " ? "\u00A0" : letter }}
 		</span>
 	</span>
