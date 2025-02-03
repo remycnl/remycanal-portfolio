@@ -1,5 +1,4 @@
 import tailwindcss from "@tailwindcss/vite";
-import { defineNuxtConfig } from "nuxt/config";
 
 export default defineNuxtConfig({
 	devtools: {
@@ -26,7 +25,9 @@ export default defineNuxtConfig({
 	nitro: {
 		prerender: {
 			routes: ["/"],
+			failOnError: false,
 		},
+		preset: "vercel",
 	},
 
 	vite: {
@@ -39,7 +40,12 @@ export default defineNuxtConfig({
 			},
 		},
 		plugins: [tailwindcss()],
+		optimizeDeps: {
+			exclude: ["fsevents"],
+		},
 	},
+
+	ssr: true,
 
 	css: [
 		"@/assets/css/main.css",
