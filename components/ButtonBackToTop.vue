@@ -11,7 +11,6 @@ onMounted(() => {
 	}
 
 	window.addEventListener("scroll", function () {
-		console.log("scroll");
 		const button = document.querySelector(".back-to-top");
 		if (button && window.innerWidth >= 1024) {
 			if (window.scrollY > 100) {
