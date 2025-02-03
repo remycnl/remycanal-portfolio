@@ -323,7 +323,7 @@ function startProgressBar() {
 			<Transition name="fade-reverse-scale" mode="out-in">
 				<div
 					v-if="showPopup"
-					class="z-100 absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-primary">
+					class="z-100 absolute h-full w-full top-0 left-0 rounded-2xl flex items-end md:items-center justify-center border-2 border-gray-semi bg-blue-dark">
 					<!-- Loader pendant l'envoi -->
 					<div
 						v-if="!isMessageSent && !isError"
@@ -354,7 +354,7 @@ function startProgressBar() {
 								title="Message Sent!"
 								class="w-[30rem] h-auto" />
 							<div
-								class="font-bold text-blue-dark text-[2rem] md:text-[3rem] mb-40 md:mb-0">
+								class="font-bold text-primary text-[2rem] md:text-[3rem] mb-40 md:mb-0">
 								Message Sent!
 							</div>
 						</div>

@@ -1,7 +1,7 @@
 .dot-spinner {
 	--uib-size: 10rem;
 	--uib-speed: 0.9s;
-	--uib-color: var(--color-blue-dark);
+	--uib-color: var(--color-primary);
 	position: relative;
 	display: flex;
 	align-items: center;
