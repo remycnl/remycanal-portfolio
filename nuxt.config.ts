@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import { defineNuxtConfig } from 'nuxt/config';
+import { defineNuxtConfig } from "nuxt/config";
 
 export default defineNuxtConfig({
 	devtools: {
@@ -12,7 +12,7 @@ export default defineNuxtConfig({
 
 	app: {
 		head: {
-			titleTemplate: '%s',
+			titleTemplate: "%s",
 			script: [
 				{
 					src: "/plugins/vercelanalytics.client.js",
@@ -30,6 +30,14 @@ export default defineNuxtConfig({
 	},
 
 	vite: {
+		build: {
+			sourcemap: false,
+			rollupOptions: {
+				output: {
+					sourcemap: false,
+				},
+			},
+		},
 		plugins: [tailwindcss()],
 	},
 
