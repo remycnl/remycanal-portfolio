@@ -45,7 +45,7 @@ const handleUpdateColor = (newColor) => {
 			<h3
 				style="font-family: Share Tech Mono"
 				class="about-me-paragraph opacity-0 text-white text-base md:text-lg 2xl:text-2xl mx-4 md:mx-0">
-				I'm a student at Epitech, on my way to becoming a software engineer
+				I'm a student at Epitech and member of the Awwwards Young Jury, on my way to becoming a software engineer
 				specialized in crafting outstanding and full digital experiences. Based
 				in Lyon, France, I ensure responsive design, SEO optimization, and most
 				importantly, prioritize user satisfaction above all else.
