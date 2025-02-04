@@ -1,22 +1,22 @@
 /* Pour Chrome, Safari, Edge */
 ::-webkit-scrollbar {
-	width: 12px; /* Largeur de la scrollbar */
+	width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-	background: var(--color-black); /* Couleur de la piste */
+	background: var(--color-black);
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #1f293b; /* Dégradé vertical pour le curseur */
-	border-radius: 10px; /* Arrondi du curseur */
-	border: 3px solid var(--color-black); /* Ajout de marge et couleur de fond visible */
-	transition: filter 0.3s; /* Transition pour l'effet de saturation */
+	background: #1f293b;
+	border-radius: 10px;
+	border: 3px solid var(--color-black);
+	transition: filter 0.3s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	@apply saturate-200; /* Application de la saturation */
-	background: #1f293b; /* Dégradé vertical pour le curseur */
+	@apply saturate-200;
+	background: #1f293b;
 }
 
 /* Pour Firefox */
@@ -32,10 +32,10 @@ body::-webkit-scrollbar-thumb {
 	background: #1f293b;
 	border-radius: 10px;
 	border: 3px solid var(--color-black);
-	transition: filter 0.3s; /* Transition pour l'effet de saturation */
+	transition: filter 0.3s;
 }
 
 body::-webkit-scrollbar-thumb:hover {
-	@apply saturate-200; /* Application de la saturation */
+	@apply saturate-200;
 	background: #1f293b;
 }
