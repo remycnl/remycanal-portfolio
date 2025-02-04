@@ -17,7 +17,7 @@ const handleUpdateColor = (newColor) => {
 			preset="portfolioImage"
 			title="Rémy Canal's avatar"
 			alt="Rémy Canal's avatar"
-			loading="lazy"
+			quality="80"
 			class="opacity-0 icon-select-event gradient-img w-full md:w-2/3 lg:w-5/12 h-auto z-40" />
 		<div
 			class="flex flex-col justify-center text-center w-full lg:w-7/12 lg:text-start lg:gap-y-14 z-50">
