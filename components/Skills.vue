@@ -128,6 +128,15 @@ const skills = [
 			"Development of headless CMS applications with Strapi for managing and distributing digital content.",
 	},
 	{
+		text: "Prisma",
+		color: "#D1D1D1",
+		withPath: true,
+		pathIcon: "/img/prisma.svg",
+		stars: 3,
+		description:
+			"Use of Prisma ORM for database access and management, with type-safe queries and automatic migrations.",
+	},
+	{
 		text: "PHP",
 		color: "#6181B6",
 		icon: "i-logos:php",
