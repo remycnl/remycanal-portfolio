@@ -58,7 +58,7 @@ const handleUpdateColor = (newColor) => {
 				<div id="download-cv" class="opacity-0">
 					<a
 						class="cssbutton transition-colors shadow-around shadow-black duration-1000 hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest"
-						href="/doc/Rémy Canal - curriculum vitae.pdf"
+						href="/doc/remy-canal-cv.pdf"
 						target="_blank"
 						download>
 						<span class="font-semibold text-[#FFFFFF]"> Download CV </span>
