@@ -169,8 +169,11 @@ const updateFavicon = (color) => {
 					class="absolute cursor-pointer lg:cursor-none lg:relative cyberpunk-checkbox-label pointer-events-none group-hover:lg:pointer-events-auto opacity-0 lg:group-hover:opacity-100 group-hover:delay-100! group-hover:lg:delay-300!">
 					<input
 						type="checkbox"
-						class="cursor-pointer lg:cursor-none"
-						:class="`color-${index + 1} cyberpunk-checkbox`"
+						class="cursor-pointer lg:cursor-none cyberpunk-checkbox border-2 checkbox-custom"
+						:style="{
+							borderColor: color.primary,
+							'--checkbox-color': color.primary,
+						}"
 						v-model="checkboxes[index]"
 						@change="
 							updateCheckbox(
@@ -191,3 +194,9 @@ const updateFavicon = (color) => {
 		</button>
 	</div>
 </template>
+
+<style scoped>
+.checkbox-custom:before {
+	background-color: var(--checkbox-color) !important;
+}
+</style>

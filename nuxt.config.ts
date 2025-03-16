@@ -117,6 +117,10 @@ export default defineNuxtConfig({
 			"Discover the portfolio of Rémy Canal, a French web developer from Lyon, specializing in front-end development.",
 	},
 
+	seo: {
+		canonicalQueryWhitelist: ["search"],
+	},
+
 	plugins: [
 		{ src: "@/plugins/gsap.js", mode: "client" },
 		{ src: "@/plugins/global.js", mode: "client" },
