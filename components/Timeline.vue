@@ -73,7 +73,7 @@ const data = [
 		date: "2024",
 		type: "experience",
 		title: "Letmotiv",
-		subtitle: "Full-Stack Web Developer (currently)",
+		subtitle: "Full-Stack Web Developer",
 		paragraph: ["Internship - September 2024 to March 2025 (7 months)"],
 		images: [
 			{
@@ -91,6 +91,30 @@ const data = [
 			{
 				src: "/img/awwwards-logo.png",
 				alt: "Awwwards Logo",
+			},
+		],
+	},
+	{
+		date: "2025",
+		type: "experience",
+		title: "Musée des Confluences",
+		subtitle: "Full-Stack Web Developer",
+		images: [
+			{
+				src: "/img/musee-des-confluences.png",
+				alt: "Musée des Confluences Logo",
+			},
+		],
+	},
+	{
+		date: "2025",
+		type: "formation",
+		title: "Technological University Dublin",
+		subtitle: "2025-2026 - Master's Degree in IT Management",
+		images: [
+			{
+				src: "/img/TUD.png",
+				alt: "TU Dublin Logo",
 			},
 		],
 	},

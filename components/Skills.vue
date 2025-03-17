@@ -137,6 +137,38 @@ const skills = [
 			"Use of Prisma ORM for database access and management, with type-safe queries and automatic migrations.",
 	},
 	{
+		text: "Node",
+        color: "#65B549",
+        icon: "i-logos:nodejs-icon-alt",
+        stars: 2,
+        description:
+            "Experience with Node.js for backend development, event-driven architectures, and asynchronous programming.",
+	},
+	{
+		text: "MySQL",
+		color: "#02768F",
+        icon: "i-vscode-icons:file-type-mysql",
+        stars: 2,
+        description:
+			"Skills in MySQL for relational database management, data storage, and querying.",
+	},
+	{
+		text: "MongoDB",
+        color: "#13914F",
+        icon: "i-skill-icons:mongodb",
+        stars: 2,
+        description:
+            "Skills in MongoDB for NoSQL database management, data storage, and querying.",
+	},
+	{
+		text: "PostgreSQL",
+		color: "#346891",
+		icon: "i-logos:postgresql",
+        stars: 2,
+        description:
+			"Skills in PostgreSQL for relational database management, data storage, and querying.",
+	},
+	{
 		text: "PHP",
 		color: "#6181B6",
 		icon: "i-logos:php",
@@ -169,6 +201,14 @@ const skills = [
 		stars: 4,
 		description:
 			"Proficiency in GreenSock Animation Platform (GSAP) for creating smooth and interactive animations in web applications.",
+	},
+	{
+		text: "Vercel",
+		color: "#FFFFFF",
+		icon: "i-skill-icons:vercel-light",
+        stars: 4,
+        description:
+			"Deployment of web applications with Vercel for fast, secure, and scalable hosting.",
 	},
 	{
 		text: "C",
