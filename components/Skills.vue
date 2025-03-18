@@ -203,6 +203,14 @@ const skills = [
 			"Proficiency in GreenSock Animation Platform (GSAP) for creating smooth and interactive animations in web applications.",
 	},
 	{
+		text: "Figma",
+		color: "#F24E1E",
+		icon: "i-logos:figma",
+		stars: 3,
+		description:
+			"Use of Figma for designing user interfaces, prototyping, and creating interactive design systems.",
+	},
+	{
 		text: "Vercel",
 		color: "#FFFFFF",
 		icon: "i-skill-icons:vercel-light",
