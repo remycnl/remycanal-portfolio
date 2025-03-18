@@ -111,7 +111,7 @@ const ancreToSection = (event, targetId) => {
 					<div
 						class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-start text-start">
 						<div
-							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+							class="hover-scale-effect clickable cursor-pointer flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 							<Transition name="fade-translate-up" mode="out-in">
 								<div
 									v-if="!isValueHover1"
@@ -141,7 +141,7 @@ const ancreToSection = (event, targetId) => {
 							</Transition>
 						</div>
 						<div
-							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+							class="hover-scale-effect clickable cursor-pointer flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 							<Transition name="fade-translate-down" mode="out-in">
 								<div
 									v-if="!isValueHover2"
@@ -183,7 +183,7 @@ const ancreToSection = (event, targetId) => {
 					<div
 						class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-end text-end">
 						<div
-							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+							class="hover-scale-effect clickable cursor-pointer flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 							<Transition name="fade-translate-up" mode="out-in">
 								<div
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
@@ -211,7 +211,7 @@ const ancreToSection = (event, targetId) => {
 							</Transition>
 						</div>
 						<div
-							class="hover-scale-effect clickable flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+							class="hover-scale-effect clickable cursor-pointer flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
 							<Transition name="fade-translate-down" mode="out-in">
 								<div
 									class="flex flex-row gap-x-3 justify-end items-center"

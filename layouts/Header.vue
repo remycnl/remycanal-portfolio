@@ -166,7 +166,7 @@ onBeforeUnmount(() => {
 					title="Rémy Canal's Logo"
 					preset="portfolioImage"
 					loading="lazy"
-					class="change-img-color text-shadow pointer-events-auto hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
+					class="cursor-pointer change-img-color text-shadow pointer-events-auto hover:translate-x-2 transition-all duration-500 w-12 h-auto" />
 			</div>
 			<div class="z-50 flex pointer-events-auto items-center justify-center">
 				<div
@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
 				</div>
 			</div>
 			<div
-				class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[120vh] left-0 h-[5.5rem]"></div>
+				class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-screen left-0 h-[5.5rem]"></div>
 		</div>
 		<div
 			:class="{ 'backdrop-blur-xs': scrolled && !isScreenSM }"
@@ -198,7 +198,7 @@ onBeforeUnmount(() => {
 					ssr="true"
 					mode="svg"
 					style="color: var(--color-white)"
-					class="w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300" />
+					class="w-6 h-6 md:w-8 md:h-8 hover:rotate-90 duration-300 cursor-pointer" />
 			</div>
 			<div
 				:class="headerClasses"
