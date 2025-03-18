@@ -216,7 +216,7 @@ const setCSP = () => {
 </script>
 
 <template>
-	<div class="lg:cursor-none">
+	<div class="lg:cursor-none min-h-screen">
 		<GrainEffect />
 		<div
 			class="hidden lg:block custom-cursor shadow-around bg-primary rounded-full pointer-events-none z-1000">

@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
 				</div>
 			</div>
 			<div
-				class="-ml-4 md:-ml-12 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-screen left-0 h-[5.5rem]"></div>
+				class="-ml-30 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[125vw] left-0 h-[5.5rem]"></div>
 		</div>
 		<div
 			:class="{ 'backdrop-blur-xs': scrolled && !isScreenSM }"
