@@ -60,7 +60,7 @@ const data = [
 		date: "2023",
 		type: "experience",
 		title: "Sharewood",
-		subtitle: "Front-End Web Developer",
+		subtitle: "Front-End Developer",
 		paragraph: ["Internship - July to December 2023 (6 months)"],
 		images: [
 			{
@@ -73,7 +73,7 @@ const data = [
 		date: "2024",
 		type: "experience",
 		title: "Letmotiv",
-		subtitle: "Full-Stack Web Developer",
+		subtitle: "Full-Stack Developer",
 		paragraph: ["Internship - September 2024 to March 2025 (7 months)"],
 		images: [
 			{
@@ -98,7 +98,8 @@ const data = [
 		date: "2025",
 		type: "experience",
 		title: "Musée des Confluences",
-		subtitle: "Full-Stack Web Developer",
+		subtitle: "Full-Stack Engineer",
+		paragraph: ["Internship - April 2025 to August 2025 (5 months)"],
 		images: [
 			{
 				src: "/img/musee-des-confluences.png",
