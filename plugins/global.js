@@ -212,7 +212,7 @@ export function setExperienceTime() {
 }
 
 export function setProjectsCounter() {
-	let nbrProjects = 14;
+	let nbrProjects = 15;
 
 	let currentDisplayValue = 0;
 	const incrementSpeed = 100;

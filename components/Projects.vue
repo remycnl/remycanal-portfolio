@@ -30,6 +30,27 @@ onMounted(() => {
 
 const projects = [
 	{
+		slug: "pascalecanal",
+		title: "Pascale Canal's e-gallery",
+		description: "Design and development of the complete website.",
+		link: "https://www.pascalecanal.fr/",
+		img: "/img/mockup-pascale-canal-galery.webp",
+		logo: "/img/logo-pascalecanal.png",
+		type: "website",
+		date: "2025",
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"WebGL",
+			"GSAP",
+			"TailwindCSS",
+			"Vercel",
+		],
+	},
+	{
 		slug: "portfolio",
 		title: "Portfolio of Rémy Canal",
 		description: "Creation 'from scratch' of my portfolio.",
