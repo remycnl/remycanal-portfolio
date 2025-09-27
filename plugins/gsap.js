@@ -407,6 +407,17 @@ export function applySaturationTextOnScroll() {
 		"section-5",
 	];
 
+	const activateMenuItem = (activeMenuEl) => {
+		const allMenuItems = document.querySelectorAll('[id^="text-menu-"]');
+		allMenuItems.forEach((menuItem) => {
+			menuItem.classList.remove("text-color-saturate");
+		});
+
+		if (activeMenuEl) {
+			activeMenuEl.classList.add("text-color-saturate");
+		}
+	};
+
 	sections.forEach((section, index) => {
 		const sectionEl = document.getElementById(section);
 		const menuEl = document.getElementById(`text-menu-${index}`);
@@ -419,16 +430,6 @@ export function applySaturationTextOnScroll() {
 			onEnterBack: () => activateMenuItem(menuEl),
 		});
 	});
-	const activateMenuItem = (activeMenuEl) => {
-		const allMenuItems = document.querySelectorAll('[id^="text-menu-"]');
-		allMenuItems.forEach((menuItem) => {
-			menuItem.classList.remove("text-color-saturate");
-		});
-
-		if (activeMenuEl) {
-			activeMenuEl.classList.add("text-color-saturate");
-		}
-	};
 }
 
 export function animationCheckboxColor(isOpen) {

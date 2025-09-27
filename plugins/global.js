@@ -184,6 +184,24 @@ export function toggleTextWhite(propsIndex) {
 }
 
 export function setExperienceTime() {
+	const experienceElement = document.getElementById("experience");
+	if (!experienceElement) {
+		// Retry after a short delay in case the DOM is still loading
+		setTimeout(() => {
+			const retryElement = document.getElementById("experience");
+			if (!retryElement) {
+				console.warn("Experience element not found in DOM after retry");
+				return;
+			}
+			startExperienceAnimation();
+		}, 200);
+		return;
+	}
+	startExperienceAnimation();
+}
+
+function startExperienceAnimation() {
+
 	const startYear = 2022;
 	const startMonth = 9;
 
@@ -203,8 +221,11 @@ export function setExperienceTime() {
 	function incrementExperience() {
 		if (currentDisplayValue < experienceYears) {
 			currentDisplayValue++;
-			document.getElementById("experience").textContent = currentDisplayValue;
-			setTimeout(incrementExperience, incrementSpeed);
+			const experienceElement = document.getElementById("experience");
+			if (experienceElement) {
+				experienceElement.textContent = currentDisplayValue;
+				setTimeout(incrementExperience, incrementSpeed);
+			}
 		}
 	}
 
@@ -212,6 +233,23 @@ export function setExperienceTime() {
 }
 
 export function setProjectsCounter() {
+	const projectsElement = document.getElementById("projects-number");
+	if (!projectsElement) {
+		// Retry after a short delay in case the DOM is still loading
+		setTimeout(() => {
+			const retryElement = document.getElementById("projects-number");
+			if (!retryElement) {
+				console.warn("Projects number element not found in DOM after retry");
+				return;
+			}
+			startProjectsAnimation();
+		}, 200);
+		return;
+	}
+	startProjectsAnimation();
+}
+
+function startProjectsAnimation() {
 	let nbrProjects = 15;
 
 	let currentDisplayValue = 0;
@@ -220,9 +258,11 @@ export function setProjectsCounter() {
 	function incrementProjectsNbr() {
 		if (currentDisplayValue < nbrProjects) {
 			currentDisplayValue++;
-			document.getElementById("projects-number").textContent =
-				currentDisplayValue;
-			setTimeout(incrementProjectsNbr, incrementSpeed);
+			const projectsElement = document.getElementById("projects-number");
+			if (projectsElement) {
+				projectsElement.textContent = currentDisplayValue;
+				setTimeout(incrementProjectsNbr, incrementSpeed);
+			}
 		}
 	}
 
