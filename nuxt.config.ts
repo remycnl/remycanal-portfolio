@@ -100,6 +100,7 @@ export default defineNuxtConfig({
 	},
 
 	image: {
+		provider: "ipx",
 		domains: ["www.remycanal.me"],
 		format: ["webp"],
 		quality: 80,
