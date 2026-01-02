@@ -197,7 +197,7 @@ const stopHover = () => {
 					<div
 						class="relative my-5 rounded-3xl w-[90%] h-80 overflow-hidden">
 						<NuxtImg
-							:src="'https://www.remycanal.me' + project.img"
+							:src="project.img"
 							:alt="`Mockup - ${project.img}`"
 							:title="`Mockup - ${project.img}`"
 							preset="portfolioImage"
@@ -298,7 +298,7 @@ const stopHover = () => {
 					@mouseleave="hideImages(), stopHover()"
 					class="group relative z-30 link-type cursor-pointer lg:cursor-none flex flex-col justify-between items-start w-full h-[4.55rem] hover:h-[6.55rem] transition-all duration-300">
 					<NuxtImg
-						:src="'https://www.remycanal.me' + project.logo"
+						:src="project.logo"
 						:alt="`Logo - ${project.logo}`"
 						:title="`Logo - ${project.logo}`"
 						preset="portfolioImage"

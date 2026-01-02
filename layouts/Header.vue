@@ -161,7 +161,7 @@ onBeforeUnmount(() => {
 			class="px-1 relative toolbar lg:hidden flex justify-between items-center pointer-events-none">
 			<div @click="ancreToSection($event, 'top')" class="z-50 -mt-1">
 				<NuxtImg
-					:src="`https://www.remycanal.me/img/logo-${primaryColor}.png`"
+					:src="`/img/logo-${primaryColor}.png`"
 					alt="Rémy Canal's Logo"
 					title="Rémy Canal's Logo"
 					preset="portfolioImage"
@@ -208,7 +208,7 @@ onBeforeUnmount(() => {
 					@click="executeFunctionsMenu($event, 'top')"
 					class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-105 transition-all duration-100">
 					<NuxtImg
-						:src="`https://www.remycanal.me/img/logo-${primaryColor}.png`"
+						:src="`/img/logo-${primaryColor}.png`"
 						alt="Rémy Canal's Logo"
 						title="Rémy Canal's Logo"
 						preset="portfolioImage"

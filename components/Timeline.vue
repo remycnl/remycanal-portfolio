@@ -195,7 +195,7 @@ const data = [
 							<NuxtImg
 								v-for="(img, imgIdx) in item.images"
 								:key="imgIdx"
-								:src="'https://www.remycanal.me' + img.src"
+							:src="img.src"
 								:alt="img.alt"
 								:title="img.alt"
 								preset="portfolioImage"

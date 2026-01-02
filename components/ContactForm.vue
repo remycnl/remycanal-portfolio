@@ -347,7 +347,7 @@ function startProgressBar() {
 							v-if="isMessageSent"
 							class="flex flex-col justify-center items-center">
 							<NuxtImg
-								src="https://www.remycanal.me/img/messageSent.gif"
+							src="/img/messageSent.gif"
 								format="gif"
 								loading="lazy"
 								alt="Message Sent!"
@@ -364,7 +364,7 @@ function startProgressBar() {
 							v-if="isError"
 							class="flex flex-col justify-center items-center gap-y-10">
 							<NuxtImg
-								src="https://www.remycanal.me/img/error.gif"
+							src="/img/error.gif"
 								format="gif"
 								loading="lazy"
 								alt="Error!"

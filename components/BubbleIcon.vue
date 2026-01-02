@@ -108,7 +108,7 @@ const toggleStars = () => {
 			<NuxtImg
 				v-if="props.withPath"
 				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.index"
-				:src="'https://www.remycanal.me' + props.pathIcon"
+			:src="props.pathIcon"
 				:alt="props.text + ' icon'"
 				:title="props.text + ' icon'"
 				:class="{
