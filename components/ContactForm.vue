@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref, watch } from "vue";
 import { stickyContact, appearContact } from "@/plugins/gsap.js";
+import CheckIcon from '~icons/mingcute/check-fill';
 
 const isDesktop = () => {
 	return window.innerWidth >= 1024;
@@ -571,10 +572,7 @@ function removeNotification(id) {
 				<!-- Icône de succès -->
 				<div class="flex items-center gap-2 md:gap-3 mb-1.5 md:mb-2">
 					<div class="shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/20 flex items-center justify-center">
-						<Icon
-							name="i-mingcute:check-fill"
-							style="color: white"
-							class="w-4 h-4 md:w-5 md:h-5" />
+						<CheckIcon class="w-4 h-4 md:w-5 md:h-5 text-white" />
 					</div>
 					<span class="font-semibold tracking-wide md:tracking-wider text-sm md:text-base">
 						{{ notification.message }}
