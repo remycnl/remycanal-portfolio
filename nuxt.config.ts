@@ -127,6 +127,10 @@ export default defineNuxtConfig({
 		canonicalQueryWhitelist: ["search"],
 	},
 
+	sitemap: {
+		zeroRuntime: true,
+	},
+
 	plugins: [
 		{ src: "@/plugins/gsap.js", mode: "client" },
 		{ src: "@/plugins/global.js", mode: "client" },
