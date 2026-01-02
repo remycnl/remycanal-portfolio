@@ -12,13 +12,6 @@ export default defineNuxtConfig({
 	app: {
 		head: {
 			titleTemplate: "%s",
-			script: [
-				{
-					src: "/plugins/vercelanalytics.client.js",
-					type: "text/partytown",
-					async: true,
-				},
-			],
 		},
 	},
 
