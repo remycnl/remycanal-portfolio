@@ -5,12 +5,61 @@ const isNotDesktop = () => {
 	return window.innerWidth < 1024;
 };
 
-const { primaryColor } = useThemeColor();
+const primaryColor = ref("purple");
 
 onMounted(() => {
 	if (isNotDesktop && typeof animationFooter === "function") {
 		animationFooter();
 	}
+
+	const updatePrimaryColor = () => {
+		const element = document.querySelector(".change-img-color");
+		if (element) {
+			if (element.classList.contains("purple")) {
+				primaryColor.value = "purple";
+			} else if (element.classList.contains("orange")) {
+				primaryColor.value = "orange";
+			} else if (element.classList.contains("green")) {
+				primaryColor.value = "green";
+			} else if (element.classList.contains("cyan")) {
+				primaryColor.value = "cyan";
+			} else if (element.classList.contains("pink")) {
+				primaryColor.value = "pink";
+			} else if (element.classList.contains("red")) {
+				primaryColor.value = "red";
+			} else if (element.classList.contains("gray")) {
+				primaryColor.value = "gray";
+			} else if (element.classList.contains("yellow")) {
+				primaryColor.value = "yellow";
+			} else if (element.classList.contains("blue")) {
+				primaryColor.value = "blue";
+			}
+		}
+	};
+
+	updatePrimaryColor();
+
+	const observer = new MutationObserver((mutations) => {
+		mutations.forEach((mutation) => {
+			if (
+				mutation.type === "attributes" &&
+				mutation.attributeName === "class"
+			) {
+				updatePrimaryColor();
+			}
+		});
+	});
+
+	const elementToObserve = document.querySelector(".change-img-color");
+	if (elementToObserve) {
+		observer.observe(elementToObserve, {
+			attributes: true,
+		});
+	}
+
+	onUnmounted(() => {
+		observer.disconnect();
+	});
 });
 
 const ancreToSection = (event, targetId) => {
