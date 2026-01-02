@@ -573,6 +573,8 @@ function removeNotification(id) {
 					<div class="shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/20 flex items-center justify-center">
 						<Icon
 							name="i-mingcute:check-fill"
+							ssr="true"
+							mode="svg"
 							class="w-4 h-4 md:w-5 md:h-5 text-white" />
 					</div>
 					<span class="font-semibold tracking-wide md:tracking-wider text-sm md:text-base">
