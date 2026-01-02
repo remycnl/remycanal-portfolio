@@ -340,9 +340,8 @@ function removeNotification(id) {
 						<div
 							v-if="isMessageSent"
 							class="flex flex-col justify-center items-center">
-							<NuxtImg
+						<img
 							src="/img/messageSent.gif"
-								format="gif"
 								loading="lazy"
 								alt="Message Sent!"
 								title="Message Sent!"
@@ -357,9 +356,8 @@ function removeNotification(id) {
 						<div
 							v-if="isError"
 							class="flex flex-col justify-center items-center gap-y-10">
-							<NuxtImg
+						<img
 							src="/img/error.gif"
-								format="gif"
 								loading="lazy"
 								alt="Error!"
 								title="Error!"
