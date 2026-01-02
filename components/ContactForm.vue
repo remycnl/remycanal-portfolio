@@ -32,9 +32,7 @@ const showPopup = ref(false);
 const isMessageSent = ref(false);
 const isError = ref(false);
 const showConsentError = ref(false);
-const copySuccessMessage = ref("");
-const showCopyPopup = ref(false);
-const progressBarWidth = ref(100);
+const notifications = ref([]);
 
 const submitForm = async () => {
 	if (!form.rgpdConsent) {
@@ -102,71 +100,67 @@ const copiedLocation = ref(false);
 
 function copyToClipboard(refName) {
 	let textToCopy = "";
+	let message = "";
+	
 	if (refName === "emailText") {
 		textToCopy = emailText.value.innerText;
+		message = "Email address copied!";
+		copiedEmail.value = true;
+		setTimeout(() => copiedEmail.value = false, 3000);
 	} else if (refName === "phoneText") {
 		textToCopy = phoneText.value.innerText;
+		message = "Phone number copied!";
+		copiedPhone.value = true;
+		setTimeout(() => copiedPhone.value = false, 3000);
 	} else if (refName === "locationText") {
 		textToCopy = locationText.value.innerText;
+		message = "Location copied!";
+		copiedLocation.value = true;
+		setTimeout(() => copiedLocation.value = false, 3000);
 	}
 
 	navigator.clipboard.writeText(textToCopy).then(() => {
-		if (refName === "emailText") {
-			copiedEmail.value = true;
-			copySuccessMessage.value = "Email address copied!";
-			showCopyPopup.value = true;
-			startProgressBar();
-			setTimeout(() => {
-				showCopyPopup.value = false;
-				copiedEmail.value = false;
-			}, 2000);
-			copiedPhone.value = false;
-			copiedLocation.value = false;
-		} else if (refName === "phoneText") {
-			copiedEmail.value = false;
-			copiedPhone.value = true;
-			copySuccessMessage.value = "Phone number copied!";
-			showCopyPopup.value = true;
-			startProgressBar();
-			setTimeout(() => {
-				showCopyPopup.value = false;
-				copiedPhone.value = false;
-			}, 2000);
-			copiedLocation.value = false;
-		} else if (refName === "locationText") {
-			copiedEmail.value = false;
-			copiedPhone.value = false;
-			copiedLocation.value = true;
-			copySuccessMessage.value = "Location copied!";
-			showCopyPopup.value = true;
-			startProgressBar();
-			setTimeout(() => {
-				showCopyPopup.value = false;
-				copiedLocation.value = false;
-			}, 2000);
-		}
+		addNotification(message);
 	});
 }
 
-function startProgressBar() {
-	progressBarWidth.value = 100;
-	const duration = 2000;
+function addNotification(message) {
+	const id = Date.now() + Math.random();
+	const notification = {
+		id,
+		message,
+		progress: 100
+	};
+	
+	notifications.value.push(notification);
+	
+	const duration = 3000;
 	const startTime = performance.now();
-
+	
 	const animate = (currentTime) => {
 		const elapsed = currentTime - startTime;
 		const progress = Math.max(0, 100 - (elapsed / duration) * 100);
-		progressBarWidth.value = progress;
-
+		
+		const notif = notifications.value.find(n => n.id === id);
+		if (notif) {
+			notif.progress = progress;
+		}
+		
 		if (elapsed < duration) {
 			requestAnimationFrame(animate);
 		} else {
-			progressBarWidth.value = 0;
-			showCopyPopup.value = false;
+			removeNotification(id);
 		}
 	};
-
+	
 	requestAnimationFrame(animate);
+}
+
+function removeNotification(id) {
+	const index = notifications.value.findIndex(n => n.id === id);
+	if (index !== -1) {
+		notifications.value.splice(index, 1);
+	}
 }
 </script>
 
@@ -415,7 +409,7 @@ function startProgressBar() {
 				</div>
 				<div class="copy">
 					<div
-						@click="copyToClipboard('emailText')"
+					@click.stop.prevent="copyToClipboard('emailText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
 							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
@@ -423,7 +417,7 @@ function startProgressBar() {
 							<input
 								id="email-checkbox"
 								type="checkbox"
-								v-model="copiedEmail"
+							:checked="copiedEmail"
 								aria-label="Copy email to clipboard" />
 							<svg
 								viewBox="0 0 384 512"
@@ -474,7 +468,7 @@ function startProgressBar() {
 				</div>
 				<div class="copy">
 					<div
-						@click="copyToClipboard('phoneText')"
+					@click.stop.prevent="copyToClipboard('phoneText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
 							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
@@ -482,9 +476,8 @@ function startProgressBar() {
 							<input
 								id="phone-checkbox"
 								type="checkbox"
-								v-model="copiedPhone"
-								aria-label="Copy phone number to clipboard"
-								checked="" />
+							:checked="copiedPhone"
+							aria-label="Copy phone number to clipboard" />
 							<svg
 								viewBox="0 0 384 512"
 								height="1em"
@@ -534,7 +527,7 @@ function startProgressBar() {
 				</div>
 				<div class="copy">
 					<div
-						@click="copyToClipboard('locationText')"
+					@click.stop.prevent="copyToClipboard('locationText')"
 						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
 							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
@@ -542,9 +535,8 @@ function startProgressBar() {
 							<input
 								id="location-checkbox"
 								type="checkbox"
-								v-model="copiedLocation"
-								aria-label="Copy location to clipboard"
-								checked="" />
+							:checked="copiedLocation"
+							aria-label="Copy location to clipboard" />
 							<svg
 								viewBox="0 0 384 512"
 								height="1em"
@@ -565,26 +557,60 @@ function startProgressBar() {
 					</div>
 				</div>
 			</div>
-			<Transition name="fade-reverse-scale" mode="out-in">
-				<div
-					v-if="showCopyPopup"
-					style="font-family: Share Tech Mono"
-					class="absolute -bottom-24 right-0 bg-primary shadow-around shadow-black text-white p-4 rounded-lg">
-					<span class="font-semibold tracking-wider">
-						{{ copySuccessMessage }}
-					</span>
-					<div
-						class="h-2 timed-popup bg-white rounded-full mt-2"
-						:style="{ width: progressBarWidth + '%' }"></div>
-				</div>
-			</Transition>
 		</div>
 	</div>
+	
+	<!-- Notifications empilées - Teleport vers body pour garantir le positionnement -->
+	<Teleport to="body">
+		<TransitionGroup name="notification" tag="div" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-9999 flex flex-col gap-2 md:gap-3 pointer-events-none">
+			<div
+				v-for="notification in notifications"
+				:key="notification.id"
+				style="font-family: Share Tech Mono"
+				class="pointer-events-auto relative backdrop-blur-xl bg-primary/90 shadow-2xl shadow-black/50 text-white px-3 py-2.5 md:px-6 md:py-4 rounded-xl md:rounded-2xl border border-primary/20 min-w-55 md:min-w-70 max-w-[90vw] md:max-w-100 overflow-hidden">
+				<!-- Icône de succès -->
+				<div class="flex items-center gap-2 md:gap-3 mb-1.5 md:mb-2">
+					<div class="shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/20 flex items-center justify-center">
+						<Icon
+							name="i-mingcute:check-fill"
+							class="w-4 h-4 md:w-5 md:h-5 text-white" />
+					</div>
+					<span class="font-semibold tracking-wide md:tracking-wider text-sm md:text-base">
+						{{ notification.message }}
+					</span>
+				</div>
+				<!-- Barre de progression moderne -->
+				<div class="relative h-1 md:h-1.5 bg-white/20 rounded-full overflow-hidden">
+					<div
+						class="absolute top-0 left-0 h-full bg-linear-to-r from-white to-white/80 rounded-full transition-all duration-100 ease-linear shadow-sm shadow-white/50"
+						:style="{ width: notification.progress + '%' }"></div>
+				</div>
+			</div>
+		</TransitionGroup>
+	</Teleport>
 </template>
 
 <style scoped>
-.timed-popup {
-	height: 0.5rem;
-	transition: width 0.1s linear;
+/* Animation des notifications */
+.notification-enter-active {
+	transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.notification-leave-active {
+	transition: all 0.3s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.notification-enter-from {
+	opacity: 0;
+	transform: translateX(100%) scale(0.8);
+}
+
+.notification-leave-to {
+	opacity: 0;
+	transform: translateX(100%) scale(0.8);
+}
+
+.notification-move {
+	transition: transform 0.3s ease;
 }
 </style>
