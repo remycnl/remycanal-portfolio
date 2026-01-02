@@ -105,8 +105,23 @@ const toggleStars = () => {
 		class="font-[Schoolbell] lg:font-[Orbitron] relative z-50 flex flex-col justify-center items-center text-center skills">
 		<div
 			class="relative z-30 w-20 h-20 md:w-28 md:h-28 rounded-full bg-black border-2 md:border-3 border-gray-light/5 flex justify-center items-center">
-			<NuxtImg
-				v-if="props.withPath"
+		<img
+			v-if="props.withPath && props.pathIcon.endsWith('.svg')"
+			:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.index"
+			:src="props.pathIcon"
+			:alt="props.text + ' icon'"
+			:title="props.text + ' icon'"
+			:class="{
+				'icon-select-event': true,
+				'w-auto': true,
+				'h-10': !isGif,
+				'md:h-14': !isGif,
+				'h-16': isGif,
+				'md:h-22': isGif,
+			}"
+			loading="lazy" />
+		<NuxtImg
+			v-else-if="props.withPath"
 				:id="isGif ? 'skill-bubble-gif' : 'skill-bubble-' + props.index"
 			:src="props.pathIcon"
 				:alt="props.text + ' icon'"
@@ -120,7 +135,7 @@ const toggleStars = () => {
 					'md:h-22': isGif,
 				}"
 				loading="lazy"
-				:format="props.pathIcon.endsWith('.svg') ? 'svg' : (isGif ? 'gif' : 'webp')" />
+				:format="isGif ? 'gif' : 'webp'" />
 			<Icon
 				v-else
 				:id="'skill-bubble-' + props.index"

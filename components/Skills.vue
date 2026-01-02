@@ -357,13 +357,29 @@ onMounted(() => {
 				:class="{ 'opacity-0': isUpdating, 'opacity-100': !isUpdating }"
 				@transitionend="finishUpdate"
 				class="flex flex-col items-center w-[88%] h-full py-4 px-8 transition-opacity duration-300">
-				<NuxtImg
-					v-if="currentSkill.withPath"
+				<img
+					v-if="currentSkill.withPath && currentSkill.pathIcon.endsWith('.svg')"
 					:src="currentSkill.pathIcon"
 					:alt="currentSkill.text + ' icon'"
 					:title="currentSkill.text + ' icon'"
 					data-nosnippet
-					:format="currentSkill.pathIcon.endsWith('.svg') ? 'svg' : (currentSkill.isGif ? 'gif' : 'webp')"
+					:class="{
+						'icon-select-event': true,
+						'w-auto': true,
+						'h-16': !currentSkill.isGif,
+						'md:h-24': !currentSkill.isGif,
+						'h-24': currentSkill.isGif,
+						'md:h-36': currentSkill.isGif,
+					}"
+					loading="lazy"
+					class="my-10" />
+				<NuxtImg
+					v-else-if="currentSkill.withPath"
+					:src="currentSkill.pathIcon"
+					:alt="currentSkill.text + ' icon'"
+					:title="currentSkill.text + ' icon'"
+					data-nosnippet
+					:format="currentSkill.isGif ? 'gif' : 'webp'"
 					:class="{
 						'icon-select-event': true,
 						'w-auto': true,
