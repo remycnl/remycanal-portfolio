@@ -36,11 +36,10 @@ const ancreToSection = (event, targetId) => {
 		class="lg:rounded-b-[4rem] overflow-hidden shadow-around shadow-black bottom-0 text-white bg-black">
 		<div
 			class="container mx-auto px-4 lg:px-0 pt-40 pb-10 lg:pb-32 flex flex-col items-center gap-y-20 md:gap-y-20 lg:gap-y-32">
-			<NuxtImg
+			<img
 				:src="`/img/logo-${primaryColor}.png`"
 				alt="Logo of Rémy Canal"
 				title="Logo of Rémy Canal"
-				preset="portfolioImage"
 				loading="lazy"
 				class="change-img-color text-shadow w-40 lg:w-48 2xl:w-60 h-auto" />
 			<div
