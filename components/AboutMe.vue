@@ -57,18 +57,18 @@ const handleUpdateColor = (newColor) => {
 					@update-color="handleUpdateColor" />
 				<div id="download-cv" class="opacity-0">
 					<a
-						class="cssbutton relative transition-colors shadow-around shadow-black duration-1000 hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest"
+						class="cssbutton transition-colors shadow-around shadow-black duration-1000 hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest"
 						href="/doc/remy-canal-cv.pdf"
 						target="_blank"
 						rel="noopener noreferrer">
 						<span class="font-semibold text-[#FFFFFF]"> View CV </span>
-						<div class="icon absolute -top-1 -right-1">
+						<div class="icon">
 							<Icon
 								name="i-gravity-ui:eyes-look-left"
 								ssr="true"
 								mode="svg"
 								style="color: var(--color-primary)"
-								class="w-7 h-7 transition-all duration-1000" />
+								class="w-6 h-6 transition-all duration-1000" />
 						</div>
 					</a>
 				</div>
