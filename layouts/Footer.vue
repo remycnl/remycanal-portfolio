@@ -141,7 +141,7 @@ const ancreToSection = (event, targetId) => {
 					aria-label="Call Remy Canal"
 					class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 					<div
-						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
+						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-15 h-15 lg:w-18 lg:h-18">
 						<Icon
 							name="i-uil:phone"
 							ssr="true"
@@ -156,7 +156,7 @@ const ancreToSection = (event, targetId) => {
 					aria-label="Email Remy Canal"
 					class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 					<div
-						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
+						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-15 h-15 lg:w-18 lg:h-18">
 						<Icon
 							name="i-material-symbols:mail-outline-rounded"
 							ssr="true"
@@ -173,7 +173,7 @@ const ancreToSection = (event, targetId) => {
 					aria-label="Visit Remy Canal's GitHub"
 					class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 					<div
-						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
+						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-15 h-15 lg:w-18 lg:h-18">
 						<Icon
 							name="i-uil:github"
 							ssr="true"
@@ -190,7 +190,7 @@ const ancreToSection = (event, targetId) => {
 					aria-label="Visit Remy Canal's LinkedIn"
 					class="hover-scale-effect clickable cursor-pointer lg:cursor-none active:scale-90 transition-all duration-100">
 					<div
-						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-[3.75rem] h-[3.75rem] lg:w-[4.5rem] lg:h-[4.5rem]">
+						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-15 h-15 lg:w-18 lg:h-18">
 						<Icon
 							name="i-uil:linkedin"
 							ssr="true"

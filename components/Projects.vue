@@ -179,12 +179,12 @@ const stopHover = () => {
 				ssr="true"
 				mode="svg"
 				style="color: var(--color-secondary)"
-				class="absolute top-0 left-[-15%] w-[50rem] opacity-30 h-[50rem] transition-all duration-300" />
+				class="absolute top-0 left-[-15%] w-200 opacity-30 h-200 transition-all duration-300" />
 			<div v-for="project in projects" :key="project.slug">
 				<div
-					class="cards-project-mobile group flex mt-10 flex-col items-center bg-gray-dark text-primary border border-primary shadow-around shadow-black-dark w-full h-[35rem] rounded-3xl">
+					class="cards-project-mobile group flex mt-10 flex-col items-center bg-gray-dark text-primary border border-primary shadow-around shadow-black-dark w-full h-140 rounded-3xl">
 					<div
-						class="w-[90%] h-[3rem] mt-5 flex flex-row justify-between items-center">
+						class="w-[90%] h-12 mt-5 flex flex-row justify-between items-center">
 						<p
 							class="text-primary font-bold tracking-widest text-sm">
 							{{ project.date }}
@@ -195,7 +195,7 @@ const stopHover = () => {
 						</p>
 					</div>
 					<div
-						class="relative my-5 rounded-3xl w-[90%] h-[20rem] overflow-hidden">
+						class="relative my-5 rounded-3xl w-[90%] h-80 overflow-hidden">
 						<NuxtImg
 							:src="'https://www.remycanal.me' + project.img"
 							:alt="`Mockup - ${project.img}`"
@@ -241,15 +241,15 @@ const stopHover = () => {
 				ssr="true"
 				mode="svg"
 				style="color: var(--color-secondary)"
-				class="absolute top-0 left-[-15%] 2xl:left-[-40%] w-[50rem] 2xl:w-[70rem] opacity-30 h-[50rem] 2xl:h-[70rem] transition-all duration-300" />
+				class="absolute top-0 left-[-15%] 2xl:left-[-40%] w-200 2xl:w-280 opacity-30 h-200 2xl:h-280 transition-all duration-300" />
 			<div
-				class="relative overflow-visible container-project opacity-0 bg-gray-dark text-primary border border-primary shadow-around shadow-black-dark w-1/2 h-[35rem] rounded-3xl">
+				class="relative overflow-visible container-project opacity-0 bg-gray-dark text-primary border border-primary shadow-around shadow-black-dark w-1/2 h-140 rounded-3xl">
 				<Transition name="fade">
 					<div
 						v-show="hoveredProject"
 						class="flex flex-col items-center w-full h-full">
 						<div
-							class="w-[90%] h-[3rem] mt-5 flex flex-row justify-between items-center">
+							class="w-[90%] h-12 mt-5 flex flex-row justify-between items-center">
 							<ScrambleText
 								v-show="hoveredProject"
 								:text="
@@ -266,7 +266,7 @@ const stopHover = () => {
 								:frames="20" />
 						</div>
 						<div
-							class="relative image-animation-container my-5 rounded-3xl w-[90%] h-[20rem] border-2 border-gray-semi overflow-hidden"></div>
+							class="relative image-animation-container my-5 rounded-3xl w-[90%] h-80 border-2 border-gray-semi overflow-hidden"></div>
 						<div
 							class="flex flex-wrap w-[90%] gap-3 my-5"
 							v-show="hoveredProject">
@@ -310,7 +310,7 @@ const stopHover = () => {
 							class="w-full h-full flex flex-row justify-between items-center">
 							<div class="flex flex-row gap-x-4 items-center justify-start">
 								<h4
-									class="text-gray-light text-nowrap text-[1.5rem] leading-[2rem] tracking-wider font-bold group-hover:text-primary group-hover:tracking-widest origin-center transform transition-all duration-500 py-5">
+									class="text-gray-light text-nowrap text-[1.5rem] leading-8 tracking-wider font-bold group-hover:text-primary group-hover:tracking-widest origin-center transform transition-all duration-500 py-5">
 									{{ project.title }}
 								</h4>
 								<Icon
@@ -320,7 +320,7 @@ const stopHover = () => {
 									style="color: var(--color-primary)"
 									class="link-type-hover w-6 h-6 mb-1 transition-all duration-300" />
 							</div>
-							<h5 class="relative leading-[2rem] text-gray-light opacity-55">
+							<h5 class="relative leading-8 text-gray-light opacity-55">
 								{{ project.type }}
 							</h5>
 						</div>

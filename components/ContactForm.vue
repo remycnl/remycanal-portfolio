@@ -178,11 +178,11 @@ function startProgressBar() {
 			class="relative lg:py-8 w-full lg:w-1/2 flex flex-col justify-start space-y-5 md:space-y-4 items-start">
 			<h2
 				id="Contact me"
-				class="text-color-saturate text-[2rem] md:text-[3rem] lg:text-[2.8rem] 2xl:text-[3.5rem] md:leading-[4rem] lg:leading-[3.5rem] 2xl:leading-[4.5rem] font-bold text-primary text-start">
+				class="text-color-saturate text-[2rem] md:text-[3rem] lg:text-[2.8rem] 2xl:text-[3.5rem] md:leading-16 lg:leading-14 2xl:leading-18 font-bold text-primary text-start">
 				Just say Hello !
 			</h2>
 			<h3
-				class="text-[1.1rem] md:text-[1.5rem] lg:text-[1.2rem] 2xl:text-[1.5rem] -mt-5 md:-mt-2 lg:-mt-0 text-gray-light mb-5 lg:mb-10 text-start md:tracking-widest hover:text-white transition-colors duration-500">
+				class="text-[1.1rem] md:text-[1.5rem] lg:text-[1.2rem] 2xl:text-[1.5rem] -mt-5 md:-mt-2 lg:mt-0 text-gray-light mb-5 lg:mb-10 text-start md:tracking-widest hover:text-white transition-colors duration-500">
 				Let me know more about you
 			</h3>
 
@@ -352,7 +352,7 @@ function startProgressBar() {
 								loading="lazy"
 								alt="Message Sent!"
 								title="Message Sent!"
-								class="w-[30rem] h-auto" />
+								class="w-120 h-auto" />
 							<div
 								class="font-bold text-primary text-[2rem] md:text-[3rem] mb-40 md:mb-0">
 								Message Sent!
@@ -369,7 +369,7 @@ function startProgressBar() {
 								loading="lazy"
 								alt="Error!"
 								title="Error!"
-								class="w-[15rem] h-auto" />
+								class="w-60 h-auto" />
 							<div
 								class="font-bold text-red-600 text-[2rem] md:text-[3rem] mb-40 md:mb-0">
 								Failed to Send Message!
@@ -383,13 +383,13 @@ function startProgressBar() {
 			id="contact"
 			class="relative p-4 md:p-10 2xl:p-14 w-full rounded-2xl bg-secondary group shadow-around shadow-black lg:w-fit flex flex-col gap-y-2.5 justify-start items-start">
 			<h2
-				class="text-[2rem] md:text-[2.8rem] 2xl:text-[3.5rem] leading-[2rem] md:leading-[2.8rem] font-bold text-gray-light group-hover:text-white transition-colors duration-500 mb-5 text-start">
+				class="text-[2rem] md:text-[2.8rem] 2xl:text-[3.5rem] leading-8 md:leading-[2.8rem] font-bold text-gray-light group-hover:text-white transition-colors duration-500 mb-5 text-start">
 				Get in touch
 			</h2>
 			<div
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
-					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					class="notif flex flex-row w-full md:w-88 p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<div
 						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon
@@ -448,7 +448,7 @@ function startProgressBar() {
 			<div
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
-					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					class="notif flex flex-row w-full md:w-88 p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<div
 						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon
@@ -508,7 +508,7 @@ function startProgressBar() {
 			<div
 				class="w-full flex flex-row justify-start md:justify-center lg:justify-start items-center gap-x-2.5 text-[#435166] hover:text-white transition-colors duration-500">
 				<div
-					class="notif flex flex-row w-full md:w-[22rem] p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
+					class="notif flex flex-row w-full md:w-88 p-2.5 rounded-xl justify-start items-center gap-x-2.5 md:gap-x-4 bg-black">
 					<div
 						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon

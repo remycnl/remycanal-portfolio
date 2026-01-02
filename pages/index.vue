@@ -56,7 +56,7 @@ const updateFavicon = (color) => {
 <template>
 	<ButtonBackToTop />
 	<div
-		class="bg-gradient-to-b lg:rounded-t-[4rem] overflow-hidden shadow-around shadow-black from-black via-blue-dark to-black">
+		class="bg-linear-to-b lg:rounded-t-[4rem] overflow-hidden shadow-around shadow-black from-black via-blue-dark to-black">
 		<div class="lg:mx-20 2xl:mx-0 hover:brightness-100">
 			<section
 				id="section-1"

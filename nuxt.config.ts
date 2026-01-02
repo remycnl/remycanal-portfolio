@@ -77,6 +77,7 @@ export default defineNuxtConfig({
 		"@nuxt/image",
 		"@nuxt/icon",
 		"@nuxtjs/seo",
+		"@nuxtjs/partytown",
 	],
 
 	icon: {
@@ -100,6 +101,8 @@ export default defineNuxtConfig({
 
 	image: {
 		domains: ["www.remycanal.me"],
+		format: ["webp"],
+		quality: 80,
 		presets: {
 			portfolioImage: {
 				modifiers: {
@@ -107,6 +110,9 @@ export default defineNuxtConfig({
 					quality: 80,
 				},
 			},
+		},
+		ipx: {
+			maxAge: 60 * 60 * 24 * 365, // 1 an
 		},
 	},
 

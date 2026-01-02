@@ -232,7 +232,7 @@ const setCSP = () => {
 				class="blur-background-menu z-100 pointer-events-none blur-none lg:hidden opacity-0 absolute h-full w-full bg-black/90"></div>
 			<div
 				id="blob"
-				class="absolute -z-0 pointer-events-none hidden lg:block"></div>
+				class="absolute z-0 pointer-events-none hidden lg:block"></div>
 			<div
 				class="bg-secondary lg:p-8 lg:pt-36 overflow-hidden transition-colors duration-1000">
 				<div id="top" class="container mx-auto lg:mx-0 z-999">

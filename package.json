@@ -1,6 +1,7 @@
 {
 	"name": "remy-canal-portfolio",
 	"private": true,
+	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
 		"build": "nuxt build",
@@ -15,28 +16,28 @@
 		"@iconify-json/formkit": "^1.2.2",
 		"@iconify-json/game-icons": "^1.2.3",
 		"@iconify-json/ic": "^1.2.4",
-		"@iconify-json/logos": "^1.2.9",
-		"@iconify-json/material-symbols": "^1.2.39",
-		"@iconify-json/mingcute": "^1.2.5",
+		"@iconify-json/logos": "^1.2.10",
+		"@iconify-json/material-symbols": "^1.2.50",
+		"@iconify-json/mingcute": "^1.2.6",
 		"@iconify-json/skill-icons": "^1.2.3",
 		"@iconify-json/teenyicons": "^1.2.2",
 		"@iconify-json/uil": "^1.2.3",
-		"@iconify-json/vscode-icons": "^1.2.30",
-		"@nuxt/icon": "^2.0.0",
-		"@nuxt/image": "^1.11.0",
+		"@iconify-json/vscode-icons": "^1.2.37",
+		"@nuxt/icon": "^2.1.1",
+		"@nuxt/image": "^2.0.0",
 		"@nuxtjs/google-fonts": "^3.2.0",
-		"@nuxtjs/partytown": "^1.6.0",
-		"@nuxtjs/seo": "^3.2.2",
-		"@tailwindcss/vite": "^4.1.13",
-		"gsap": "^3.13.0",
-		"nuxt": "^4.1.2",
-		"tailwindcss": "^4.1.13",
-		"vue": "^3.5.22",
-		"vue-router": "^4.5.1"
+		"@nuxtjs/partytown": "^2.0.0",
+		"@nuxtjs/seo": "^3.3.0",
+		"@tailwindcss/vite": "^4.1.18",
+		"gsap": "^3.14.2",
+		"nuxt": "^4.2.2",
+		"tailwindcss": "^4.1.18",
+		"vue": "^3.5.26",
+		"vue-router": "^4.6.4"
 	},
 	"dependencies": {
-		"@vercel/analytics": "^1.5.0",
-		"@vercel/speed-insights": "^1.2.0",
-		"resend": "^6.1.0"
+		"@vercel/analytics": "^1.6.1",
+		"@vercel/speed-insights": "^1.3.1",
+		"resend": "^6.6.0"
 	}
 }

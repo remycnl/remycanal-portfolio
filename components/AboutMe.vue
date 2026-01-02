@@ -22,9 +22,9 @@ const handleUpdateColor = (newColor) => {
 		<div
 			class="flex flex-col justify-center text-center w-full lg:w-7/12 lg:text-start lg:gap-y-14 z-50">
 			<h1
-				class="-mt-25 md:-mt-30 lg:-mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
+				class="-mt-25 md:-mt-30 lg:mt-0 flex flex-col lg:flex-row items-center md:tracking-widest lg:tracking-normal gap-x-5 gap-y-14 lg:gap-y-3 font-bold">
 				<span
-					class="text-color-saturate -ml-14 md:-ml-0 text-[5.5rem] md:text-[6rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5.5rem] md:leading-[6.5rem] lg:leading-none 2xl:leading-[5.8rem]"
+					class="text-color-saturate -ml-14 md:ml-0 text-[5.5rem] md:text-[6rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-22 md:leading-26 lg:leading-none 2xl:leading-[5.8rem]"
 					><div
 						class="text-shadow firstname-about-me opacity-0 md:mr-20 lg:mr-0">
 						Rémy
@@ -35,7 +35,7 @@ const handleUpdateColor = (newColor) => {
 					</div></span
 				>
 				<span
-					class="text-color-saturate flex flex-row lg:flex-col gap-x-5 text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-[5rem] lg:leading-none 2xl:leading-[5.8rem]"
+					class="text-color-saturate flex flex-row lg:flex-col gap-x-5 text-[2.2rem] md:text-[3rem] lg:text-[3.5rem] 2xl:text-[5rem] leading-20 lg:leading-none 2xl:leading-[5.8rem]"
 					><div class="web opacity-0 text-shadow">Web</div>
 					<div class="developer opacity-0 lg:ml-16 text-shadow">
 						Developer

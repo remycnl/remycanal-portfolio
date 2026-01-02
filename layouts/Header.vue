@@ -185,11 +185,11 @@ onBeforeUnmount(() => {
 				</div>
 			</div>
 			<div
-				class="-ml-30 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[150vw] left-0 h-[5.5rem]"></div>
+				class="-ml-30 -mt-5 z-10 backdrop-blur-lg shadow-around shadow-black bg-[#111319ad] absolute pointer-events-auto top-0 w-[150vw] left-0 h-22"></div>
 		</div>
 		<div
 			:class="{ 'backdrop-blur-xs': scrolled && !isScreenSM }"
-			class="relative rounded-3xl lg:w-fit dropdown-animation -mt-[3.25rem] lg:-mt-0 set-dropdown-menu transform-gpu">
+			class="relative rounded-3xl lg:w-fit dropdown-animation -mt-13 lg:mt-0 set-dropdown-menu transform-gpu">
 			<div
 				class="z-99999 absolute top-10 right-10 group lg:hidden flex flex-col items-center"
 				@click="toggleDropdown">

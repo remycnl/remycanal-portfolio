@@ -105,13 +105,13 @@ const ancreToSection = (event, targetId) => {
 					<div class="md:hidden w-full h-full flex justify-center items-center">
 						<p
 							class="font-bold text-sm text-center tracking-widest text-gray-light group-hover:text-white transition-colors duration-500">
-							Some of my<span class="text-[4rem] leading-[4rem]">Values</span>
+							Some of my<span class="text-[4rem] leading-16">Values</span>
 						</p>
 					</div>
 					<div
 						class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-start text-start">
 						<div
-							class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+							class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex flex-col items-center h-14 md:h-auto gap-y-3">
 							<Transition name="fade-translate-up" mode="out-in">
 								<div
 									v-if="!isValueHover1"
@@ -141,7 +141,7 @@ const ancreToSection = (event, targetId) => {
 							</Transition>
 						</div>
 						<div
-							class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+							class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex flex-col items-center h-14 md:h-auto gap-y-3">
 							<Transition name="fade-translate-down" mode="out-in">
 								<div
 									v-if="!isValueHover2"
@@ -175,7 +175,7 @@ const ancreToSection = (event, targetId) => {
 						<p
 							class="font-bold text-sm 2xl:text-lg text-center tracking-widest text-gray-light group-hover:text-white transition-colors duration-500">
 							Some of my<span
-								class="text-[3rem] 2xl:text-[5rem] leading-[3rem] 2xl:leading-[5rem]"
+								class="text-[3rem] 2xl:text-[5rem] leading-12 2xl:leading-12"
 								>Values</span
 							>
 						</p>
@@ -183,7 +183,7 @@ const ancreToSection = (event, targetId) => {
 					<div
 						class="w-full md:w-1/4 h-full flex flex-col gap-y-16 md:gap-y-20 justify-between items-center md:items-end text-end">
 						<div
-							class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+							class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex flex-col items-center h-14 md:h-auto gap-y-3">
 							<Transition name="fade-translate-up" mode="out-in">
 								<div
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-end items-center text-start md:text-end"
@@ -211,7 +211,7 @@ const ancreToSection = (event, targetId) => {
 							</Transition>
 						</div>
 						<div
-							class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex flex-col items-center h-[3.5rem] md:h-auto gap-y-3">
+							class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex flex-col items-center h-14 md:h-auto gap-y-3">
 							<Transition name="fade-translate-down" mode="out-in">
 								<div
 									class="flex flex-row gap-x-3 justify-end items-center"
@@ -246,7 +246,7 @@ const ancreToSection = (event, targetId) => {
 						left: 50%;
 						transform: translateX(-50%);
 					"
-					class="absolute h-[20rem] w-[17rem] 2xl:w-[30rem] rounded-full bg-primary transition-colors duration-1000 border-20 border-black"></div>
+					class="absolute h-80 w-68 2xl:w-120 rounded-full bg-primary transition-colors duration-1000 border-20 border-black"></div>
 			</article>
 		</div>
 		<div id="wanna-work-with-me" class="opacity-0">
@@ -257,7 +257,7 @@ const ancreToSection = (event, targetId) => {
 					href="#Contact me"
 					class="clickable hover-scale-effect cursor-pointer lg:cursor-none">
 					<h4
-						class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-[3rem] text-white hover:tracking-widest transition-all duration-500">
+						class="menu-line-animation text-xl md:text-3xl lg:text-[2.4rem] lg:leading-12 text-white hover:tracking-widest transition-all duration-500">
 						Wanna work with me ?
 					</h4>
 				</a>

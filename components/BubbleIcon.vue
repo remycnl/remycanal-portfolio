@@ -117,7 +117,7 @@ const toggleStars = () => {
 					'h-10': !isGif,
 					'md:h-14': !isGif,
 					'h-16': isGif,
-					'md:h-[5.5rem]': isGif,
+					'md:h-22': isGif,
 				}"
 				loading="lazy"
 				:format="isGif ? 'gif' : 'webp'" />

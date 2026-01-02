@@ -208,10 +208,10 @@ const data = [
 
 			<div
 				:style="{ height: height + 'px' }"
-				class="absolute left-[1.20rem] top-0 overflow-hidden w-[2px] bg-gradient-to-b from-transparent via-neutral-700 to-transparent [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] hover:saturate-200 transition-all duration-500">
+				class="absolute left-[1.20rem] top-0 overflow-hidden w-0.5 bg-linear-to-b from-transparent via-neutral-700 to-transparent mask-[linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] hover:saturate-200 transition-all duration-500">
 				<div
 					ref="progressBar"
-					class="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-primary via-secondary to-transparent rounded-full"></div>
+					class="absolute inset-x-0 top-0 w-0.5 bg-linear-to-t from-primary via-secondary to-transparent rounded-full"></div>
 			</div>
 		</div>
 	</div>
