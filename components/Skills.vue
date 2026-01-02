@@ -413,16 +413,14 @@ onMounted(() => {
 		<div
 			id="container-skills"
 			class="relative grid lg:w-4/5 2xl:w-3/5 grid-cols-3 md:grid-cols-4 pt-28 md:pt-60 lg:pt-0 gap-y-7 gap-x-2 md:gap-x-20 lg:gap-x-0 2xl:gap-x-20 md:gap-y-12">
-			<NuxtImg
+			<img
 				:src="`/img/details-skills-${selectedColor}.png`"
-				preset="portfolioImage"
 				loading="lazy"
 				alt="Click on bubbles to see details (mobile)"
 				title="Click on bubbles to see details (mobile)"
 				class="hover:saturate-200 transition-all duration-500 absolute scale-50 2xl:scale-[.4] -top-32 md:-top-40 lg:-top-92 2xl:-top-122 right-[30%] md:right-[45%] lg:right-[35%] 2xl:right-[40%] 3xl:right-[60%] z-10" />
-			<NuxtImg
+			<img
 				:src="`/img/stars-info-${selectedColor}.png`"
-				preset="portfolioImage"
 				loading="lazy"
 				alt="Stars = Proficiency level"
 				title="Stars = Proficiency level"
