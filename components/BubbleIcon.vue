@@ -120,7 +120,7 @@ const toggleStars = () => {
 					'md:h-22': isGif,
 				}"
 				loading="lazy"
-				:format="isGif ? 'gif' : 'webp'" />
+				:format="props.pathIcon.endsWith('.svg') ? 'svg' : (isGif ? 'gif' : 'webp')" />
 			<Icon
 				v-else
 				:id="'skill-bubble-' + props.index"

@@ -363,7 +363,7 @@ onMounted(() => {
 					:alt="currentSkill.text + ' icon'"
 					:title="currentSkill.text + ' icon'"
 					data-nosnippet
-					:format="currentSkill.isGif ? 'gif' : 'webp'"
+					:format="currentSkill.pathIcon.endsWith('.svg') ? 'svg' : (currentSkill.isGif ? 'gif' : 'webp')"
 					:class="{
 						'icon-select-event': true,
 						'w-auto': true,
