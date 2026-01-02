@@ -410,7 +410,7 @@ function removeNotification(id) {
 				<div class="copy">
 					<div
 					@click.stop.prevent="copyToClipboard('emailText')"
-						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+						class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
 							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
 							for="email-checkbox">
@@ -469,7 +469,7 @@ function removeNotification(id) {
 				<div class="copy">
 					<div
 					@click.stop.prevent="copyToClipboard('phoneText')"
-						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+						class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
 							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
 							for="phone-checkbox">
@@ -528,7 +528,7 @@ function removeNotification(id) {
 				<div class="copy">
 					<div
 					@click.stop.prevent="copyToClipboard('locationText')"
-						class="hover-scale-effect clickable flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
+						class="hover-scale-effect clickable cursor-pointer lg:cursor-none flex justify-center items-center border-2 border-black rounded-xl bg-black transition-all duration-100 active:border-gray-semi">
 						<label
 							class="container-clipboard cursor-pointer lg:cursor-none p-4 md:p-5"
 							for="location-checkbox">
@@ -573,9 +573,8 @@ function removeNotification(id) {
 					<div class="shrink-0 w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/20 flex items-center justify-center">
 						<Icon
 							name="i-mingcute:check-fill"
-							ssr="true"
-							mode="svg"
-							class="w-4 h-4 md:w-5 md:h-5 text-white" />
+							style="color: white"
+							class="w-4 h-4 md:w-5 md:h-5" />
 					</div>
 					<span class="font-semibold tracking-wide md:tracking-wider text-sm md:text-base">
 						{{ notification.message }}
