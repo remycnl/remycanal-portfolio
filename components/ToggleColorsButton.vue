@@ -74,6 +74,7 @@ const colorOptions = ref([
 ]);
 
 const selectedColor = ref(colorOptions.value[0].family);
+const { setPrimaryColor } = useThemeColor();
 
 const updateCheckbox = (
 	index,
@@ -93,6 +94,7 @@ const updateCheckbox = (
 		primaryColorTransparent
 	);
 	selectedColor.value = selectedFamily;
+	setPrimaryColor(selectedFamily);
 
 	const families = colorOptions.value.map((color) => color.family);
 

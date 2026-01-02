@@ -5,8 +5,13 @@ export const useThemeColor = () => {
     primaryColor.value = color;
   };
 
+  const getPrimaryColor = () => {
+    return primaryColor.value;
+  };
+
   return {
-    primaryColor: readonly(primaryColor),
-    setPrimaryColor
+    primaryColor,
+    setPrimaryColor,
+    getPrimaryColor
   };
 };
