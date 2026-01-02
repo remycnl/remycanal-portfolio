@@ -60,15 +60,15 @@ const handleUpdateColor = (newColor) => {
 						class="cssbutton transition-colors shadow-around shadow-black duration-1000 hover-scale-effect clickable mix-darken cursor-pointer lg:cursor-none text-white text-xl tracking-widest"
 						href="/doc/remy-canal-cv.pdf"
 						target="_blank"
-						download>
-						<span class="font-semibold text-[#FFFFFF]"> Download CV </span>
+						rel="noopener noreferrer">
+						<span class="font-semibold text-[#FFFFFF]"> View CV </span>
 						<div class="icon">
 							<Icon
-								name="i-material-symbols:download-rounded"
+								name="i-gravity-ui:eyes-look-left"
 								ssr="true"
 								mode="svg"
 								style="color: var(--color-primary)"
-								class="w-[2.2em] h-[2.2em] transition-all duration-1000" />
+								class="w-8 h-8 transition-all duration-1000" />
 						</div>
 					</a>
 				</div>

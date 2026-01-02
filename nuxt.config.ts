@@ -84,6 +84,7 @@ export default defineNuxtConfig({
 			"ic",
 			"logos",
 			"material-symbols",
+			"gravity-ui",
 			"mingcute",
 			"skill-icons",
 			"teenyicons",
