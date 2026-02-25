@@ -30,6 +30,27 @@ onMounted(() => {
 
 const projects = [
 	{
+		slug: "vikl",
+		title: "VikL",
+		description: "From concept to production, I led the project independently, covering both the design and the development.",
+		link: "https://www.vikl.ai/",
+		img: "/img/mockup-vikl.webp",
+		logo: "/img/logo-vikl.webp",
+		type: "website",
+		date: "2026",
+		technos: [
+			"Vue.js",
+			"Nuxt.js",
+			"HTML",
+			"CSS",
+			"JavaScript",
+			"WebGL",
+			"GSAP",
+			"TailwindCSS",
+			"Microsoft Azure",
+		],
+	},
+	{
 		slug: "pascalecanal",
 		title: "Pascale Canal's e-gallery",
 		description: "Design and development of the complete website.",
@@ -175,7 +196,7 @@ const stopHover = () => {
 		<!-- Mobile -->
 		<div class="lg:hidden relative mt-10">
 			<Icon
-				name="i-game-icons:wind-slap"
+				name="game-icons:wind-slap"
 				ssr="true"
 				mode="svg"
 				style="color: var(--color-secondary)"
@@ -223,7 +244,7 @@ const stopHover = () => {
 							class="focus:scale-90 transition-transform duration-75 flex rounded-xl text-[#FFFFFF] bg-primary p-3 flex-row gap-2 items-center">
 							Visit {{ project.type }}
 							<Icon
-								name="i-formkit:linkexternal"
+								name="formkit:linkexternal"
 								ssr="true"
 								mode="svg"
 								style="color: #ffffff"
@@ -237,7 +258,7 @@ const stopHover = () => {
 		<div
 			class="hidden lg:flex relative overflow-visible mt-40 justify-between gap-x-20 2xl:gap-x-28 items-start">
 			<Icon
-				name="i-game-icons:wind-slap"
+				name="game-icons:wind-slap"
 				ssr="true"
 				mode="svg"
 				style="color: var(--color-secondary)"
@@ -314,7 +335,7 @@ const stopHover = () => {
 									{{ project.title }}
 								</h4>
 								<Icon
-									name="i-formkit:linkexternal"
+									name="formkit:linkexternal"
 									ssr="true"
 									mode="svg"
 									style="color: var(--color-primary)"

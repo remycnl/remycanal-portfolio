@@ -90,6 +90,7 @@ export default defineNuxtConfig({
 			"teenyicons",
 			"uil",
 			"vscode-icons",
+			"material-icon-theme",
 		],
 	},
 

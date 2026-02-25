@@ -155,7 +155,7 @@ const updateFavicon = (color) => {
 			class="group circle-container relative hover-scale-effect clickable cursor-pointer lg:cursor-none w-15 h-15 items-center gap-x-4 py-4 mt-16 lg:mt-0 flex justify-center lg:justify-between px-5 text-white change-color-button rounded-full tracking-widest origin-center hover:bg-secondary bg-black transition-all shadow-custom-outline duration-500">
 			<div>
 				<Icon
-					name="i-material-symbols:format-color-fill-rounded"
+					name="material-symbols:format-color-fill-rounded"
 					ssr="true"
 					mode="svg"
 					style="color: var(--color-white)"

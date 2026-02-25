@@ -7,7 +7,7 @@ const skills = [
 	{
 		text: "HTML",
 		color: "#f1662a",
-		icon: "i-vscode-icons:file-type-html",
+		icon: "vscode-icons:file-type-html",
 		stars: 4,
 		description:
 			"Proficiency in HTML for structuring and organizing web content in a semantic way.",
@@ -15,7 +15,7 @@ const skills = [
 	{
 		text: "JavaScript",
 		color: "#f0db4f",
-		icon: "i-skill-icons:javascript",
+		icon: "skill-icons:javascript",
 		stars: 4,
 		description:
 			"Advanced skills in JavaScript for frontend and backend development, DOM manipulation, and creating dynamic interactions.",
@@ -31,7 +31,7 @@ const skills = [
 	{
 		text: "Tailwind",
 		color: "#45bbbd",
-		icon: "i-logos:tailwindcss-icon",
+		icon: "logos:tailwindcss-icon",
 		stars: 5,
 		description:
 			"Extensive experience with Tailwind CSS for rapid and efficient development, using utility-first classes to style components.",
@@ -39,7 +39,7 @@ const skills = [
 	{
 		text: "Sass",
 		color: "#cd6799",
-		icon: "i-logos:sass",
+		icon: "logos:sass",
 		stars: 3,
 		description:
 			"Modular CSS with variables and mixins for reusable and maintainable code.",
@@ -47,23 +47,23 @@ const skills = [
 	{
 		text: "Nuxt",
 		color: "#67dd82",
-		icon: "i-logos:nuxt-icon",
-		stars: 4,
+		icon: "logos:nuxt-icon",
+		stars: 5,
 		description:
 			"In-depth knowledge of Nuxt.js for building universal Vue.js applications, with routing, server-side rendering (SSR), and static site generation.",
 	},
 	{
 		text: "Vue",
 		color: "#51b883",
-		icon: "i-logos:vue",
-		stars: 4,
+		icon: "logos:vue",
+		stars: 5,
 		description:
 			"Proficiency in Vue.js for building interactive and reactive user interfaces, with components, directives, and efficient state management.",
 	},
 	{
 		text: "Next",
 		color: "#ffffff",
-		icon: "i-logos:nextjs-icon",
+		icon: "logos:nextjs-icon",
 		stars: 3,
 		description:
 			"Building high-performance React applications with SSR and SSG for fast, optimized rendering.",
@@ -71,7 +71,7 @@ const skills = [
 	{
 		text: "React",
 		color: "#00D8FF",
-		icon: "i-skill-icons:react-dark",
+		icon: "skill-icons:react-dark",
 		stars: 3,
 		description:
 			"Creating dynamic, reactive UIs with components and effective state management.",
@@ -79,7 +79,7 @@ const skills = [
 	// {
 	// 	text: "React Native",
 	// 	color: "#F4F2ED",
-	// 	icon: "i-skill-icons:react-light",
+	// 	icon: "skill-icons:react-light",
 	// 	stars: 2,
 	// 	description:
 	// 		"Developing cross-platform mobile apps with React for native performance.",
@@ -87,7 +87,7 @@ const skills = [
 	{
 		text: "Laravel",
 		color: "#f24423",
-		icon: "i-logos:laravel",
+		icon: "logos:laravel",
 		stars: 3,
 		description:
 			"Skills in Laravel for rapid development of robust PHP web applications.",
@@ -96,7 +96,7 @@ const skills = [
 		text: "WordPress",
 		color: "#D0D4DB",
 		iconColor: "#D0D4DB",
-		icon: "i-fa6-brands:wordpress",
+		icon: "fa6-brands:wordpress",
 		stars: 3,
 		description:
 			"Experience with WordPress for creating dynamic websites, with custom themes, plugins, and effective content management.",
@@ -122,7 +122,7 @@ const skills = [
 	{
 		text: "Strapi",
 		color: "#556afa",
-		icon: "i-logos:strapi-icon",
+		icon: "logos:strapi-icon",
 		stars: 4,
 		description:
 			"Development of headless CMS applications with Strapi for managing and distributing digital content.",
@@ -132,14 +132,14 @@ const skills = [
 		color: "#D1D1D1",
 		withPath: true,
 		pathIcon: "/img/prisma.svg",
-		stars: 3,
+		stars: 4,
 		description:
 			"Use of Prisma ORM for database access and management, with type-safe queries and automatic migrations.",
 	},
 	{
 		text: "Node",
         color: "#65B549",
-        icon: "i-logos:nodejs-icon-alt",
+        icon: "logos:nodejs-icon-alt",
         stars: 2,
         description:
             "Experience with Node.js for backend development, event-driven architectures, and asynchronous programming.",
@@ -147,7 +147,7 @@ const skills = [
 	{
 		text: "MySQL",
 		color: "#02768F",
-        icon: "i-vscode-icons:file-type-mysql",
+        icon: "vscode-icons:file-type-mysql",
         stars: 2,
         description:
 			"Skills in MySQL for relational database management, data storage, and querying.",
@@ -155,7 +155,7 @@ const skills = [
 	{
 		text: "MongoDB",
         color: "#13914F",
-        icon: "i-skill-icons:mongodb",
+        icon: "skill-icons:mongodb",
         stars: 2,
         description:
             "Skills in MongoDB for NoSQL database management, data storage, and querying.",
@@ -163,15 +163,15 @@ const skills = [
 	{
 		text: "PostgreSQL",
 		color: "#346891",
-		icon: "i-logos:postgresql",
-        stars: 2,
+		icon: "logos:postgresql",
+        stars: 3,
         description:
 			"Skills in PostgreSQL for relational database management, data storage, and querying.",
 	},
 	{
 		text: "PHP",
 		color: "#6181B6",
-		icon: "i-logos:php",
+		icon: "logos:php",
 		stars: 2,
 		description:
 			"Skills in PHP for backend development, data manipulation, and integration with relational databases.",
@@ -179,7 +179,7 @@ const skills = [
 	{
 		text: "Python",
 		color: "#FFD141",
-		icon: "i-logos:python",
+		icon: "logos:python",
 		stars: 3,
 		description:
 			"Use of Python for web application development and data analysis.",
@@ -189,7 +189,7 @@ const skills = [
 		color: "#FFFFFF",
 		withPath: true,
 		pathIcon: "/img/github.png",
-		stars: 3,
+		stars: 4,
 		description:
 			"Advanced use of GitHub for version control, collaboration on projects, and continuous deployment.",
 	},
@@ -205,16 +205,16 @@ const skills = [
 	{
 		text: "Figma",
 		color: "#F24E1E",
-		icon: "i-logos:figma",
-		stars: 3,
+		icon: "logos:figma",
+		stars: 4,
 		description:
 			"Use of Figma for designing user interfaces, prototyping, and creating interactive design systems.",
 	},
 	{
 		text: "Vercel",
 		color: "#FFFFFF",
-		icon: "i-skill-icons:vercel-light",
-        stars: 4,
+		icon: "skill-icons:vercel-light",
+        stars: 5,
         description:
 			"Deployment of web applications with Vercel for fast, secure, and scalable hosting.",
 	},
@@ -237,13 +237,12 @@ const skills = [
 			"Use of Canva for creating professional graphic designs, including illustrations, infographics, and visual presentations.",
 	},
 	{
-		text: "ChatGPT",
-		color: "#FFFFFF",
-		withPath: true,
-		pathIcon: "/img/chatgpt.png",
+		text: "Claude",
+		color: "#ff7043",
+		icon: "material-icon-theme:claude",
 		stars: 5,
 		description:
-			"Mastering ChatGPT enables me to code more efficiently and quickly by crafting precise prompts, serving as a valuable coding companion.",
+			"Mastering Claude enables me to code more efficiently and quickly by crafting precise prompts, serving as a valuable coding companion.",
 	},
 	{
 		text: "but still human...",
@@ -334,7 +333,7 @@ onMounted(() => {
 						:key="'filled-' + star"
 						class="star star-card">
 						<Icon
-							name="i-teenyicons:star-small-solid"
+							name="teenyicons:star-small-solid"
 							ssr="true"
 							mode="svg"
 							class="w-8 md:w-9 h-8 md:h-9"
@@ -345,7 +344,7 @@ onMounted(() => {
 						:key="'empty-' + star"
 						class="star star-card">
 						<Icon
-							name="i-teenyicons:star-small-outline"
+							name="teenyicons:star-small-outline"
 							ssr="true"
 							mode="svg"
 							class="w-8 md:w-9 h-8 md:h-9"

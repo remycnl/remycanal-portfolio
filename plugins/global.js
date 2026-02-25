@@ -250,7 +250,7 @@ export function setProjectsCounter() {
 }
 
 function startProjectsAnimation() {
-	let nbrProjects = 15;
+	let nbrProjects = 16;
 
 	let currentDisplayValue = 0;
 	const incrementSpeed = 100;

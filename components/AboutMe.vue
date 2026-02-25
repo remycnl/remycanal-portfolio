@@ -64,7 +64,7 @@ const handleUpdateColor = (newColor) => {
 						<span class="font-semibold text-[#FFFFFF]"> View CV </span>
 						<div class="icon">
 							<Icon
-								name="i-gravity-ui:eyes-look-left"
+								name="gravity-ui:eyes-look-left"
 								ssr="true"
 								mode="svg"
 								style="color: var(--color-primary)"

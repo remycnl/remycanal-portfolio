@@ -93,7 +93,7 @@ const ancreToSection = (event, targetId) => {
 					<div
 						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-15 h-15 lg:w-18 lg:h-18">
 						<Icon
-							name="i-uil:phone"
+							name="uil:phone"
 							ssr="true"
 							mode="svg"
 							style="color: var(--color-white)"
@@ -108,7 +108,7 @@ const ancreToSection = (event, targetId) => {
 					<div
 						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-15 h-15 lg:w-18 lg:h-18">
 						<Icon
-							name="i-material-symbols:mail-outline-rounded"
+							name="material-symbols:mail-outline-rounded"
 							ssr="true"
 							mode="svg"
 							style="color: var(--color-white)"
@@ -125,7 +125,7 @@ const ancreToSection = (event, targetId) => {
 					<div
 						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-15 h-15 lg:w-18 lg:h-18">
 						<Icon
-							name="i-uil:github"
+							name="uil:github"
 							ssr="true"
 							mode="svg"
 							style="color: var(--color-white)"
@@ -142,7 +142,7 @@ const ancreToSection = (event, targetId) => {
 					<div
 						class="flex justify-center items-center group z-10 bg-blue-dark rounded-full border border-primary hover:border-gray-dark transition duration-300 hover:shadow-around hover:shadow-blue-dark w-15 h-15 lg:w-18 lg:h-18">
 						<Icon
-							name="i-uil:linkedin"
+							name="uil:linkedin"
 							ssr="true"
 							mode="svg"
 							style="color: var(--color-white)"

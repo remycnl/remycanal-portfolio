@@ -119,7 +119,7 @@ const ancreToSection = (event, targetId) => {
 									class="flex flex-row gap-x-3 justify-start items-center"
 									key="icon-text">
 									<Icon
-										name="i-game-icons:small-fire"
+										name="game-icons:small-fire"
 										ssr="true"
 										mode="svg"
 										style="color: var(--color-primary)"
@@ -149,7 +149,7 @@ const ancreToSection = (event, targetId) => {
 									class="flex flex-row-reverse md:flex-row gap-x-3 justify-start items-center text-end md:text-start"
 									key="icon-text">
 									<Icon
-										name="i-game-icons:rocket"
+										name="game-icons:rocket"
 										ssr="true"
 										mode="svg"
 										style="color: var(--color-primary)"
@@ -193,7 +193,7 @@ const ancreToSection = (event, targetId) => {
 										Autonomous <br class="md:hidden" />Listening
 									</p>
 									<Icon
-										name="i-game-icons:suckered-tentacle"
+										name="game-icons:suckered-tentacle"
 										ssr="true"
 										mode="svg"
 										style="color: var(--color-primary)"
@@ -221,7 +221,7 @@ const ancreToSection = (event, targetId) => {
 										Open-minded <br class="md:hidden" />Passionate
 									</p>
 									<Icon
-										name="i-game-icons:techno-heart"
+										name="game-icons:techno-heart"
 										ssr="true"
 										mode="svg"
 										style="color: var(--color-primary)"

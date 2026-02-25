@@ -146,7 +146,7 @@ onBeforeUnmount(() => {
 				class="z-99999 absolute top-10 right-10 group lg:hidden flex flex-col items-center"
 				@click="toggleDropdown">
 				<Icon
-					name="i-fluent-emoji-high-contrast:cross-mark"
+					name="fluent-emoji-high-contrast:cross-mark"
 					ssr="true"
 					mode="svg"
 					style="color: var(--color-white)"

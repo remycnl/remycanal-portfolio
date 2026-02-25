@@ -303,7 +303,7 @@ function removeNotification(id) {
 						<span class="font-semibold text-[#FFFFFF]"> Send </span>
 						<div class="icon">
 							<Icon
-								name="i-mingcute:send-plane-line"
+								name="mingcute:send-plane-line"
 								ssr="true"
 								mode="svg"
 								style="color: var(--color-primary)"
@@ -385,7 +385,7 @@ function removeNotification(id) {
 					<div
 						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon
-							name="i-material-symbols:alternate-email"
+							name="material-symbols:alternate-email"
 							ssr="true"
 							mode="svg"
 							style="color: var(--color-primary)"
@@ -444,7 +444,7 @@ function removeNotification(id) {
 					<div
 						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon
-							name="i-ic:outline-local-phone"
+							name="ic:outline-local-phone"
 							ssr="true"
 							mode="svg"
 							style="color: var(--color-primary)"
@@ -503,7 +503,7 @@ function removeNotification(id) {
 					<div
 						class="p-1 flex items-center justify-center rounded-lg bg-secondary">
 						<Icon
-							name="i-material-symbols:location-on-outline"
+							name="material-symbols:location-on-outline"
 							ssr="true"
 							mode="svg"
 							style="color: var(--color-primary)"

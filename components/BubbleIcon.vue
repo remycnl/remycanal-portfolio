@@ -164,7 +164,7 @@ const toggleStars = () => {
 				:key="'filled-' + index"
 				class="flex flex-row">
 				<Icon
-					name="i-teenyicons:star-small-solid"
+					name="teenyicons:star-small-solid"
 					ssr="true"
 					mode="svg"
 					class="w-5 h-5 star-pulse"
@@ -176,7 +176,7 @@ const toggleStars = () => {
 				:key="'empty-' + index"
 				class="flex flex-row">
 				<Icon
-					name="i-teenyicons:star-small-outline"
+					name="teenyicons:star-small-outline"
 					ssr="true"
 					mode="svg"
 					color="yellow"
