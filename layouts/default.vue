@@ -8,7 +8,6 @@ import {
 	animationFooterBottom,
 } from "@/plugins/gsap";
 import { mouseEffect } from "@/plugins/global.js";
-import { SpeedInsights } from "@vercel/speed-insights/nuxt";
 
 const activeTitle = ref("Rémy Canal | Web Developer • Portfolio");
 const inactiveTitle = ref("I miss you... 🥺");
@@ -36,10 +35,12 @@ useSeoMeta({
 	twitterUrl: "https://www.remycanal.me",
 });
 
-useServerSeoMeta({
-	robots: "index, follow",
-	htmlLang: "en",
-});
+if (import.meta.server) {
+	useSeoMeta({
+		robots: "index, follow",
+		htmlLang: "en",
+	});
+}
 
 useHead({
 	htmlAttrs: {

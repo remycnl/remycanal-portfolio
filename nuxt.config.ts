@@ -71,6 +71,8 @@ export default defineNuxtConfig({
 		"@nuxt/icon",
 		"@nuxtjs/seo",
 		"@nuxtjs/partytown",
+		"@vercel/speed-insights",
+		"@vercel/analytics",
 	],
 
 	icon: {
