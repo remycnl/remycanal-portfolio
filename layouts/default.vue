@@ -51,6 +51,10 @@ useHead({
 			name: "viewport",
 			content: "width=device-width, initial-scale=1.0, viewport-fit=cover",
 		},
+		{
+			name: "p:domain_verify",
+			content: "a8ebce4f530cae83da291180123b5198",
+		},
 	],
 	link: [
 		{
