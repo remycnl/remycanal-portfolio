@@ -111,11 +111,23 @@ const data = [
 		date: "2025",
 		type: "formation",
 		title: "Technological University Dublin",
-		subtitle: "2025-2026 - Master's Degree in IT Management",
+		subtitle: "2025-2026 - CPD in IT Management",
 		images: [
 			{
 				src: "/img/TUD.png",
 				alt: "TU Dublin Logo",
+			},
+		],
+	},
+	{
+		date: "2025",
+		type: "experience",
+		title: "Freelance",
+		subtitle: "Developed projects for various clients, from concept to deployment, combining full-stack development, interface design, and SEO optimization, with a strong focus on user experience.",
+		images: [
+			{
+				src: "/img/freelance-logo.png",
+				alt: "Freelance Rémy Canal Logo",
 			},
 		],
 	},
