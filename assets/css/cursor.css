@@ -1,9 +1,0 @@
-/* Style du curseur personnalisé */
-.custom-cursor {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 20px;
-	height: 20px;
-	transform: translate(-50%, -50%);
-}
