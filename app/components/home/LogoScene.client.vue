@@ -15,6 +15,12 @@ const prefersReducedMotion =
 	typeof window !== "undefined" &&
 	window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
+// Desktop = pointeur fin + hover disponible. Tout le reste (tactile, tablette)
+// bascule sur le parallax piloté par le gyroscope.
+const isFinePointer =
+	typeof window !== "undefined" &&
+	window.matchMedia("(hover: hover) and (pointer: fine)").matches
+
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 let renderer: THREE.WebGLRenderer
@@ -37,6 +43,12 @@ let baseScale = 1
 let introStart = 0
 const introDuration = prefersReducedMotion ? 1 : 2000
 const introSpins = 1.3
+
+// --- État spécifique au parallax gyroscope (mobile/tablette) ---
+let gyroListenerAttached = false
+let gyroBase: { x: number; y: number } | null = null
+let motionGestureHandler: (() => void) | null = null
+const gyroRange = 20 // degrés d'inclinaison nécessaires pour atteindre le tilt max
 
 function easeOutCubic(t: number) {
 	return 1 - Math.pow(1 - t, 3)
@@ -205,6 +217,101 @@ function onPointerMove(e: PointerEvent) {
 	target.x = -ny * maxTilt
 }
 
+// --- Parallax gyroscope pour mobile/tablette ---
+
+function getScreenAngle() {
+	if (
+		typeof screen !== "undefined" &&
+		screen.orientation &&
+		typeof screen.orientation.angle === "number"
+	) {
+		return screen.orientation.angle
+	}
+	// Fallback pour anciens Safari iOS qui n'exposent pas screen.orientation.
+	const legacyOrientation = (window as any).orientation
+	return typeof legacyOrientation === "number" ? legacyOrientation : 0
+}
+
+function onDeviceOrientation(e: DeviceOrientationEvent) {
+	if (e.beta === null || e.gamma === null) return
+
+	const angle = getScreenAngle()
+	let x = e.gamma
+	let y = e.beta
+
+	// Remappe beta/gamma selon l'orientation courante de l'écran (portrait/paysage).
+	if (angle === 90) {
+		x = e.beta
+		y = -e.gamma
+	} else if (angle === -90 || angle === 270) {
+		x = -e.beta
+		y = e.gamma
+	} else if (angle === 180) {
+		x = -e.gamma
+		y = -e.beta
+	}
+
+	// Calibration sur la première lecture : le parallax part de la position
+	// de tenue naturelle du téléphone plutôt que d'un zéro absolu irréaliste.
+	if (!gyroBase) {
+		gyroBase = { x, y }
+		return
+	}
+
+	const nx = clamp((x - gyroBase.x) / gyroRange, -1, 1)
+	const ny = clamp((y - gyroBase.y) / gyroRange, -1, 1)
+
+	target.y = nx * maxTilt
+	target.x = -ny * maxTilt
+}
+
+function attachGyroListener() {
+	if (gyroListenerAttached) return
+	gyroListenerAttached = true
+	window.addEventListener("deviceorientation", onDeviceOrientation)
+}
+
+function removeMotionGestureHandler() {
+	if (!motionGestureHandler) return
+	window.removeEventListener("touchend", motionGestureHandler)
+	window.removeEventListener("pointerdown", motionGestureHandler)
+	motionGestureHandler = null
+}
+
+function initMobileParallax() {
+	if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) return
+
+	const DOE = window.DeviceOrientationEvent as unknown as {
+		requestPermission?: () => Promise<"granted" | "denied">
+	}
+
+	// iOS 13+ exige un geste utilisateur explicite pour demander la permission.
+	// On écoute le premier tap/pointerdown de la page, sans UI additionnelle.
+	if (typeof DOE.requestPermission === "function") {
+		motionGestureHandler = () => {
+			DOE.requestPermission!()
+				.then((state) => {
+					if (state === "granted") attachGyroListener()
+				})
+				.catch(() => {
+					/* permission refusée ou indisponible : pas de parallax, comportement normal sinon */
+				})
+				.finally(() => removeMotionGestureHandler())
+		}
+		window.addEventListener("touchend", motionGestureHandler, {
+			passive: true,
+			once: true,
+		})
+		window.addEventListener("pointerdown", motionGestureHandler, {
+			passive: true,
+			once: true,
+		})
+	} else {
+		// Android et autres navigateurs : aucune permission requise.
+		attachGyroListener()
+	}
+}
+
 function animate(time: number) {
 	frameId = requestAnimationFrame(animate)
 
@@ -254,7 +361,13 @@ function tryInit(el: HTMLDivElement | null) {
 	initScene(el)
 	frameId = requestAnimationFrame(animate)
 
-	window.addEventListener("pointermove", onPointerMove, { passive: true })
+	if (isFinePointer) {
+		// Desktop : comportement inchangé.
+		window.addEventListener("pointermove", onPointerMove, { passive: true })
+	} else if (!prefersReducedMotion) {
+		// Mobile/tablette : parallax piloté par le gyroscope.
+		initMobileParallax()
+	}
 
 	resizeObserver = new ResizeObserver(() => handleResize(el))
 	resizeObserver.observe(el)
@@ -278,6 +391,9 @@ watch(container, (el) => tryInit(el))
 onBeforeUnmount(() => {
 	cancelAnimationFrame(frameId)
 	window.removeEventListener("pointermove", onPointerMove)
+	if (gyroListenerAttached)
+		window.removeEventListener("deviceorientation", onDeviceOrientation)
+	removeMotionGestureHandler()
 	resizeObserver?.disconnect()
 	visibilityObserver?.disconnect()
 
