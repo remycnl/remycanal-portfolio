@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@import "./fonts.css";
+@import "./theme.css";
+
+@import "./utilities/spacing.css";
+@import "./utilities/grid-backgrounds.css";
+@import "./utilities/typography.css";
+
+@import "./scrollbar.css";
+@import "lenis/dist/lenis.css";
+@import "./base.css";

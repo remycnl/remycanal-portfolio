@@ -1,0 +1,279 @@
+@utility bg-grid-white {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background-size: 48px 48px;
+		background-image:
+			linear-gradient(to right, oklch(0.92 0 0) 1px, transparent 1px),
+			linear-gradient(to bottom, oklch(0.92 0 0) 1px, transparent 1px);
+		mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+	}
+}
+
+@utility bg-grid-black {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background-size: 48px 48px;
+		background-image:
+			linear-gradient(to right, oklch(0.22 0 0) 1px, transparent 1px),
+			linear-gradient(to bottom, oklch(0.22 0 0) 1px, transparent 1px);
+		mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+	}
+}
+
+@utility bg-grid-lime {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background-size: 48px 48px;
+		background-image:
+			linear-gradient(to right, oklch(0.9 0.2202 125) 1px, transparent 1px),
+			linear-gradient(to bottom, oklch(0.9 0.2202 125) 1px, transparent 1px);
+		mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+	}
+}
+
+@utility bg-grid-violet {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background-size: 48px 48px;
+		background-image:
+			linear-gradient(to right, oklch(0.48 0.2455 293.81) 1px, transparent 1px),
+			linear-gradient(to bottom, oklch(0.48 0.2455 293.81) 1px, transparent 1px);
+		mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+	}
+}
+
+/* @utility bg-grid-white {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background-size: 96px 48px;
+		background-image: linear-gradient(to right, oklch(0.92 0 0) 1px, transparent 1px);
+		mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+	}
+}
+
+@utility bg-grid-black {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background-size: 96px 48px;
+		background-image: linear-gradient(to right, oklch(0.22 0 0) 1px, transparent 1px);
+		mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+	}
+}
+
+@utility bg-grid-lime {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background-size: 96px 48px;
+		background-image: linear-gradient(
+			to right,
+			oklch(0.9 0.2202 125) 1px,
+			transparent 1px
+		);
+		mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+	}
+}
+
+@utility bg-grid-violet {
+	position: relative;
+	isolation: isolate;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background-size: 96px 48px;
+		background-image: linear-gradient(
+			to right,
+			oklch(0.48 0.2455 293.81) 1px,
+			transparent 1px
+		);
+		mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+		-webkit-mask-image: radial-gradient(
+			ellipse at center,
+			black 0%,
+			black 20%,
+			rgb(0 0 0 / 0.75) 40%,
+			rgb(0 0 0 / 0.4) 60%,
+			rgb(0 0 0 / 0.12) 80%,
+			transparent 95%
+		);
+	}
+} */

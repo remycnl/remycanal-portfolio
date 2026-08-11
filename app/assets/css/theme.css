@@ -1,0 +1,21 @@
+@theme {
+	--color-black: oklch(0.1591 0 0);
+	--color-white: oklch(0.9702 0 0);
+	--color-lime: oklch(0.928 0.2202 125);
+	--color-lime-dark: oklch(0.72 0.19 125);
+	--color-violet: oklch(0.5396 0.2455 293.81);
+	--font-lineal: "Lineal", sans-serif;
+	--font-vg5000: "VG5000", monospace;
+
+	--lineal-weight-thin: 0;
+	--lineal-weight-light: 300;
+	--lineal-weight-regular: 600;
+	--lineal-weight-medium: 900;
+	--lineal-weight-bold: 1000;
+	--lineal-weight-black: 1200;
+	--lineal-weight-heavy: 1500;
+
+	/* Espacements fluides — même valeur haut/bas/côtés, pas de saut de breakpoint */
+	--spacing-edge: clamp(1rem, 3vw, 2.5rem);
+	--spacing-section: clamp(3rem, 8vw, 7rem);
+}

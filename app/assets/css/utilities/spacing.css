@@ -1,0 +1,19 @@
+/* Marge/gouttière globale de l'app — identique en haut, bas, gauche, droite */
+@utility section-p-x {
+	padding-inline: var(--spacing-edge);
+}
+
+@utility section-p-x-reset {
+	width: calc(100% + var(--spacing-edge) * 2);
+	margin-inline: calc(var(--spacing-edge) * -1);
+}
+
+/* Espacement dynamique entre sections */
+@utility section-p-y {
+	padding-block: var(--spacing-section);
+}
+
+@utility section-p-xy {
+	padding-block: var(--spacing-section);
+	padding-inline: var(--spacing-edge);
+}

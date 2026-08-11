@@ -1,0 +1,77 @@
+/* Poids variables - une seule utility fonctionnelle au lieu de 7 blocs */
+@utility font-lineal-* {
+	font-family: var(--font-lineal);
+	font-variation-settings: "wght" --value(--lineal-weight-*);
+}
+
+/* Font Features - Lineal */
+
+@utility lineal-din {
+	font-feature-settings: "ss01";
+}
+
+@utility lineal-classic {
+	font-feature-settings: "ss02";
+}
+
+@utility lineal-round-c {
+	font-feature-settings: "ss03";
+}
+
+@utility lineal-alternates {
+	font-feature-settings: "aalt";
+}
+
+@utility lineal-case {
+	font-feature-settings: "case";
+}
+
+@utility lineal-dlig {
+	font-feature-settings: "dlig";
+}
+
+/* Font Features - VG5000 */
+
+@utility vg-alt {
+	font-feature-settings: "aalt";
+}
+
+@utility vg-small-caps {
+	font-feature-settings: "c2sc";
+}
+
+@utility vg-dlig {
+	font-feature-settings: "dlig";
+}
+
+@utility vg-fractions {
+	font-variant-numeric: diagonal-fractions;
+}
+
+@utility vg-ordinals {
+	font-variant-numeric: ordinal;
+}
+
+@utility vg-stylistic {
+	font-feature-settings: "salt";
+}
+
+@utility vg-set-1 {
+	font-feature-settings: "ss01";
+}
+
+@utility vg-set-2 {
+	font-feature-settings: "ss02";
+}
+
+@utility vg-set-3 {
+	font-feature-settings: "ss03";
+}
+
+@utility vg-superscript {
+	font-variant-position: super;
+}
+
+@utility vg-cap-spacing {
+	font-feature-settings: "cpsp";
+}

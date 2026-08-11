@@ -1,0 +1,51 @@
+/**
+ * Scrollbar custom, discrète, cohérente avec le thème (noir sur lime).
+ * - Firefox : propriétés standard `scrollbar-width` / `scrollbar-color`.
+ * - Chrome / Safari / Edge (Chromium) : pseudo-éléments `::-webkit-scrollbar-*`.
+ * - Vieux Edge / IE : `-ms-overflow-style` (fallback silencieux, sans effet
+ *   ailleurs).
+ *
+ * `color-mix()` permet de dériver la teinte du thumb directement depuis
+ * --color-black sans dupliquer de valeur en dur, et de garder la piste
+ * (track) transparente pour laisser voir le fond (lime, blanc, etc.)
+ * quel que soit le conteneur.
+ */
+
+* {
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in oklch, var(--color-black) 30%, transparent) transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: color-mix(in oklch, var(--color-black) 30%, transparent);
+	border-radius: 999px;
+	/* border transparent + background-clip = "faux padding" autour du thumb,
+	   pour qu'il ne touche jamais les bords de la piste */
+	border: 2px solid transparent;
+	background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background-color: color-mix(in oklch, var(--color-black) 50%, transparent);
+}
+
+*::-webkit-scrollbar-thumb:active {
+	background-color: var(--color-black);
+}
+
+*::-webkit-scrollbar-corner {
+	background: transparent;
+}
+
+body {
+	-ms-overflow-style: -ms-autohiding-scrollbar;
+}

@@ -1,0 +1,18 @@
+@layer base {
+	html,
+	body {
+		background-color: var(--color-white);
+		color: var(--color-black);
+		font-family: var(--font-lineal);
+		font-variation-settings: "wght" 600;
+	}
+
+	::selection {
+		background-color: var(--color-lime-dark);
+		color: var(--color-lime);
+	}
+
+	button {
+		cursor: pointer;
+	}
+}
