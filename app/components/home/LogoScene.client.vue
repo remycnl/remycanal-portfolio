@@ -3,87 +3,44 @@
 </template>
 
 <script setup lang="ts">
-import * as THREE from "three"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
-import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js"
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js"
-import { onMounted, onBeforeUnmount, ref, nextTick, watch } from "vue"
+import type { GLTFLoader as GLTFLoaderType } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const container = ref<HTMLDivElement | null>(null)
 
-const prefersReducedMotion =
-	typeof window !== "undefined" &&
-	window.matchMedia("(prefers-reduced-motion: reduce)").matches
+// -- État réactif dépendant de l'environnement client (SSR-safe) -----------
+const prefersReducedMotion = ref(false)
+const isTouchDevice = ref(false)
 
-// Desktop = pointeur fin + hover disponible ET aucune capacité tactile.
-// On ne se fie plus uniquement à matchMedia("hover"/"pointer") : certains
-// navigateurs (Brave notamment, via son anti-fingerprinting) "farblent" ces
-// media queries et peuvent répondre pointer:fine même sur un vrai téléphone.
-// On croise donc avec la détection tactile réelle, plus fiable.
-const isTouchCapable =
-	typeof window !== "undefined" &&
-	("ontouchstart" in window || navigator.maxTouchPoints > 0)
-
-const isFinePointer =
-	typeof window !== "undefined" &&
-	window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-	!isTouchCapable
-
-let scene: THREE.Scene
-let camera: THREE.PerspectiveCamera
-let renderer: THREE.WebGLRenderer
-let logo: THREE.Object3D | null = null
+let scene: import("three").Scene
+let camera: import("three").PerspectiveCamera
+let renderer: import("three").WebGLRenderer
+let logo: import("three").Object3D | null = null
 let frameId = 0
 let resizeObserver: ResizeObserver
 let visibilityObserver: IntersectionObserver
+let reducedMotionQuery: MediaQueryList
+let touchQuery: MediaQueryList
 let initialized = false
 let isVisible = true
-let pmrem: THREE.PMREMGenerator
-let envTexture: THREE.Texture | null = null
-let flakeMap: THREE.CanvasTexture | null = null
+let pmrem: import("three").PMREMGenerator
+let envTexture: import("three").Texture | null = null
+let flakeMap: import("three").CanvasTexture | null = null
 
+// -- Parallax (desktop / pointeur précis) -----------------------------------
 const target = { x: 0, y: 0 }
 const current = { x: 0, y: 0 }
 const damping = 0.06
 const maxTilt = 0.28
 
-let baseScale = 1
-let introStart = 0
-const introDuration = prefersReducedMotion ? 1 : 2000
-const introSpins = 1.3
-
-// --- État spécifique au parallax gyroscope (mobile/tablette) ---
-let gyroListenerAttached = false
-let gyroBase: { x: number; y: number } | null = null
-let motionGestureHandler: (() => void) | null = null
-const gyroRange = 20 // degrés d'inclinaison nécessaires pour atteindre le tilt max
-let gyroEventCount = 0
-
-// La calibration se fait sur une moyenne de plusieurs lectures plutôt que sur
-// la toute première : personne ne tient son téléphone parfaitement à plat, donc
-// l'angle "neutre" doit être l'angle de tenue naturel moyen de l'utilisateur,
-// pas un zéro absolu arbitraire.
-let gyroCalibrationSamples: { x: number; y: number }[] = []
-const gyroCalibrationCount = 12
-
-// --- Rotation automatique : fallback pour mobile/tablette quand le gyroscope
-// est indisponible, refusé, ou bloqué (Brave qui neutralise beta/gamma…).
-// Le desktop n'est jamais concerné par ce mode.
-let autoRotateActive = false
-let autoRotateAngle = 0
-const autoRotateSpeed = 0.15 // rad/s, rotation lente et discrète
+// -- Rotation automatique (mobile / tablette / pointeur tactile) -----------
+let autoRotationY = 0
+let autoRotateSpeed = 0.45 // radians / seconde
 let lastFrameTime = 0
 
-function enableAutoRotate() {
-	if (autoRotateActive) return
-	autoRotateActive = true
-	// Repart de l'angle visuel actuel du logo pour éviter tout saut à l'activation.
-	autoRotateAngle = logo ? logo.rotation.y : 0
-}
-
-function disableAutoRotate() {
-	autoRotateActive = false
-}
+let baseScale = 1
+let introStart = 0
+let introDuration = 2000
+const introSpins = 1.3
 
 function easeOutCubic(t: number) {
 	return 1 - Math.pow(1 - t, 3)
@@ -99,7 +56,11 @@ function clamp(v: number, min: number, max: number) {
 }
 
 // Générée une seule fois par montage, réutilisée pour tous les matériaux du logo.
-function createFlakeNormalMap(size = 256, flakeCount = 900) {
+function createFlakeNormalMap(
+	THREE: typeof import("three"),
+	size = 256,
+	flakeCount = 900
+) {
 	const canvas = document.createElement("canvas")
 	canvas.width = size
 	canvas.height = size
@@ -132,16 +93,19 @@ function createFlakeNormalMap(size = 256, flakeCount = 900) {
 	return texture
 }
 
-function applyGlitterFinish(root: THREE.Object3D) {
-	flakeMap = createFlakeNormalMap()
-	const seen = new Set<THREE.Material>()
+function applyGlitterFinish(
+	THREE: typeof import("three"),
+	root: import("three").Object3D
+) {
+	flakeMap = createFlakeNormalMap(THREE)
+	const seen = new Set<import("three").Material>()
 
 	root.traverse((obj) => {
 		if (!(obj instanceof THREE.Mesh)) return
 		const materials = Array.isArray(obj.material) ? obj.material : [obj.material]
 
 		materials.forEach((mat) => {
-			const m = mat as THREE.MeshStandardMaterial
+			const m = mat as import("three").MeshStandardMaterial
 			if (!m || seen.has(m)) return
 			seen.add(m)
 
@@ -153,7 +117,16 @@ function applyGlitterFinish(root: THREE.Object3D) {
 	})
 }
 
-function initScene(el: HTMLDivElement) {
+async function initScene(el: HTMLDivElement) {
+	// Chargement client-only et paresseux de three.js : évite d'alourdir le
+	// bundle SSR / le payload initial pour un composant qui ne rend rien côté serveur.
+	const THREE = await import("three")
+	const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js")
+	const { MeshoptDecoder } =
+		await import("three/examples/jsm/libs/meshopt_decoder.module.js")
+	const { RoomEnvironment } =
+		await import("three/examples/jsm/environments/RoomEnvironment.js")
+
 	const width = el.clientWidth
 	const height = el.clientHeight
 
@@ -177,8 +150,8 @@ function initScene(el: HTMLDivElement) {
 	el.appendChild(renderer.domElement)
 
 	pmrem = new THREE.PMREMGenerator(renderer)
-	// Reduce the blur/sample parameter to avoid requesting too many samples
-	// 0.02 requests far fewer samples and avoids clipping warnings
+	// Réduire le paramètre de flou/échantillons évite de demander trop de samples
+	// (0.02 limite les warnings de clipping).
 	envTexture = pmrem.fromScene(new RoomEnvironment(), 0.02).texture
 	scene.environment = envTexture
 	// Le RoomEnvironment source n'est plus nécessaire une fois la texture PMREM générée.
@@ -192,7 +165,7 @@ function initScene(el: HTMLDivElement) {
 	rimLight.position.set(-4, -2, -3)
 	scene.add(rimLight)
 
-	loadLogo()
+	loadLogo(THREE, GLTFLoader, MeshoptDecoder)
 }
 
 function revealCanvas() {
@@ -203,17 +176,22 @@ function revealCanvas() {
 	})
 }
 
-function loadLogo() {
+function loadLogo(
+	THREE: typeof import("three"),
+	GLTFLoader: typeof GLTFLoaderType,
+	MeshoptDecoder: unknown
+) {
 	const loader = new GLTFLoader()
 	// Décodeur requis par la compression EXT_meshopt_compression du .glb optimisé.
-	loader.setMeshoptDecoder(MeshoptDecoder)
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	loader.setMeshoptDecoder(MeshoptDecoder as any)
 
 	loader.load(
 		"/models/logo-metal-lime.glb",
 		(gltf) => {
 			logo = gltf.scene
-			applyGlitterFinish(logo)
-			baseScale = centerAndFit(logo)
+			applyGlitterFinish(THREE, logo)
+			baseScale = centerAndFit(THREE, logo)
 			logo.scale.setScalar(0)
 			scene.add(logo)
 			renderer.render(scene, camera)
@@ -227,7 +205,7 @@ function loadLogo() {
 	)
 }
 
-function centerAndFit(obj: THREE.Object3D) {
+function centerAndFit(THREE: typeof import("three"), obj: import("three").Object3D) {
 	const box = new THREE.Box3().setFromObject(obj)
 	const size = box.getSize(new THREE.Vector3())
 	const center = box.getCenter(new THREE.Vector3())
@@ -238,6 +216,8 @@ function centerAndFit(obj: THREE.Object3D) {
 }
 
 function onPointerMove(e: PointerEvent) {
+	if (isTouchDevice.value) return
+
 	const el = container.value
 	if (!el) return
 
@@ -252,166 +232,6 @@ function onPointerMove(e: PointerEvent) {
 	target.x = -ny * maxTilt
 }
 
-// --- Parallax gyroscope pour mobile/tablette ---
-
-function getScreenAngle() {
-	if (
-		typeof screen !== "undefined" &&
-		screen.orientation &&
-		typeof screen.orientation.angle === "number"
-	) {
-		return screen.orientation.angle
-	}
-	// Fallback pour anciens Safari iOS qui n'exposent pas screen.orientation.
-	const legacyOrientation = (window as any).orientation
-	return typeof legacyOrientation === "number" ? legacyOrientation : 0
-}
-
-let nullGyroReadings = 0
-
-function onDeviceOrientation(e: DeviceOrientationEvent) {
-	gyroEventCount++
-
-	if (e.beta === null || e.gamma === null) {
-		nullGyroReadings++
-		// Certains navigateurs (Brave iOS notamment) livrent l'event deviceorientation
-		// mais neutralisent beta/gamma à null par anti-fingerprinting : les vraies
-		// données capteur ne seront jamais disponibles. Après un nombre suffisant de
-		// lectures nulles, on abandonne proprement le gyroscope et on bascule sur la
-		// rotation automatique plutôt que de rester figé sans rien faire.
-		if (nullGyroReadings === 20) {
-			window.removeEventListener("deviceorientation", onDeviceOrientation)
-			gyroListenerAttached = false
-			enableAutoRotate()
-		}
-		return
-	}
-
-	const angle = getScreenAngle()
-	let x = e.gamma
-	let y = e.beta
-
-	// Remappe beta/gamma selon l'orientation courante de l'écran (portrait/paysage).
-	if (angle === 90) {
-		x = e.beta
-		y = -e.gamma
-	} else if (angle === -90 || angle === 270) {
-		x = -e.beta
-		y = e.gamma
-	} else if (angle === 180) {
-		x = -e.gamma
-		y = -e.beta
-	}
-
-	// Calibration sur la moyenne des premières lectures : le parallax part de la
-	// position de tenue naturelle du téléphone plutôt que d'un zéro absolu
-	// irréaliste (personne ne tient son téléphone parfaitement à plat).
-	if (!gyroBase) {
-		gyroCalibrationSamples.push({ x, y })
-		if (gyroCalibrationSamples.length < gyroCalibrationCount) return
-
-		const avgX =
-			gyroCalibrationSamples.reduce((sum, s) => sum + s.x, 0) /
-			gyroCalibrationSamples.length
-		const avgY =
-			gyroCalibrationSamples.reduce((sum, s) => sum + s.y, 0) /
-			gyroCalibrationSamples.length
-		gyroBase = { x: avgX, y: avgY }
-		return
-	}
-
-	const nx = clamp((x - gyroBase.x) / gyroRange, -1, 1)
-	const ny = clamp((y - gyroBase.y) / gyroRange, -1, 1)
-
-	target.y = nx * maxTilt
-	target.x = -ny * maxTilt
-}
-
-function attachGyroListener() {
-	if (gyroListenerAttached) return
-	gyroListenerAttached = true
-	window.addEventListener("deviceorientation", onDeviceOrientation)
-
-	// Si aucun event n'arrive après 1.5s, l'API existe mais ne délivre rien
-	// (cas fréquent : Shields de Brave, ou permission accordée sans vrai accès capteur).
-	setTimeout(() => {
-		if (gyroEventCount === 0) {
-			enableAutoRotate()
-		}
-	}, 1500)
-}
-
-function removeMotionGestureHandler() {
-	if (!motionGestureHandler) return
-	window.removeEventListener("click", motionGestureHandler)
-	motionGestureHandler = null
-}
-
-function requestGyroPermission() {
-	if (gyroListenerAttached) return // déjà actif, rien à faire
-
-	if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
-		enableAutoRotate()
-		return
-	}
-
-	const DOE = window.DeviceOrientationEvent as unknown as {
-		requestPermission?: () => Promise<"granted" | "denied">
-	}
-
-	if (typeof DOE.requestPermission === "function") {
-		DOE.requestPermission()
-			.then((state) => {
-				if (state === "granted") {
-					disableAutoRotate()
-					attachGyroListener()
-				} else {
-					enableAutoRotate()
-				}
-			})
-			.catch(() => {
-				enableAutoRotate()
-			})
-	} else {
-		// Android et autres navigateurs : aucune permission requise.
-		attachGyroListener()
-	}
-}
-
-function initMobileParallax() {
-	if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
-		enableAutoRotate()
-		return
-	}
-
-	const DOE = window.DeviceOrientationEvent as unknown as {
-		requestPermission?: () => Promise<"granted" | "denied">
-	}
-
-	if (typeof DOE.requestPermission === "function") {
-		// Tentative immédiate, sans attendre de geste : ça fonctionne sur les
-		// navigateurs qui n'exigent pas réellement de geste malgré l'API iOS 13+.
-		// Sur ceux qui l'exigent (Safari/Brave iOS...), la promesse est rejetée
-		// aussitôt et on bascule sans délai sur la rotation automatique, le temps
-		// qu'un vrai tap arrive.
-		requestGyroPermission()
-
-		// Amélioration silencieuse : si l'utilisateur fait un vrai tap plus tard
-		// (lien, bouton, nav…), nouvelle tentative — si acceptée, on quitte la
-		// rotation automatique pour le vrai gyroscope. Si refusée à nouveau, on
-		// reste simplement sur la rotation automatique, sans rien casser.
-		motionGestureHandler = () => {
-			requestGyroPermission()
-			removeMotionGestureHandler()
-		}
-		window.addEventListener("click", motionGestureHandler, { once: true })
-	} else {
-		// Android et autres navigateurs : aucune permission requise, le gyroscope
-		// fonctionne dès l'init.
-		attachGyroListener()
-	}
-}
-
 function animate(time: number) {
 	frameId = requestAnimationFrame(animate)
 
@@ -419,11 +239,8 @@ function animate(time: number) {
 	// sans jamais toucher au rendu visuel une fois affiché.
 	if (!isVisible) return
 
-	const dt = lastFrameTime ? (time - lastFrameTime) / 1000 : 0
+	const delta = lastFrameTime ? (time - lastFrameTime) / 1000 : 0
 	lastFrameTime = time
-
-	current.x += (target.x - current.x) * damping
-	current.y += (target.y - current.y) * damping
 
 	if (logo) {
 		const introElapsed = introStart ? time - introStart : introDuration
@@ -435,21 +252,28 @@ function animate(time: number) {
 
 			const spinT = easeOutCubic(introT)
 			const remainingSpin = (1 - spinT) * introSpins * Math.PI * 2
-			logo.rotation.y = current.y + remainingSpin
-			logo.rotation.x = current.x
+
+			if (isTouchDevice.value) {
+				// Sur mobile/tablette : pas de tilt lié au pointeur, juste le spin d'intro.
+				logo.rotation.x = 0
+				logo.rotation.y = remainingSpin
+				autoRotationY = remainingSpin
+			} else {
+				logo.rotation.y = current.y + remainingSpin
+				logo.rotation.x = current.x
+			}
+		} else if (isTouchDevice.value) {
+			// Rotation continue et fluide sur elle-même, indépendante du framerate.
+			logo.scale.setScalar(baseScale)
+			autoRotationY += autoRotateSpeed * delta
+			logo.rotation.y = autoRotationY
+			logo.rotation.x = 0
 		} else {
 			logo.scale.setScalar(baseScale)
-
-			if (autoRotateActive) {
-				// Fallback mobile/tablette uniquement : rotation lente et continue
-				// sur elle-même, indépendante du gyroscope et de la souris.
-				autoRotateAngle += autoRotateSpeed * dt
-				logo.rotation.y = autoRotateAngle
-				logo.rotation.x = 0
-			} else {
-				logo.rotation.x = current.x
-				logo.rotation.y = current.y
-			}
+			current.x += (target.x - current.x) * damping
+			current.y += (target.y - current.y) * damping
+			logo.rotation.x = current.x
+			logo.rotation.y = current.y
 		}
 	}
 
@@ -465,21 +289,49 @@ function handleResize(el: HTMLDivElement) {
 	renderer.setSize(width, height)
 }
 
-function tryInit(el: HTMLDivElement | null) {
+function updatePointerListener() {
+	window.removeEventListener("pointermove", onPointerMove)
+	if (!isTouchDevice.value) {
+		window.addEventListener("pointermove", onPointerMove, { passive: true })
+	} else {
+		// Repart d'un tilt neutre pour éviter un saut visuel si l'appareil
+		// bascule (rotation d'écran, changement de type de pointeur, etc.).
+		target.x = 0
+		target.y = 0
+		current.x = 0
+		current.y = 0
+	}
+}
+
+async function tryInit(el: HTMLDivElement | null) {
 	if (initialized || !el) return
 	if (el.clientWidth === 0 || el.clientHeight === 0) return
 
 	initialized = true
-	initScene(el)
+
+	reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+	prefersReducedMotion.value = reducedMotionQuery.matches
+	reducedMotionQuery.addEventListener("change", (e) => {
+		prefersReducedMotion.value = e.matches
+		introDuration = prefersReducedMotion.value ? 1 : 2000
+		autoRotateSpeed = prefersReducedMotion.value ? 0 : 0.45
+	})
+	introDuration = prefersReducedMotion.value ? 1 : 2000
+	autoRotateSpeed = prefersReducedMotion.value ? 0 : 0.45
+
+	// (hover: none) / (pointer: coarse) détecte les appareils sans pointeur
+	// précis (tactile) de façon fiable, indépendamment de la largeur d'écran.
+	touchQuery = window.matchMedia("(hover: none), (pointer: coarse)")
+	isTouchDevice.value = touchQuery.matches
+	touchQuery.addEventListener("change", (e) => {
+		isTouchDevice.value = e.matches
+		updatePointerListener()
+	})
+
+	await initScene(el)
 	frameId = requestAnimationFrame(animate)
 
-	if (isFinePointer) {
-		// Desktop : comportement inchangé.
-		window.addEventListener("pointermove", onPointerMove, { passive: true })
-	} else if (!prefersReducedMotion) {
-		// Mobile/tablette : parallax piloté par le gyroscope.
-		initMobileParallax()
-	}
+	updatePointerListener()
 
 	resizeObserver = new ResizeObserver(() => handleResize(el))
 	resizeObserver.observe(el)
@@ -503,19 +355,18 @@ watch(container, (el) => tryInit(el))
 onBeforeUnmount(() => {
 	cancelAnimationFrame(frameId)
 	window.removeEventListener("pointermove", onPointerMove)
-	if (gyroListenerAttached)
-		window.removeEventListener("deviceorientation", onDeviceOrientation)
-	removeMotionGestureHandler()
+	reducedMotionQuery?.removeEventListener?.("change", () => {})
+	touchQuery?.removeEventListener?.("change", () => {})
 	resizeObserver?.disconnect()
 	visibilityObserver?.disconnect()
 
 	flakeMap?.dispose()
 	envTexture?.dispose()
 
-	scene?.traverse((obj) => {
-		if (obj instanceof THREE.Mesh) {
+	scene?.traverse((obj: any) => {
+		if (obj.isMesh) {
 			obj.geometry?.dispose()
-			if (Array.isArray(obj.material)) obj.material.forEach((m) => m.dispose())
+			if (Array.isArray(obj.material)) obj.material.forEach((m: any) => m.dispose())
 			else obj.material?.dispose()
 		}
 	})
