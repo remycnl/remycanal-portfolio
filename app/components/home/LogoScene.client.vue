@@ -1,15 +1,5 @@
 <template>
-	<div ref="container" class="logo-scene" @contextmenu.prevent>
-		<!-- DEBUG TEMPORAIRE : à retirer une fois le bug gyroscope résolu -->
-		<div v-if="DEBUG_GYRO" class="gyro-debug">
-			<button class="gyro-debug__btn" @click="manualRequestPermission">
-				Activer le gyroscope
-			</button>
-			<div class="gyro-debug__log">
-				<div v-for="(line, i) in debugLines" :key="i">{{ line }}</div>
-			</div>
-		</div>
-	</div>
+	<div ref="container" class="logo-scene" @contextmenu.prevent></div>
 </template>
 
 <script setup lang="ts">
@@ -21,27 +11,23 @@ import { onMounted, onBeforeUnmount, ref, nextTick, watch } from "vue"
 
 const container = ref<HTMLDivElement | null>(null)
 
-// --- DEBUG TEMPORAIRE : overlay visible sur mobile, à retirer une fois le bug résolu ---
-const DEBUG_GYRO = true
-const debugLines = ref<string[]>([])
-function debugLog(msg: string) {
-	if (!DEBUG_GYRO) return
-	const ts = new Date().toISOString().split("T")[1]!.slice(0, 12)
-	debugLines.value = [`${ts} ${msg}`, ...debugLines.value].slice(0, 12)
-	// eslint-disable-next-line no-console
-	console.log("[gyro-debug]", msg)
-}
-// --- fin bloc debug ---
-
 const prefersReducedMotion =
 	typeof window !== "undefined" &&
 	window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
-// Desktop = pointeur fin + hover disponible. Tout le reste (tactile, tablette)
-// bascule sur le parallax piloté par le gyroscope.
+// Desktop = pointeur fin + hover disponible ET aucune capacité tactile.
+// On ne se fie plus uniquement à matchMedia("hover"/"pointer") : certains
+// navigateurs (Brave notamment, via son anti-fingerprinting) "farblent" ces
+// media queries et peuvent répondre pointer:fine même sur un vrai téléphone.
+// On croise donc avec la détection tactile réelle, plus fiable.
+const isTouchCapable =
+	typeof window !== "undefined" &&
+	("ontouchstart" in window || navigator.maxTouchPoints > 0)
+
 const isFinePointer =
 	typeof window !== "undefined" &&
-	window.matchMedia("(hover: hover) and (pointer: fine)").matches
+	window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+	!isTouchCapable
 
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
@@ -72,6 +58,32 @@ let gyroBase: { x: number; y: number } | null = null
 let motionGestureHandler: (() => void) | null = null
 const gyroRange = 20 // degrés d'inclinaison nécessaires pour atteindre le tilt max
 let gyroEventCount = 0
+
+// La calibration se fait sur une moyenne de plusieurs lectures plutôt que sur
+// la toute première : personne ne tient son téléphone parfaitement à plat, donc
+// l'angle "neutre" doit être l'angle de tenue naturel moyen de l'utilisateur,
+// pas un zéro absolu arbitraire.
+let gyroCalibrationSamples: { x: number; y: number }[] = []
+const gyroCalibrationCount = 12
+
+// --- Rotation automatique : fallback pour mobile/tablette quand le gyroscope
+// est indisponible, refusé, ou bloqué (Brave qui neutralise beta/gamma…).
+// Le desktop n'est jamais concerné par ce mode.
+let autoRotateActive = false
+let autoRotateAngle = 0
+const autoRotateSpeed = 0.15 // rad/s, rotation lente et discrète
+let lastFrameTime = 0
+
+function enableAutoRotate() {
+	if (autoRotateActive) return
+	autoRotateActive = true
+	// Repart de l'angle visuel actuel du logo pour éviter tout saut à l'activation.
+	autoRotateAngle = logo ? logo.rotation.y : 0
+}
+
+function disableAutoRotate() {
+	autoRotateActive = false
+}
 
 function easeOutCubic(t: number) {
 	return 1 - Math.pow(1 - t, 3)
@@ -255,15 +267,25 @@ function getScreenAngle() {
 	return typeof legacyOrientation === "number" ? legacyOrientation : 0
 }
 
+let nullGyroReadings = 0
+
 function onDeviceOrientation(e: DeviceOrientationEvent) {
 	gyroEventCount++
-	if (gyroEventCount <= 3 || gyroEventCount % 30 === 0) {
-		debugLog(
-			`orientation #${gyroEventCount} beta=${e.beta?.toFixed(1) ?? "null"} gamma=${e.gamma?.toFixed(1) ?? "null"} abs=${e.absolute}`
-		)
-	}
 
-	if (e.beta === null || e.gamma === null) return
+	if (e.beta === null || e.gamma === null) {
+		nullGyroReadings++
+		// Certains navigateurs (Brave iOS notamment) livrent l'event deviceorientation
+		// mais neutralisent beta/gamma à null par anti-fingerprinting : les vraies
+		// données capteur ne seront jamais disponibles. Après un nombre suffisant de
+		// lectures nulles, on abandonne proprement le gyroscope et on bascule sur la
+		// rotation automatique plutôt que de rester figé sans rien faire.
+		if (nullGyroReadings === 20) {
+			window.removeEventListener("deviceorientation", onDeviceOrientation)
+			gyroListenerAttached = false
+			enableAutoRotate()
+		}
+		return
+	}
 
 	const angle = getScreenAngle()
 	let x = e.gamma
@@ -281,11 +303,20 @@ function onDeviceOrientation(e: DeviceOrientationEvent) {
 		y = -e.beta
 	}
 
-	// Calibration sur la première lecture : le parallax part de la position
-	// de tenue naturelle du téléphone plutôt que d'un zéro absolu irréaliste.
+	// Calibration sur la moyenne des premières lectures : le parallax part de la
+	// position de tenue naturelle du téléphone plutôt que d'un zéro absolu
+	// irréaliste (personne ne tient son téléphone parfaitement à plat).
 	if (!gyroBase) {
-		gyroBase = { x, y }
-		debugLog(`calibration base x=${x.toFixed(1)} y=${y.toFixed(1)}`)
+		gyroCalibrationSamples.push({ x, y })
+		if (gyroCalibrationSamples.length < gyroCalibrationCount) return
+
+		const avgX =
+			gyroCalibrationSamples.reduce((sum, s) => sum + s.x, 0) /
+			gyroCalibrationSamples.length
+		const avgY =
+			gyroCalibrationSamples.reduce((sum, s) => sum + s.y, 0) /
+			gyroCalibrationSamples.length
+		gyroBase = { x: avgX, y: avgY }
 		return
 	}
 
@@ -299,28 +330,28 @@ function onDeviceOrientation(e: DeviceOrientationEvent) {
 function attachGyroListener() {
 	if (gyroListenerAttached) return
 	gyroListenerAttached = true
-	debugLog("attachGyroListener() -> addEventListener deviceorientation")
 	window.addEventListener("deviceorientation", onDeviceOrientation)
 
 	// Si aucun event n'arrive après 1.5s, l'API existe mais ne délivre rien
 	// (cas fréquent : Shields de Brave, ou permission accordée sans vrai accès capteur).
 	setTimeout(() => {
 		if (gyroEventCount === 0) {
-			debugLog("⚠️ 0 event deviceorientation reçu après 1.5s (bloqué par le navigateur ?)")
+			enableAutoRotate()
 		}
 	}, 1500)
 }
 
 function removeMotionGestureHandler() {
 	if (!motionGestureHandler) return
-	window.removeEventListener("touchend", motionGestureHandler)
-	window.removeEventListener("pointerdown", motionGestureHandler)
+	window.removeEventListener("click", motionGestureHandler)
 	motionGestureHandler = null
 }
 
 function requestGyroPermission() {
+	if (gyroListenerAttached) return // déjà actif, rien à faire
+
 	if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
-		debugLog("❌ DeviceOrientationEvent absent de window (API non supportée)")
+		enableAutoRotate()
 		return
 	}
 
@@ -329,34 +360,27 @@ function requestGyroPermission() {
 	}
 
 	if (typeof DOE.requestPermission === "function") {
-		debugLog("requestPermission() disponible, appel en cours…")
 		DOE.requestPermission()
 			.then((state) => {
-				debugLog(`requestPermission() -> "${state}"`)
-				if (state === "granted") attachGyroListener()
-				else debugLog("⚠️ permission refusée par l'utilisateur ou le navigateur")
+				if (state === "granted") {
+					disableAutoRotate()
+					attachGyroListener()
+				} else {
+					enableAutoRotate()
+				}
 			})
-			.catch((err) => {
-				debugLog(`❌ requestPermission() a rejeté: ${err?.message ?? err}`)
+			.catch(() => {
+				enableAutoRotate()
 			})
-			.finally(() => removeMotionGestureHandler())
 	} else {
 		// Android et autres navigateurs : aucune permission requise.
-		debugLog("pas de requestPermission() -> attachGyroListener direct (Android/desktop)")
 		attachGyroListener()
 	}
 }
 
-// Bouton de debug : permet de déclencher la demande de permission manuellement,
-// sans dépendre du premier tap générique sur la page.
-function manualRequestPermission() {
-	debugLog("bouton debug cliqué")
-	requestGyroPermission()
-}
-
 function initMobileParallax() {
 	if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
-		debugLog("❌ DeviceOrientationEvent absent -> pas de parallax gyroscope possible")
+		enableAutoRotate()
 		return
 	}
 
@@ -364,24 +388,26 @@ function initMobileParallax() {
 		requestPermission?: () => Promise<"granted" | "denied">
 	}
 
-	// iOS 13+ exige un geste utilisateur explicite pour demander la permission.
-	// On écoute le premier tap/pointerdown de la page, sans UI additionnelle.
 	if (typeof DOE.requestPermission === "function") {
-		debugLog("iOS 13+ détecté (requestPermission existe) : en attente d'un geste utilisateur…")
+		// Tentative immédiate, sans attendre de geste : ça fonctionne sur les
+		// navigateurs qui n'exigent pas réellement de geste malgré l'API iOS 13+.
+		// Sur ceux qui l'exigent (Safari/Brave iOS...), la promesse est rejetée
+		// aussitôt et on bascule sans délai sur la rotation automatique, le temps
+		// qu'un vrai tap arrive.
+		requestGyroPermission()
+
+		// Amélioration silencieuse : si l'utilisateur fait un vrai tap plus tard
+		// (lien, bouton, nav…), nouvelle tentative — si acceptée, on quitte la
+		// rotation automatique pour le vrai gyroscope. Si refusée à nouveau, on
+		// reste simplement sur la rotation automatique, sans rien casser.
 		motionGestureHandler = () => {
-			debugLog("geste détecté (touchend/pointerdown) -> requestPermission()")
 			requestGyroPermission()
+			removeMotionGestureHandler()
 		}
-		window.addEventListener("touchend", motionGestureHandler, {
-			passive: true,
-			once: true,
-		})
-		window.addEventListener("pointerdown", motionGestureHandler, {
-			passive: true,
-			once: true,
-		})
+		window.addEventListener("click", motionGestureHandler, { once: true })
 	} else {
-		// Android et autres navigateurs : aucune permission requise.
+		// Android et autres navigateurs : aucune permission requise, le gyroscope
+		// fonctionne dès l'init.
 		attachGyroListener()
 	}
 }
@@ -392,6 +418,9 @@ function animate(time: number) {
 	// Ne rend rien tant que le canvas n'est pas visible à l'écran (perf/batterie),
 	// sans jamais toucher au rendu visuel une fois affiché.
 	if (!isVisible) return
+
+	const dt = lastFrameTime ? (time - lastFrameTime) / 1000 : 0
+	lastFrameTime = time
 
 	current.x += (target.x - current.x) * damping
 	current.y += (target.y - current.y) * damping
@@ -410,8 +439,17 @@ function animate(time: number) {
 			logo.rotation.x = current.x
 		} else {
 			logo.scale.setScalar(baseScale)
-			logo.rotation.x = current.x
-			logo.rotation.y = current.y
+
+			if (autoRotateActive) {
+				// Fallback mobile/tablette uniquement : rotation lente et continue
+				// sur elle-même, indépendante du gyroscope et de la souris.
+				autoRotateAngle += autoRotateSpeed * dt
+				logo.rotation.y = autoRotateAngle
+				logo.rotation.x = 0
+			} else {
+				logo.rotation.x = current.x
+				logo.rotation.y = current.y
+			}
 		}
 	}
 
@@ -435,18 +473,12 @@ function tryInit(el: HTMLDivElement | null) {
 	initScene(el)
 	frameId = requestAnimationFrame(animate)
 
-	debugLog(
-		`init: isFinePointer=${isFinePointer} prefersReducedMotion=${prefersReducedMotion} hasDOE=${typeof window !== "undefined" && "DeviceOrientationEvent" in window}`
-	)
-
 	if (isFinePointer) {
 		// Desktop : comportement inchangé.
 		window.addEventListener("pointermove", onPointerMove, { passive: true })
 	} else if (!prefersReducedMotion) {
 		// Mobile/tablette : parallax piloté par le gyroscope.
 		initMobileParallax()
-	} else {
-		debugLog("⚠️ prefersReducedMotion=true -> initMobileParallax() jamais appelé")
 	}
 
 	resizeObserver = new ResizeObserver(() => handleResize(el))
@@ -521,41 +553,5 @@ onBeforeUnmount(() => {
 	.logo-scene :deep(.logo-scene__canvas) {
 		transition: none;
 	}
-}
-
-/* DEBUG TEMPORAIRE : à retirer une fois le bug gyroscope résolu */
-.gyro-debug {
-	position: fixed;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 9999;
-	pointer-events: auto;
-	background: rgba(0, 0, 0, 0.85);
-	color: #9eff9e;
-	font: 11px/1.4 ui-monospace, monospace;
-	padding: 8px;
-	max-height: 40vh;
-	overflow-y: auto;
-}
-
-.gyro-debug__btn {
-	display: block;
-	width: 100%;
-	margin-bottom: 6px;
-	padding: 10px;
-	background: #2a2a2a;
-	color: #fff;
-	border: 1px solid #555;
-	border-radius: 6px;
-	font: 13px/1 ui-monospace, monospace;
-	pointer-events: auto;
-}
-
-.gyro-debug__log div {
-	white-space: pre-wrap;
-	word-break: break-all;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-	padding: 2px 0;
 }
 </style>
