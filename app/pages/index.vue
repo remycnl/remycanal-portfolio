@@ -62,21 +62,21 @@ useHead({
 
 			<div
 				aria-hidden="true"
-				class="font-vg5000 section-p-x-reset text-shadow-lime relative z-10 flex w-full flex-row-reverse justify-between text-3xl whitespace-nowrap text-shadow-sm"
+				class="font-vg5000 section-p-x-reset text-shadow-lime relative z-10 flex h-full w-full flex-col justify-between py-25 text-xl whitespace-nowrap text-shadow-sm md:h-fit md:flex-row"
 			>
-				<div class="flex items-end gap-5">
-					<UiShapeCross class="text-lime mb-2 h-6 w-6" />
-					<div class="flex flex-col items-end">
-						<span>Rémy Canal </span>
-						<span>Awwwards. Young Jury </span>
-					</div>
-				</div>
-				<div class="flex items-end gap-5">
+				<div class="flex items-end gap-5 self-start md:self-auto">
 					<div class="flex flex-col">
 						<span>Full-Stack Developer </span>
 						<span>UI/UX Designer</span>
 					</div>
 					<UiShapeStripes class="text-lime mb-2 h-6 w-6" />
+				</div>
+				<div class="flex items-end gap-5 self-end md:self-auto">
+					<UiShapeCross class="text-lime mb-2 h-6 w-6" />
+					<div class="flex flex-col items-end">
+						<span>Rémy Canal </span>
+						<span>Awwwards. Young Jury </span>
+					</div>
 				</div>
 			</div>
 

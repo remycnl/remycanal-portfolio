@@ -4,7 +4,7 @@
 		background-color: var(--color-white);
 		color: var(--color-black);
 		font-family: var(--font-lineal);
-		font-variation-settings: "wght" 600;
+		font-variation-settings: "wght" var(--lineal-weight-regular);
 	}
 
 	::selection {
