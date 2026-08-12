@@ -69,10 +69,10 @@ useHead({
 						<span>Full-Stack Developer </span>
 						<span>UI/UX Designer</span>
 					</div>
-					<UiShapeStripes class="text-lime mb-2 h-6 w-6" />
+					<UiShapeStripes class="text-lime mb-2 w-4 h-4 md:h-6 md:w-6" />
 				</div>
 				<div class="flex items-end gap-5 self-end md:self-auto">
-					<UiShapeCross class="text-lime mb-2 h-6 w-6" />
+					<UiShapeCross class="text-lime mb-2 w-4 h-4 md:h-6 md:w-6" />
 					<div class="flex flex-col items-end">
 						<span>Rémy Canal </span>
 						<span>Awwwards. Young Jury </span>
