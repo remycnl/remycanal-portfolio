@@ -9,6 +9,7 @@
 					to="/"
 					class="flex max-h-8 max-w-8 items-center justify-center select-none"
 					@contextmenu.prevent
+					@click="closeMenu"
 				>
 					<img
 						ref="logoImgRef"
