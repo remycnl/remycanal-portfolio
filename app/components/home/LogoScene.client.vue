@@ -3,7 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import type { GLTFLoader as GLTFLoaderType } from "three/examples/jsm/loaders/GLTFLoader.js"
+import * as THREE from "three"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
+import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js"
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js"
 
 const container = ref<HTMLDivElement | null>(null)
 
@@ -11,10 +14,10 @@ const container = ref<HTMLDivElement | null>(null)
 const prefersReducedMotion = ref(false)
 const isTouchDevice = ref(false)
 
-let scene: import("three").Scene
-let camera: import("three").PerspectiveCamera
-let renderer: import("three").WebGLRenderer
-let logo: import("three").Object3D | null = null
+let scene: THREE.Scene
+let camera: THREE.PerspectiveCamera
+let renderer: THREE.WebGLRenderer
+let logo: THREE.Object3D | null = null
 let frameId = 0
 let resizeObserver: ResizeObserver
 let visibilityObserver: IntersectionObserver
@@ -22,9 +25,9 @@ let reducedMotionQuery: MediaQueryList
 let touchQuery: MediaQueryList
 let initialized = false
 let isVisible = true
-let pmrem: import("three").PMREMGenerator
-let envTexture: import("three").Texture | null = null
-let flakeMap: import("three").CanvasTexture | null = null
+let pmrem: THREE.PMREMGenerator
+let envTexture: THREE.Texture | null = null
+let flakeMap: THREE.CanvasTexture | null = null
 
 // -- Parallax (desktop / pointeur précis) -----------------------------------
 const target = { x: 0, y: 0 }
@@ -56,11 +59,7 @@ function clamp(v: number, min: number, max: number) {
 }
 
 // Générée une seule fois par montage, réutilisée pour tous les matériaux du logo.
-function createFlakeNormalMap(
-	THREE: typeof import("three"),
-	size = 256,
-	flakeCount = 900
-) {
+function createFlakeNormalMap(size = 256, flakeCount = 900) {
 	const canvas = document.createElement("canvas")
 	canvas.width = size
 	canvas.height = size
@@ -93,19 +92,16 @@ function createFlakeNormalMap(
 	return texture
 }
 
-function applyGlitterFinish(
-	THREE: typeof import("three"),
-	root: import("three").Object3D
-) {
-	flakeMap = createFlakeNormalMap(THREE)
-	const seen = new Set<import("three").Material>()
+function applyGlitterFinish(root: THREE.Object3D) {
+	flakeMap = createFlakeNormalMap()
+	const seen = new Set<THREE.Material>()
 
 	root.traverse((obj) => {
 		if (!(obj instanceof THREE.Mesh)) return
 		const materials = Array.isArray(obj.material) ? obj.material : [obj.material]
 
 		materials.forEach((mat) => {
-			const m = mat as import("three").MeshStandardMaterial
+			const m = mat as THREE.MeshStandardMaterial
 			if (!m || seen.has(m)) return
 			seen.add(m)
 
@@ -117,16 +113,7 @@ function applyGlitterFinish(
 	})
 }
 
-async function initScene(el: HTMLDivElement) {
-	// Chargement client-only et paresseux de three.js : évite d'alourdir le
-	// bundle SSR / le payload initial pour un composant qui ne rend rien côté serveur.
-	const THREE = await import("three")
-	const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js")
-	const { MeshoptDecoder } =
-		await import("three/examples/jsm/libs/meshopt_decoder.module.js")
-	const { RoomEnvironment } =
-		await import("three/examples/jsm/environments/RoomEnvironment.js")
-
+function initScene(el: HTMLDivElement) {
 	const width = el.clientWidth
 	const height = el.clientHeight
 
@@ -165,7 +152,7 @@ async function initScene(el: HTMLDivElement) {
 	rimLight.position.set(-4, -2, -3)
 	scene.add(rimLight)
 
-	loadLogo(THREE, GLTFLoader, MeshoptDecoder)
+	loadLogo()
 }
 
 function revealCanvas() {
@@ -176,22 +163,17 @@ function revealCanvas() {
 	})
 }
 
-function loadLogo(
-	THREE: typeof import("three"),
-	GLTFLoader: typeof GLTFLoaderType,
-	MeshoptDecoder: unknown
-) {
+function loadLogo() {
 	const loader = new GLTFLoader()
 	// Décodeur requis par la compression EXT_meshopt_compression du .glb optimisé.
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	loader.setMeshoptDecoder(MeshoptDecoder as any)
+	loader.setMeshoptDecoder(MeshoptDecoder)
 
 	loader.load(
 		"/models/logo-metal-lime.glb",
 		(gltf) => {
 			logo = gltf.scene
-			applyGlitterFinish(THREE, logo)
-			baseScale = centerAndFit(THREE, logo)
+			applyGlitterFinish(logo)
+			baseScale = centerAndFit(logo)
 			logo.scale.setScalar(0)
 			scene.add(logo)
 			renderer.render(scene, camera)
@@ -205,7 +187,7 @@ function loadLogo(
 	)
 }
 
-function centerAndFit(THREE: typeof import("three"), obj: import("three").Object3D) {
+function centerAndFit(obj: THREE.Object3D) {
 	const box = new THREE.Box3().setFromObject(obj)
 	const size = box.getSize(new THREE.Vector3())
 	const center = box.getCenter(new THREE.Vector3())
@@ -303,7 +285,7 @@ function updatePointerListener() {
 	}
 }
 
-async function tryInit(el: HTMLDivElement | null) {
+function tryInit(el: HTMLDivElement | null) {
 	if (initialized || !el) return
 	if (el.clientWidth === 0 || el.clientHeight === 0) return
 
@@ -328,7 +310,7 @@ async function tryInit(el: HTMLDivElement | null) {
 		updatePointerListener()
 	})
 
-	await initScene(el)
+	initScene(el)
 	frameId = requestAnimationFrame(animate)
 
 	updatePointerListener()
@@ -363,10 +345,10 @@ onBeforeUnmount(() => {
 	flakeMap?.dispose()
 	envTexture?.dispose()
 
-	scene?.traverse((obj: any) => {
-		if (obj.isMesh) {
+	scene?.traverse((obj) => {
+		if (obj instanceof THREE.Mesh) {
 			obj.geometry?.dispose()
-			if (Array.isArray(obj.material)) obj.material.forEach((m: any) => m.dispose())
+			if (Array.isArray(obj.material)) obj.material.forEach((m) => m.dispose())
 			else obj.material?.dispose()
 		}
 	})
