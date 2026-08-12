@@ -1,5 +1,15 @@
 <template>
-	<div ref="container" class="logo-scene" @contextmenu.prevent></div>
+	<div ref="container" class="logo-scene" @contextmenu.prevent>
+		<!-- DEBUG TEMPORAIRE : à retirer une fois le bug gyroscope résolu -->
+		<div v-if="DEBUG_GYRO" class="gyro-debug">
+			<button class="gyro-debug__btn" @click="manualRequestPermission">
+				Activer le gyroscope
+			</button>
+			<div class="gyro-debug__log">
+				<div v-for="(line, i) in debugLines" :key="i">{{ line }}</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -10,6 +20,18 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { onMounted, onBeforeUnmount, ref, nextTick, watch } from "vue"
 
 const container = ref<HTMLDivElement | null>(null)
+
+// --- DEBUG TEMPORAIRE : overlay visible sur mobile, à retirer une fois le bug résolu ---
+const DEBUG_GYRO = true
+const debugLines = ref<string[]>([])
+function debugLog(msg: string) {
+	if (!DEBUG_GYRO) return
+	const ts = new Date().toISOString().split("T")[1]!.slice(0, 12)
+	debugLines.value = [`${ts} ${msg}`, ...debugLines.value].slice(0, 12)
+	// eslint-disable-next-line no-console
+	console.log("[gyro-debug]", msg)
+}
+// --- fin bloc debug ---
 
 const prefersReducedMotion =
 	typeof window !== "undefined" &&
@@ -49,6 +71,7 @@ let gyroListenerAttached = false
 let gyroBase: { x: number; y: number } | null = null
 let motionGestureHandler: (() => void) | null = null
 const gyroRange = 20 // degrés d'inclinaison nécessaires pour atteindre le tilt max
+let gyroEventCount = 0
 
 function easeOutCubic(t: number) {
 	return 1 - Math.pow(1 - t, 3)
@@ -233,6 +256,13 @@ function getScreenAngle() {
 }
 
 function onDeviceOrientation(e: DeviceOrientationEvent) {
+	gyroEventCount++
+	if (gyroEventCount <= 3 || gyroEventCount % 30 === 0) {
+		debugLog(
+			`orientation #${gyroEventCount} beta=${e.beta?.toFixed(1) ?? "null"} gamma=${e.gamma?.toFixed(1) ?? "null"} abs=${e.absolute}`
+		)
+	}
+
 	if (e.beta === null || e.gamma === null) return
 
 	const angle = getScreenAngle()
@@ -255,6 +285,7 @@ function onDeviceOrientation(e: DeviceOrientationEvent) {
 	// de tenue naturelle du téléphone plutôt que d'un zéro absolu irréaliste.
 	if (!gyroBase) {
 		gyroBase = { x, y }
+		debugLog(`calibration base x=${x.toFixed(1)} y=${y.toFixed(1)}`)
 		return
 	}
 
@@ -268,7 +299,16 @@ function onDeviceOrientation(e: DeviceOrientationEvent) {
 function attachGyroListener() {
 	if (gyroListenerAttached) return
 	gyroListenerAttached = true
+	debugLog("attachGyroListener() -> addEventListener deviceorientation")
 	window.addEventListener("deviceorientation", onDeviceOrientation)
+
+	// Si aucun event n'arrive après 1.5s, l'API existe mais ne délivre rien
+	// (cas fréquent : Shields de Brave, ou permission accordée sans vrai accès capteur).
+	setTimeout(() => {
+		if (gyroEventCount === 0) {
+			debugLog("⚠️ 0 event deviceorientation reçu après 1.5s (bloqué par le navigateur ?)")
+		}
+	}, 1500)
 }
 
 function removeMotionGestureHandler() {
@@ -278,8 +318,47 @@ function removeMotionGestureHandler() {
 	motionGestureHandler = null
 }
 
+function requestGyroPermission() {
+	if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
+		debugLog("❌ DeviceOrientationEvent absent de window (API non supportée)")
+		return
+	}
+
+	const DOE = window.DeviceOrientationEvent as unknown as {
+		requestPermission?: () => Promise<"granted" | "denied">
+	}
+
+	if (typeof DOE.requestPermission === "function") {
+		debugLog("requestPermission() disponible, appel en cours…")
+		DOE.requestPermission()
+			.then((state) => {
+				debugLog(`requestPermission() -> "${state}"`)
+				if (state === "granted") attachGyroListener()
+				else debugLog("⚠️ permission refusée par l'utilisateur ou le navigateur")
+			})
+			.catch((err) => {
+				debugLog(`❌ requestPermission() a rejeté: ${err?.message ?? err}`)
+			})
+			.finally(() => removeMotionGestureHandler())
+	} else {
+		// Android et autres navigateurs : aucune permission requise.
+		debugLog("pas de requestPermission() -> attachGyroListener direct (Android/desktop)")
+		attachGyroListener()
+	}
+}
+
+// Bouton de debug : permet de déclencher la demande de permission manuellement,
+// sans dépendre du premier tap générique sur la page.
+function manualRequestPermission() {
+	debugLog("bouton debug cliqué")
+	requestGyroPermission()
+}
+
 function initMobileParallax() {
-	if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) return
+	if (typeof window === "undefined" || !("DeviceOrientationEvent" in window)) {
+		debugLog("❌ DeviceOrientationEvent absent -> pas de parallax gyroscope possible")
+		return
+	}
 
 	const DOE = window.DeviceOrientationEvent as unknown as {
 		requestPermission?: () => Promise<"granted" | "denied">
@@ -288,15 +367,10 @@ function initMobileParallax() {
 	// iOS 13+ exige un geste utilisateur explicite pour demander la permission.
 	// On écoute le premier tap/pointerdown de la page, sans UI additionnelle.
 	if (typeof DOE.requestPermission === "function") {
+		debugLog("iOS 13+ détecté (requestPermission existe) : en attente d'un geste utilisateur…")
 		motionGestureHandler = () => {
-			DOE.requestPermission!()
-				.then((state) => {
-					if (state === "granted") attachGyroListener()
-				})
-				.catch(() => {
-					/* permission refusée ou indisponible : pas de parallax, comportement normal sinon */
-				})
-				.finally(() => removeMotionGestureHandler())
+			debugLog("geste détecté (touchend/pointerdown) -> requestPermission()")
+			requestGyroPermission()
 		}
 		window.addEventListener("touchend", motionGestureHandler, {
 			passive: true,
@@ -361,12 +435,18 @@ function tryInit(el: HTMLDivElement | null) {
 	initScene(el)
 	frameId = requestAnimationFrame(animate)
 
+	debugLog(
+		`init: isFinePointer=${isFinePointer} prefersReducedMotion=${prefersReducedMotion} hasDOE=${typeof window !== "undefined" && "DeviceOrientationEvent" in window}`
+	)
+
 	if (isFinePointer) {
 		// Desktop : comportement inchangé.
 		window.addEventListener("pointermove", onPointerMove, { passive: true })
 	} else if (!prefersReducedMotion) {
 		// Mobile/tablette : parallax piloté par le gyroscope.
 		initMobileParallax()
+	} else {
+		debugLog("⚠️ prefersReducedMotion=true -> initMobileParallax() jamais appelé")
 	}
 
 	resizeObserver = new ResizeObserver(() => handleResize(el))
@@ -441,5 +521,41 @@ onBeforeUnmount(() => {
 	.logo-scene :deep(.logo-scene__canvas) {
 		transition: none;
 	}
+}
+
+/* DEBUG TEMPORAIRE : à retirer une fois le bug gyroscope résolu */
+.gyro-debug {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 9999;
+	pointer-events: auto;
+	background: rgba(0, 0, 0, 0.85);
+	color: #9eff9e;
+	font: 11px/1.4 ui-monospace, monospace;
+	padding: 8px;
+	max-height: 40vh;
+	overflow-y: auto;
+}
+
+.gyro-debug__btn {
+	display: block;
+	width: 100%;
+	margin-bottom: 6px;
+	padding: 10px;
+	background: #2a2a2a;
+	color: #fff;
+	border: 1px solid #555;
+	border-radius: 6px;
+	font: 13px/1 ui-monospace, monospace;
+	pointer-events: auto;
+}
+
+.gyro-debug__log div {
+	white-space: pre-wrap;
+	word-break: break-all;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	padding: 2px 0;
 }
 </style>

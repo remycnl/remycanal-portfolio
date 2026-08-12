@@ -90,7 +90,6 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const { useGsapContext } = useGsap()
 
 const links = [
 	{ to: "/", label: "Home" },
@@ -113,6 +112,12 @@ const mobileNavInnerRef = useTemplateRef<HTMLElement>("mobileNavInnerRef")
 const menuBtnRef = useTemplateRef<HTMLElement>("menuBtnRef")
 const menuIconRef = useTemplateRef<HTMLElement>("menuIconRef")
 const logoImgRef = useTemplateRef<HTMLElement>("logoImgRef")
+
+const {
+	onWiggleEnter: onLogoEnter,
+	onWiggleLeave: onLogoLeave,
+	onWigglePress: onLogoPress,
+} = useWiggle(logoImgRef)
 
 const linkEls: (HTMLElement | null)[] = []
 function setLinkRef(el: any, index: number) {
@@ -141,9 +146,8 @@ let onNavLeave: () => void = () => {}
 let onLinkClick: (index: number) => void = () => {}
 let toggleMenu: () => void = () => {}
 let closeMenu: () => void = () => {}
-let onLogoEnter: () => void = () => {}
-let onLogoLeave: () => void = () => {}
-let onLogoPress: () => void = () => {}
+
+const { useGsapContext } = useGsap()
 
 useGsapContext(({ gsap }) => {
 	let hideTimer: ReturnType<typeof setTimeout> | null = null
@@ -231,48 +235,6 @@ useGsapContext(({ gsap }) => {
 		: []
 
 	gsap.set([...cornerDots, ...centerDot, ...edgeDots], { transformOrigin: "50% 50%" })
-
-	let logoWiggle: ReturnType<typeof gsap.timeline> | null = null
-
-	if (logoImgRef.value) gsap.set(logoImgRef.value, { transformOrigin: "50% 50%" })
-
-	onLogoEnter = () => {
-		if (!logoImgRef.value) return
-		logoWiggle?.kill()
-		logoWiggle = gsap
-			.timeline()
-			.to(logoImgRef.value, { rotation: -10, duration: 0.09, ease: "power1.out" })
-			.to(logoImgRef.value, { rotation: 9, duration: 0.11, ease: "power1.inOut" })
-			.to(logoImgRef.value, { rotation: -6, duration: 0.11, ease: "power1.inOut" })
-			.to(logoImgRef.value, { rotation: 4, duration: 0.1, ease: "power1.inOut" })
-			.to(logoImgRef.value, { rotation: 0, duration: 0.16, ease: "power2.out" })
-	}
-
-	onLogoLeave = () => {
-		if (!logoImgRef.value) return
-		logoWiggle?.kill()
-		gsap.to(logoImgRef.value, { rotation: 0, duration: 0.2, ease: "power2.out" })
-	}
-
-	onLogoPress = () => {
-		if (!logoImgRef.value) return
-		logoWiggle?.kill()
-		gsap.killTweensOf(logoImgRef.value)
-		gsap
-			.timeline()
-			.to(logoImgRef.value, {
-				scale: 0.78,
-				rotation: "-=8",
-				duration: 0.09,
-				ease: "power2.in",
-			})
-			.to(logoImgRef.value, {
-				scale: 1,
-				rotation: 0,
-				duration: 0.45,
-				ease: "elastic.out(1, 0.45)",
-			})
-	}
 
 	function pressIcon() {
 		if (!menuIconRef.value) return
@@ -422,7 +384,6 @@ useGsapContext(({ gsap }) => {
 			indicatorRef.value,
 			menuBtnRef.value,
 			menuIconRef.value,
-			logoImgRef.value,
 			...mobileLinkEls,
 			...cornerDots,
 			...centerDot,
