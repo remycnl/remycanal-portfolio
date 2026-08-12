@@ -3,10 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import * as THREE from "three"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
-import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js"
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js"
+import type { GLTFLoader as GLTFLoaderType } from "three/examples/jsm/loaders/GLTFLoader.js"
 
 const container = ref<HTMLDivElement | null>(null)
 
@@ -14,10 +11,10 @@ const container = ref<HTMLDivElement | null>(null)
 const prefersReducedMotion = ref(false)
 const isTouchDevice = ref(false)
 
-let scene: THREE.Scene
-let camera: THREE.PerspectiveCamera
-let renderer: THREE.WebGLRenderer
-let logo: THREE.Object3D | null = null
+let scene: import("three").Scene
+let camera: import("three").PerspectiveCamera
+let renderer: import("three").WebGLRenderer
+let logo: import("three").Object3D | null = null
 let frameId = 0
 let resizeObserver: ResizeObserver
 let visibilityObserver: IntersectionObserver
@@ -25,9 +22,9 @@ let reducedMotionQuery: MediaQueryList
 let touchQuery: MediaQueryList
 let initialized = false
 let isVisible = true
-let pmrem: THREE.PMREMGenerator
-let envTexture: THREE.Texture | null = null
-let flakeMap: THREE.CanvasTexture | null = null
+let pmrem: import("three").PMREMGenerator
+let envTexture: import("three").Texture | null = null
+let flakeMap: import("three").CanvasTexture | null = null
 
 // -- Parallax (desktop / pointeur précis) -----------------------------------
 const target = { x: 0, y: 0 }
@@ -59,7 +56,11 @@ function clamp(v: number, min: number, max: number) {
 }
 
 // Générée une seule fois par montage, réutilisée pour tous les matériaux du logo.
-function createFlakeNormalMap(size = 256, flakeCount = 900) {
+function createFlakeNormalMap(
+	THREE: typeof import("three"),
+	size = 256,
+	flakeCount = 900
+) {
 	const canvas = document.createElement("canvas")
 	canvas.width = size
 	canvas.height = size
@@ -92,16 +93,19 @@ function createFlakeNormalMap(size = 256, flakeCount = 900) {
 	return texture
 }
 
-function applyGlitterFinish(root: THREE.Object3D) {
-	flakeMap = createFlakeNormalMap()
-	const seen = new Set<THREE.Material>()
+function applyGlitterFinish(
+	THREE: typeof import("three"),
+	root: import("three").Object3D
+) {
+	flakeMap = createFlakeNormalMap(THREE)
+	const seen = new Set<import("three").Material>()
 
 	root.traverse((obj) => {
 		if (!(obj instanceof THREE.Mesh)) return
 		const materials = Array.isArray(obj.material) ? obj.material : [obj.material]
 
 		materials.forEach((mat) => {
-			const m = mat as THREE.MeshStandardMaterial
+			const m = mat as import("three").MeshStandardMaterial
 			if (!m || seen.has(m)) return
 			seen.add(m)
 
@@ -113,7 +117,16 @@ function applyGlitterFinish(root: THREE.Object3D) {
 	})
 }
 
-function initScene(el: HTMLDivElement) {
+async function initScene(el: HTMLDivElement) {
+	// Chargement client-only et paresseux de three.js : évite d'alourdir le
+	// bundle SSR / le payload initial pour un composant qui ne rend rien côté serveur.
+	const THREE = await import("three")
+	const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js")
+	const { MeshoptDecoder } =
+		await import("three/examples/jsm/libs/meshopt_decoder.module.js")
+	const { RoomEnvironment } =
+		await import("three/examples/jsm/environments/RoomEnvironment.js")
+
 	const width = el.clientWidth
 	const height = el.clientHeight
 
@@ -152,7 +165,7 @@ function initScene(el: HTMLDivElement) {
 	rimLight.position.set(-4, -2, -3)
 	scene.add(rimLight)
 
-	loadLogo()
+	loadLogo(THREE, GLTFLoader, MeshoptDecoder)
 }
 
 function revealCanvas() {
@@ -163,17 +176,21 @@ function revealCanvas() {
 	})
 }
 
-function loadLogo() {
+function loadLogo(
+	THREE: typeof import("three"),
+	GLTFLoader: typeof GLTFLoaderType,
+	MeshoptDecoder: unknown
+) {
 	const loader = new GLTFLoader()
 	// Décodeur requis par la compression EXT_meshopt_compression du .glb optimisé.
-	loader.setMeshoptDecoder(MeshoptDecoder)
+	loader.setMeshoptDecoder(MeshoptDecoder as any)
 
 	loader.load(
 		"/models/logo-metal-lime.glb",
 		(gltf) => {
 			logo = gltf.scene
-			applyGlitterFinish(logo)
-			baseScale = centerAndFit(logo)
+			applyGlitterFinish(THREE, logo)
+			baseScale = centerAndFit(THREE, logo)
 			logo.scale.setScalar(0)
 			scene.add(logo)
 			renderer.render(scene, camera)
@@ -187,7 +204,7 @@ function loadLogo() {
 	)
 }
 
-function centerAndFit(obj: THREE.Object3D) {
+function centerAndFit(THREE: typeof import("three"), obj: import("three").Object3D) {
 	const box = new THREE.Box3().setFromObject(obj)
 	const size = box.getSize(new THREE.Vector3())
 	const center = box.getCenter(new THREE.Vector3())
@@ -285,7 +302,18 @@ function updatePointerListener() {
 	}
 }
 
-function tryInit(el: HTMLDivElement | null) {
+function handleReducedMotionChange(e: MediaQueryListEvent) {
+	prefersReducedMotion.value = e.matches
+	introDuration = prefersReducedMotion.value ? 1 : 2000
+	autoRotateSpeed = prefersReducedMotion.value ? 0 : 0.45
+}
+
+function handleTouchChange(e: MediaQueryListEvent) {
+	isTouchDevice.value = e.matches
+	updatePointerListener()
+}
+
+async function tryInit(el: HTMLDivElement | null) {
 	if (initialized || !el) return
 	if (el.clientWidth === 0 || el.clientHeight === 0) return
 
@@ -293,11 +321,7 @@ function tryInit(el: HTMLDivElement | null) {
 
 	reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
 	prefersReducedMotion.value = reducedMotionQuery.matches
-	reducedMotionQuery.addEventListener("change", (e) => {
-		prefersReducedMotion.value = e.matches
-		introDuration = prefersReducedMotion.value ? 1 : 2000
-		autoRotateSpeed = prefersReducedMotion.value ? 0 : 0.45
-	})
+	reducedMotionQuery.addEventListener("change", handleReducedMotionChange)
 	introDuration = prefersReducedMotion.value ? 1 : 2000
 	autoRotateSpeed = prefersReducedMotion.value ? 0 : 0.45
 
@@ -305,12 +329,9 @@ function tryInit(el: HTMLDivElement | null) {
 	// précis (tactile) de façon fiable, indépendamment de la largeur d'écran.
 	touchQuery = window.matchMedia("(hover: none), (pointer: coarse)")
 	isTouchDevice.value = touchQuery.matches
-	touchQuery.addEventListener("change", (e) => {
-		isTouchDevice.value = e.matches
-		updatePointerListener()
-	})
+	touchQuery.addEventListener("change", handleTouchChange)
 
-	initScene(el)
+	await initScene(el)
 	frameId = requestAnimationFrame(animate)
 
 	updatePointerListener()
@@ -337,18 +358,18 @@ watch(container, (el) => tryInit(el))
 onBeforeUnmount(() => {
 	cancelAnimationFrame(frameId)
 	window.removeEventListener("pointermove", onPointerMove)
-	reducedMotionQuery?.removeEventListener?.("change", () => {})
-	touchQuery?.removeEventListener?.("change", () => {})
+	reducedMotionQuery?.removeEventListener("change", handleReducedMotionChange)
+	touchQuery?.removeEventListener("change", handleTouchChange)
 	resizeObserver?.disconnect()
 	visibilityObserver?.disconnect()
 
 	flakeMap?.dispose()
 	envTexture?.dispose()
 
-	scene?.traverse((obj) => {
-		if (obj instanceof THREE.Mesh) {
+	scene?.traverse((obj: any) => {
+		if (obj.isMesh) {
 			obj.geometry?.dispose()
-			if (Array.isArray(obj.material)) obj.material.forEach((m) => m.dispose())
+			if (Array.isArray(obj.material)) obj.material.forEach((m: any) => m.dispose())
 			else obj.material?.dispose()
 		}
 	})
