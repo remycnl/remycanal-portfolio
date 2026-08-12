@@ -28,7 +28,7 @@
 				>
 					<span
 						ref="indicatorRef"
-						class="bg-lime/20 pointer-events-none absolute top-1/2 left-0 h-9 rounded-full opacity-0 will-change-transform"
+						class="bg-lime/25 pointer-events-none absolute top-1/2 left-0 h-9 rounded-full opacity-0 will-change-transform"
 						style="transform: translateY(-50%) scale(0.85); width: 0px"
 					/>
 

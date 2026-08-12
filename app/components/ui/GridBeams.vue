@@ -22,7 +22,7 @@ import type { ComponentPublicInstance } from "vue"
 // bg-grid-lime / bg-grid-violet (voir le CSS des @utility). Source unique de
 // vérité pour rester synchro avec la grid sans dupliquer de couleurs à la main.
 const THEMES = {
-	white: "oklch(0.9 0.2202 125)",
+	white: "oklch(0.92 0 0)",
 	black: "oklch(0.22 0 0)",
 	lime: "oklch(0.9 0.2202 125)",
 	violet: "oklch(0.48 0.2455 293.81)",
@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
 	interval: 4000,
 	poolSize: 3,
 	beamLength: 0.18,
-	darken: 35,
+	darken: 30,
 	durationMin: 3200,
 	durationMax: 4800,
 })
