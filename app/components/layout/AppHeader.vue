@@ -2,7 +2,7 @@
 	<header class="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4">
 		<div
 			ref="boxRef"
-			class="pointer-events-auto flex flex-col overflow-hidden rounded-4xl bg-black border border-black-light px-6 py-2.5 transition-[padding-left,padding-right] duration-400 lg:hover:px-10"
+			class="border-black-light pointer-events-auto flex flex-col overflow-hidden rounded-4xl border bg-black px-6 py-2.5 transition-[padding-left,padding-right] duration-400 lg:hover:px-10"
 		>
 			<div class="flex items-center justify-between gap-10 md:justify-start">
 				<NuxtLink

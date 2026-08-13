@@ -2,7 +2,7 @@
 const heroRef = useTemplateRef<HTMLElement>("heroRef")
 
 useStackSection(heroRef, {
-	scaleTo: 0.82,
+	scaleTo: { mobile: 0.72, desktop: 0.82 },
 	rotateTo: -4,
 	roundedClass: "rounded-3xl",
 })
@@ -71,7 +71,7 @@ useHead({
 
 			<div
 				aria-hidden="true"
-				class="font-vg5000 section-p-x-reset text-shadow-lime relative z-10 flex h-full w-full flex-col justify-between py-25 text-xl whitespace-nowrap text-shadow-sm md:h-fit md:flex-row"
+				class="font-vg5000 section-p-x-reset text-shadow-lime relative z-10 flex h-full w-full flex-col justify-between pt-25 pb-15 text-xl whitespace-nowrap text-shadow-sm md:h-fit md:flex-row"
 			>
 				<div class="flex items-end gap-5 self-start md:self-auto">
 					<div class="flex flex-col">
@@ -102,9 +102,10 @@ useHead({
 		</section>
 		<section>
 			<div
-				class="section-p-xy font-lineal-medium flex justify-center rounded-t-3xl bg-black bg-grid-black"
+				data-drag-bounds
+				class="section-p-xy font-lineal-medium bg-grid-black flex justify-center rounded-t-3xl bg-black"
 			>
-			<UiGridBeams theme="black" />
+				<UiGridBeams theme="black" />
 				<div
 					class="py-section text-gray-dark relative max-w-6xl text-center text-2xl lg:text-5xl"
 				>
@@ -115,15 +116,22 @@ useHead({
 						<span class="text-white">development</span>, and refined
 						<span class="text-white">interactions</span>.
 					</h2>
-					<img
+					<UiPopImage
 						src="/stickers/sticker-remy.png"
 						alt="Sticker Rémy"
-						class="absolute -top-5 -right-10 h-30 w-auto rotate-15 grayscale md:top-0 md:-right-20 md:h-50"
+						:rotate="15"
+						grayscale
+						draggable
+						img-class="absolute -top-5 -right-10 h-30 w-auto md:-right-30 md:h-55"
 					/>
-					<img
+					<UiPopImage
 						src="/stickers/sticker-computer.png"
 						alt="Sticker computer"
-						class="absolute -bottom-5 -left-10 h-30 w-auto -rotate-15 grayscale md:bottom-0 md:-left-20 md:h-50"
+						:rotate="-15"
+						:delay="0.12"
+						grayscale
+						draggable
+						img-class="absolute -bottom-5 -left-10 h-30 w-auto md:-left-40 md:h-55"
 					/>
 				</div>
 			</div>
