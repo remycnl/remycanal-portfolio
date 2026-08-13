@@ -100,9 +100,8 @@ useHead({
 				</ClientOnly>
 			</div>
 		</section>
-		<section>
+		<section data-drag-bounds>
 			<div
-				data-drag-bounds
 				class="section-p-xy font-lineal-medium bg-grid-black flex justify-center rounded-t-3xl bg-black"
 			>
 				<UiGridBeams theme="black" />
@@ -122,7 +121,7 @@ useHead({
 						:rotate="15"
 						grayscale
 						draggable
-						img-class="absolute -top-5 -right-10 h-30 w-auto md:-right-30 md:h-55"
+						img-class="absolute -top-7 -right-7 h-30 w-auto md:-right-30 md:h-55"
 					/>
 					<UiPopImage
 						src="/stickers/sticker-computer.png"
@@ -131,7 +130,7 @@ useHead({
 						:delay="0.12"
 						grayscale
 						draggable
-						img-class="absolute -bottom-5 -left-10 h-30 w-auto md:-left-40 md:h-55"
+						img-class="absolute -bottom-10 left-0 h-30 w-auto md:-left-40 md:h-55"
 					/>
 				</div>
 			</div>

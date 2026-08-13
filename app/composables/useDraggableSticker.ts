@@ -4,7 +4,12 @@ interface DragOptions {
 	tiltStrength?: number
 	/** Résistance au lancer inertiel. Défaut : 200. 600+ = quasi aucune glisse. */
 	throwResistance?: number
-	/** Élasticité en butée pendant le drag actif. 0 = mur dur, 1 = aucune résistance. */
+	/**
+	 * Résistance aux limites (bounds), de 0 à 1.
+	 * 0 = aucune résistance, l'élément glisse comme si les bounds n'existaient pas.
+	 * 1 = résistance totale, mur dur infranchissable, aucun dépassement possible.
+	 * Défaut : 1 (contrainte stricte).
+	 */
 	edgeResistance?: number
 	/** Rotation de repos en degrés, positive ou négative. Source de vérité unique — plus de classe Tailwind rotate-*. */
 	baseRotation?: number
@@ -18,7 +23,7 @@ export function useDraggableSticker(
 	const {
 		tiltStrength = 14,
 		throwResistance = 200,
-		edgeResistance = 0.85,
+		edgeResistance = 1,
 		baseRotation = 0,
 	} = options
 
@@ -65,6 +70,7 @@ export function useDraggableSticker(
 			type: "x,y",
 			bounds: boundsEl,
 			edgeResistance,
+			throwResistance,
 			allowNativeTouchScrolling: false,
 			inertia: { resistance: throwResistance },
 			onPress() {
