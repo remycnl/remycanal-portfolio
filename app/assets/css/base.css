@@ -5,11 +5,12 @@
 		color: var(--color-black);
 		font-family: var(--font-lineal);
 		font-variation-settings: "wght" var(--lineal-weight-regular);
+		overflow-x: clip;
 	}
 
 	::selection {
-		background-color: var(--color-lime-dark);
-		color: var(--color-lime);
+		background-color: var(--color-black);
+		color: var(--color-white);
 	}
 
 	button {

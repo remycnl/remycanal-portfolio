@@ -12,6 +12,8 @@
 		"format:check": "prettier --check ."
 	},
 	"dependencies": {
+		"@nuxt/icon": "2.5.0",
+		"@nuxt/image": "2.1.0",
 		"@nuxtjs/seo": "5.3.12",
 		"@tailwindcss/vite": "^4.3.3",
 		"@takumi-rs/core": "^2.7.0",
