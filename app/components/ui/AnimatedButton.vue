@@ -126,10 +126,7 @@ const pillClasses = computed(() => [
 	TEXT_ON[props.pill],
 	size.value.pillClass,
 ])
-// L'élément "outer" (position) ne porte QUE la taille, pas de fond.
 const bubbleOuterClasses = computed(() => [size.value.bubbleClass])
-// L'élément "visual" porte le fond + forme : c'est LUI qui reçoit le scale
-// de press, donc c'est bien toute la bulle (fond + icône) qui se compresse.
 const bubbleVisualClasses = computed(() => [BG[props.bubble]])
 const iconClasses = computed(() => [
 	ICON_TEXT_CLASS[resolveIconVariant(props.pill, props.bubble)],
@@ -138,14 +135,8 @@ const iconClasses = computed(() => [
 
 const rootEl = shallowRef<HTMLElement | any>(null)
 const pillEl = shallowRef<HTMLElement | null>(null)
-// bubbleEl : position uniquement (x, y) — mesure aussi offsetWidth pour le travel.
 const bubbleEl = shallowRef<HTMLElement | null>(null)
-// bubbleScaleEl : scale/rotation/opacity de la timeline d'entrée.
 const bubbleScaleEl = shallowRef<HTMLElement | null>(null)
-// bubblePressEl : fond visible + icône. C'est CET élément que le press scale
-// cible → visuellement "toute la bulle" réagit au clic. Comme il s'agit d'un
-// 3e élément distinct (transform séparé de bubbleScaleEl), aucun conflit
-// GSAP n'est possible, quel que soit l'état d'avancement de la timeline.
 const bubblePressEl = shallowRef<HTMLElement | null>(null)
 
 const { gsap } = useGsap()
@@ -200,7 +191,6 @@ function buildTimeline() {
 			{ scaleY: 1, scaleX: 1, duration: 0.36, ease: "elastic.out(1, 0.55)" },
 			0.12
 		)
-		// Position (bubbleEl) : x/y du trajet
 		.to(
 			bubbleEl.value,
 			{ x: () => -travel * 0.52, y: -5, duration: 0.18, ease: "power2.in" },
@@ -211,7 +201,6 @@ function buildTimeline() {
 			{ x: () => -travel, y: 0, duration: 0.22, ease: "power3.out" },
 			0.16
 		)
-		// Scale/rotation/opacity du bounce (bubbleScaleEl) — séparé du press.
 		.to(
 			bubbleScaleEl.value,
 			{ scale: 0.2, rotation: -180, opacity: 0.12, duration: 0.18, ease: "power2.in" },
@@ -231,12 +220,6 @@ function ensureTimeline() {
 	timelineReady = true
 }
 
-/**
- * ---------------------------------------------------------------------
- * STATE MACHINE — source de vérité unique. Toute transition passe par
- * setState(), jamais d'appel direct à tl.play()/reverse() ailleurs.
- * ---------------------------------------------------------------------
- */
 type UIState = "idle" | "hover" | "pressed"
 let state: UIState = "idle"
 let activePointerId: number | null = null
@@ -253,8 +236,6 @@ function setState(next: UIState) {
 	applyVisualForState(next)
 }
 
-/** Résout le vrai noeud DOM, que rootEl soit un HTMLElement ou une instance
- * de composant (ex: NuxtLink) qui expose $el. */
 function resolveEl(ref: any): HTMLElement | null {
 	if (!ref) return null
 	if (ref instanceof HTMLElement) return ref
@@ -262,9 +243,6 @@ function resolveEl(ref: any): HTMLElement | null {
 	return null
 }
 
-/** Hit-test réel aux coordonnées données — fiable même sous pointer capture
- * (contrairement à :hover qui peut rester "collé" tant que la capture n'a
- * pas été relâchée depuis assez longtemps pour que le navigateur recalcule). */
 function isPointOverElement(el: HTMLElement | null, x: number, y: number): boolean {
 	if (!el || typeof document === "undefined") return false
 	const hit = document.elementFromPoint(x, y)
@@ -293,7 +271,7 @@ function onFocusOut() {
 }
 
 function onPointerDown(e: PointerEvent) {
-	if (activePointerId !== null) return // ignore un 2e pointeur pendant un press
+	if (activePointerId !== null) return
 	activePointerId = e.pointerId
 
 	const target = e.currentTarget as HTMLElement
@@ -330,8 +308,6 @@ function resolvePointerUp(
 
 	releasePress()
 
-	// Pas de coordonnées fiables (blur/visibilitychange) ou tactile → idle,
-	// c'est l'état sûr par défaut, jamais de risque de rester "collé" en hover.
 	if (pointerType === "touch" || clientX === null || clientY === null) {
 		setState("idle")
 		return
@@ -385,12 +361,6 @@ function onVisibilityChange() {
 	}
 }
 
-/**
- * Feedback de press — cible bubblePressEl, qui porte le fond ET l'icône :
- * c'est donc bien "toute la bulle" qui réagit visuellement. S'applique
- * immédiatement, que la timeline d'entrée soit finie ou non, car c'est un
- * élément distinct de celui animé par la timeline (bubbleScaleEl).
- */
 function pressDown() {
 	if (!bubblePressEl.value) return
 	gsap.to(bubblePressEl.value, {
@@ -492,7 +462,7 @@ const rootAttrs = computed(() =>
 		<span
 			ref="pillEl"
 			:class="pillClasses"
-			class="relative z-10 font-vg5000 flex items-center justify-center rounded-full whitespace-nowrap"
+			class="font-vg5000 relative z-10 flex items-center justify-center rounded-full whitespace-nowrap"
 		>
 			<span :class="size.text">
 				{{ label }}

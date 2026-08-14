@@ -1,12 +1,4 @@
 <script setup lang="ts">
-const heroRef = useTemplateRef<HTMLElement>("heroRef")
-
-useStackSection(heroRef, {
-	scaleTo: 0.72,
-	rotateTo: -4,
-	roundedClass: "rounded-3xl",
-})
-
 useSeoMeta({
 	title: "Home",
 	description:
@@ -48,112 +40,8 @@ useHead({
 
 <template>
 	<div class="bg-lime">
-		<section
-			ref="heroRef"
-			class="section-p-x pb-section bg-grid-white relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white text-black shadow-xl"
-		>
-			<UiGridBeams theme="white" />
-			<div
-				class="pointer-events-none absolute bottom-0 left-0 z-10 select-none"
-				aria-hidden="true"
-			>
-				<UiInfiniteHorizontalLoop
-					text="Creative Developer"
-					item-class="uppercase font-lineal-heavy text-[20vw] leading-none text-lime pr-[10vw] [word-spacing:0.15em]"
-					:base-speed="1"
-				/>
-			</div>
-
-			<h1 class="sr-only">
-				Rémy Canal — Full-Stack Developer &amp; UI/UX Designer — Awwwards Young Jury
-				Member
-			</h1>
-
-			<div
-				aria-hidden="true"
-				class="font-vg5000 section-p-x-reset text-shadow-lime relative z-10 flex h-full w-full flex-col justify-between pt-25 pb-15 text-xl whitespace-nowrap text-shadow-sm md:h-fit md:flex-row"
-			>
-				<div class="flex items-end gap-5 self-start md:self-auto">
-					<div class="flex flex-col">
-						<span>Full-Stack Developer </span>
-						<span>UI/UX Designer</span>
-					</div>
-					<UiShapeStripes class="text-lime mb-2 h-4 w-4 md:h-6 md:w-6" />
-				</div>
-				<div class="flex items-end gap-5 self-end md:self-auto">
-					<UiShapeCross class="text-lime mb-2 h-4 w-4 md:h-6 md:w-6" />
-					<div class="flex flex-col items-end">
-						<span>Rémy Canal </span>
-						<span>Awwwards. Young Jury </span>
-					</div>
-				</div>
-			</div>
-
-			<div
-				class="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
-			>
-				<ClientOnly>
-					<HomeLogoScene class="pointer-events-auto" />
-					<template #fallback>
-						<div class="logo-scene-placeholder" />
-					</template>
-				</ClientOnly>
-			</div>
-		</section>
-		<section data-drag-bounds class="relative rounded-t-3xl bg-white">
-			<div
-				class="section-p-xy font-lineal-medium bg-grid-black relative flex justify-center rounded-3xl bg-black"
-			>
-				<UiGridBeams theme="black" />
-				<div class="top-edge left-edge absolute flex items-center justify-center mt-2 ml-2 gap-4">
-					<h3 class="font-vg5000 text-end text-sm text-gray-dark md:text-lg">
-						Based in France
-					</h3>
-					<UiShapeStripes class="text-violet mb-1.5 h-3 w-3 md:h-5 md:w-5" />
-				</div>
-				<div
-					class="py-section text-gray-dark relative max-w-6xl text-center text-2xl lg:text-5xl"
-				>
-					<div class="py-section max-w-xl lg:max-w-6xl">
-						<h2>
-							I craft
-							<span class="text-white">distinctive digital experiences</span> through
-							thoughtful <span class="text-white">design</span>, creative
-							<span class="text-white">development</span>, and refined
-							<span class="text-white">interactions</span>.
-						</h2>
-					</div>
-					<UiPopImage
-						src="/stickers/sticker-remy.png"
-						alt="Sticker Rémy"
-						:rotate="15"
-						grayscale
-						draggable
-						img-class="absolute -top-7 -right-7 w-auto 2xl:-right-30 h-30 lg:h-55"
-					/>
-					<UiPopImage
-						src="/stickers/sticker-computer.png"
-						alt="Sticker computer"
-						:rotate="-15"
-						:delay="0.12"
-						grayscale
-						draggable
-						img-class="absolute -bottom-2 md:-bottom-10 -left-2 w-auto 2xl:-left-40 h-25 md:h-30 lg:h-55"
-					/>
-				</div>
-				<div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-					<UiAnimatedButton
-						label="Know more about me"
-						to="/about"
-						pill="violet"
-						bubble="violet"
-						size="large"
-					/>
-				</div>
-			</div>
-		</section>
-		<section class="section-p-x h-screen bg-white">
-			<UiProjectsSection />
-		</section>
+		<HomeHero />
+		<HomeIntro />
+		<HomeFeaturedProjects />
 	</div>
 </template>
