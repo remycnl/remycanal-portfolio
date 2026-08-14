@@ -10,14 +10,21 @@ const projects: Project[] = [
 	{
 		id: "01",
 		year: "2024",
-		name: "Northline — Identité & Web",
+		name: "Rémy Canal — Portfolio",
 		image: "https://www.remycanal.me/img/metaImg.png",
 	},
-	{ id: "02", year: "2023", name: "Aura Studio", image: "https://www.remycanal.me/img/mockup-vikl.webp" },
-	{ id: "03", year: "2023", name: "Vesper — E-commerce", image: "https://www.remycanal.me/img/mockup-pascale-canal-galery.webp" },
-	{ id: "04", year: "2022", name: "Fold Magazine", image: "https://www.remycanal.me/img/metaImg.png" },
-	{ id: "05", year: "2022", name: "Kōji Interactive", image: "https://www.remycanal.me/img/mockup-vikl.webp" },
-	{ id: "06", year: "2021", name: "Marée — Branding", image: "https://www.remycanal.me/img/mockup-pascale-canal-galery.webp" },
+	{
+		id: "02",
+		year: "2022",
+		name: "Pascale Canal — Galery",
+		image: "https://www.remycanal.me/img/mockup-pascale-canal-galery.webp",
+	},
+	{
+		id: "03",
+		year: "2021",
+		name: "Vikl — Marketing Website",
+		image: "https://www.remycanal.me/img/mockup-vikl.webp",
+	},
 ]
 
 const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
@@ -162,12 +169,19 @@ watch(activeIndex, (newVal, oldVal) => {
 	swapTextStack(nameRefs.value, oldVal, newVal, forward)
 })
 
+const MOBILE_TABLET_MAX_WIDTH = 1023
+
 useGsapContext(({ gsap, ScrollTrigger }) => {
 	const sectionEl = sectionRef.value
 	const viewportEl = viewportRef.value
 	const trackEl = trackRef.value
 	if (!sectionEl || !viewportEl || !trackEl) return
 	const trackElement = trackEl
+
+	const isMobileLayout = window.matchMedia(
+		`(max-width: ${MOBILE_TABLET_MAX_WIDTH}px)`
+	).matches
+	const axisProp = isMobileLayout ? "x" : "y"
 
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)"
@@ -185,9 +199,16 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	function setTrackPadding() {
 		const first = cards[0]
 		if (!first) return
-		const cardHeight = first.getBoundingClientRect().height
-		const value = Math.max((window.innerHeight - cardHeight) / 2, 0)
-		gsap.set(trackElement, { paddingTop: value, paddingBottom: value })
+
+		if (isMobileLayout) {
+			const cardWidth = first.getBoundingClientRect().width
+			const value = Math.max((window.innerWidth - cardWidth) / 2, 0)
+			gsap.set(trackElement, { paddingLeft: value, paddingRight: value })
+		} else {
+			const cardHeight = first.getBoundingClientRect().height
+			const value = Math.max((window.innerHeight - cardHeight) / 2, 0)
+			gsap.set(trackElement, { paddingTop: value, paddingBottom: value })
+		}
 	}
 
 	function setSectionHeight() {
@@ -210,35 +231,58 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		}
 
 		const styles = window.getComputedStyle(trackElement)
-		const gap = parseFloat(styles.rowGap || styles.gap || "0") || 0
-		const paddingTop = parseFloat(styles.paddingTop || "0") || 0
 
-		let cumulative = paddingTop
-		const centers = cards.map((card, i) => {
-			const height = card.offsetHeight
-			const center = cumulative + height / 2
-			if (i < cards.length - 1) cumulative += height + gap
-			return center - window.innerHeight / 2
-		})
+		if (isMobileLayout) {
+			const gap = parseFloat(styles.columnGap || styles.gap || "0") || 0
+			const paddingLeft = parseFloat(styles.paddingLeft || "0") || 0
 
-		distance = Math.max(centers[centers.length - 1] ?? 0, 0)
-		snapPoints =
-			distance > 0
-				? centers.map((c) => gsap.utils.clamp(0, 1, c / distance))
-				: centers.map(() => 0)
+			let cumulative = paddingLeft
+			const centers = cards.map((card, i) => {
+				const width = card.offsetWidth
+				const center = cumulative + width / 2
+				if (i < cards.length - 1) cumulative += width + gap
+				return center - window.innerWidth / 2
+			})
+
+			distance = Math.max(centers[centers.length - 1] ?? 0, 0)
+			snapPoints =
+				distance > 0
+					? centers.map((c) => gsap.utils.clamp(0, 1, c / distance))
+					: centers.map(() => 0)
+		} else {
+			const gap = parseFloat(styles.rowGap || styles.gap || "0") || 0
+			const paddingTop = parseFloat(styles.paddingTop || "0") || 0
+
+			let cumulative = paddingTop
+			const centers = cards.map((card, i) => {
+				const height = card.offsetHeight
+				const center = cumulative + height / 2
+				if (i < cards.length - 1) cumulative += height + gap
+				return center - window.innerHeight / 2
+			})
+
+			distance = Math.max(centers[centers.length - 1] ?? 0, 0)
+			snapPoints =
+				distance > 0
+					? centers.map((c) => gsap.utils.clamp(0, 1, c / distance))
+					: centers.map(() => 0)
+		}
 	}
 
 	function updateActiveIndex() {
-		const centerY = window.innerHeight / 2
+		const viewportExtent = isMobileLayout ? window.innerWidth : window.innerHeight
+		const center = viewportExtent / 2
 		let closest = 0
 		let closestDist = Infinity
 
 		cards.forEach((card, i) => {
 			const rect = card.getBoundingClientRect()
-			const cardCenter = rect.top + rect.height / 2
-			const dist = Math.abs(cardCenter - centerY)
+			const cardCenter = isMobileLayout
+				? rect.left + rect.width / 2
+				: rect.top + rect.height / 2
+			const dist = Math.abs(cardCenter - center)
 
-			const norm = gsap.utils.clamp(0, 1, dist / (window.innerHeight * 0.55))
+			const norm = gsap.utils.clamp(0, 1, dist / (viewportExtent * 0.55))
 			const eased = gsap.parseEase("power2.out")(1 - norm)
 			cardBaseScale.value[i] = gsap.utils.interpolate(0.82, 1, eased)
 			applyCardScale(i)
@@ -262,7 +306,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	}
 
 	const tween = gsap.to(trackEl, {
-		y: () => -getDistance(),
+		[axisProp]: () => -getDistance(),
 		ease: "none",
 		scrollTrigger: {
 			trigger: sectionEl,
@@ -305,10 +349,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 <template>
 	<div class="section-p-y relative bg-white">
 		<section ref="sectionRef" class="relative w-full">
-			<div
-				ref="viewportRef"
-				class="section-p-xy sticky top-0 h-screen w-full"
-			>
+			<div ref="viewportRef" class="section-p-xy sticky top-0 h-screen w-full">
 				<div
 					class="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-px -translate-x-1/2 bg-[repeating-linear-gradient(to_bottom,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500"
 					:style="{
@@ -328,7 +369,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				<div
 					class="pointer-events-none absolute top-1/2 left-1/2 z-6 -translate-x-1/2 -translate-y-1/2"
 				>
-					<div class="relative w-[72vw] rounded-3xl p-2 md:w-[38vw] lg:w-[32vw]">
+					<div class="relative w-[70vw] rounded-3xl p-2 md:w-[38vw] lg:w-[32vw]">
 						<div class="aspect-16/10 w-full rounded-2xl" />
 						<span
 							ref="cornerTL"
@@ -350,16 +391,18 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				</div>
 
 				<!-- Header : titre seul en haut -->
-				<div class="inset-x-edge top-edge absolute z-20 pt-4 md:pt-6">
+				<div class="inset-x-edge top-section absolute z-20 pt-15 lg:pt-6">
 					<h2
-						class="font-lineal font-lineal-bold text-shadow-lime text-3xl whitespace-nowrap text-black text-shadow-sm md:text-4xl"
+						class="font-lineal font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
 					>
 						Featured projects
 					</h2>
 				</div>
 
 				<!-- Bouton, en bas à droite -->
-				<div class="right-edge bottom-edge absolute z-20 pb-4 md:pb-6">
+				<div
+					class="lg:right-edge lg:bottom-edge absolute right-1/2 bottom-40 z-20 translate-x-1/2 lg:translate-x-0"
+				>
 					<UiAnimatedButton
 						label="All projects"
 						to="/work"
@@ -369,11 +412,15 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 					/>
 				</div>
 
-				<!-- Année, sticky à gauche -->
-				<div class="left-edge absolute top-1/2 z-10 -translate-y-1/2">
+				<!--
+					Année
+				-->
+				<div
+					class="lg:left-edge absolute bottom-[calc(50%+21.875vw+4.2rem)] left-0 z-10 w-[70vw] md:bottom-[calc(50%+21.875vw-0.5rem)] lg:top-1/2 lg:bottom-auto lg:w-auto lg:-translate-y-1/2"
+				>
 					<div
 						class="inline-flex items-center rounded-full px-4 py-2 transition-colors duration-300"
-						:class="isActiveHovered ? 'bg-gray-dark' : 'bg-gray-light'"
+						:class="isActiveHovered ? 'lg:bg-gray-dark' : 'lg:bg-gray-light'"
 					>
 						<div class="inline-grid h-[1em] overflow-hidden leading-none">
 							<span
@@ -384,8 +431,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 										if (el) yearRefs[i] = el as HTMLElement
 									}
 								"
-								class="font-vg5000 col-start-1 row-start-1 block text-sm leading-none whitespace-nowrap transition-colors duration-300"
-								:class="isActiveHovered ? 'text-white' : 'text-black-light'"
+								class="font-vg5000 text-black-light col-start-1 row-start-1 block text-sm leading-none whitespace-nowrap transition-colors duration-300"
+								:class="isActiveHovered ? 'lg:text-white' : ''"
 							>
 								{{ p.year }}
 							</span>
@@ -393,13 +440,19 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 					</div>
 				</div>
 
-				<!-- Nom du projet, sticky à droite -->
-				<div class="right-edge absolute top-1/2 z-10 -translate-y-1/2">
+				<!--
+					Titre du projet
+				-->
+				<div
+					class="lg:right-edge absolute bottom-[calc(50%+21.875vw+3rem)] left-0 z-10 w-[70vw] md:bottom-[calc(50%+21.875vw-1.7rem)] lg:top-1/2 lg:bottom-auto lg:left-auto lg:w-auto lg:-translate-y-1/2"
+				>
 					<div
-						class="inline-flex items-center justify-end rounded-full px-4 py-2 transition-colors duration-300"
-						:class="isActiveHovered ? 'bg-gray-dark' : 'bg-gray-light'"
+						class="inline-flex items-center justify-start rounded-full px-4 py-2 transition-colors duration-300 lg:justify-end"
+						:class="isActiveHovered ? 'lg:bg-gray-dark' : 'lg:bg-gray-light'"
 					>
-						<div class="inline-grid h-[1em] overflow-hidden text-right leading-none">
+						<div
+							class="inline-grid h-[1em] overflow-hidden text-left leading-none lg:text-right"
+						>
 							<span
 								v-for="(p, i) in projects"
 								:key="p.id"
@@ -408,8 +461,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 										if (el) nameRefs[i] = el as HTMLElement
 									}
 								"
-								class="font-lineal col-start-1 row-start-1 block text-right text-sm leading-none [font-weight:var(--lineal-weight-medium)] whitespace-nowrap transition-colors duration-300"
-								:class="isActiveHovered ? 'text-white' : 'text-black-light'"
+								class="font-lineal text-black-light col-start-1 row-start-1 block text-left text-sm leading-none [font-weight:var(--lineal-weight-medium)] whitespace-nowrap transition-colors duration-300 lg:text-right"
+								:class="isActiveHovered ? 'lg:text-white' : ''"
 							>
 								{{ p.name }}
 							</span>
@@ -428,11 +481,15 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 					<span>{{ pad(projects.length) }}</span>
 				</div>
 
-				<!-- Track vertical -->
-				<div class="absolute inset-0 z-5 flex justify-center overflow-hidden">
+				<!--
+					Track : défilement horizontal en mobile (flex-row), vertical à partir de md (flex-col, comportement d'origine).
+				-->
+				<div
+					class="absolute inset-0 z-5 flex items-center justify-start overflow-hidden lg:items-stretch lg:justify-center"
+				>
 					<div
 						ref="trackRef"
-						class="flex flex-col items-center gap-10 will-change-transform md:gap-14"
+						class="flex flex-row items-center gap-10 will-change-transform lg:flex-col lg:gap-14"
 					>
 						<div
 							v-for="(p, i) in projects"

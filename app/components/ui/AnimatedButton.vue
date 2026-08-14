@@ -417,7 +417,7 @@ const rootAttrs = computed(() =>
 		ref="rootEl"
 		v-bind="rootAttrs"
 		:class="size.prClass"
-		class="relative inline-flex items-center contain-layout outline-none"
+		class="relative inline-flex items-center align-middle contain-layout outline-none"
 		@pointerenter="onPointerEnter"
 		@pointerleave="onPointerLeave"
 		@pointerdown="onPointerDown"
