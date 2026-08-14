@@ -127,8 +127,8 @@
 		pointer-events: none;
 		background-size: 48px 48px;
 		background-image:
-			linear-gradient(to right, var(--color-violet-light) 1px, transparent 1px),
-			linear-gradient(to bottom, var(--color-violet-light) 1px, transparent 1px);
+			linear-gradient(to right, var(--color-violet-dark) 1px, transparent 1px),
+			linear-gradient(to bottom, var(--color-violet-dark) 1px, transparent 1px);
 		mask-image: radial-gradient(
 			ellipse at center,
 			black 0%,

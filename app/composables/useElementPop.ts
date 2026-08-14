@@ -39,7 +39,7 @@ export function useElementPop(
 		).matches
 
 		if (prefersReducedMotion) {
-			gsap.set(el, { opacity: 1, scale: 1, rotate: rotateTo, y: 0 })
+			gsap.set(el, { opacity: 1, scale: 1, rotation: rotateTo, y: 0 })
 			return
 		}
 
@@ -49,7 +49,7 @@ export function useElementPop(
 		gsap.set(el, {
 			opacity: 0,
 			scale: scaleFrom,
-			rotate: rotateFrom,
+			rotation: rotateFrom,
 			y: yFrom,
 			transformOrigin: "50% 50%",
 			force3D: true,
@@ -86,7 +86,7 @@ export function useElementPop(
 			.to(
 				el,
 				{
-					rotate: finalRotate,
+					rotation: finalRotate,
 					duration,
 					ease: "elastic.out(1, 0.65)",
 					overwrite: "auto",
@@ -107,7 +107,7 @@ export function useElementPop(
 			st.kill()
 			tl.kill()
 			gsap.set(el, {
-				clearProps: "opacity,scale,rotate,y,transformOrigin,willChange",
+				clearProps: "opacity,scale,rotation,y,transformOrigin,willChange",
 			})
 		}
 	}, target as any)
