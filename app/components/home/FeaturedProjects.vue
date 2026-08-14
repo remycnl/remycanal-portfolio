@@ -54,6 +54,20 @@ function pad(n: number) {
 }
 
 const { useGsapContext, gsap } = useGsap()
+const lenis = useLenis()
+
+const MOBILE_TABLET_MAX_WIDTH = 1023
+const MOBILE_TABLET_MEDIA_QUERY = `(max-width: ${MOBILE_TABLET_MAX_WIDTH}px)`
+
+const isMobileLayout = ref(false)
+
+if (import.meta.client) {
+	const mql = window.matchMedia(MOBILE_TABLET_MEDIA_QUERY)
+	isMobileLayout.value = mql.matches
+	mql.addEventListener("change", (e) => {
+		isMobileLayout.value = e.matches
+	})
+}
 
 function handleCardLeave(i: number) {
 	hoveredIndex.value = null
@@ -89,6 +103,192 @@ function onCardRelease(i: number) {
 	if (pressedIndex.value !== i) return
 	pressedIndex.value = null
 	applyCardScale(i, true)
+}
+
+function getScrollY(): number {
+	return lenis?.scroll ?? window.scrollY
+}
+
+function driveScroll(
+	target: number,
+	options: { immediate?: boolean; duration?: number; easing?: (t: number) => number } = {}
+) {
+	if (lenis) {
+		lenis.scrollTo(target, options)
+		return
+	}
+	// Fallback sans Lenis : pas d'inertie possible proprement, on se contente
+	// d'un scroll direct (comportement dégradé).
+	window.scrollTo({ top: target, behavior: options.immediate ? "auto" : "smooth" })
+}
+
+const DRAG_AXIS_THRESHOLD = 6
+
+// Fenêtre d'échantillons pour calculer la vélocité du doigt au relâchement.
+const DRAG_SAMPLE_WINDOW = 80
+const FLING_MIN_VELOCITY = 0.03 // px/ms — sous ce seuil, pas de fling
+const FLING_PROJECTION = 220 // "ms" projetés pour convertir vélocité -> distance
+const FLING_MAX_DISTANCE = 480 // px — borne le fling pour rester "carrousel"
+const FLING_MIN_DURATION = 0.4
+const FLING_MAX_DURATION = 1
+
+function easeOutCubic(t: number) {
+	return 1 - Math.pow(1 - t, 3)
+}
+
+interface DragState {
+	pointerId: number | null
+	index: number
+	startX: number
+	startY: number
+	lastX: number
+	axis: "x" | "y" | null
+}
+
+const drag: DragState = {
+	pointerId: null,
+	index: -1,
+	startX: 0,
+	startY: 0,
+	lastX: 0,
+	axis: null,
+}
+
+interface DragSample {
+	time: number
+	x: number
+}
+
+let dragSamples: DragSample[] = []
+
+function pushDragSample(x: number) {
+	const now = performance.now()
+	dragSamples.push({ time: now, x })
+	dragSamples = dragSamples.filter((s) => now - s.time <= DRAG_SAMPLE_WINDOW)
+}
+
+function getDragVelocity() {
+	if (dragSamples.length < 2) return 0
+	const first = dragSamples[0]
+	const last = dragSamples[dragSamples.length - 1]
+	const dt = last.time - first.time
+	if (dt <= 0) return 0
+	return (last.x - first.x) / dt // px/ms
+}
+
+function applyDragInertia() {
+	const velocityX = getDragVelocity() // px/ms, positif = doigt vers la droite
+	if (Math.abs(velocityX) < FLING_MIN_VELOCITY) return
+
+	// Même convention que pendant le drag : doigt vers la droite -> scroll diminue.
+	const scrollVelocity = -velocityX
+	const projected = gsap.utils.clamp(
+		-FLING_MAX_DISTANCE,
+		FLING_MAX_DISTANCE,
+		scrollVelocity * FLING_PROJECTION
+	)
+
+	const duration = gsap.utils.clamp(
+		FLING_MIN_DURATION,
+		FLING_MAX_DURATION,
+		Math.abs(projected) / 600
+	)
+
+	driveScroll(getScrollY() + projected, { duration, easing: easeOutCubic })
+}
+
+function resetDrag() {
+	drag.pointerId = null
+	drag.index = -1
+	drag.axis = null
+	dragSamples = []
+}
+
+function releaseDragCapture(e: PointerEvent) {
+	if (drag.axis !== "x") return
+	const target = e.currentTarget as HTMLElement
+	if (target.hasPointerCapture?.(e.pointerId)) {
+		target.releasePointerCapture(e.pointerId)
+	}
+}
+
+function onCardPointerDown(e: PointerEvent, i: number) {
+	onCardPress(i)
+
+	if (e.pointerType === "mouse") return
+
+	drag.pointerId = e.pointerId
+	drag.index = i
+	drag.startX = e.clientX
+	drag.startY = e.clientY
+	drag.lastX = e.clientX
+	drag.axis = null
+
+	dragSamples = []
+	pushDragSample(e.clientX)
+}
+
+function onCardPointerMove(e: PointerEvent) {
+	if (drag.pointerId === null || e.pointerId !== drag.pointerId) return
+
+	const deltaX = e.clientX - drag.startX
+	const deltaY = e.clientY - drag.startY
+
+	if (!drag.axis) {
+		const belowThreshold =
+			Math.abs(deltaX) < DRAG_AXIS_THRESHOLD && Math.abs(deltaY) < DRAG_AXIS_THRESHOLD
+		if (belowThreshold) return
+
+		// On tranche l'intention du geste : drag horizontal (carrousel) seulement
+		// en mobile/tablette, sinon on laisse le scroll vertical natif faire le travail.
+		drag.axis = isMobileLayout.value && Math.abs(deltaX) > Math.abs(deltaY) ? "x" : "y"
+
+		// Dès que ce n'est plus un simple tap, on annule le press/hover.
+		onCardRelease(drag.index)
+		hoveredIndex.value = null
+
+		if (drag.axis === "x") {
+			;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+		}
+	}
+
+	if (drag.axis !== "x") return
+
+	e.preventDefault()
+	const stepX = e.clientX - drag.lastX
+	drag.lastX = e.clientX
+	pushDragSample(e.clientX)
+
+	// 1px de scroll vertical == 1px de translation du track (cf. ScrollTrigger plus bas),
+	// donc on pilote le carrousel en scrollant la page verticalement via Lenis.
+	driveScroll(getScrollY() - stepX, { immediate: true })
+}
+
+function onCardPointerUp(e: PointerEvent, i: number) {
+	if (drag.pointerId === null || e.pointerId !== drag.pointerId) {
+		onCardRelease(i)
+		return
+	}
+
+	releaseDragCapture(e)
+	if (drag.axis === "x") applyDragInertia()
+
+	// Aucun axe verrouillé => c'était un vrai tap, on relâche l'anim de press normalement.
+	if (!drag.axis) onCardRelease(i)
+
+	resetDrag()
+}
+
+function onCardPointerCancel(e: PointerEvent, i: number) {
+	if (drag.pointerId === null || e.pointerId !== drag.pointerId) {
+		onCardRelease(i)
+		return
+	}
+
+	releaseDragCapture(e)
+	if (!drag.axis) onCardRelease(i)
+
+	resetDrag()
 }
 
 const corners = [
@@ -169,8 +369,6 @@ watch(activeIndex, (newVal, oldVal) => {
 	swapTextStack(nameRefs.value, oldVal, newVal, forward)
 })
 
-const MOBILE_TABLET_MAX_WIDTH = 1023
-
 useGsapContext(({ gsap, ScrollTrigger }) => {
 	const sectionEl = sectionRef.value
 	const viewportEl = viewportRef.value
@@ -178,10 +376,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	if (!sectionEl || !viewportEl || !trackEl) return
 	const trackElement = trackEl
 
-	const isMobileLayout = window.matchMedia(
-		`(max-width: ${MOBILE_TABLET_MAX_WIDTH}px)`
-	).matches
-	const axisProp = isMobileLayout ? "x" : "y"
+	const isMobileMediaQuery = isMobileLayout.value
+	const axisProp = isMobileMediaQuery ? "x" : "y"
 
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)"
@@ -200,7 +396,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		const first = cards[0]
 		if (!first) return
 
-		if (isMobileLayout) {
+		if (isMobileMediaQuery) {
 			const cardWidth = first.getBoundingClientRect().width
 			const value = Math.max((window.innerWidth - cardWidth) / 2, 0)
 			gsap.set(trackElement, { paddingLeft: value, paddingRight: value })
@@ -232,7 +428,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 		const styles = window.getComputedStyle(trackElement)
 
-		if (isMobileLayout) {
+		if (isMobileMediaQuery) {
 			const gap = parseFloat(styles.columnGap || styles.gap || "0") || 0
 			const paddingLeft = parseFloat(styles.paddingLeft || "0") || 0
 
@@ -270,14 +466,14 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	}
 
 	function updateActiveIndex() {
-		const viewportExtent = isMobileLayout ? window.innerWidth : window.innerHeight
+		const viewportExtent = isMobileMediaQuery ? window.innerWidth : window.innerHeight
 		const center = viewportExtent / 2
 		let closest = 0
 		let closestDist = Infinity
 
 		cards.forEach((card, i) => {
 			const rect = card.getBoundingClientRect()
-			const cardCenter = isMobileLayout
+			const cardCenter = isMobileMediaQuery
 				? rect.left + rect.width / 2
 				: rect.top + rect.height / 2
 			const dist = Math.abs(cardCenter - center)
@@ -401,7 +597,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 				<!-- Bouton, en bas à droite -->
 				<div
-					class="lg:right-edge lg:bottom-edge absolute right-1/2 bottom-40 z-20 translate-x-1/2 lg:translate-x-0"
+					class="lg:right-edge lg:bottom-edge absolute right-1/2 bottom-30 z-20 translate-x-1/2 lg:translate-x-0"
 				>
 					<UiAnimatedButton
 						label="All projects"
@@ -499,12 +695,13 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 									if (el) cardsRef[i] = el as HTMLElement
 								}
 							"
-							class="shrink-0 cursor-pointer touch-none rounded-3xl bg-black p-2"
+							class="shrink-0 cursor-pointer touch-pan-y rounded-3xl bg-black p-2"
 							@pointerenter="hoveredIndex = i"
 							@pointerleave="handleCardLeave(i)"
-							@pointerdown="onCardPress(i)"
-							@pointerup="onCardRelease(i)"
-							@pointercancel="onCardRelease(i)"
+							@pointerdown="onCardPointerDown($event, i)"
+							@pointermove="onCardPointerMove"
+							@pointerup="onCardPointerUp($event, i)"
+							@pointercancel="onCardPointerCancel($event, i)"
 						>
 							<div
 								class="bg-black-light aspect-16/10 w-[72vw] overflow-hidden rounded-2xl md:w-[38vw] lg:w-[32vw]"
