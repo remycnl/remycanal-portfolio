@@ -461,7 +461,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 
 				<!-- Bouton, en bas à droite -->
 				<div
-					class="lg:right-edge lg:bottom-edge absolute right-1/2 z-20 translate-x-1/2 bottom-25 md:bottom-50 lg:translate-x-0"
+					class="lg:right-edge lg:bottom-edge absolute right-1/2 z-20 translate-x-1/2 bottom-20 md:bottom-50 lg:translate-x-0"
 				>
 					<UiAnimatedButton
 						label="All projects"
