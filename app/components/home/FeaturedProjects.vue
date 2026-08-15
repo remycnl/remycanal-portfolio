@@ -117,178 +117,8 @@ function driveScroll(
 		lenis.scrollTo(target, options)
 		return
 	}
-	// Fallback sans Lenis : pas d'inertie possible proprement, on se contente
-	// d'un scroll direct (comportement dégradé).
+	// Fallback sans Lenis : pas d'inertie propre possible, scroll direct.
 	window.scrollTo({ top: target, behavior: options.immediate ? "auto" : "smooth" })
-}
-
-const DRAG_AXIS_THRESHOLD = 6
-
-// Fenêtre d'échantillons pour calculer la vélocité du doigt au relâchement.
-const DRAG_SAMPLE_WINDOW = 80
-const FLING_MIN_VELOCITY = 0.03 // px/ms — sous ce seuil, pas de fling
-const FLING_PROJECTION = 220 // "ms" projetés pour convertir vélocité -> distance
-const FLING_MAX_DISTANCE = 480 // px — borne le fling pour rester "carrousel"
-const FLING_MIN_DURATION = 0.4
-const FLING_MAX_DURATION = 1
-
-function easeOutCubic(t: number) {
-	return 1 - Math.pow(1 - t, 3)
-}
-
-interface DragState {
-	pointerId: number | null
-	index: number
-	startX: number
-	startY: number
-	lastX: number
-	axis: "x" | "y" | null
-}
-
-const drag: DragState = {
-	pointerId: null,
-	index: -1,
-	startX: 0,
-	startY: 0,
-	lastX: 0,
-	axis: null,
-}
-
-interface DragSample {
-	time: number
-	x: number
-}
-
-let dragSamples: DragSample[] = []
-
-function pushDragSample(x: number) {
-	const now = performance.now()
-	dragSamples.push({ time: now, x })
-	dragSamples = dragSamples.filter((s) => now - s.time <= DRAG_SAMPLE_WINDOW)
-}
-
-function getDragVelocity() {
-	if (dragSamples.length < 2) return 0
-	const first = dragSamples[0]
-	const last = dragSamples[dragSamples.length - 1]
-	const dt = last.time - first.time
-	if (dt <= 0) return 0
-	return (last.x - first.x) / dt // px/ms
-}
-
-function applyDragInertia() {
-	const velocityX = getDragVelocity() // px/ms, positif = doigt vers la droite
-	if (Math.abs(velocityX) < FLING_MIN_VELOCITY) return
-
-	// Même convention que pendant le drag : doigt vers la droite -> scroll diminue.
-	const scrollVelocity = -velocityX
-	const projected = gsap.utils.clamp(
-		-FLING_MAX_DISTANCE,
-		FLING_MAX_DISTANCE,
-		scrollVelocity * FLING_PROJECTION
-	)
-
-	const duration = gsap.utils.clamp(
-		FLING_MIN_DURATION,
-		FLING_MAX_DURATION,
-		Math.abs(projected) / 600
-	)
-
-	driveScroll(getScrollY() + projected, { duration, easing: easeOutCubic })
-}
-
-function resetDrag() {
-	drag.pointerId = null
-	drag.index = -1
-	drag.axis = null
-	dragSamples = []
-}
-
-function releaseDragCapture(e: PointerEvent) {
-	if (drag.axis !== "x") return
-	const target = e.currentTarget as HTMLElement
-	if (target.hasPointerCapture?.(e.pointerId)) {
-		target.releasePointerCapture(e.pointerId)
-	}
-}
-
-function onCardPointerDown(e: PointerEvent, i: number) {
-	onCardPress(i)
-
-	if (e.pointerType === "mouse") return
-
-	drag.pointerId = e.pointerId
-	drag.index = i
-	drag.startX = e.clientX
-	drag.startY = e.clientY
-	drag.lastX = e.clientX
-	drag.axis = null
-
-	dragSamples = []
-	pushDragSample(e.clientX)
-}
-
-function onCardPointerMove(e: PointerEvent) {
-	if (drag.pointerId === null || e.pointerId !== drag.pointerId) return
-
-	const deltaX = e.clientX - drag.startX
-	const deltaY = e.clientY - drag.startY
-
-	if (!drag.axis) {
-		const belowThreshold =
-			Math.abs(deltaX) < DRAG_AXIS_THRESHOLD && Math.abs(deltaY) < DRAG_AXIS_THRESHOLD
-		if (belowThreshold) return
-
-		// On tranche l'intention du geste : drag horizontal (carrousel) seulement
-		// en mobile/tablette, sinon on laisse le scroll vertical natif faire le travail.
-		drag.axis = isMobileLayout.value && Math.abs(deltaX) > Math.abs(deltaY) ? "x" : "y"
-
-		// Dès que ce n'est plus un simple tap, on annule le press/hover.
-		onCardRelease(drag.index)
-		hoveredIndex.value = null
-
-		if (drag.axis === "x") {
-			;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
-		}
-	}
-
-	if (drag.axis !== "x") return
-
-	e.preventDefault()
-	const stepX = e.clientX - drag.lastX
-	drag.lastX = e.clientX
-	pushDragSample(e.clientX)
-
-	// 1px de scroll vertical == 1px de translation du track (cf. ScrollTrigger plus bas),
-	// donc on pilote le carrousel en scrollant la page verticalement via Lenis.
-	driveScroll(getScrollY() - stepX, { immediate: true })
-}
-
-function onCardPointerUp(e: PointerEvent, i: number) {
-	if (drag.pointerId === null || e.pointerId !== drag.pointerId) {
-		onCardRelease(i)
-		return
-	}
-
-	releaseDragCapture(e)
-	if (drag.axis === "x") applyDragInertia()
-
-	// Aucun axe verrouillé => c'était un vrai tap, on relâche l'anim de press normalement.
-	if (!drag.axis) onCardRelease(i)
-
-	resetDrag()
-}
-
-function onCardPointerCancel(e: PointerEvent, i: number) {
-	if (drag.pointerId === null || e.pointerId !== drag.pointerId) {
-		onCardRelease(i)
-		return
-	}
-
-	releaseDragCapture(e)
-	if (!drag.axis) onCardRelease(i)
-
-	resetDrag()
 }
 
 const corners = [
@@ -369,7 +199,7 @@ watch(activeIndex, (newVal, oldVal) => {
 	swapTextStack(nameRefs.value, oldVal, newVal, forward)
 })
 
-useGsapContext(({ gsap, ScrollTrigger }) => {
+useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	const sectionEl = sectionRef.value
 	const viewportEl = viewportRef.value
 	const trackEl = trackRef.value
@@ -528,6 +358,39 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		},
 	})
 
+	let cardDraggable: ReturnType<typeof Draggable.create>[number] | undefined
+
+	if (isMobileMediaQuery) {
+		const proxy = document.createElement("div")
+		let lastProxyX = 0
+
+		function relayToScroll(this: Draggable) {
+			const stepX = this.x - lastProxyX
+			lastProxyX = this.x
+			driveScroll(getScrollY() - stepX, { immediate: true })
+		}
+
+		const [instance] = Draggable.create(proxy, {
+			type: "x",
+			trigger: trackElement,
+			allowNativeTouchScrolling: true,
+			inertia: true,
+			throwResistance: 3000,
+			onPress() {
+				lastProxyX = this.x
+			},
+			onDragStart() {
+				lastProxyX = this.x
+				if (pressedIndex.value !== null) onCardRelease(pressedIndex.value)
+				hoveredIndex.value = null
+			},
+			onDrag: relayToScroll,
+			onThrowUpdate: relayToScroll,
+		})
+
+		cardDraggable = instance
+	}
+
 	ScrollTrigger.addEventListener("refreshInit", () => {
 		setTrackPadding()
 		computeSnapPoints()
@@ -538,6 +401,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		gsap.set(sectionEl, { clearProps: "height" })
 		tween.scrollTrigger?.kill()
 		tween.kill()
+		cardDraggable?.kill()
 	}
 }, sectionRef)
 </script>
@@ -698,10 +562,9 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 							class="shrink-0 cursor-pointer touch-pan-y rounded-3xl bg-black p-2"
 							@pointerenter="hoveredIndex = i"
 							@pointerleave="handleCardLeave(i)"
-							@pointerdown="onCardPointerDown($event, i)"
-							@pointermove="onCardPointerMove"
-							@pointerup="onCardPointerUp($event, i)"
-							@pointercancel="onCardPointerCancel($event, i)"
+							@pointerdown="onCardPress(i)"
+							@pointerup="onCardRelease(i)"
+							@pointercancel="onCardRelease(i)"
 						>
 							<div
 								class="bg-black-light aspect-16/10 w-[72vw] overflow-hidden rounded-2xl md:w-[38vw] lg:w-[32vw]"

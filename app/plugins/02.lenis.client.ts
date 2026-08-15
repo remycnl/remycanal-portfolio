@@ -2,11 +2,6 @@ import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Lenis from "lenis"
 
-/**
- * Se charge après 01.gsap.client.ts (ordre garanti par le préfixe
- * numérique) : ScrollTrigger doit déjà être enregistré avant qu'on
- * lui envoie des updates.
- */
 export default defineNuxtPlugin((nuxtApp) => {
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)"
@@ -18,36 +13,46 @@ export default defineNuxtPlugin((nuxtApp) => {
 		syncTouch: false,
 	})
 
-	// Chaque frame Lenis doit invalider les positions ScrollTrigger
 	lenis.on("scroll", ScrollTrigger.update)
 
-	// Lenis tourne sur le ticker de GSAP (pas son propre rAF) pour rester
-	// sur la même boucle que tes ScrollTrigger — évite le jitter d'1-2
-	// frames entre scroll et animations.
 	function update(time: number) {
-		lenis.raf(time * 1000) // gsap.ticker donne des secondes, Lenis attend des ms
+		lenis.raf(time * 1000)
 	}
 	gsap.ticker.add(update)
-	gsap.ticker.lagSmoothing(0)
 
-	// En dev, le HMR peut ré-exécuter ce plugin sans nettoyer l'ancienne
-	// instance -> scroll qui devient de plus en plus lourd à chaque save.
+	gsap.ticker.lagSmoothing(1000, 16)
+
+	let resizeTimeout: ReturnType<typeof setTimeout> | undefined
+	function handleResize() {
+		clearTimeout(resizeTimeout)
+		resizeTimeout = setTimeout(() => {
+			lenis.resize()
+			ScrollTrigger.refresh()
+		}, 150)
+	}
+	window.addEventListener("resize", handleResize)
+
+	function handleVisibilityChange() {
+		if (document.hidden) return
+		lenis.resize()
+		ScrollTrigger.refresh()
+	}
+	document.addEventListener("visibilitychange", handleVisibilityChange)
+
 	if (import.meta.hot) {
 		import.meta.hot.dispose(() => {
 			gsap.ticker.remove(update)
+			window.removeEventListener("resize", handleResize)
+			document.removeEventListener("visibilitychange", handleVisibilityChange)
+			clearTimeout(resizeTimeout)
 			lenis.destroy()
 		})
 	}
 
-	// Recalcule les positions ScrollTrigger une fois le contenu de la
-	// nouvelle page monté après chaque navigation.
 	nuxtApp.hook("page:finish", () => {
 		ScrollTrigger.refresh()
 	})
 
-	// Remonte en haut au changement de route (sauf si on cible une ancre
-	// #id sur la nouvelle page) — Vue Router ne s'en charge plus, voir
-	// app/router.options.ts.
 	const router = useRouter()
 	router.afterEach((to) => {
 		if (to.hash) return
