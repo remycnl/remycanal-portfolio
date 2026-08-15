@@ -409,7 +409,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 <template>
 	<div class="section-p-y relative bg-white">
 		<section ref="sectionRef" class="relative w-full">
-			<div ref="viewportRef" class="section-p-xy sticky top-0 h-screen w-full">
+			<div ref="viewportRef" class="section-p-xy sticky top-0 h-svh w-full lg:h-screen">
 				<div
 					class="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-px -translate-x-1/2 bg-[repeating-linear-gradient(to_bottom,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500"
 					:style="{
@@ -421,13 +421,13 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 
 				<div class="pointer-events-none absolute inset-0 z-0 overflow-hidden">
 					<div
-						class="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-[repeating-linear-gradient(to_right,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500"
+						class="absolute right-0 left-0 h-px -translate-y-1/2 bg-[repeating-linear-gradient(to_right,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500 max-lg:top-[calc(50%+3rem)] lg:top-1/2"
 						:class="isActiveHovered ? 'opacity-100' : 'opacity-50'"
 					/>
 				</div>
 
 				<div
-					class="pointer-events-none absolute top-1/2 left-1/2 z-6 -translate-x-1/2 -translate-y-1/2"
+					class="pointer-events-none absolute left-1/2 z-6 -translate-x-1/2 -translate-y-1/2 max-lg:top-[calc(50%+3rem)] lg:top-1/2"
 				>
 					<div class="relative w-[70vw] rounded-3xl p-2 md:w-[38vw] lg:w-[32vw]">
 						<div class="aspect-16/10 w-full rounded-2xl" />
@@ -461,7 +461,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 
 				<!-- Bouton, en bas à droite -->
 				<div
-					class="lg:right-edge lg:bottom-edge absolute right-1/2 bottom-30 z-20 translate-x-1/2 lg:translate-x-0"
+					class="lg:right-edge lg:bottom-edge absolute right-1/2 z-20 translate-x-1/2 bottom-25 md:bottom-50 lg:translate-x-0"
 				>
 					<UiAnimatedButton
 						label="All projects"
@@ -476,7 +476,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					Année
 				-->
 				<div
-					class="lg:left-edge absolute bottom-[calc(50%+21.875vw+4.2rem)] left-0 z-10 w-[70vw] md:bottom-[calc(50%+21.875vw-0.5rem)] lg:top-1/2 lg:bottom-auto lg:w-auto lg:-translate-y-1/2"
+					class="lg:left-edge absolute bottom-[calc(50%+21.875vw+1.2rem)] left-0 z-10 w-[70vw] md:bottom-[calc(50%+21.875vw-3.5rem)] lg:top-1/2 lg:bottom-auto lg:w-auto lg:-translate-y-1/2"
 				>
 					<div
 						class="inline-flex items-center rounded-full px-4 py-2 transition-colors duration-300"
@@ -504,7 +504,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					Titre du projet
 				-->
 				<div
-					class="lg:right-edge absolute bottom-[calc(50%+21.875vw+3rem)] left-0 z-10 w-[70vw] md:bottom-[calc(50%+21.875vw-1.7rem)] lg:top-1/2 lg:bottom-auto lg:left-auto lg:w-auto lg:-translate-y-1/2"
+					class="lg:right-edge absolute bottom-[calc(50%+21.875vw)] left-0 z-10 w-[70vw] md:bottom-[calc(50%+21.875vw-4.7rem)] lg:top-1/2 lg:bottom-auto lg:left-auto lg:w-auto lg:-translate-y-1/2"
 				>
 					<div
 						class="inline-flex items-center justify-start rounded-full px-4 py-2 transition-colors duration-300 lg:justify-end"
@@ -549,7 +549,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 				>
 					<div
 						ref="trackRef"
-						class="flex flex-row items-center gap-10 will-change-transform lg:flex-col lg:gap-14"
+						class="flex flex-row items-center gap-10 will-change-transform max-lg:translate-y-12 lg:flex-col lg:gap-14"
 					>
 						<div
 							v-for="(p, i) in projects"
