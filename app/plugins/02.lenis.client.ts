@@ -22,8 +22,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 	gsap.ticker.lagSmoothing(1000, 16)
 
+	let lastWidth = window.innerWidth
 	let resizeTimeout: ReturnType<typeof setTimeout> | undefined
 	function handleResize() {
+		const width = window.innerWidth
+		if (width === lastWidth) return
+		lastWidth = width
+
 		clearTimeout(resizeTimeout)
 		resizeTimeout = setTimeout(() => {
 			lenis.resize()
