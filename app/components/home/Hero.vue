@@ -4,14 +4,14 @@ const heroRef = useTemplateRef<HTMLElement>("heroRef")
 useStackSection(heroRef, {
 	scaleTo: 0.72,
 	rotateTo: -4,
-	roundedClass: "rounded-3xl",
+	roundedClass: "rounded-t-3xl",
 })
 </script>
 
 <template>
 	<section
 		ref="heroRef"
-		class="section-p-x pb-section bg-grid-white relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white text-black shadow-xl"
+		class="section-p-x pb-section bg-grid-white relative flex h-svh lg:h-screen w-full flex-col items-center justify-center overflow-hidden bg-white text-black shadow-xl"
 	>
 		<UiGridBeams theme="white" />
 		<div
