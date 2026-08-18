@@ -98,7 +98,7 @@ export function useStackSection(
 			}
 
 			function syncLayout() {
-				const naturalHeight = el!.getBoundingClientRect().height
+				const naturalHeight = el!.offsetHeight
 				wrapper.style.height = `${naturalHeight + distancePx}px`
 				if (nextSection) nextSection.style.marginTop = `-${distancePx}px`
 			}

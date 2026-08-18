@@ -414,7 +414,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					class="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-px -translate-x-1/2 bg-[repeating-linear-gradient(to_bottom,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500"
 					:style="{
 						top: 'calc(var(--spacing-section) * -1)',
-						bottom: 'calc(var(--spacing-section) * -1)',
+						bottom: 'calc(var(--spacing-section) * -2)',
 					}"
 					:class="isActiveHovered ? 'opacity-100' : 'opacity-50'"
 				/>
@@ -453,7 +453,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 				<!-- Header : titre seul en haut -->
 				<div class="inset-x-edge top-section absolute z-20 pt-15 lg:pt-6">
 					<h2
-						class="font-lineal font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
+						class="font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
 					>
 						Featured projects
 					</h2>

@@ -30,7 +30,7 @@
 					:rotate="15"
 					grayscale
 					draggable
-					img-class="absolute -top-7 -right-7 w-auto 2xl:-right-30 h-30 lg:h-55"
+					img-class="absolute -top-7 -right-4 w-auto 2xl:-right-30 h-25 md:h-30 lg:h-43 2xl:h-50"
 				/>
 				<UiPopImage
 					src="/stickers/sticker-computer.png"
@@ -39,12 +39,12 @@
 					:delay="0.12"
 					grayscale
 					draggable
-					img-class="absolute -bottom-2 md:-bottom-10 -left-2 w-auto 2xl:-left-40 h-25 md:h-30 lg:h-55"
+					img-class="absolute -bottom-2 md:-bottom-10 -left-2 w-auto 2xl:-left-40 h-20 md:h-25 lg:h-40 2xl:h-50"
 				/>
 			</div>
 			<div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
 				<UiAnimatedButton
-					label="Know more about me"
+					label="Rémy who?"
 					to="/about"
 					pill="violet"
 					bubble="violet"

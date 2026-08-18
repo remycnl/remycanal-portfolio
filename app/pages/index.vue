@@ -41,7 +41,8 @@ useHead({
 <template>
 	<div class="bg-lime">
 		<HomeHero />
-		<HomeIntro />
-		<HomeFeaturedProjects />
+		<HomeAbout />
 	</div>
+		<HomeFeaturedProjects />
+		<HomeResume />
 </template>
