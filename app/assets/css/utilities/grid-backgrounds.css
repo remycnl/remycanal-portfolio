@@ -10,8 +10,16 @@
 		pointer-events: none;
 		background-size: 48px 48px;
 		background-image:
-			linear-gradient(to right, var(--color-gray-light) 1px, transparent 1px),
-			linear-gradient(to bottom, var(--color-gray-light) 1px, transparent 1px);
+			linear-gradient(
+				to right,
+				color-mix(in srgb, var(--color-black) 10%, transparent) 1px,
+				transparent 1px
+			),
+			linear-gradient(
+				to bottom,
+				color-mix(in srgb, var(--color-black) 10%, transparent) 1px,
+				transparent 1px
+			);
 		mask-image: radial-gradient(
 			ellipse at center,
 			black 0%,

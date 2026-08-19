@@ -3,96 +3,89 @@
 /**
  * Compagnon félin animé, en singleton partagé par toute l'application.
  *
- * Capacités :
- * - course + arrêts aléatoires dans une "zone" (une section enregistrée), dans les deux sens
- * - petit bond en avant de temps en temps pendant ses trajets (variation naturelle)
- * - saut d'une zone à une autre avec une trajectoire en arc basse, depuis sa position actuelle,
- *   sans jamais changer de sens pendant le trajet
- * - déclenchement du saut inter-zones au scroll, quand la zone courante remonte trop haut à l'écran
- * - chaque zone peut avoir son propre sprite (couleur) : le chat change de skin en y atterrissant
- * - miaulement (bulle "Meow!") au survol, une seule fois par entrée de souris, jamais empilé
- * - grognement (bulle "Grrr!") au clic, une seule fois par clic, jamais empilé, et qui se
- *   referme tout seul après un court délai (pas de "sortie" à écouter comme pour le survol)
- * - les deux bulles sont décalées horizontalement (miaulement à gauche, grognement à
- *   droite) pour ne jamais se superposer si elles apparaissent en même temps
- *
- * Spritesheet attendue : 19 frames, une seule ligne, dans cet ordre :
+ * Spritesheet attendue : 19 frames, une seule ligne :
  *   [0..5]   idle    (6 frames)
  *   [6..9]   run A   (4 frames)
  *   [10..11] jump    (2 frames)
  *   [12..18] run B   (7 frames)
  *
- * La course est un cycle logique unique de 11 frames, reconstitué à partir
- * de run A + run B (elles sont juste séparées par le saut sur la planche).
- *
+ * La course est un cycle logique de 11 frames reconstitué à partir de run A + run B.
  * Toutes les variantes de couleur (cat-violet.png, cat-lime.png, ...) doivent
- * partager exactement le même découpage (19 frames, même ordre).
+ * partager exactement le même découpage.
  */
 
 export interface UseSpriteOptions {
-	/** Chemin vers la sprite sheet par défaut (19 frames sur une ligne) */
 	spriteSrc: string
-
-	/** Nombre total de frames sur la planche */
 	totalFrames?: number
-
-	/** Dimensions d'une frame si connues (sinon déduites de totalFrames) */
 	frameWidth?: number
 	frameHeight?: number
+	displayHeight?: number | Ref<number>
 
-	/** Hauteur d'affichage du chat */
-	displayHeight?: number
-
-	/** FPS des animations idle et course (le saut n'a que 2 images, pas de FPS à régler) */
 	runFps?: number
 	idleFps?: number
 
-	/** Vitesse de déplacement en px/s (course locale + sauts inter-zones) */
 	speed?: number
-
-	/** Pause entre deux trajets locaux, en ms */
 	pauseMin?: number
 	pauseMax?: number
-
-	/** % min/max de la largeur de la zone parcourue par trajet local */
 	legMin?: number
 	legMax?: number
-
-	/** Probabilité (0-1) d'un petit bond en avant avant un trajet local */
 	hopChance?: number
 
-	/** Hauteur (px) de l'arc lors d'un saut entre deux zones */
 	jumpArcHeight?: number
-
-	/** Distance (px) sous laquelle une zone est considérée "haute dans l'écran" */
-	scrollTriggerOffset?: number
-
-	/** Durée d'affichage (ms) de la bulle de grognement au clic, avant fermeture auto */
+	scrollTriggerRatio?: number
 	growlDuration?: number
-
-	/**
-	 * Décalage horizontal (px) entre les deux bulles, pour qu'elles ne se
-	 * superposent jamais si elles apparaissent en même temps : le miaulement
-	 * part vers la gauche, le grognement vers la droite.
-	 */
 	bubbleOffset?: number
+
+	textColorClass?: string | Ref<string>
+
+	/** Balade autonome, indépendante du scroll : toutes directions possibles. Désactivé par défaut. */
+	autoWander?: boolean | Ref<boolean>
+	autoWanderMinDelay?: number
+	autoWanderMaxDelay?: number
+	autoWanderChance?: number
+	/** Facteur sur la distance du plus proche voisin non-bloqué pour définir le pool de tirage. Défaut 1.6. */
+	autoWanderNeighborFactor?: number
+	autoWanderMaxCandidates?: number
 }
 
 export interface RegisterZoneOptions {
-	/** Sprite (couleur) à utiliser quand le chat est dans cette zone. Défaut : le sprite de base. */
 	spriteSrc?: string
-	/** Ordre explicite si tu ne veux pas te fier à l'ordre d'enregistrement. */
 	order?: number
+	textColorClass?: string
+	minWidth?: number
+	maxWidth?: number
+	isInitial?: boolean
 }
 
 export interface CatZoneHandle {
 	unregister: () => void
 }
 
-interface Zone {
-	el: HTMLElement
+interface ZoneProfile {
 	order: number
 	spriteSrc?: string
+	textColorClass?: string
+	minWidth?: number
+	maxWidth?: number
+	isInitial?: boolean
+}
+
+interface Zone {
+	el: HTMLElement
+	profiles: ZoneProfile[]
+}
+
+export interface ResponsiveZoneEntry {
+	zone: Ref<HTMLElement | null>
+	textColorClass?: string
+	spriteSrc?: string
+}
+
+export interface ResponsiveZoneGroup {
+	minWidth?: number
+	maxWidth?: number
+	initial?: Ref<HTMLElement | null>
+	zones: ResponsiveZoneEntry[]
 }
 
 function range(start: number, count: number) {
@@ -105,17 +98,8 @@ function rand(min: number, max: number) {
 
 let instance: ReturnType<typeof createSprite> | null = null
 
-/**
- * Initialise (une seule fois) puis retourne l'instance unique du chat.
- * Tout composant qui l'appelle partage le même chat.
- * La première section qui l'enregistre (registerZone) devient sa zone de départ.
- *
- * Pour enregistrer une zone, préfère le helper `useCatZone()` ci-dessous :
- * il gère le cycle de vie (montage/démontage) tout seul.
- */
 export function useSprite(options: UseSpriteOptions) {
 	if (import.meta.server) {
-		// Rien à faire côté serveur : API no-op pour ne pas casser le SSR.
 		return {
 			registerZone: (): CatZoneHandle => ({ unregister() {} }),
 		}
@@ -126,33 +110,74 @@ export function useSprite(options: UseSpriteOptions) {
 	return instance
 }
 
-/**
- * Sucre syntaxique : enregistre automatiquement une zone au montage du
- * composant et la désenregistre au démontage. À utiliser avec un ref de
- * template (idéalement `useTemplateRef`).
- *
- * `useSprite(options)` doit avoir été appelé au moins une fois avant
- * (typiquement dans le même composant, juste au-dessus).
- */
 export function useCatZone(
 	elRef: Ref<HTMLElement | null>,
+	zoneOptions?: RegisterZoneOptions
+): void
+export function useCatZone(groups: Record<string, ResponsiveZoneGroup>): void
+export function useCatZone(
+	arg1: Ref<HTMLElement | null> | Record<string, ResponsiveZoneGroup>,
 	zoneOptions: RegisterZoneOptions = {}
 ) {
 	if (import.meta.server) return
 
-	let handle: CatZoneHandle | null = null
+	if (isRef(arg1)) {
+		const elRef = arg1
+		let handle: CatZoneHandle | null = null
+
+		onMounted(() => {
+			if (!instance) {
+				console.warn("[useCatZone] useSprite(options) doit être appelé avant useCatZone().")
+				return
+			}
+			if (elRef.value) handle = instance.registerZone(elRef.value, zoneOptions)
+		})
+
+		onUnmounted(() => {
+			handle?.unregister()
+			handle = null
+		})
+		return
+	}
+
+	const groups = arg1
+	const handles: CatZoneHandle[] = []
 
 	onMounted(() => {
 		if (!instance) {
 			console.warn("[useCatZone] useSprite(options) doit être appelé avant useCatZone().")
 			return
 		}
-		if (elRef.value) handle = instance.registerZone(elRef.value, zoneOptions)
+
+		let orderCursor = 0
+
+		for (const group of Object.values(groups)) {
+			const groupOrderStart = orderCursor
+
+			group.zones.forEach((entry, index) => {
+				const el = entry.zone.value
+				if (!el) return
+
+				const isInitial = group.initial ? group.initial.value === el : index === 0
+
+				const handle = instance!.registerZone(el, {
+					order: groupOrderStart + index,
+					textColorClass: entry.textColorClass,
+					spriteSrc: entry.spriteSrc,
+					minWidth: group.minWidth,
+					maxWidth: group.maxWidth,
+					isInitial,
+				})
+				handles.push(handle)
+			})
+
+			orderCursor += group.zones.length
+		}
 	})
 
 	onUnmounted(() => {
-		handle?.unregister()
-		handle = null
+		for (const handle of handles) handle.unregister()
+		handles.length = 0
 	})
 }
 
@@ -174,21 +199,33 @@ function createSprite(options: UseSpriteOptions) {
 		hopChance = 0.25,
 
 		jumpArcHeight = 40,
-		scrollTriggerOffset = 90,
+		scrollTriggerRatio = 0.15,
 		growlDuration = 900,
 		bubbleOffset = 25,
-	} = options
+		textColorClass = "text-white",
 
-	// --------------------------------------------------
-	// Groupes de frames (identiques pour tous les skins)
-	// --------------------------------------------------
+		autoWander = false,
+		autoWanderMinDelay = 3500,
+		autoWanderMaxDelay = 9000,
+		autoWanderChance = 0.55,
+		autoWanderNeighborFactor = 1.6,
+		autoWanderMaxCandidates = 5,
+	} = options
 
 	const idleFrames = range(0, 6)
 	const runFrames = [...range(6, 4), ...range(12, 7)]
 	const jumpFrames = range(10, 2)
 
+	function resolveDisplayHeight() {
+		return isRef(displayHeight) ? displayHeight.value : displayHeight
+	}
+
+	function wanderEnabled() {
+		return isRef(autoWander) ? autoWander.value : autoWander
+	}
+
 	// --------------------------------------------------
-	// DOM (créé une seule fois, injecté dans <body>)
+	// DOM
 	// --------------------------------------------------
 
 	const canvas = document.createElement("canvas")
@@ -205,8 +242,7 @@ function createSprite(options: UseSpriteOptions) {
 
 	const meow = document.createElement("div")
 	meow.textContent = "Meow!"
-	meow.className =
-		"font-vg5000 text-white pointer-events-none select-none whitespace-nowrap text-sm"
+	meow.className = "font-vg5000 pointer-events-none select-none whitespace-nowrap text-sm"
 	Object.assign(meow.style, {
 		position: "absolute",
 		top: "0",
@@ -216,11 +252,9 @@ function createSprite(options: UseSpriteOptions) {
 		willChange: "transform, opacity",
 	})
 
-	// Bulle de grognement, déclenchée au clic (même look que la bulle de miaulement).
 	const growl = document.createElement("div")
 	growl.textContent = "Grrr!"
-	growl.className =
-		"font-vg5000 text-white pointer-events-none select-none whitespace-nowrap text-sm"
+	growl.className = "font-vg5000 pointer-events-none select-none whitespace-nowrap text-sm"
 	Object.assign(growl.style, {
 		position: "absolute",
 		top: "0",
@@ -230,6 +264,70 @@ function createSprite(options: UseSpriteOptions) {
 		willChange: "transform, opacity",
 	})
 
+	function applyTextColorClass(next: string, previous?: string) {
+		if (previous === next) return
+		if (previous) {
+			for (const cls of previous.split(" ").filter(Boolean)) {
+				meow.classList.remove(cls)
+				growl.classList.remove(cls)
+			}
+		}
+		for (const cls of next.split(" ").filter(Boolean)) {
+			meow.classList.add(cls)
+			growl.classList.add(cls)
+		}
+	}
+
+	let appliedTextColorClass: string | undefined
+
+	function resolveDefaultTextColor() {
+		return isRef(textColorClass) ? textColorClass.value : textColorClass
+	}
+
+	function activeProfile(zone: Zone): ZoneProfile | undefined {
+		const w = window.innerWidth
+		return zone.profiles.find(
+			(p) => (p.minWidth === undefined || w >= p.minWidth) && (p.maxWidth === undefined || w <= p.maxWidth)
+		)
+	}
+
+	function isZoneActive(zone: Zone) {
+		return activeProfile(zone) !== undefined
+	}
+
+	function zoneOrder(zone: Zone) {
+		return activeProfile(zone)?.order ?? Number.POSITIVE_INFINITY
+	}
+
+	function pickActiveInitialZone(): Zone | null {
+		const active = [...zones.values()].filter(isZoneActive)
+		if (active.length === 0) return null
+		const preferred = active.find((z) => activeProfile(z)?.isInitial)
+		if (preferred) return preferred
+		return active.sort((a, b) => zoneOrder(a) - zoneOrder(b))[0]!
+	}
+
+	function updateBubbleTextColor(zone: Zone | null) {
+		const next = (zone ? activeProfile(zone)?.textColorClass : undefined) ?? resolveDefaultTextColor()
+		applyTextColorClass(next, appliedTextColorClass)
+		appliedTextColorClass = next
+	}
+
+	updateBubbleTextColor(null)
+
+	if (isRef(textColorClass)) {
+		watch(textColorClass, () => {
+			if (!currentZone || !activeProfile(currentZone)?.textColorClass) updateBubbleTextColor(currentZone)
+		})
+	}
+
+	if (isRef(autoWander)) {
+		watch(autoWander, (enabled) => {
+			if (enabled) scheduleWander()
+			else clearWanderTimer()
+		})
+	}
+
 	const ctx = canvas.getContext("2d")
 
 	document.body.appendChild(canvas)
@@ -237,7 +335,7 @@ function createSprite(options: UseSpriteOptions) {
 	document.body.appendChild(growl)
 
 	// --------------------------------------------------
-	// Sprites (cache par URL, pour changer de couleur sans tout recharger)
+	// Sprites
 	// --------------------------------------------------
 
 	const spriteCache = new Map<string, HTMLImageElement>()
@@ -260,14 +358,12 @@ function createSprite(options: UseSpriteOptions) {
 		})
 	}
 
-	/** Bascule le skin actif si besoin. Ignore silencieusement les échecs de chargement. */
 	function applySpriteFor(zone: Zone) {
-		const src = zone.spriteSrc ?? options.spriteSrc
+		const src = activeProfile(zone)?.spriteSrc ?? options.spriteSrc
 		if (src === activeSpriteSrc) return
 
 		loadSprite(src)
 			.then((img) => {
-				// La zone a pu changer pendant le chargement : on jette le résultat obsolète.
 				if (currentZone !== zone) return
 
 				activeImage = img
@@ -290,7 +386,7 @@ function createSprite(options: UseSpriteOptions) {
 	let frameW = 0
 	let frameH = 0
 	let displayW = 0
-	const displayH = displayHeight
+	let displayH = resolveDisplayHeight()
 
 	const state = {
 		mode: "idle" as "idle" | "run" | "jump",
@@ -303,29 +399,40 @@ function createSprite(options: UseSpriteOptions) {
 	let isHopping = false
 	let direction: 1 | -1 = 1
 
+	let activeJumpTarget: Zone | null = null
+	let activeJumpForward: boolean | null = null
+
+	let scrollVelocity = 0
+	let lastScrollTime = 0
+
 	let currentZone: Zone | null = null
-	let pendingInitialZone: Zone | null = null
 
 	const zones = new Map<HTMLElement, Zone>()
 	let zoneOrderCounter = 0
 
 	let currentTween: gsap.core.Tween | gsap.core.Timeline | undefined
 	let pauseTimeout: ReturnType<typeof setTimeout> | undefined
+	let wanderTimeout: ReturnType<typeof setTimeout> | undefined
 
 	let meowVisible = false
 	let growlVisible = false
 	let growlHideTimeout: ReturnType<typeof setTimeout> | undefined
+
+	if (isRef(displayHeight)) {
+		watch(displayHeight, (next) => {
+			displayH = next
+			setupCanvas()
+			if (!isJumping) updateTravelArea()
+			draw()
+		})
+	}
 
 	// --------------------------------------------------
 	// Dessin
 	// --------------------------------------------------
 
 	function currentFrames() {
-		return state.mode === "idle"
-			? idleFrames
-			: state.mode === "jump"
-				? jumpFrames
-				: runFrames
+		return state.mode === "idle" ? idleFrames : state.mode === "jump" ? jumpFrames : runFrames
 	}
 
 	function draw() {
@@ -338,8 +445,6 @@ function createSprite(options: UseSpriteOptions) {
 		ctx.clearRect(0, 0, displayW, displayH)
 		ctx.save()
 
-		// Le sprite source regarde vers la droite par défaut :
-		// on ne flip que lorsqu'il se déplace vers la gauche.
 		if (state.facing === -1) {
 			ctx.translate(displayW, 0)
 			ctx.scale(-1, 1)
@@ -350,9 +455,6 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	function tick(_time: number, deltaMs: number) {
-		// Pendant un saut, la frame est pilotée directement par la timeline
-		// GSAP (montée = image 1, sommet = bascule, descente = image 2) :
-		// aucun calcul de minuteur à faire ici, on sort tout de suite.
 		if (state.mode === "jump") return
 
 		const frames = currentFrames()
@@ -378,10 +480,6 @@ function createSprite(options: UseSpriteOptions) {
 		draw()
 	}
 
-	// --------------------------------------------------
-	// Setup canvas (dimensions + DPR)
-	// --------------------------------------------------
-
 	function setupCanvas() {
 		if (!ctx || !frameW || !frameH) return
 
@@ -399,7 +497,7 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	// --------------------------------------------------
-	// Géométrie d'une zone, en coordonnées absolues (page)
+	// Géométrie
 	// --------------------------------------------------
 
 	function zoneBounds(zone: Zone) {
@@ -410,6 +508,72 @@ function createSprite(options: UseSpriteOptions) {
 		return { left, top, maxX }
 	}
 
+	/** Rect complet d'une zone en coordonnées page, pour les tests d'alignement/blocage. */
+	function zoneRect(zone: Zone) {
+		const rect = zone.el.getBoundingClientRect()
+		const left = rect.left + window.scrollX
+		const top = rect.top + window.scrollY
+		return {
+			left,
+			top,
+			right: left + rect.width,
+			bottom: top + rect.height,
+			centerX: left + rect.width / 2,
+			centerY: top + rect.height / 2,
+		}
+	}
+
+	/** Deux zones sont "en colonne" si leurs rects se chevauchent horizontalement. */
+	function isColumnAligned(a: Zone, b: Zone) {
+		const ra = zoneRect(a)
+		const rb = zoneRect(b)
+		return ra.right > rb.left && ra.left < rb.right
+	}
+
+	/**
+	 * Une zone `other` bloque le trajet de `from` vers `to` si son centre
+	 * tombe dans l'enveloppe rectangulaire des deux zones (union de leurs
+	 * rects). Empêche de sauter par-dessus une case pour en atteindre une
+	 * plus loin, aussi bien en vertical qu'en horizontal ou en diagonale.
+	 */
+	function isPathBlocked(from: Zone, to: Zone) {
+		const a = zoneRect(from)
+		const b = zoneRect(to)
+		const left = Math.min(a.left, b.left)
+		const right = Math.max(a.right, b.right)
+		const top = Math.min(a.top, b.top)
+		const bottom = Math.max(a.bottom, b.bottom)
+		const margin = 4
+
+		for (const other of zones.values()) {
+			if (other === from || other === to) continue
+			if (!isZoneActive(other)) continue
+
+			const r = zoneRect(other)
+			if (
+				r.centerX > left + margin &&
+				r.centerX < right - margin &&
+				r.centerY > top + margin &&
+				r.centerY < bottom - margin
+			) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	function isZoneFullyVisible(zone: Zone) {
+		const rect = zone.el.getBoundingClientRect()
+		if (rect.width === 0 || rect.height === 0) return false
+		return (
+			rect.top >= 0 &&
+			rect.left >= 0 &&
+			rect.bottom <= window.innerHeight &&
+			rect.right <= window.innerWidth
+		)
+	}
+
 	function getX() {
 		return Number(gsap.getProperty(canvas, "x")) || 0
 	}
@@ -418,7 +582,10 @@ function createSprite(options: UseSpriteOptions) {
 		return Number(gsap.getProperty(canvas, "y")) || 0
 	}
 
-	/** Recale le chat dans les bornes de sa zone actuelle (resize, contenu qui bouge, etc.) */
+	function getCatViewportY() {
+		return getY() - window.scrollY
+	}
+
 	function updateTravelArea() {
 		if (!currentZone || isJumping) return
 		const bounds = zoneBounds(currentZone)
@@ -426,10 +593,65 @@ function createSprite(options: UseSpriteOptions) {
 		gsap.set(canvas, { x, y: bounds.top })
 	}
 
-	/** Place le chat dans une zone (déclenche aussi le changement de skin si besoin). */
 	function activateZone(zone: Zone) {
 		currentZone = zone
 		applySpriteFor(zone)
+		updateBubbleTextColor(zone)
+	}
+
+	function placeInZone(zone: Zone) {
+		clearTimeout(pauseTimeout)
+		clearWanderTimer()
+		clearTimeout(growlHideTimeout)
+		currentTween?.kill()
+		isJumping = false
+		isHopping = false
+		meowVisible = false
+		growlVisible = false
+		gsap.killTweensOf(meow)
+		gsap.killTweensOf(growl)
+		gsap.set(meow, { opacity: 0 })
+		gsap.set(growl, { opacity: 0 })
+
+		activateZone(zone)
+		const bounds = zoneBounds(zone)
+		gsap.set(canvas, {
+			x: bounds.left + (bounds.maxX - bounds.left) / 2,
+			y: bounds.top,
+		})
+		setMode("idle")
+		draw()
+
+		lastScrollY = window.scrollY
+		lastScrollTime = performance.now()
+		scrollVelocity = 0
+		pauseTimeout = setTimeout(scheduleNextLeg, rand(pauseMin, pauseMax))
+		scheduleWander()
+	}
+
+	function resync() {
+		lastScrollY = window.scrollY
+		lastScrollTime = performance.now()
+		scrollVelocity = 0
+
+		if (isJumping || isHopping) return
+
+		if (currentZone && !isZoneActive(currentZone)) {
+			const next = pickActiveInitialZone()
+			if (next) {
+				placeInZone(next)
+				return
+			}
+		}
+
+		if (currentZone && zones.has(currentZone.el)) {
+			updateTravelArea()
+			return
+		}
+
+		const fallback =
+			pickActiveInitialZone() ?? [...zones.values()].sort((a, b) => zoneOrder(a) - zoneOrder(b))[0]
+		if (fallback) placeInZone(fallback)
 	}
 
 	// --------------------------------------------------
@@ -450,7 +672,6 @@ function createSprite(options: UseSpriteOptions) {
 
 		const distance = travelWidth * rand(legMin, legMax)
 
-		// Change parfois de direction avant d'arriver au bord (moins robotique).
 		if (Math.random() < 0.2) direction = direction === 1 ? -1 : 1
 
 		let target = from + direction * distance
@@ -470,8 +691,6 @@ function createSprite(options: UseSpriteOptions) {
 
 		const runToTarget = () => {
 			setMode("run")
-			// On repart toujours de la position réelle actuelle : si un bond a déjà
-			// couvert une partie du trajet, seule la distance restante est courue.
 			const remaining = Math.abs(target - getX())
 			currentTween = gsap.to(canvas, {
 				x: target,
@@ -485,8 +704,6 @@ function createSprite(options: UseSpriteOptions) {
 			})
 		}
 
-		// Petit bond avant de repartir en course : il avance en sautant (jamais
-		// figé sur place), toujours dans la même direction que le trajet.
 		if (!isHopping && Math.random() < hopChance) {
 			isHopping = true
 			setMode("jump")
@@ -503,14 +720,11 @@ function createSprite(options: UseSpriteOptions) {
 						runToTarget()
 					},
 				})
-				// Montée : première image du saut (posée par setMode ci-dessus).
 				.to(canvas, { x: hopMidX, y: hopPeakY, duration: 0.16, ease: "power1.out" })
-				// Sommet atteint : on bascule sur la deuxième image, une seule fois.
 				.call(() => {
 					state.frame = 1
 					draw()
 				})
-				// Descente : deuxième image jusqu'à l'atterrissage.
 				.to(canvas, { x: hopTarget, y: bounds.top, duration: 0.2, ease: "power1.in" })
 		} else {
 			runToTarget()
@@ -521,60 +735,168 @@ function createSprite(options: UseSpriteOptions) {
 	// Saut d'une zone à une autre (arc bas, sens figé)
 	// --------------------------------------------------
 
-	function jumpToZone(target: Zone) {
-		if (!imageLoaded || isJumping || target === currentZone) return
+	/**
+	 * Montée et descente sont chronométrées indépendamment à vitesse
+	 * effective constante, avec un ease plus marqué du côté de la phase la
+	 * plus courte, pour rester naturel même quand les deux zones ne sont
+	 * pas à la même hauteur.
+	 */
+	function jumpToZone(target: Zone, landingX?: number) {
+		if (!imageLoaded || target === currentZone) return
 
 		isJumping = true
 		clearTimeout(pauseTimeout)
+		clearWanderTimer()
 		currentTween?.kill()
 
 		const bounds = zoneBounds(target)
-		const landingX = gsap.utils.clamp(
+		const resolvedLandingX = gsap.utils.clamp(
 			bounds.left,
 			bounds.maxX,
-			bounds.left + rand(0.25, 0.75) * (bounds.maxX - bounds.left)
+			landingX ?? bounds.left + rand(0.25, 0.75) * (bounds.maxX - bounds.left)
 		)
 
 		const startX = getX()
 		const startY = getY()
-		const deltaX = landingX - startX
+		const deltaX = resolvedLandingX - startX
+		const straightDist = Math.hypot(deltaX, bounds.top - startY)
 
-		// Le sens est figé UNE fois, avant le début du saut, et ne bouge plus
-		// jusqu'à l'atterrissage. En dessous d'un petit seuil (saut quasi vertical),
-		// on garde le sens déjà affiché pour éviter un flip inutile.
 		if (Math.abs(deltaX) > 4) state.facing = deltaX > 0 ? 1 : -1
 		setMode("jump")
 
-		const midX = (startX + landingX) / 2
-		// Arc volontairement bas : une trajectoire de saut de chat, pas un envol.
-		const midY = Math.min(startY, bounds.top) - jumpArcHeight
+		activeJumpTarget = target
+		activeJumpForward = zoneOrder(target) > (currentZone ? zoneOrder(currentZone) : Number.NEGATIVE_INFINITY)
 
-		const dist = Math.hypot(deltaX, bounds.top - startY)
-		const duration = gsap.utils.clamp(0.5, 1.3, dist / (speed * 2))
+		const velocityBoost = gsap.utils.clamp(1, 3.2, 1 + scrollVelocity / 2200)
+		const effectiveSpeed = speed * velocityBoost
+
+		const arcHeight = gsap.utils.clamp(16, jumpArcHeight, straightDist * 0.22)
+		const midX = (startX + resolvedLandingX) / 2
+		const midY = Math.min(startY, bounds.top) - arcHeight
+
+		const riseDist = Math.hypot(midX - startX, midY - startY)
+		const fallDist = Math.hypot(resolvedLandingX - midX, bounds.top - midY)
+
+		const riseDuration = gsap.utils.clamp(0.08, 0.55, riseDist / effectiveSpeed)
+		const fallDuration = gsap.utils.clamp(0.08, 0.55, fallDist / effectiveSpeed)
+
+		const riseIsShorter = riseDist <= fallDist
+		const riseEase = riseIsShorter ? "power3.out" : "power1.out"
+		const fallEase = riseIsShorter ? "power1.in" : "power3.in"
 
 		currentTween = gsap
 			.timeline({
 				onComplete() {
 					isJumping = false
+					activeJumpTarget = null
+					activeJumpForward = null
 					activateZone(target)
 					setMode("idle")
 					pauseTimeout = setTimeout(scheduleNextLeg, rand(pauseMin, pauseMax))
+					scheduleWander()
 				},
 			})
-			// Montée : première image du saut (posée par setMode ci-dessus).
-			.to(canvas, { x: midX, y: midY, duration: duration / 2, ease: "power1.out" })
-			// Sommet atteint : on bascule sur la deuxième image, une seule fois.
+			.to(canvas, { x: midX, y: midY, duration: riseDuration, ease: riseEase })
 			.call(() => {
 				state.frame = 1
 				draw()
 			})
-			// Descente : deuxième image jusqu'à l'atterrissage.
-			.to(canvas, {
-				x: landingX,
-				y: bounds.top,
-				duration: duration / 2,
-				ease: "power1.in",
-			})
+			.to(canvas, { x: resolvedLandingX, y: bounds.top, duration: fallDuration, ease: fallEase })
+	}
+
+	// --------------------------------------------------
+	// Balade autonome (indépendante du scroll, toutes directions)
+	// --------------------------------------------------
+
+	function clearWanderTimer() {
+		clearTimeout(wanderTimeout)
+		wanderTimeout = undefined
+	}
+
+	function scheduleWander() {
+		clearWanderTimer()
+		if (!wanderEnabled()) return
+		wanderTimeout = setTimeout(attemptWander, rand(autoWanderMinDelay, autoWanderMaxDelay))
+	}
+
+	function closestLandingPoint(zone: Zone, fromX: number, fromY: number) {
+		const bounds = zoneBounds(zone)
+		const x = gsap.utils.clamp(bounds.left, bounds.maxX, fromX)
+		const dist = Math.hypot(x - fromX, bounds.top - fromY)
+		return { zone, x, dist }
+	}
+
+	/**
+	 * Voisins actifs, entièrement visibles, non bloqués par une autre zone
+	 * interposée — toutes directions confondues (haut, bas, gauche, droite,
+	 * diagonale), chacun avec son point d'atterrissage le plus proche.
+	 */
+	function collectWanderCandidates() {
+		if (!currentZone) return []
+
+		const fromX = getX()
+		const fromY = getY()
+		const candidates: { zone: Zone; x: number; dist: number }[] = []
+
+		for (const zone of zones.values()) {
+			if (zone === currentZone) continue
+			if (!isZoneActive(zone)) continue
+			if (!isZoneFullyVisible(zone)) continue
+			if (isPathBlocked(currentZone, zone)) continue
+
+			candidates.push(closestLandingPoint(zone, fromX, fromY))
+		}
+
+		return candidates
+	}
+
+	/**
+	 * Tire une destination dans un pool de voisins proches (pas uniquement
+	 * le plus proche strict), pondéré par proximité inverse : direction
+	 * imprévisible d'une balade à l'autre, sans jamais enjamber une zone.
+	 */
+	function pickWanderTarget(): { zone: Zone; x: number } | null {
+		const candidates = collectWanderCandidates()
+		if (candidates.length === 0) return null
+
+		candidates.sort((a, b) => a.dist - b.dist)
+
+		const nearestDist = candidates[0]!.dist
+		const threshold = nearestDist * autoWanderNeighborFactor
+
+		let pool = candidates.filter((c) => c.dist <= threshold)
+		if (pool.length < 2) pool = candidates.slice(0, Math.min(autoWanderMaxCandidates, candidates.length))
+		else pool = pool.slice(0, autoWanderMaxCandidates)
+
+		const weights = pool.map((c) => 1 / (c.dist + 1))
+		const totalWeight = weights.reduce((sum, w) => sum + w, 0)
+
+		let roll = Math.random() * totalWeight
+		for (let i = 0; i < pool.length; i++) {
+			roll -= weights[i]!
+			if (roll <= 0) return pool[i]!
+		}
+
+		return pool[pool.length - 1]!
+	}
+
+	function attemptWander() {
+		if (!wanderEnabled()) return
+
+		if (!imageLoaded || isJumping || isHopping || !currentZone || !isZoneFullyVisible(currentZone)) {
+			scheduleWander()
+			return
+		}
+
+		if (Math.random() < autoWanderChance) {
+			const picked = pickWanderTarget()
+			if (picked) {
+				jumpToZone(picked.zone, picked.x)
+				return
+			}
+		}
+
+		scheduleWander()
 	}
 
 	// --------------------------------------------------
@@ -612,12 +934,6 @@ function createSprite(options: UseSpriteOptions) {
 	// --------------------------------------------------
 	// Grognement au clic
 	// --------------------------------------------------
-	//
-	// Même logique d'apparition que le miaulement, mais il n'y a pas
-	// d'événement de "sortie" équivalent au mouseleave pour un clic :
-	// la bulle se referme donc automatiquement après `growlDuration` ms.
-	// Un nouveau clic pendant qu'elle est affichée relance simplement
-	// ce délai, sans jamais empiler de deuxième bulle.
 
 	function showGrowl() {
 		clearTimeout(growlHideTimeout)
@@ -650,11 +966,44 @@ function createSprite(options: UseSpriteOptions) {
 	canvas.addEventListener("click", showGrowl)
 
 	// --------------------------------------------------
-	// Scroll : saute vers la zone suivante quand la zone
-	// courante remonte trop haut à l'écran.
+	// Scroll : saut inter-zones strictement vertical
 	// --------------------------------------------------
 
 	let scrollScheduled = false
+	let lastScrollY = 0
+	let lastScrollDirectionDown = true
+
+	/**
+	 * Cherche la zone active la plus proche verticalement, dans le sens du
+	 * scroll, alignée en colonne avec la zone courante et non bloquée par
+	 * une zone interposée. Jamais de saut latéral déclenché par le scroll.
+	 */
+	function findNearestLanding(forward: boolean) {
+		if (!currentZone) return null
+
+		const viewportH = window.innerHeight
+		const fromX = getX()
+		const fromY = getY()
+		const currentOrder = zoneOrder(currentZone)
+
+		let best: { zone: Zone; x: number; dist: number } | null = null
+
+		for (const zone of zones.values()) {
+			if (!isZoneActive(zone)) continue
+			const order = zoneOrder(zone)
+			if (forward ? order <= currentOrder : order >= currentOrder) continue
+			if (!isColumnAligned(currentZone, zone)) continue
+			if (isPathBlocked(currentZone, zone)) continue
+
+			const rect = zone.el.getBoundingClientRect()
+			if (rect.bottom <= 0 || rect.top >= viewportH) continue
+
+			const candidate = closestLandingPoint(zone, fromX, fromY)
+			if (!best || candidate.dist < best.dist) best = candidate
+		}
+
+		return best
+	}
 
 	function onScroll() {
 		if (scrollScheduled) return
@@ -662,32 +1011,60 @@ function createSprite(options: UseSpriteOptions) {
 
 		requestAnimationFrame(() => {
 			scrollScheduled = false
-			if (!currentZone || isJumping) return
 
-			const rect = currentZone.el.getBoundingClientRect()
-			if (rect.top > scrollTriggerOffset) return
+			const now = performance.now()
+			const scrollY = window.scrollY
+			const delta = scrollY - lastScrollY
+			const dt = Math.max(now - lastScrollTime, 1)
 
-			const ordered = [...zones.values()].sort((a, b) => a.order - b.order)
-			const next = ordered.find((z) => z.order > currentZone!.order)
-			if (!next) return
+			const instantVelocity = (Math.abs(delta) / dt) * 1000
+			scrollVelocity = scrollVelocity * 0.7 + instantVelocity * 0.3
 
-			// On ne saute que si la prochaine zone est déjà visible à l'écran.
-			const nextRect = next.el.getBoundingClientRect()
-			if (nextRect.top < window.innerHeight) jumpToZone(next)
+			const scrollingDown = delta !== 0 ? delta > 0 : lastScrollDirectionDown
+			lastScrollDirectionDown = scrollingDown
+			lastScrollY = scrollY
+			lastScrollTime = now
+
+			if (!currentZone) return
+
+			const viewportH = window.innerHeight
+
+			if (isJumping) {
+				if (activeJumpForward === null || scrollingDown !== activeJumpForward) return
+
+				const landing = findNearestLanding(activeJumpForward)
+				if (landing && landing.zone !== activeJumpTarget) {
+					jumpToZone(landing.zone, landing.x)
+				}
+				return
+			}
+
+			const catY = getCatViewportY()
+
+			if (scrollingDown) {
+				if (catY > viewportH * scrollTriggerRatio) return
+
+				const landing = findNearestLanding(true)
+				if (landing) jumpToZone(landing.zone, landing.x)
+			} else {
+				if (catY < viewportH * (1 - scrollTriggerRatio)) return
+
+				const landing = findNearestLanding(false)
+				if (landing) jumpToZone(landing.zone, landing.x)
+			}
 		})
 	}
 
 	window.addEventListener("scroll", onScroll, { passive: true })
-	window.addEventListener("resize", updateTravelArea)
+	window.addEventListener("resize", resync, { passive: true })
+	document.addEventListener("visibilitychange", () => {
+		if (document.visibilityState === "visible") resync()
+	})
 
 	const resizeObserver = new ResizeObserver((entries) => {
 		if (!currentZone) return
 		if (entries.some((e) => e.target === currentZone!.el)) updateTravelArea()
 	})
-
-	// --------------------------------------------------
-	// Chargement du sprite initial
-	// --------------------------------------------------
 
 	loadSprite(options.spriteSrc).then((img) => {
 		activeImage = img
@@ -698,19 +1075,13 @@ function createSprite(options: UseSpriteOptions) {
 		setupCanvas()
 		imageLoaded = true
 
-		const initial = pendingInitialZone ?? [...zones.values()][0]
+		const initial = pickActiveInitialZone()
 		if (initial) {
-			currentZone = initial
-			const bounds = zoneBounds(initial)
-			gsap.set(canvas, {
-				x: bounds.left + (bounds.maxX - bounds.left) / 2,
-				y: bounds.top,
-			})
-			applySpriteFor(initial)
+			placeInZone(initial)
+		} else {
+			lastScrollY = window.scrollY
+			draw()
 		}
-
-		draw()
-		pauseTimeout = setTimeout(scheduleNextLeg, rand(pauseMin, pauseMax))
 	})
 
 	gsap.ticker.add(tick)
@@ -719,25 +1090,58 @@ function createSprite(options: UseSpriteOptions) {
 	// API publique
 	// --------------------------------------------------
 
-	function registerZone(
-		el: HTMLElement,
-		zoneOptions: RegisterZoneOptions = {}
-	): CatZoneHandle {
-		const zone: Zone = {
-			el,
+	function registerZone(el: HTMLElement, zoneOptions: RegisterZoneOptions = {}): CatZoneHandle {
+		let zone = zones.get(el)
+		const isNewZone = !zone
+		if (!zone) {
+			zone = { el, profiles: [] }
+			zones.set(el, zone)
+		}
+
+		const profile: ZoneProfile = {
 			order: zoneOptions.order ?? zoneOrderCounter++,
 			spriteSrc: zoneOptions.spriteSrc,
+			textColorClass: zoneOptions.textColorClass,
+			minWidth: zoneOptions.minWidth,
+			maxWidth: zoneOptions.maxWidth,
+			isInitial: zoneOptions.isInitial,
 		}
-		zones.set(el, zone)
-		resizeObserver.observe(el)
+		zone.profiles.push(profile)
 
-		if (!currentZone && !pendingInitialZone) pendingInitialZone = zone
+		if (isNewZone) resizeObserver.observe(el)
+
+		if (imageLoaded && !currentZone && isZoneActive(zone)) {
+			placeInZone(zone)
+		}
 
 		return {
 			unregister() {
+				const target = zones.get(el)
+				if (!target) return
+
+				const idx = target.profiles.indexOf(profile)
+				if (idx !== -1) target.profiles.splice(idx, 1)
+
+				if (target.profiles.length > 0) return
+
 				zones.delete(el)
 				resizeObserver.unobserve(el)
-				if (currentZone === zone) currentZone = null
+
+				if (currentZone === target) {
+					clearTimeout(pauseTimeout)
+					clearWanderTimer()
+					clearTimeout(growlHideTimeout)
+					currentTween?.kill()
+					gsap.killTweensOf(meow)
+					gsap.killTweensOf(growl)
+					gsap.set(meow, { opacity: 0 })
+					gsap.set(growl, { opacity: 0 })
+					isJumping = false
+					isHopping = false
+					meowVisible = false
+					growlVisible = false
+					currentZone = null
+				}
 			},
 		}
 	}
