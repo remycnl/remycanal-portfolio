@@ -45,4 +45,5 @@ useHead({
 	</div>
 		<HomeFeaturedProjects />
 		<HomeResume />
+		<HomeBlog />
 </template>

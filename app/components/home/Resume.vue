@@ -34,7 +34,7 @@
 				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-default"
 				@click="toggleCard('chapter01')"
 			>
-				<span class="bg-lime absolute top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
+				<span class="bg-lime border border-lime-dark/35 absolute top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
 
 				<div
 					class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-data-[active=true]:opacity-100"
@@ -45,7 +45,7 @@
 						loading="lazy"
 						decoding="async"
 						sizes="400px"
-						class="absolute inset-0 h-full w-full scale-100 object-cover object-center grayscale transition-transform duration-700 group-hover:scale-110 group-data-[active=true]:scale-110"
+						class="absolute inset-0 h-full w-full scale-100 object-cover object-center grayscale select-none transition-transform duration-700 group-hover:scale-110 group-data-[active=true]:scale-110"
 					/>
 					<div class="bg-lime/80 absolute inset-0 mix-blend-color" />
 					<div
@@ -100,7 +100,7 @@
 				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-default"
 				@click="toggleCard('chapter02')"
 			>
-				<span class="bg-lime absolute top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
+				<span class="bg-lime absolute border border-lime-dark/35 top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
 
 				<div
 					class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-data-[active=true]:opacity-100"
@@ -111,7 +111,7 @@
 						loading="lazy"
 						decoding="async"
 						sizes="400px"
-						class="absolute inset-0 h-full w-full scale-100 object-cover object-center transition-transform duration-700 group-hover:scale-110 group-data-[active=true]:scale-110"
+						class="absolute inset-0 h-full w-full scale-100 object-cover object-center transition-transform grayscale select-none duration-700 group-hover:scale-110 group-data-[active=true]:scale-110"
 					/>
 					<div class="bg-lime/80 absolute inset-0 mix-blend-color" />
 					<div
@@ -165,7 +165,7 @@
 						loading="lazy"
 						decoding="async"
 						sizes="400px"
-						class="absolute inset-0 h-full w-full scale-100 object-cover object-center transition-transform duration-700 group-hover:scale-110 group-data-[active=true]:scale-110"
+						class="absolute inset-0 h-full w-full scale-100 object-cover grayscale select-none object-center transition-transform duration-700 group-hover:scale-110 group-data-[active=true]:scale-110"
 					/>
 					<div
 						class="absolute inset-0 bg-radial from-white/20 to-white/80"
@@ -207,7 +207,7 @@
 				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-default"
 				@click="toggleCard('freelance')"
 			>
-				<span class="bg-lime absolute top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
+				<span class="bg-lime border border-lime-dark/35 absolute top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
 
 				<div
 					class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100 group-data-[active=true]:opacity-100"
@@ -218,7 +218,7 @@
 						loading="lazy"
 						decoding="async"
 						sizes="400px"
-						class="absolute inset-0 h-full w-full scale-100 object-cover object-center grayscale transition-transform duration-700 group-hover:scale-110 group-data-[active=true]:scale-110"
+						class="absolute inset-0 h-full w-full scale-100 object-cover object-center grayscale select-none transition-transform duration-700 group-hover:scale-110 group-data-[active=true]:scale-110"
 					/>
 					<div class="bg-lime/80 absolute inset-0 mix-blend-color" />
 					<div
