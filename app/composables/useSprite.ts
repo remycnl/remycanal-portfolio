@@ -844,45 +844,58 @@ function createSprite(options: UseSpriteOptions) {
 			(currentZone ? zoneOrder(currentZone) : Number.NEGATIVE_INFINITY)
 
 		const velocityBoost = gsap.utils.clamp(1, 3.2, 1 + scrollVelocity / 2200)
-		const effectiveSpeed = speed * velocityBoost
+		// Multiplicateur dédié au saut inter-zones : un bond d'une section à
+		// l'autre doit être nettement plus vif qu'une simple balade locale.
+		const effectiveSpeed = speed * velocityBoost * 1.15
 
 		const arcHeight = gsap.utils.clamp(16, jumpArcHeight, straightDist * 0.22)
-		const midX = (startX + resolvedLandingX) / 2
-		const midY = Math.min(startY, bounds.top) - arcHeight
 
-		const riseDist = Math.hypot(midX - startX, midY - startY)
-		const fallDist = Math.hypot(resolvedLandingX - midX, bounds.top - midY)
+		// Point de contrôle de la bézier quadratique. La courbe ne passant pas
+		// exactement par ce point (son sommet réel dépend des hauteurs de
+		// départ/arrivée), on compense sur Y pour que le point culminant visible
+		// corresponde bien à `arcHeight`.
+		const peakY = Math.min(startY, bounds.top) - arcHeight
+		const controlX = (startX + resolvedLandingX) / 2
+		const controlY = 2 * peakY - 0.5 * (startY + bounds.top)
 
-		const riseDuration = gsap.utils.clamp(0.08, 0.55, riseDist / effectiveSpeed)
-		const fallDuration = gsap.utils.clamp(0.08, 0.55, fallDist / effectiveSpeed)
+		// Une seule durée pour tout le trajet, parcourue à vitesse constante le
+		// long de la courbe (ease "none") : pas de ralenti au sommet, donc pas
+		// de flottement. La forme "naturelle" vient uniquement de la géométrie
+		// de la bézier, pas d'un jeu d'easing superposé.
+		const totalDuration = gsap.utils.clamp(0.18, 0.48, straightDist / effectiveSpeed)
 
-		const riseIsShorter = riseDist <= fallDist
-		const riseEase = riseIsShorter ? "power3.out" : "power1.out"
-		const fallEase = riseIsShorter ? "power1.in" : "power3.in"
+		let midFrameTriggered = false
+		const proxy = { t: 0 }
 
-		currentTween = gsap
-			.timeline({
-				onComplete() {
-					isJumping = false
-					activeJumpTarget = null
-					activeJumpForward = null
-					activateZone(target)
-					setMode("idle")
-					pauseTimeout = setTimeout(scheduleNextLeg, rand(pauseMin, pauseMax))
-					scheduleWander()
-				},
-			})
-			.to(canvas, { x: midX, y: midY, duration: riseDuration, ease: riseEase })
-			.call(() => {
-				state.frame = 1
-				draw()
-			})
-			.to(canvas, {
-				x: resolvedLandingX,
-				y: bounds.top,
-				duration: fallDuration,
-				ease: fallEase,
-			})
+		currentTween = gsap.to(proxy, {
+			t: 1,
+			duration: totalDuration,
+			ease: "none",
+			onUpdate() {
+				const u = proxy.t
+				const inv = 1 - u
+
+				const x = inv * inv * startX + 2 * inv * u * controlX + u * u * resolvedLandingX
+				const y = inv * inv * startY + 2 * inv * u * controlY + u * u * bounds.top
+
+				gsap.set(canvas, { x, y })
+
+				if (!midFrameTriggered && u >= 0.5) {
+					midFrameTriggered = true
+					state.frame = 1
+					draw()
+				}
+			},
+			onComplete() {
+				isJumping = false
+				activeJumpTarget = null
+				activeJumpForward = null
+				activateZone(target)
+				setMode("idle")
+				pauseTimeout = setTimeout(scheduleNextLeg, rand(pauseMin, pauseMax))
+				scheduleWander()
+			},
+		})
 	}
 
 	// --------------------------------------------------

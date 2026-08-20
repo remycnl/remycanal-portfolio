@@ -57,24 +57,24 @@
 					class="relative z-10 flex flex-col items-end gap-1 lg:flex-row lg:items-start lg:justify-between lg:gap-4"
 				>
 					<span
-						class="font-vg5000 text-shadow-sm text-shadow-lime bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-4xl leading-none tabular-nums text-black transition-[background-size] duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-1 lg:order-2 lg:text-5xl"
+						class="font-vg5000 text-shadow-sm text-shadow-lime bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-right bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-4xl leading-none tabular-nums text-black transition-[background-size] duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-1 lg:order-2 lg:text-5xl"
 						>01</span
 					>
 					<span
-						class="font-vg5000 bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-[11px] tracking-[0.2em] text-black/60 uppercase transition-[background-size] delay-100 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-2 lg:order-1 lg:pt-1"
+						class="font-vg5000 bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-[11px] tracking-[0.2em] text-black/60 uppercase transition-[background-size] delay-100 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-2 lg:order-1 lg:pt-1"
 						>2021</span
 					>
 				</div>
 				<div class="relative z-10 space-y-1">
 					<h3 class="font-lineal-bold text-2xl text-black uppercase lg:text-3xl">
 						<span
-							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-200 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
+							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-200 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
 							>The beginning.</span
 						>
 					</h3>
 					<p class="font-lineal-light text-sm text-black/60">
 						<span
-							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-300 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
+							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-300 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
 							>My first line of code...</span
 						>
 					</p>
@@ -123,24 +123,24 @@
 					class="relative z-10 flex flex-col items-end gap-1 lg:flex-row lg:items-start lg:justify-between lg:gap-4"
 				>
 					<span
-						class="font-vg5000 text-shadow-sm text-shadow-lime bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-4xl leading-none tabular-nums text-black transition-[background-size] duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-1 lg:order-2 lg:text-5xl"
+						class="font-vg5000 text-shadow-sm text-shadow-lime bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-right bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-4xl leading-none tabular-nums text-black transition-[background-size] duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-1 lg:order-2 lg:text-5xl"
 						>02</span
 					>
 					<span
-						class="font-vg5000 bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-[11px] tracking-[0.2em] text-black/60 uppercase transition-[background-size] delay-100 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-2 lg:order-1 lg:pt-1"
+						class="font-vg5000 bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-[11px] tracking-[0.2em] text-black/60 uppercase transition-[background-size] delay-100 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-2 lg:order-1 lg:pt-1"
 						>2022</span
 					>
 				</div>
 				<div class="relative z-10 space-y-1">
 					<h3 class="font-lineal-bold text-2xl text-black uppercase lg:text-3xl">
 						<span
-							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-200 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
+							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-200 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
 							>Epitech.</span
 						>
 					</h3>
 					<p class="font-lineal-light text-sm text-black/60">
 						<span
-							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-300 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
+							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-300 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
 							>Learning to build. Learning to think.</span
 						>
 					</p>
@@ -176,24 +176,24 @@
 					class="relative z-10 flex flex-col items-end gap-1 lg:flex-row lg:items-start lg:justify-between lg:gap-4"
 				>
 					<span
-						class="font-vg5000 text-shadow-sm text-shadow-white bg-linear-to-r from-white to-white bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-4xl leading-none tabular-nums text-black transition-[background-size] duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-1 lg:order-2 lg:text-5xl"
+						class="font-vg5000 text-shadow-sm text-shadow-white bg-linear-to-r from-white to-white bg-no-repeat bg-bottom-right bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-4xl leading-none tabular-nums text-black transition-[background-size] duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-1 lg:order-2 lg:text-5xl"
 						>03</span
 					>
 					<span
-						class="font-vg5000 bg-linear-to-r from-white to-white bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-[11px] tracking-[0.2em] text-black/60 uppercase transition-[background-size] delay-100 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-2 lg:order-1 lg:pt-1"
+						class="font-vg5000 bg-linear-to-r from-white to-white bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-[11px] tracking-[0.2em] text-black/60 uppercase transition-[background-size] delay-100 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-2 lg:order-1 lg:pt-1"
 						>2025</span
 					>
 				</div>
 				<div class="relative z-10 space-y-1">
 					<h3 class="font-lineal-bold text-2xl text-black uppercase lg:text-3xl">
 						<span
-							class="bg-linear-to-r from-white to-white bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-200 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
+							class="bg-linear-to-r from-white to-white bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-200 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
 							>Dublin, Ireland.</span
 						>
 					</h3>
 					<p class="font-lineal-light text-sm text-black/70">
 						<span
-							class="bg-linear-to-r from-white to-white bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-300 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
+							class="bg-linear-to-r from-white to-white bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-300 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
 							>A year abroad. A double diploma. A slightly bigger world.</span
 						>
 					</p>
@@ -230,24 +230,24 @@
 					class="relative z-10 flex flex-col items-end gap-1 lg:flex-row lg:items-start lg:justify-between lg:gap-4"
 				>
 					<span
-						class="font-vg5000 bg-linear-to-r from-lime to-lime text-shadow-sm text-shadow-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-4xl leading-none tabular-nums text-black transition-[background-size] duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-1 lg:order-2 lg:text-5xl"
+						class="font-vg5000 bg-linear-to-r from-lime to-lime text-shadow-sm text-shadow-lime bg-no-repeat bg-bottom-right bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-4xl leading-none tabular-nums text-black transition-[background-size] duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-1 lg:order-2 lg:text-5xl"
 						>04</span
 					>
 					<span
-						class="font-vg5000 bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-[11px] tracking-[0.2em] text-black/60 uppercase transition-[background-size] delay-100 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-2 lg:order-1 lg:pt-1"
+						class="font-vg5000 bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 text-[11px] tracking-[0.2em] text-black/60 uppercase transition-[background-size] delay-100 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%] order-2 lg:order-1 lg:pt-1"
 						>Now</span
 					>
 				</div>
 				<div class="relative z-10 space-y-1">
 					<h3 class="font-lineal-bold text-2xl text-black uppercase lg:text-3xl">
 						<span
-							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-200 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
+							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-200 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
 							>Freelance.</span
 						>
 					</h3>
 					<p class="font-lineal-light text-sm text-black/60">
 						<span
-							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-300 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
+							class="bg-linear-to-r from-lime to-lime bg-no-repeat bg-bottom-left bg-size-[0%_100%] [box-decoration-break:clone] [-webkit-box-decoration-break:clone] px-1 transition-[background-size] delay-300 duration-500 ease-out group-hover:bg-size-[100%_100%] group-data-[active=true]:bg-size-[100%_100%]"
 							>Turning ideas into digital experiences.</span
 						>
 					</p>
