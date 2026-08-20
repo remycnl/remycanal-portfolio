@@ -1,5 +1,3 @@
-// app/composables/useSprite.ts
-
 /**
  * Compagnon félin animé, en singleton partagé par toute l'application.
  *
@@ -88,12 +86,36 @@ export interface ResponsiveZoneGroup {
 	zones: ResponsiveZoneEntry[]
 }
 
+/** Délai de silence (ms) après une rafale de resize avant de recalculer. */
+const RESIZE_DEBOUNCE_MS = 150
+/**
+ * Delta de hauteur (px) en dessous duquel, si la largeur n'a pas changé, un
+ * resize est considéré comme un simple repli/dépli de barre d'outils ou de
+ * clavier mobile — pas une vraie bascule de breakpoint. On se contente alors
+ * de recaler la position dans la zone courante, sans ré-évaluer l'activité
+ * des zones ni risquer un replacement complet.
+ */
+const SOFT_RESIZE_HEIGHT_THRESHOLD = 140
+
 function range(start: number, count: number) {
 	return Array.from({ length: count }, (_, i) => start + i)
 }
 
 function rand(min: number, max: number) {
 	return min + Math.random() * (max - min)
+}
+
+function isRectUsable(rect: DOMRect) {
+	return (
+		rect.width > 0 &&
+		rect.height > 0 &&
+		Number.isFinite(rect.top) &&
+		Number.isFinite(rect.left)
+	)
+}
+
+function isFiniteCoord(value: number) {
+	return Number.isFinite(value)
 }
 
 let instance: ReturnType<typeof createSprite> | null = null
@@ -127,7 +149,9 @@ export function useCatZone(
 
 		onMounted(() => {
 			if (!instance) {
-				console.warn("[useCatZone] useSprite(options) doit être appelé avant useCatZone().")
+				console.warn(
+					"[useCatZone] useSprite(options) doit être appelé avant useCatZone()."
+				)
 				return
 			}
 			if (elRef.value) handle = instance.registerZone(elRef.value, zoneOptions)
@@ -173,6 +197,13 @@ export function useCatZone(
 
 			orderCursor += group.zones.length
 		}
+
+		// Les zones de la page qui vient de se monter sont maintenant toutes
+		// enregistrées : on force un recalage propre au frame suivant, pour
+		// couvrir le cas d'une navigation de page où le chat aurait pu perdre
+		// sa zone entre le démontage de l'ancienne page et le montage de la
+		// nouvelle.
+		requestAnimationFrame(() => instance?.resync())
 	})
 
 	onUnmounted(() => {
@@ -254,7 +285,8 @@ function createSprite(options: UseSpriteOptions) {
 
 	const growl = document.createElement("div")
 	growl.textContent = "Grrr!"
-	growl.className = "font-vg5000 pointer-events-none select-none whitespace-nowrap text-sm"
+	growl.className =
+		"font-vg5000 pointer-events-none select-none whitespace-nowrap text-sm"
 	Object.assign(growl.style, {
 		position: "absolute",
 		top: "0",
@@ -287,7 +319,9 @@ function createSprite(options: UseSpriteOptions) {
 	function activeProfile(zone: Zone): ZoneProfile | undefined {
 		const w = window.innerWidth
 		return zone.profiles.find(
-			(p) => (p.minWidth === undefined || w >= p.minWidth) && (p.maxWidth === undefined || w <= p.maxWidth)
+			(p) =>
+				(p.minWidth === undefined || w >= p.minWidth) &&
+				(p.maxWidth === undefined || w <= p.maxWidth)
 		)
 	}
 
@@ -308,7 +342,9 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	function updateBubbleTextColor(zone: Zone | null) {
-		const next = (zone ? activeProfile(zone)?.textColorClass : undefined) ?? resolveDefaultTextColor()
+		const next =
+			(zone ? activeProfile(zone)?.textColorClass : undefined) ??
+			resolveDefaultTextColor()
 		applyTextColorClass(next, appliedTextColorClass)
 		appliedTextColorClass = next
 	}
@@ -317,7 +353,8 @@ function createSprite(options: UseSpriteOptions) {
 
 	if (isRef(textColorClass)) {
 		watch(textColorClass, () => {
-			if (!currentZone || !activeProfile(currentZone)?.textColorClass) updateBubbleTextColor(currentZone)
+			if (!currentZone || !activeProfile(currentZone)?.textColorClass)
+				updateBubbleTextColor(currentZone)
 		})
 	}
 
@@ -418,6 +455,8 @@ function createSprite(options: UseSpriteOptions) {
 	let growlVisible = false
 	let growlHideTimeout: ReturnType<typeof setTimeout> | undefined
 
+	let isBackgrounded = false
+
 	if (isRef(displayHeight)) {
 		watch(displayHeight, (next) => {
 			displayH = next
@@ -432,7 +471,11 @@ function createSprite(options: UseSpriteOptions) {
 	// --------------------------------------------------
 
 	function currentFrames() {
-		return state.mode === "idle" ? idleFrames : state.mode === "jump" ? jumpFrames : runFrames
+		return state.mode === "idle"
+			? idleFrames
+			: state.mode === "jump"
+				? jumpFrames
+				: runFrames
 	}
 
 	function draw() {
@@ -455,7 +498,7 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	function tick(_time: number, deltaMs: number) {
-		if (state.mode === "jump") return
+		if (isBackgrounded || state.mode === "jump") return
 
 		const frames = currentFrames()
 		if (frames.length <= 1) return
@@ -505,10 +548,9 @@ function createSprite(options: UseSpriteOptions) {
 		const left = rect.left + window.scrollX
 		const top = rect.top + window.scrollY + rect.height - displayH
 		const maxX = left + Math.max(rect.width - displayW, 0)
-		return { left, top, maxX }
+		return { left, top, maxX, rect }
 	}
 
-	/** Rect complet d'une zone en coordonnées page, pour les tests d'alignement/blocage. */
 	function zoneRect(zone: Zone) {
 		const rect = zone.el.getBoundingClientRect()
 		const left = rect.left + window.scrollX
@@ -523,7 +565,6 @@ function createSprite(options: UseSpriteOptions) {
 		}
 	}
 
-	/** Deux zones sont "en colonne" si leurs rects se chevauchent horizontalement. */
 	function isColumnAligned(a: Zone, b: Zone) {
 		const ra = zoneRect(a)
 		const rb = zoneRect(b)
@@ -532,9 +573,8 @@ function createSprite(options: UseSpriteOptions) {
 
 	/**
 	 * Une zone `other` bloque le trajet de `from` vers `to` si son centre
-	 * tombe dans l'enveloppe rectangulaire des deux zones (union de leurs
-	 * rects). Empêche de sauter par-dessus une case pour en atteindre une
-	 * plus loin, aussi bien en vertical qu'en horizontal ou en diagonale.
+	 * tombe dans l'enveloppe rectangulaire des deux zones. Empêche de sauter
+	 * par-dessus une case pour en atteindre une plus loin.
 	 */
 	function isPathBlocked(from: Zone, to: Zone) {
 		const a = zoneRect(from)
@@ -565,7 +605,7 @@ function createSprite(options: UseSpriteOptions) {
 
 	function isZoneFullyVisible(zone: Zone) {
 		const rect = zone.el.getBoundingClientRect()
-		if (rect.width === 0 || rect.height === 0) return false
+		if (!isRectUsable(rect)) return false
 		return (
 			rect.top >= 0 &&
 			rect.left >= 0 &&
@@ -588,8 +628,13 @@ function createSprite(options: UseSpriteOptions) {
 
 	function updateTravelArea() {
 		if (!currentZone || isJumping) return
+
 		const bounds = zoneBounds(currentZone)
+		if (!isRectUsable(bounds.rect)) return
+
 		const x = gsap.utils.clamp(bounds.left, bounds.maxX, getX())
+		if (!isFiniteCoord(x) || !isFiniteCoord(bounds.top)) return
+
 		gsap.set(canvas, { x, y: bounds.top })
 	}
 
@@ -599,7 +644,8 @@ function createSprite(options: UseSpriteOptions) {
 		updateBubbleTextColor(zone)
 	}
 
-	function placeInZone(zone: Zone) {
+	/** Nettoie tout état transitoire (tweens, timers, bulles) avant un placement ou une pause. */
+	function resetTransientState() {
 		clearTimeout(pauseTimeout)
 		clearWanderTimer()
 		clearTimeout(growlHideTimeout)
@@ -612,13 +658,32 @@ function createSprite(options: UseSpriteOptions) {
 		gsap.killTweensOf(growl)
 		gsap.set(meow, { opacity: 0 })
 		gsap.set(growl, { opacity: 0 })
+	}
 
-		activateZone(zone)
+	/**
+	 * Place immédiatement le chat au centre d'une zone. Si la zone n'a pas
+	 * encore de rect exploitable (élément juste (dé)monté, display en cours
+	 * de transition), on réessaie au frame suivant plutôt que de figer une
+	 * position invalide.
+	 */
+	function placeInZone(zone: Zone, attempt = 0) {
 		const bounds = zoneBounds(zone)
-		gsap.set(canvas, {
-			x: bounds.left + (bounds.maxX - bounds.left) / 2,
-			y: bounds.top,
-		})
+
+		if (!isRectUsable(bounds.rect)) {
+			if (attempt < 5) {
+				requestAnimationFrame(() => placeInZone(zone, attempt + 1))
+			}
+			return
+		}
+
+		resetTransientState()
+		activateZone(zone)
+
+		const x = bounds.left + (bounds.maxX - bounds.left) / 2
+		if (isFiniteCoord(x) && isFiniteCoord(bounds.top)) {
+			gsap.set(canvas, { x, y: bounds.top })
+		}
+
 		setMode("idle")
 		draw()
 
@@ -629,12 +694,19 @@ function createSprite(options: UseSpriteOptions) {
 		scheduleWander()
 	}
 
+	/**
+	 * Recalage "léger" : si la zone courante est toujours active et son rect
+	 * exploitable, on se contente de recaler x/y dedans (pas de reset de
+	 * timers, pas de changement de zone). Sinon on retombe sur une zone
+	 * active valide. Appelée après resize, retour d'onglet, ou montage d'une
+	 * nouvelle page.
+	 */
 	function resync() {
 		lastScrollY = window.scrollY
 		lastScrollTime = performance.now()
 		scrollVelocity = 0
 
-		if (isJumping || isHopping) return
+		if (isBackgrounded || isJumping || isHopping) return
 
 		if (currentZone && !isZoneActive(currentZone)) {
 			const next = pickActiveInitialZone()
@@ -650,7 +722,8 @@ function createSprite(options: UseSpriteOptions) {
 		}
 
 		const fallback =
-			pickActiveInitialZone() ?? [...zones.values()].sort((a, b) => zoneOrder(a) - zoneOrder(b))[0]
+			pickActiveInitialZone() ??
+			[...zones.values()].sort((a, b) => zoneOrder(a) - zoneOrder(b))[0]
 		if (fallback) placeInZone(fallback)
 	}
 
@@ -659,9 +732,14 @@ function createSprite(options: UseSpriteOptions) {
 	// --------------------------------------------------
 
 	function scheduleNextLeg() {
-		if (!imageLoaded || !currentZone || isJumping) return
+		if (isBackgrounded || !imageLoaded || !currentZone || isJumping) return
 
 		const bounds = zoneBounds(currentZone)
+		if (!isRectUsable(bounds.rect)) {
+			pauseTimeout = setTimeout(scheduleNextLeg, rand(pauseMin, pauseMax))
+			return
+		}
+
 		const from = getX()
 		const travelWidth = bounds.maxX - bounds.left
 
@@ -735,21 +813,17 @@ function createSprite(options: UseSpriteOptions) {
 	// Saut d'une zone à une autre (arc bas, sens figé)
 	// --------------------------------------------------
 
-	/**
-	 * Montée et descente sont chronométrées indépendamment à vitesse
-	 * effective constante, avec un ease plus marqué du côté de la phase la
-	 * plus courte, pour rester naturel même quand les deux zones ne sont
-	 * pas à la même hauteur.
-	 */
 	function jumpToZone(target: Zone, landingX?: number) {
-		if (!imageLoaded || target === currentZone) return
+		if (isBackgrounded || !imageLoaded || target === currentZone) return
+
+		const bounds = zoneBounds(target)
+		if (!isRectUsable(bounds.rect)) return
 
 		isJumping = true
 		clearTimeout(pauseTimeout)
 		clearWanderTimer()
 		currentTween?.kill()
 
-		const bounds = zoneBounds(target)
 		const resolvedLandingX = gsap.utils.clamp(
 			bounds.left,
 			bounds.maxX,
@@ -765,7 +839,9 @@ function createSprite(options: UseSpriteOptions) {
 		setMode("jump")
 
 		activeJumpTarget = target
-		activeJumpForward = zoneOrder(target) > (currentZone ? zoneOrder(currentZone) : Number.NEGATIVE_INFINITY)
+		activeJumpForward =
+			zoneOrder(target) >
+			(currentZone ? zoneOrder(currentZone) : Number.NEGATIVE_INFINITY)
 
 		const velocityBoost = gsap.utils.clamp(1, 3.2, 1 + scrollVelocity / 2200)
 		const effectiveSpeed = speed * velocityBoost
@@ -801,7 +877,12 @@ function createSprite(options: UseSpriteOptions) {
 				state.frame = 1
 				draw()
 			})
-			.to(canvas, { x: resolvedLandingX, y: bounds.top, duration: fallDuration, ease: fallEase })
+			.to(canvas, {
+				x: resolvedLandingX,
+				y: bounds.top,
+				duration: fallDuration,
+				ease: fallEase,
+			})
 	}
 
 	// --------------------------------------------------
@@ -815,8 +896,11 @@ function createSprite(options: UseSpriteOptions) {
 
 	function scheduleWander() {
 		clearWanderTimer()
-		if (!wanderEnabled()) return
-		wanderTimeout = setTimeout(attemptWander, rand(autoWanderMinDelay, autoWanderMaxDelay))
+		if (isBackgrounded || !wanderEnabled()) return
+		wanderTimeout = setTimeout(
+			attemptWander,
+			rand(autoWanderMinDelay, autoWanderMaxDelay)
+		)
 	}
 
 	function closestLandingPoint(zone: Zone, fromX: number, fromY: number) {
@@ -826,11 +910,6 @@ function createSprite(options: UseSpriteOptions) {
 		return { zone, x, dist }
 	}
 
-	/**
-	 * Voisins actifs, entièrement visibles, non bloqués par une autre zone
-	 * interposée — toutes directions confondues (haut, bas, gauche, droite,
-	 * diagonale), chacun avec son point d'atterrissage le plus proche.
-	 */
 	function collectWanderCandidates() {
 		if (!currentZone) return []
 
@@ -850,11 +929,6 @@ function createSprite(options: UseSpriteOptions) {
 		return candidates
 	}
 
-	/**
-	 * Tire une destination dans un pool de voisins proches (pas uniquement
-	 * le plus proche strict), pondéré par proximité inverse : direction
-	 * imprévisible d'une balade à l'autre, sans jamais enjamber une zone.
-	 */
 	function pickWanderTarget(): { zone: Zone; x: number } | null {
 		const candidates = collectWanderCandidates()
 		if (candidates.length === 0) return null
@@ -865,7 +939,8 @@ function createSprite(options: UseSpriteOptions) {
 		const threshold = nearestDist * autoWanderNeighborFactor
 
 		let pool = candidates.filter((c) => c.dist <= threshold)
-		if (pool.length < 2) pool = candidates.slice(0, Math.min(autoWanderMaxCandidates, candidates.length))
+		if (pool.length < 2)
+			pool = candidates.slice(0, Math.min(autoWanderMaxCandidates, candidates.length))
 		else pool = pool.slice(0, autoWanderMaxCandidates)
 
 		const weights = pool.map((c) => 1 / (c.dist + 1))
@@ -881,9 +956,15 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	function attemptWander() {
-		if (!wanderEnabled()) return
+		if (isBackgrounded || !wanderEnabled()) return
 
-		if (!imageLoaded || isJumping || isHopping || !currentZone || !isZoneFullyVisible(currentZone)) {
+		if (
+			!imageLoaded ||
+			isJumping ||
+			isHopping ||
+			!currentZone ||
+			!isZoneFullyVisible(currentZone)
+		) {
 			scheduleWander()
 			return
 		}
@@ -973,11 +1054,6 @@ function createSprite(options: UseSpriteOptions) {
 	let lastScrollY = 0
 	let lastScrollDirectionDown = true
 
-	/**
-	 * Cherche la zone active la plus proche verticalement, dans le sens du
-	 * scroll, alignée en colonne avec la zone courante et non bloquée par
-	 * une zone interposée. Jamais de saut latéral déclenché par le scroll.
-	 */
 	function findNearestLanding(forward: boolean) {
 		if (!currentZone) return null
 
@@ -996,6 +1072,7 @@ function createSprite(options: UseSpriteOptions) {
 			if (isPathBlocked(currentZone, zone)) continue
 
 			const rect = zone.el.getBoundingClientRect()
+			if (!isRectUsable(rect)) continue
 			if (rect.bottom <= 0 || rect.top >= viewportH) continue
 
 			const candidate = closestLandingPoint(zone, fromX, fromY)
@@ -1006,6 +1083,7 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	function onScroll() {
+		if (isBackgrounded) return
 		if (scrollScheduled) return
 		scrollScheduled = true
 
@@ -1055,16 +1133,112 @@ function createSprite(options: UseSpriteOptions) {
 		})
 	}
 
+	// --------------------------------------------------
+	// Resize : rafales mobiles coalescées, distinction toolbar vs réel
+	// --------------------------------------------------
+
+	let lastKnownWidth = window.innerWidth
+	let lastKnownHeight = window.innerHeight
+	let resizeRafId: number | undefined
+	let resizeDebounceTimer: ReturnType<typeof setTimeout> | undefined
+
+	function commitViewportChange() {
+		if (isBackgrounded) return
+
+		const width = window.innerWidth
+		const height = window.innerHeight
+		const widthChanged = width !== lastKnownWidth
+		const heightDelta = Math.abs(height - lastKnownHeight)
+
+		lastKnownWidth = width
+		lastKnownHeight = height
+
+		// Repli/dépli de barre d'outils ou de clavier mobile : la largeur ne
+		// bouge pas et le delta de hauteur reste dans une plage typique de
+		// chrome navigateur. On recale juste la position, sans réévaluer
+		// l'activité des zones ni risquer un replacement complet.
+		if (!widthChanged && heightDelta > 0 && heightDelta < SOFT_RESIZE_HEIGHT_THRESHOLD) {
+			if (!isJumping && !isHopping) updateTravelArea()
+			return
+		}
+
+		resync()
+	}
+
+	function handleViewportChange() {
+		if (resizeRafId !== undefined) cancelAnimationFrame(resizeRafId)
+		resizeRafId = requestAnimationFrame(() => {
+			resizeRafId = undefined
+			clearTimeout(resizeDebounceTimer)
+			resizeDebounceTimer = setTimeout(commitViewportChange, RESIZE_DEBOUNCE_MS)
+		})
+	}
+
 	window.addEventListener("scroll", onScroll, { passive: true })
-	window.addEventListener("resize", resync, { passive: true })
+	window.addEventListener("resize", handleViewportChange, { passive: true })
+	window.addEventListener("orientationchange", handleViewportChange, { passive: true })
+	window.visualViewport?.addEventListener("resize", handleViewportChange)
+
+	// --------------------------------------------------
+	// Onglet masqué / arrière-plan : pause propre, reprise sans casse
+	// --------------------------------------------------
+
+	function pauseForBackground() {
+		if (isBackgrounded) return
+		isBackgrounded = true
+		resetTransientState()
+	}
+
+	function resumeFromBackground() {
+		if (!isBackgrounded) return
+		isBackgrounded = false
+
+		// Laisse le navigateur stabiliser sa mise en page (barre d'outils,
+		// clavier, rotation) avant de relire des rects : les lire juste après
+		// un retour d'onglet peut renvoyer des valeurs transitoires fausses.
+		requestAnimationFrame(() => {
+			lastKnownWidth = window.innerWidth
+			lastKnownHeight = window.innerHeight
+			resync()
+		})
+	}
+
 	document.addEventListener("visibilitychange", () => {
-		if (document.visibilityState === "visible") resync()
+		if (document.visibilityState === "hidden") pauseForBackground()
+		else resumeFromBackground()
+	})
+
+	window.addEventListener("pageshow", (event) => {
+		// Retour depuis le cache de navigation (bfcache) : équivalent à une
+		// reprise depuis l'arrière-plan, mêmes garde-fous.
+		if ((event as PageTransitionEvent).persisted) resumeFromBackground()
 	})
 
 	const resizeObserver = new ResizeObserver((entries) => {
-		if (!currentZone) return
+		if (isBackgrounded || !currentZone) return
 		if (entries.some((e) => e.target === currentZone!.el)) updateTravelArea()
 	})
+
+	// --------------------------------------------------
+	// Changement de page (Nuxt) : recalage après navigation
+	// --------------------------------------------------
+
+	try {
+		const router = useRouter()
+		router.afterEach(() => {
+			requestAnimationFrame(() => requestAnimationFrame(() => instancePublicResync()))
+		})
+	} catch {
+		// Hors contexte Nuxt (tests, usage standalone) : pas de hook routeur.
+	}
+
+	function instancePublicResync() {
+		resync()
+	}
+
+	// --------------------------------------------------
+	// Chargement du sprite initial
+	// --------------------------------------------------
 
 	loadSprite(options.spriteSrc).then((img) => {
 		activeImage = img
@@ -1090,7 +1264,10 @@ function createSprite(options: UseSpriteOptions) {
 	// API publique
 	// --------------------------------------------------
 
-	function registerZone(el: HTMLElement, zoneOptions: RegisterZoneOptions = {}): CatZoneHandle {
+	function registerZone(
+		el: HTMLElement,
+		zoneOptions: RegisterZoneOptions = {}
+	): CatZoneHandle {
 		let zone = zones.get(el)
 		const isNewZone = !zone
 		if (!zone) {
@@ -1128,23 +1305,12 @@ function createSprite(options: UseSpriteOptions) {
 				resizeObserver.unobserve(el)
 
 				if (currentZone === target) {
-					clearTimeout(pauseTimeout)
-					clearWanderTimer()
-					clearTimeout(growlHideTimeout)
-					currentTween?.kill()
-					gsap.killTweensOf(meow)
-					gsap.killTweensOf(growl)
-					gsap.set(meow, { opacity: 0 })
-					gsap.set(growl, { opacity: 0 })
-					isJumping = false
-					isHopping = false
-					meowVisible = false
-					growlVisible = false
+					resetTransientState()
 					currentZone = null
 				}
 			},
 		}
 	}
 
-	return { registerZone }
+	return { registerZone, resync }
 }
