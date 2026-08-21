@@ -453,6 +453,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 				<!-- Header : titre seul en haut -->
 				<div class="inset-x-edge top-section absolute z-20 pt-15 lg:pt-6">
 					<h2
+						v-text-reveal
 						class="font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
 					>
 						Featured projects
@@ -461,7 +462,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 
 				<!-- Bouton, en bas à droite -->
 				<div
-					class="lg:right-edge lg:bottom-edge absolute right-1/2 z-20 translate-x-1/2 bottom-20 md:bottom-50 lg:translate-x-0"
+					class="lg:right-edge lg:bottom-edge absolute right-1/2 bottom-20 z-20 translate-x-1/2 md:bottom-50 lg:translate-x-0"
 				>
 					<UiAnimatedButton
 						label="All projects"

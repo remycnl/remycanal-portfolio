@@ -2,12 +2,13 @@
 	<header class="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4">
 		<div
 			ref="boxRef"
+			style="visibility: hidden"
 			class="border-black-light pointer-events-auto flex flex-col overflow-hidden rounded-4xl border bg-black px-6 py-2.5 transition-[padding-left,padding-right] duration-400 lg:hover:px-10"
 		>
 			<div class="flex items-center justify-between gap-10 md:justify-start">
 				<NuxtLink
 					to="/"
-					class="flex max-h-8 max-w-8 items-center justify-center select-none"
+					class="flex max-h-8 max-w-8 shrink-0 items-center justify-center select-none"
 					@contextmenu.prevent
 					@click="closeMenu"
 				>
@@ -15,6 +16,8 @@
 						ref="logoImgRef"
 						src="/logos/R-lime.svg"
 						alt="Rémy Canal"
+						width="32"
+						height="32"
 						class="h-8 w-8"
 						@mouseenter="onLogoEnter"
 						@mouseleave="onLogoLeave"
@@ -23,6 +26,7 @@
 				</NuxtLink>
 
 				<nav
+					ref="navRef"
 					class="font-lineal-bold relative hidden items-center gap-7 tracking-wide text-white uppercase md:flex"
 					@mouseleave="onNavLeave"
 				>
@@ -37,13 +41,20 @@
 						:key="link.to"
 						:ref="(el) => setLinkRef(el, index)"
 						:to="link.to"
-						class="relative z-10 transition-colors duration-300"
+						class="relative z-10 block transition-colors duration-300"
 						:class="isActive(link) ? 'text-lime' : 'hover:text-lime'"
 						@mouseenter="onLinkEnter(index)"
 						@focus="onLinkEnter(index)"
 						@click="onLinkClick(index)"
 					>
-						{{ link.label }}
+						<span
+							v-for="(char, ci) in link.label.split('')"
+							:key="ci"
+							:ref="(el) => setNavCharRef(el, index, ci)"
+							class="inline-block"
+							style="opacity: 0"
+							>{{ char === " " ? "\u00A0" : char }}</span
+						>
 					</NuxtLink>
 				</nav>
 
@@ -90,6 +101,12 @@
 </template>
 
 <script setup lang="ts">
+// Scope module (pas composant) : reste `true` tant que le bundle JS vit,
+// donc rejoué uniquement sur un vrai reload / première arrivée sur le site,
+// jamais lors d'une navigation SPA interne (le header reste monté ou, s'il
+// est remonté, le module lui n'est pas ré-évalué).
+let hasPlayedIntro = false
+
 const route = useRoute()
 
 const links = [
@@ -113,16 +130,25 @@ const mobileNavInnerRef = useTemplateRef<HTMLElement>("mobileNavInnerRef")
 const menuBtnRef = useTemplateRef<HTMLElement>("menuBtnRef")
 const menuIconRef = useTemplateRef<HTMLElement>("menuIconRef")
 const logoImgRef = useTemplateRef<HTMLElement>("logoImgRef")
+const navRef = useTemplateRef<HTMLElement>("navRef")
 
 const {
 	onWiggleEnter: onLogoEnter,
 	onWiggleLeave: onLogoLeave,
 	onWigglePress: onLogoPress,
+	wiggle: playLogoWiggle,
 } = useWiggle(logoImgRef)
 
 const linkEls: (HTMLElement | null)[] = []
 function setLinkRef(el: any, index: number) {
 	linkEls[index] = (el?.$el ?? el) as HTMLElement | null
+}
+
+// Lettres du reveal typewriter, groupées par lien.
+const navCharEls: (HTMLElement | null)[][] = []
+function setNavCharRef(el: any, index: number, charIndex: number) {
+	if (!navCharEls[index]) navCharEls[index] = []
+	navCharEls[index][charIndex] = (el?.$el ?? el) as HTMLElement | null
 }
 
 const mobileLinkEls: (HTMLElement | null)[] = []
@@ -151,6 +177,19 @@ let closeMenu: () => void = () => {}
 const { useGsapContext } = useGsap()
 
 useGsapContext(({ gsap }) => {
+	const prefersReducedMotion = window.matchMedia(
+		"(prefers-reduced-motion: reduce)"
+	).matches
+
+	async function waitForFonts() {
+		if (!("fonts" in document)) return
+		try {
+			await document.fonts.ready
+		} catch {
+			/* noop */
+		}
+	}
+
 	let hideTimer: ReturnType<typeof setTimeout> | null = null
 	let isIndicatorVisible = false
 
@@ -223,8 +262,6 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
-	let prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
 	const cornerDots = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-c"))
 		: []
@@ -236,6 +273,161 @@ useGsapContext(({ gsap }) => {
 		: []
 
 	gsap.set([...cornerDots, ...centerDot, ...edgeDots], { transformOrigin: "50% 50%" })
+
+	// --- Intro première visite -------------------------------------------
+	// Séquencement réel en 3 temps : pop de la bulle+logo -> giggle du logo
+	// (on attend sa fin, la timeline de useWiggle étant thenable) -> expansion
+	// + reveal des liens.
+	//
+	// Perf : tout ce qui peut être compositor-only (scale, opacity de la
+	// box/logo) est libre d'être aussi rebondi qu'on veut. Seules
+	// `width`/`paddingLeft/Right` sur la box déclenchent du layout — isolées
+	// via `contain: layout paint style`. Le reveal des lettres n'anime que
+	// `opacity`, avec `force3D: false` explicite (le timeline `tl` a
+	// `force3D: true` par défaut pour la box, mais promouvoir du texte sur
+	// un layer GPU décale son rendu subpixel le temps que le layer existe —
+	// d'où un micro-décalage visible tant qu'aucun repaint n'est déclenché,
+	// typiquement au hover). `clearProps: "opacity"` retire ensuite tout
+	// style inline résiduel une fois l'animation terminée.
+
+	async function playHeaderIntro() {
+		const box = boxRef.value
+		const logo = logoImgRef.value
+		if (!box || !logo) return
+
+		// nav + bouton burger sont retirés du flux pendant la phase "bulle" :
+		// sinon leur largeur naturelle (même invisible) force le flex à
+		// écraser le logo dans une box de ~52px. On les remet dans le flux
+		// uniquement quand `box` a quasi retrouvé sa largeur finale.
+		const offFlowEls = [navRef.value, menuBtnRef.value].filter((el): el is HTMLElement =>
+			Boolean(el)
+		)
+
+		// Toutes les lectures de layout d'abord, avant la moindre écriture,
+		// pour éviter tout forced reflow intermédiaire.
+		const naturalWidth = box.getBoundingClientRect().width
+		const circleSize = box.getBoundingClientRect().height
+		const boxStyles = window.getComputedStyle(box)
+		const naturalPaddingX = parseFloat(boxStyles.paddingLeft)
+		const collapsedPaddingX = parseFloat(boxStyles.paddingTop)
+
+		const charGroups = navCharEls.map((chars) =>
+			(chars ?? []).filter((c): c is HTMLElement => Boolean(c))
+		)
+
+		const d = prefersReducedMotion ? 0.01 : 1
+
+		gsap.set(box, {
+			visibility: "visible",
+			width: circleSize,
+			paddingLeft: collapsedPaddingX,
+			paddingRight: collapsedPaddingX,
+			opacity: 0,
+			scale: 0.55,
+			transformOrigin: "50% 50%",
+			// Isole le recalcul de layout à la box elle-même pendant toute
+			// l'intro : le reste de la page n'est jamais concerné par les
+			// changements de width/padding, ce qui réduit le coût du reflow.
+			contain: "layout paint style",
+			// neutralise la transition CSS Tailwind (padding-left/right) le
+			// temps de l'intro : sinon elle se bat avec GSAP sur les mêmes
+			// propriétés frame par frame et ça saccade.
+			transition: "none",
+			willChange: "opacity, transform",
+			force3D: true,
+		})
+		gsap.set(logo, { scale: 0, opacity: 0, transformOrigin: "50% 50%", force3D: true })
+		gsap.set(charGroups.flat(), { opacity: 0, force3D: false })
+		gsap.set(offFlowEls, { display: "none" })
+		if (menuBtnRef.value) gsap.set(menuBtnRef.value, { autoAlpha: 0, scale: 0.55 })
+
+		// 1. Pop de la bulle puis du logo — scale/opacity, 100% compositor :
+		// on peut se permettre un vrai élastique sans craindre le moindre lag.
+		const popTl = gsap.timeline({ defaults: { overwrite: "auto", force3D: true } })
+		popTl
+			.to(box, { opacity: 1, scale: 1, duration: 0.72 * d, ease: "elastic.out(1, 0.62)" })
+			.to(
+				logo,
+				{ scale: 1, opacity: 1, duration: 0.6 * d, ease: "elastic.out(1, 0.55)" },
+				"-=0.5"
+			)
+
+		await popTl
+
+		// 2. Wiggle du logo — on attend sa fin réelle (timeline thenable)
+		// avant de lancer l'expansion, plutôt que de deviner sa durée.
+		await playLogoWiggle()
+
+		// 3. Expansion de la box : le seul segment qui touche au layout,
+		// donc un seul rebond net (back.out) plutôt qu'une oscillation
+		// élastique — ça reste bouncy visuellement tout en ne déclenchant
+		// qu'un aller-retour de reflow, pas dix.
+		const tl = gsap.timeline({
+			defaults: { overwrite: "auto", force3D: true },
+			onComplete: () => {
+				gsap.set(box, {
+					clearProps:
+						"width,paddingLeft,paddingRight,opacity,scale,willChange,transition,force3D,contain",
+				})
+				hasPlayedIntro = true
+			},
+		})
+
+		tl.to(box, {
+			width: naturalWidth,
+			paddingLeft: naturalPaddingX,
+			paddingRight: naturalPaddingX,
+			duration: 1.05 * d,
+			ease: "back.out(1.7)",
+			onStart: () => gsap.set(box, { willChange: "width, padding" }),
+		})
+			// On ne remet nav/bouton dans le flux qu'en toute fin d'expansion
+			// (le `back.out` a déjà dépassé sa cible) : plus aucun écrasement
+			// du logo à corriger.
+			.set(offFlowEls, { clearProps: "display" }, "-=0.35")
+			.addLabel("links", "-=0.4")
+
+		if (menuBtnRef.value) {
+			tl.to(
+				menuBtnRef.value,
+				{ autoAlpha: 1, scale: 1, duration: 0.5 * d, ease: "elastic.out(1, 0.6)" },
+				"links"
+			)
+		}
+
+		// Reveal lettre par lettre, clean : uniquement `opacity`, jamais de
+		// transform ni de propriété de layout. `force3D: false` override le
+		// default hérité du timeline `tl` (sinon les lettres seraient
+		// promues sur un layer GPU, ce qui décale leur rendu subpixel tant
+		// qu'aucun repaint n'a lieu — typiquement au hover). `clearProps`
+		// retire le style inline en fin de tween pour revenir à un état
+		// strictement identique au CSS statique.
+		charGroups.forEach((chars, index) => {
+			if (!chars.length) return
+			tl.to(
+				chars,
+				{
+					opacity: 1,
+					duration: 0.22 * d,
+					stagger: 0.035 * d,
+					ease: "power1.out",
+					force3D: false,
+					clearProps: "opacity",
+				},
+				`links+=${index * 0.1 * d}`
+			)
+		})
+	}
+
+	if (hasPlayedIntro) {
+		gsap.set(boxRef.value, { visibility: "visible" })
+		gsap.set(
+			navCharEls.flat().filter((el): el is HTMLElement => Boolean(el)),
+			{ clearProps: "opacity" }
+		)
+	} else {
+		waitForFonts().then(() => playHeaderIntro())
+	}
 
 	function pressIcon() {
 		if (!menuIconRef.value) return
@@ -386,6 +578,7 @@ useGsapContext(({ gsap }) => {
 			menuBtnRef.value,
 			menuIconRef.value,
 			...mobileLinkEls,
+			...navCharEls.flat(),
 			...cornerDots,
 			...centerDot,
 			...edgeDots,

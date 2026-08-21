@@ -7,7 +7,7 @@
 			<div
 				class="top-edge left-edge absolute mt-2 ml-2 flex items-center justify-center gap-4"
 			>
-				<h3 class="font-vg5000 text-gray-dark text-end text-sm md:text-lg">
+				<h3 v-text-reveal="{ theme: 'violet' }" class="font-vg5000 text-gray-dark text-end text-sm md:text-lg">
 					Based in France
 				</h3>
 				<UiShapeStripes class="text-violet mb-1.5 h-3 w-3 md:h-5 md:w-5" />

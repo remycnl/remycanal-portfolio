@@ -12,19 +12,20 @@ export function useWiggle(
 	const { useGsapContext } = useGsap()
 	const { pressScale = 0.78, pressRotation = 8 } = options
 
-	let handleEnter = () => {}
+	let handleEnter: () => gsap.core.Timeline | undefined = () => undefined
 	let handleLeave = () => {}
-	let handlePress = () => {}
+	let handlePress: () => gsap.core.Timeline | undefined = () => undefined
 
 	useGsapContext(
 		({ gsap }) => {
-			if (target.value) gsap.set(target.value, { transformOrigin: "50% 50%" })
+			if (target.value)
+				gsap.set(target.value, { transformOrigin: "50% 50%", force3D: true })
 
 			let wiggleTl: ReturnType<typeof gsap.timeline> | null = null
 
 			handleEnter = () => {
 				const el = target.value
-				if (!el) return
+				if (!el) return undefined
 				wiggleTl?.kill()
 				wiggleTl = gsap
 					.timeline()
@@ -33,6 +34,10 @@ export function useWiggle(
 					.to(el, { rotation: -6, duration: 0.11, ease: "power1.inOut" })
 					.to(el, { rotation: 4, duration: 0.1, ease: "power1.inOut" })
 					.to(el, { rotation: 0, duration: 0.16, ease: "power2.out" })
+				// Timeline retournée : GSAP 3 la rend "thenable", ce qui permet
+				// à l'appelant de faire `await wiggle()` pour attendre sa fin
+				// réelle plutôt que de deviner sa durée avec un setTimeout.
+				return wiggleTl
 			}
 
 			handleLeave = () => {
@@ -44,10 +49,10 @@ export function useWiggle(
 
 			handlePress = () => {
 				const el = target.value
-				if (!el) return
+				if (!el) return undefined
 				wiggleTl?.kill()
 				gsap.killTweensOf(el)
-				gsap
+				const pressTl = gsap
 					.timeline()
 					.to(el, {
 						scale: pressScale,
@@ -56,6 +61,7 @@ export function useWiggle(
 						ease: "power2.in",
 					})
 					.to(el, { scale: 1, rotation: 0, duration: 0.45, ease: "elastic.out(1, 0.45)" })
+				return pressTl
 			}
 
 			return () => {
@@ -70,5 +76,6 @@ export function useWiggle(
 		onWiggleEnter: () => handleEnter(),
 		onWiggleLeave: () => handleLeave(),
 		onWigglePress: () => handlePress(),
+		wiggle: () => handleEnter(),
 	}
 }
