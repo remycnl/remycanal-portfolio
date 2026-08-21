@@ -1,9 +1,54 @@
 <template>
 	<header class="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4">
 		<div
+			ref="mobileOverlayRef"
+			style="visibility: hidden; opacity: 0; pointer-events: none"
+			class="bg-violet bg-grid-violet pointer-events-auto fixed inset-0 z-0 overflow-hidden overscroll-contain md:hidden"
+		>
+			<div
+				class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6"
+			>
+				<NuxtLink
+					v-for="(link, index) in links"
+					:key="link.to"
+					:ref="(el) => setMobileLinkRef(el, index)"
+					:to="link.to"
+					class="font-lineal-heavy pointer-events-auto relative z-10 text-4xl text-white uppercase sm:text-5xl"
+					@click="onMobileLinkClick(index)"
+				>
+					{{ link.label }}
+				</NuxtLink>
+			</div>
+
+			<div
+				ref="stickersLayerRef"
+				data-drag-bounds
+				class="pointer-events-none fixed inset-0 z-20"
+			>
+				<UiPopImage
+					v-for="(sticker, index) in visibleStickers"
+					:key="sticker.id"
+					:ref="(el) => setStickerRef(el, index)"
+					:src="sticker.src"
+					alt=""
+					:rotate="sticker.rotate"
+					:animate="false"
+					draggable
+					:data-index="index"
+					:img-class="`pointer-events-auto absolute z-[999] ${sticker.class}`"
+				/>
+			</div>
+		</div>
+
+		<div
 			ref="boxRef"
 			style="visibility: hidden"
-			class="border-black-light pointer-events-auto flex flex-col overflow-hidden rounded-4xl border bg-black px-6 py-2.5 transition-[padding-left,padding-right] duration-400 lg:hover:px-10"
+			:class="
+				open
+					? 'border-white bg-white text-black'
+					: 'border-black-light bg-black text-white'
+			"
+			class="pointer-events-auto relative z-10 flex flex-col overflow-hidden rounded-lg border px-6 py-2.5 transition-[background-color,border-color,color,padding-left,padding-right] duration-400 lg:hover:px-10"
 		>
 			<div class="flex items-center justify-between gap-10 md:justify-start">
 				<NuxtLink
@@ -12,28 +57,48 @@
 					@contextmenu.prevent
 					@click="closeMenu"
 				>
-					<img
-						ref="logoImgRef"
-						src="/logos/R-lime.svg"
-						alt="Rémy Canal"
-						width="32"
-						height="32"
-						class="h-8 w-8"
+					<span
+						ref="logoFlipRef"
+						class="relative block h-8 w-8"
+						style="perspective: 800px; transform-style: preserve-3d"
 						@mouseenter="onLogoEnter"
 						@mouseleave="onLogoLeave"
 						@pointerdown="onLogoPress"
-					/>
+					>
+						<img
+							src="/logos/R-lime.svg"
+							alt="Rémy Canal"
+							width="32"
+							height="32"
+							class="absolute inset-0 h-8 w-8"
+							style="backface-visibility: hidden; -webkit-backface-visibility: hidden"
+						/>
+
+						<img
+							src="/logos/R-violet.svg"
+							alt=""
+							aria-hidden="true"
+							width="32"
+							height="32"
+							class="absolute inset-0 h-8 w-8"
+							style="
+								transform: rotateY(180deg);
+								backface-visibility: hidden;
+								-webkit-backface-visibility: hidden;
+							"
+						/>
+					</span>
 				</NuxtLink>
 
 				<nav
 					ref="navRef"
-					class="font-lineal-bold relative hidden items-center gap-7 tracking-wide text-white uppercase md:flex"
+					class="font-lineal-bold relative hidden shrink-0 items-center gap-7 tracking-wide text-white uppercase md:flex"
 					@mouseleave="onNavLeave"
 				>
 					<span
 						ref="indicatorRef"
-						class="bg-lime/25 pointer-events-none absolute top-1/2 left-0 h-9 rounded-full opacity-0 will-change-transform"
-						style="transform: translateY(-50%) scale(0.85); width: 0px"
+						class="bg-lime/25 pointer-events-none absolute top-1/2 left-0 h-9 rounded-sm opacity-0 will-change-transform"
+						style="transform: translateY(-50%) scale(0.85); width: 0"
 					/>
 
 					<NuxtLink
@@ -53,18 +118,21 @@
 							:ref="(el) => setNavCharRef(el, index, ci)"
 							class="inline-block"
 							style="opacity: 0"
-							>{{ char === " " ? "\u00A0" : char }}</span
 						>
+							{{ char === " " ? "\u00A0" : char }}
+						</span>
 					</NuxtLink>
 				</nav>
 
 				<button
 					ref="menuBtnRef"
-					class="relative flex h-8 w-8 items-center justify-center self-center text-white md:hidden"
+					:class="open ? 'text-black-light' : 'text-white'"
+					class="relative flex h-8 w-8 items-center justify-center self-center md:hidden"
 					aria-label="Menu"
+					:aria-expanded="open"
 					@click="toggleMenu"
 				>
-					<svg ref="menuIconRef" width="18" height="18" viewBox="0 0 18 18" fill="none">
+					<svg ref="menuIconRef" width="24" height="24" viewBox="0 0 18 18" fill="none">
 						<circle class="dot dot-c" cx="3" cy="3" r="1.7" fill="currentColor" />
 						<circle class="dot dot-e" cx="9" cy="3" r="1.7" fill="currentColor" />
 						<circle class="dot dot-c" cx="15" cy="3" r="1.7" fill="currentColor" />
@@ -77,34 +145,11 @@
 					</svg>
 				</button>
 			</div>
-
-			<div ref="mobileNavRef" class="overflow-hidden md:hidden" style="height: 0px">
-				<nav
-					ref="mobileNavInnerRef"
-					class="font-lineal-bold flex flex-col items-center gap-4 tracking-wide text-white uppercase"
-				>
-					<NuxtLink
-						v-for="(link, index) in links"
-						:key="link.to"
-						:ref="(el) => setMobileLinkRef(el, index)"
-						:to="link.to"
-						class="transition-colors"
-						:class="isActive(link) ? 'text-lime' : 'hover:text-lime'"
-						@click="closeMenu"
-					>
-						{{ link.label }}
-					</NuxtLink>
-				</nav>
-			</div>
 		</div>
 	</header>
 </template>
 
 <script setup lang="ts">
-// Scope module (pas composant) : reste `true` tant que le bundle JS vit,
-// donc rejoué uniquement sur un vrai reload / première arrivée sur le site,
-// jamais lors d'une navigation SPA interne (le header reste monté ou, s'il
-// est remonté, le module lui n'est pas ré-évalué).
 let hasPlayedIntro = false
 
 const route = useRoute()
@@ -119,60 +164,143 @@ const links = [
 	{ to: "/contact", label: "Contact" },
 ]
 
+interface MenuSticker {
+	id: string
+	src: string
+	rotate: number
+	class: string
+}
+
+const stickers: MenuSticker[] = [
+	{
+		id: "remy",
+		src: "/stickers/sticker-remy.png",
+		rotate: -16,
+		class: "top-[22%] left-[10%] w-20 sm:top-[20%] sm:left-[15%] sm:w-20",
+	},
+	{
+		id: "wave",
+		src: "/stickers/sticker-wave.png",
+		rotate: 18,
+		class: "top-[27%] right-[10%] w-20 sm:top-[25%] sm:right-[15%] sm:w-20",
+	},
+	{
+		id: "raven",
+		src: "/stickers/sticker-raven.png",
+		rotate: -5,
+		class: "top-[47%] left-[7%] w-20 sm:top-[45%] sm:left-[13%] sm:w-20",
+	},
+	{
+		id: "computer",
+		src: "/stickers/sticker-computer.png",
+		rotate: 24,
+		class: "top-[52%] right-[7%] w-20 sm:top-[50%] sm:right-[13%] sm:w-20",
+	},
+	{
+		id: "robot",
+		src: "/stickers/sticker-robot.png",
+		rotate: -12,
+		class: "bottom-[10%] left-[10%] w-20 sm:bottom-[15%] sm:left-[15%] sm:w-20",
+	},
+]
+
 function isActive(link: { to: string }) {
 	return route.path === link.to || route.path.startsWith(`${link.to}/`)
 }
 
 const boxRef = useTemplateRef<HTMLElement>("boxRef")
 const indicatorRef = useTemplateRef<HTMLElement>("indicatorRef")
-const mobileNavRef = useTemplateRef<HTMLElement>("mobileNavRef")
-const mobileNavInnerRef = useTemplateRef<HTMLElement>("mobileNavInnerRef")
 const menuBtnRef = useTemplateRef<HTMLElement>("menuBtnRef")
 const menuIconRef = useTemplateRef<HTMLElement>("menuIconRef")
-const logoImgRef = useTemplateRef<HTMLElement>("logoImgRef")
+const logoFlipRef = useTemplateRef<HTMLElement>("logoFlipRef")
 const navRef = useTemplateRef<HTMLElement>("navRef")
+const mobileOverlayRef = useTemplateRef<HTMLElement>("mobileOverlayRef")
+const stickersLayerRef = useTemplateRef<HTMLElement>("stickersLayerRef")
 
 const {
-	onWiggleEnter: onLogoEnter,
+	onWiggleEnter: onLogoEnterBase,
 	onWiggleLeave: onLogoLeave,
 	onWigglePress: onLogoPress,
 	wiggle: playLogoWiggle,
-} = useWiggle(logoImgRef)
+} = useWiggle(logoFlipRef)
+
+let introInProgress = false
+
+function onLogoEnter() {
+	if (introInProgress) return
+	onLogoEnterBase()
+}
 
 const linkEls: (HTMLElement | null)[] = []
+const mobileLinkEls: (HTMLElement | null)[] = []
+const navCharEls: (HTMLElement | null)[][] = []
+const stickerRefs: (HTMLElement | null)[] = []
+
+function getElementAt(
+	elements: (HTMLElement | null)[],
+	index: number
+): HTMLElement | null {
+	return elements[index] ?? null
+}
+
 function setLinkRef(el: any, index: number) {
 	linkEls[index] = (el?.$el ?? el) as HTMLElement | null
 }
 
-// Lettres du reveal typewriter, groupées par lien.
-const navCharEls: (HTMLElement | null)[][] = []
-function setNavCharRef(el: any, index: number, charIndex: number) {
-	if (!navCharEls[index]) navCharEls[index] = []
-	navCharEls[index][charIndex] = (el?.$el ?? el) as HTMLElement | null
-}
-
-const mobileLinkEls: (HTMLElement | null)[] = []
 function setMobileLinkRef(el: any, index: number) {
 	mobileLinkEls[index] = (el?.$el ?? el) as HTMLElement | null
 }
 
+function setNavCharRef(el: any, index: number, charIndex: number) {
+	if (!navCharEls[index]) {
+		navCharEls[index] = []
+	}
+
+	navCharEls[index][charIndex] = (el?.$el ?? el) as HTMLElement | null
+}
+
+function setStickerRef(el: any, index: number) {
+	stickerRefs[index] = (el?.$el ?? el) as HTMLElement | null
+}
+
+const visibleStickers = ref<MenuSticker[]>([])
 const open = ref(false)
-const isAnimating = ref(false)
-
-const CONFIG = {
-	openPadX: 24,
-	openPadBottom: 36,
-	collapsedPadY: 10,
-	ease: "power3.inOut",
-} as const
-
-let collapsedWidth = 0
 
 let onLinkEnter: (index: number) => void = () => {}
 let onNavLeave: () => void = () => {}
 let onLinkClick: (index: number) => void = () => {}
+let onMobileLinkClick: (index: number) => void = () => {}
 let toggleMenu: () => void = () => {}
 let closeMenu: () => void = () => {}
+
+let lockedScrollY = 0
+
+function lockScroll() {
+	lockedScrollY = window.scrollY
+
+	const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
+	document.body.style.position = "fixed"
+	document.body.style.top = `-${lockedScrollY}px`
+	document.body.style.left = "0"
+	document.body.style.right = "0"
+	document.body.style.overflow = "hidden"
+
+	if (scrollbarWidth > 0) {
+		document.body.style.paddingRight = `${scrollbarWidth}px`
+	}
+}
+
+function unlockScroll() {
+	document.body.style.position = ""
+	document.body.style.top = ""
+	document.body.style.left = ""
+	document.body.style.right = ""
+	document.body.style.overflow = ""
+	document.body.style.paddingRight = ""
+
+	window.scrollTo(0, lockedScrollY)
+}
 
 const { useGsapContext } = useGsap()
 
@@ -181,12 +309,15 @@ useGsapContext(({ gsap }) => {
 		"(prefers-reduced-motion: reduce)"
 	).matches
 
+	const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches
+
 	async function waitForFonts() {
 		if (!("fonts" in document)) return
+
 		try {
 			await document.fonts.ready
 		} catch {
-			/* noop */
+			// noop
 		}
 	}
 
@@ -194,16 +325,24 @@ useGsapContext(({ gsap }) => {
 	let isIndicatorVisible = false
 
 	function clearHideTimer() {
-		if (hideTimer) clearTimeout(hideTimer)
+		if (hideTimer) {
+			clearTimeout(hideTimer)
+		}
+
 		hideTimer = null
 	}
 
 	function hideIndicator(delay = 120) {
 		clearHideTimer()
+
 		isIndicatorVisible = false
+
 		hideTimer = setTimeout(() => {
-			if (!indicatorRef.value) return
-			gsap.to(indicatorRef.value, {
+			const indicator = indicatorRef.value
+
+			if (!indicator) return
+
+			gsap.to(indicator, {
 				opacity: 0,
 				scale: 0.9,
 				duration: 0.22,
@@ -213,33 +352,21 @@ useGsapContext(({ gsap }) => {
 		}, delay)
 	}
 
-	onLinkEnter = (index: number) => {
-		clearHideTimer()
-		moveIndicatorTo(index)
-	}
-
-	onNavLeave = () => hideIndicator(140)
-
-	onLinkClick = (index: number) => {
-		const indicator = indicatorRef.value
-		if (!indicator || !isIndicatorVisible) return
-		gsap
-			.timeline({ overwrite: "auto" })
-			.to(indicator, { scale: 0.85, duration: 0.12, ease: "power2.in" })
-			.to(indicator, { scale: 1, duration: 0.32, ease: "back.out(2.5)" })
-	}
-
 	function moveIndicatorTo(index: number) {
-		const linkEl = linkEls[index]
+		const link = getElementAt(linkEls, index)
 		const indicator = indicatorRef.value
-		if (!linkEl || !indicator) return
 
-		const left = linkEl.offsetLeft - 12
-		const width = linkEl.offsetWidth + 24
+		if (!link || !indicator) return
+
+		const left = link.offsetLeft - 12
+		const width = link.offsetWidth + 24
 
 		if (!isIndicatorVisible) {
-			gsap.killTweensOf(indicator)
-			gsap.set(indicator, { x: left, width })
+			gsap.set(indicator, {
+				x: left,
+				width,
+			})
+
 			gsap.to(indicator, {
 				opacity: 1,
 				scale: 1,
@@ -247,6 +374,7 @@ useGsapContext(({ gsap }) => {
 				ease: "power2.out",
 				overwrite: "auto",
 			})
+
 			isIndicatorVisible = true
 			return
 		}
@@ -262,60 +390,157 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
+	onLinkEnter = (index) => {
+		clearHideTimer()
+		moveIndicatorTo(index)
+	}
+
+	onNavLeave = () => hideIndicator(140)
+
+	function bounceLink(el: HTMLElement | null) {
+		if (!el || prefersReducedMotion || !isTouchDevice) return
+
+		gsap.killTweensOf(el)
+
+		gsap
+			.timeline()
+			.set(el, {
+				transformOrigin: "50% 50%",
+				willChange: "transform",
+			})
+			.to(el, {
+				scale: 0.9,
+				duration: 0.1,
+				ease: "power2.out",
+			})
+			.to(el, {
+				scale: 1.08,
+				duration: 0.2,
+				ease: "back.out(2.8)",
+			})
+			.to(el, {
+				scale: 1,
+				duration: 0.28,
+				ease: "elastic.out(1, 0.55)",
+				clearProps: "willChange",
+			})
+	}
+
+	onLinkClick = (index) => {
+		const link = getElementAt(linkEls, index)
+
+		bounceLink(link)
+
+		const indicator = indicatorRef.value
+
+		if (!indicator || !isIndicatorVisible) return
+
+		gsap
+			.timeline({ overwrite: "auto" })
+			.to(indicator, {
+				scale: 0.85,
+				duration: 0.12,
+				ease: "power2.in",
+			})
+			.to(indicator, {
+				scale: 1,
+				duration: 0.32,
+				ease: "back.out(2.5)",
+			})
+	}
+
+	onMobileLinkClick = (index) => {
+		const link = getElementAt(mobileLinkEls, index)
+
+		bounceLink(link)
+
+		if (prefersReducedMotion) {
+			closeMenu()
+			return
+		}
+
+		window.setTimeout(() => {
+			if (open.value) {
+				closeMenu()
+			}
+		}, 110)
+	}
+
 	const cornerDots = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-c"))
 		: []
+
 	const centerDot = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-m"))
 		: []
+
 	const edgeDots = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-e"))
 		: []
 
-	gsap.set([...cornerDots, ...centerDot, ...edgeDots], { transformOrigin: "50% 50%" })
+	gsap.set([...cornerDots, ...centerDot, ...edgeDots], {
+		transformOrigin: "50% 50%",
+	})
 
-	// --- Intro première visite -------------------------------------------
-	// Séquencement réel en 3 temps : pop de la bulle+logo -> giggle du logo
-	// (on attend sa fin, la timeline de useWiggle étant thenable) -> expansion
-	// + reveal des liens.
-	//
-	// Perf : tout ce qui peut être compositor-only (scale, opacity de la
-	// box/logo) est libre d'être aussi rebondi qu'on veut. Seules
-	// `width`/`paddingLeft/Right` sur la box déclenchent du layout — isolées
-	// via `contain: layout paint style`. Le reveal des lettres n'anime que
-	// `opacity`, avec `force3D: false` explicite (le timeline `tl` a
-	// `force3D: true` par défaut pour la box, mais promouvoir du texte sur
-	// un layer GPU décale son rendu subpixel le temps que le layer existe —
-	// d'où un micro-décalage visible tant qu'aucun repaint n'est déclenché,
-	// typiquement au hover). `clearProps: "opacity"` retire ensuite tout
-	// style inline résiduel une fois l'animation terminée.
+	function animateLogoFlip(isOpen: boolean) {
+		const logo = logoFlipRef.value
+
+		if (!logo) return
+
+		const rotation = isOpen ? 180 : 0
+
+		gsap.killTweensOf(logo)
+
+		if (prefersReducedMotion) {
+			gsap.set(logo, {
+				rotationY: rotation,
+				rotationX: 0,
+				rotationZ: 0,
+			})
+
+			return
+		}
+
+		gsap.to(logo, {
+			rotationY: rotation,
+			rotationX: isOpen ? -2 : 0,
+			rotationZ: isOpen ? 1 : 0,
+			duration: 0.55,
+			ease: "power2.inOut",
+			transformPerspective: 800,
+			transformOrigin: "50% 50%",
+			force3D: true,
+			overwrite: "auto",
+		})
+	}
 
 	async function playHeaderIntro() {
 		const box = boxRef.value
-		const logo = logoImgRef.value
+		const logo = logoFlipRef.value
+
 		if (!box || !logo) return
 
-		// nav + bouton burger sont retirés du flux pendant la phase "bulle" :
-		// sinon leur largeur naturelle (même invisible) force le flex à
-		// écraser le logo dans une box de ~52px. On les remet dans le flux
-		// uniquement quand `box` a quasi retrouvé sa largeur finale.
 		const offFlowEls = [navRef.value, menuBtnRef.value].filter((el): el is HTMLElement =>
 			Boolean(el)
 		)
 
-		// Toutes les lectures de layout d'abord, avant la moindre écriture,
-		// pour éviter tout forced reflow intermédiaire.
 		const naturalWidth = box.getBoundingClientRect().width
+
 		const circleSize = box.getBoundingClientRect().height
+
 		const boxStyles = window.getComputedStyle(box)
+
 		const naturalPaddingX = parseFloat(boxStyles.paddingLeft)
+
 		const collapsedPaddingX = parseFloat(boxStyles.paddingTop)
 
 		const charGroups = navCharEls.map((chars) =>
-			(chars ?? []).filter((c): c is HTMLElement => Boolean(c))
+			(chars ?? []).filter((el): el is HTMLElement => Boolean(el))
 		)
 
 		const d = prefersReducedMotion ? 0.01 : 1
+
+		introInProgress = true
 
 		gsap.set(box, {
 			visibility: "visible",
@@ -323,52 +548,63 @@ useGsapContext(({ gsap }) => {
 			paddingLeft: collapsedPaddingX,
 			paddingRight: collapsedPaddingX,
 			opacity: 0,
-			scale: 0.55,
-			transformOrigin: "50% 50%",
-			// Isole le recalcul de layout à la box elle-même pendant toute
-			// l'intro : le reste de la page n'est jamais concerné par les
-			// changements de width/padding, ce qui réduit le coût du reflow.
+			y: -64,
 			contain: "layout paint style",
-			// neutralise la transition CSS Tailwind (padding-left/right) le
-			// temps de l'intro : sinon elle se bat avec GSAP sur les mêmes
-			// propriétés frame par frame et ça saccade.
 			transition: "none",
 			willChange: "opacity, transform",
 			force3D: true,
 		})
-		gsap.set(logo, { scale: 0, opacity: 0, transformOrigin: "50% 50%", force3D: true })
-		gsap.set(charGroups.flat(), { opacity: 0, force3D: false })
-		gsap.set(offFlowEls, { display: "none" })
-		if (menuBtnRef.value) gsap.set(menuBtnRef.value, { autoAlpha: 0, scale: 0.55 })
 
-		// 1. Pop de la bulle puis du logo — scale/opacity, 100% compositor :
-		// on peut se permettre un vrai élastique sans craindre le moindre lag.
-		const popTl = gsap.timeline({ defaults: { overwrite: "auto", force3D: true } })
-		popTl
-			.to(box, { opacity: 1, scale: 1, duration: 0.72 * d, ease: "elastic.out(1, 0.62)" })
-			.to(
-				logo,
-				{ scale: 1, opacity: 1, duration: 0.6 * d, ease: "elastic.out(1, 0.55)" },
-				"-=0.5"
-			)
+		gsap.set(logo, {
+			pointerEvents: "none",
+			rotationY: 0,
+			rotationX: 0,
+			rotationZ: 0,
+		})
 
-		await popTl
+		gsap.set(charGroups.flat(), {
+			opacity: 0,
+			force3D: false,
+		})
 
-		// 2. Wiggle du logo — on attend sa fin réelle (timeline thenable)
-		// avant de lancer l'expansion, plutôt que de deviner sa durée.
+		gsap.set(offFlowEls, {
+			display: "none",
+		})
+
+		if (menuBtnRef.value) {
+			gsap.set(menuBtnRef.value, {
+				autoAlpha: 0,
+			})
+		}
+
+		await gsap.delayedCall(1 * d, () => {})
+
+		await gsap.to(box, {
+			y: 0,
+			opacity: 1,
+			duration: 0.9 * d,
+			ease: "power3.out",
+		})
+
 		await playLogoWiggle()
 
-		// 3. Expansion de la box : le seul segment qui touche au layout,
-		// donc un seul rebond net (back.out) plutôt qu'une oscillation
-		// élastique — ça reste bouncy visuellement tout en ne déclenchant
-		// qu'un aller-retour de reflow, pas dix.
 		const tl = gsap.timeline({
-			defaults: { overwrite: "auto", force3D: true },
+			defaults: {
+				overwrite: "auto",
+				force3D: true,
+			},
+
 			onComplete: () => {
 				gsap.set(box, {
 					clearProps:
-						"width,paddingLeft,paddingRight,opacity,scale,willChange,transition,force3D,contain",
+						"width,paddingLeft,paddingRight,opacity,y,willChange,transition,force3D,contain",
 				})
+
+				gsap.set(logo, {
+					clearProps: "pointerEvents",
+				})
+
+				introInProgress = false
 				hasPlayedIntro = true
 			},
 		})
@@ -379,31 +615,37 @@ useGsapContext(({ gsap }) => {
 			paddingRight: naturalPaddingX,
 			duration: 1.05 * d,
 			ease: "back.out(1.7)",
-			onStart: () => gsap.set(box, { willChange: "width, padding" }),
+			onStart: () => {
+				gsap.set(box, {
+					willChange: "width, padding",
+				})
+			},
 		})
-			// On ne remet nav/bouton dans le flux qu'en toute fin d'expansion
-			// (le `back.out` a déjà dépassé sa cible) : plus aucun écrasement
-			// du logo à corriger.
-			.set(offFlowEls, { clearProps: "display" }, "-=0.35")
+			.set(
+				offFlowEls,
+				{
+					clearProps: "display",
+				},
+				"-=0.35"
+			)
 			.addLabel("links", "-=0.4")
 
 		if (menuBtnRef.value) {
 			tl.to(
 				menuBtnRef.value,
-				{ autoAlpha: 1, scale: 1, duration: 0.5 * d, ease: "elastic.out(1, 0.6)" },
+				{
+					autoAlpha: 1,
+					scale: 1,
+					duration: 0.5 * d,
+					ease: "elastic.out(1, 0.6)",
+				},
 				"links"
 			)
 		}
 
-		// Reveal lettre par lettre, clean : uniquement `opacity`, jamais de
-		// transform ni de propriété de layout. `force3D: false` override le
-		// default hérité du timeline `tl` (sinon les lettres seraient
-		// promues sur un layer GPU, ce qui décale leur rendu subpixel tant
-		// qu'aucun repaint n'a lieu — typiquement au hover). `clearProps`
-		// retire le style inline en fin de tween pour revenir à un état
-		// strictement identique au CSS statique.
 		charGroups.forEach((chars, index) => {
 			if (!chars.length) return
+
 			tl.to(
 				chars,
 				{
@@ -420,169 +662,380 @@ useGsapContext(({ gsap }) => {
 	}
 
 	if (hasPlayedIntro) {
-		gsap.set(boxRef.value, { visibility: "visible" })
+		gsap.set(boxRef.value, {
+			visibility: "visible",
+		})
+
 		gsap.set(
 			navCharEls.flat().filter((el): el is HTMLElement => Boolean(el)),
-			{ clearProps: "opacity" }
+			{
+				clearProps: "opacity",
+			}
 		)
 	} else {
-		waitForFonts().then(() => playHeaderIntro())
+		waitForFonts().then(playHeaderIntro)
 	}
 
-	function pressIcon() {
-		if (!menuIconRef.value) return
-		gsap.killTweensOf(menuIconRef.value)
-		gsap
-			.timeline()
-			.to(menuIconRef.value, { scale: 0.82, duration: 0.1, ease: "power2.in" })
-			.to(menuIconRef.value, { scale: 1, duration: 0.36, ease: "back.out(2.4)" })
+	let mobileMenuTween: gsap.core.Tween | gsap.core.Timeline | null = null
+
+	let stickerOpenTween: ReturnType<typeof gsap.timeline> | null = null
+
+	let stickerCloseTween: ReturnType<typeof gsap.timeline> | null = null
+
+	let stickerTimers: ReturnType<typeof setTimeout>[] = []
+
+	const STICKER_OPEN_DELAY = 0.25
+	const STICKER_STAGGER = 0.08
+	const STICKER_CLOSE_STAGGER = 0.045
+	const STICKER_CLOSE_DURATION = 0.28
+
+	function killStickerTween(tween: ReturnType<typeof gsap.timeline> | null) {
+		tween?.kill()
 	}
 
-	toggleMenu = () => {
-		if (isAnimating.value) return
-		pressIcon()
-		open.value ? closeMenu() : openMenu()
+	function clearStickerTimers() {
+		stickerTimers.forEach(clearTimeout)
+		stickerTimers = []
 	}
 
-	function openMenu() {
-		const box = boxRef.value
-		const mobileNav = mobileNavRef.value
-		const mobileNavInner = mobileNavInnerRef.value
-		if (!box || !mobileNav || !mobileNavInner) return
+	function popStickers() {
+		clearStickerTimers()
+		killStickerTween(stickerOpenTween)
+		killStickerTween(stickerCloseTween)
 
-		isAnimating.value = true
-		open.value = true
+		visibleStickers.value = [...stickers]
 
-		collapsedWidth = box.getBoundingClientRect().width
-		const parentWidth = box.parentElement?.getBoundingClientRect().width ?? collapsedWidth
-		const targetHeight = mobileNavInner.getBoundingClientRect().height + CONFIG.openPadX
+		nextTick(() => {
+			const d = prefersReducedMotion ? 0.01 : 1
 
-		gsap.set(box, { width: collapsedWidth, willChange: "width, padding" })
-		gsap.set(mobileNav, { willChange: "height" })
-		gsap.set(mobileNavInner, { marginTop: CONFIG.openPadX })
-		gsap.set(mobileLinkEls.filter(Boolean), { autoAlpha: 0, y: 10 })
+			stickerRefs.forEach((el, index) => {
+				if (!el) return
+
+				const sticker = stickers[index]
+
+				if (!sticker) return
+
+				const jitter = gsap.utils.random(-4, 4)
+
+				gsap.set(el, {
+					opacity: 0,
+					scale: 0.25,
+					y: 60,
+					rotation: sticker.rotate - 35,
+					transformOrigin: "50% 50%",
+					force3D: true,
+					pointerEvents: "none",
+				})
+
+				const timer = setTimeout(
+					() => {
+						if (!open.value) return
+
+						el.style.pointerEvents = "auto"
+						el.style.willChange = "transform, opacity"
+
+						gsap
+							.timeline({
+								onComplete: () => {
+									el.style.willChange = "auto"
+								},
+							})
+							.to(
+								el,
+								{
+									opacity: 1,
+									duration: 0.25 * d,
+									ease: "power1.out",
+								},
+								0
+							)
+							.to(
+								el,
+								{
+									y: 0,
+									scale: 1,
+									duration: 0.6 * d,
+									ease: "elastic.out(1, 0.55)",
+								},
+								0
+							)
+							.to(
+								el,
+								{
+									rotation: sticker.rotate + jitter,
+									duration: 0.6 * d,
+									ease: "elastic.out(1, 0.65)",
+								},
+								0
+							)
+					},
+					(STICKER_OPEN_DELAY + index * STICKER_STAGGER) * 1000
+				)
+
+				stickerTimers.push(timer)
+			})
+		})
+	}
+
+	function depopStickers() {
+		clearStickerTimers()
+		killStickerTween(stickerOpenTween)
+		killStickerTween(stickerCloseTween)
+
+		const elements = stickerRefs.filter((el): el is HTMLElement => Boolean(el))
 
 		const d = prefersReducedMotion ? 0.01 : 1
 
+		if (!elements.length) {
+			visibleStickers.value = []
+			stickerRefs.length = 0
+			return
+		}
+
 		const tl = gsap.timeline({
-			defaults: { ease: CONFIG.ease },
 			onComplete: () => {
-				isAnimating.value = false
-				gsap.set([box, mobileNav], { clearProps: "willChange" })
+				visibleStickers.value = []
+				stickerRefs.length = 0
 			},
 		})
 
-		tl.to(box, { width: parentWidth, duration: 0.45 * d })
-			.addLabel("grow", ">-0.05")
-			.to(
-				box,
-				{
-					paddingTop: CONFIG.openPadX,
-					paddingBottom: CONFIG.openPadBottom,
-					duration: 0.45 * d,
-				},
-				"grow"
-			)
-			.to(
-				mobileNav,
-				{ height: targetHeight, duration: 0.45 * d, ease: "power3.out" },
-				"grow"
-			)
+		elements
+			.slice()
+			.reverse()
+			.forEach((el, index) => {
+				tl.to(
+					el,
+					{
+						opacity: 0,
+						scale: 0.25,
+						y: 60,
+						rotation: "-=35",
+						duration: STICKER_CLOSE_DURATION * d,
+						ease: "power2.in",
+						overwrite: "auto",
+					},
+					index * STICKER_CLOSE_STAGGER * d
+				)
+			})
 
-		tl.to(
-			edgeDots,
-			{ scale: 0, opacity: 0, duration: 0.4 * d, ease: "power2.inOut" },
-			"grow"
-		)
-			.to(
-				[...cornerDots, ...centerDot],
-				{ scale: 1.18, duration: 0.24 * d, ease: "power2.out" },
-				"grow"
-			)
-			.to(
-				[...cornerDots, ...centerDot],
-				{ scale: 1, duration: 0.4 * d, ease: "elastic.out(1, 0.55)" },
-				"grow+=0.2"
-			)
+		stickerCloseTween = tl
+	}
 
-		tl.to(
-			mobileLinkEls.filter(Boolean),
-			{ autoAlpha: 1, y: 0, duration: 0.32 * d, stagger: 0.06 * d, ease: "power2.out" },
-			">-0.15"
-		)
+	/**
+	 * Ouverture du menu mobile.
+	 *
+	 * Pas de pixel transition.
+	 * L'overlay apparaît directement avec une petite
+	 * animation d'opacité/scale, puis les stickers apparaissent.
+	 */
+	function playMobileMenuOpen() {
+		const overlay = mobileOverlayRef.value
+
+		if (!overlay) return
+
+		mobileMenuTween?.kill()
+
+		const d = prefersReducedMotion ? 0.01 : 1
+
+		gsap.set(overlay, {
+			autoAlpha: 1,
+			pointerEvents: "auto",
+		})
+
+		if (prefersReducedMotion) {
+			gsap.set(overlay, {
+				opacity: 1,
+				scale: 1,
+			})
+
+			popStickers()
+			return
+		}
+
+		gsap.set(overlay, {
+			opacity: 0,
+			scale: 0.98,
+			transformOrigin: "50% 50%",
+			force3D: true,
+		})
+
+		mobileMenuTween = gsap.to(overlay, {
+			opacity: 1,
+			scale: 1,
+			duration: 0.38 * d,
+			ease: "power3.out",
+			force3D: true,
+			onComplete: () => {
+				gsap.set(overlay, {
+					clearProps: "opacity,scale,transformOrigin,force3D",
+				})
+
+				popStickers()
+			},
+		})
+	}
+
+	/**
+	 * Fermeture du menu mobile.
+	 *
+	 * Les stickers sortent d'abord puis l'overlay disparaît.
+	 */
+	function playMobileMenuClose() {
+		const overlay = mobileOverlayRef.value
+
+		if (!overlay) return
+
+		mobileMenuTween?.kill()
+
+		const d = prefersReducedMotion ? 0.01 : 1
+
+		depopStickers()
+
+		if (prefersReducedMotion) {
+			gsap.set(overlay, {
+				autoAlpha: 0,
+				pointerEvents: "none",
+			})
+
+			return
+		}
+
+		mobileMenuTween = gsap.to(overlay, {
+			opacity: 0,
+			scale: 0.98,
+			duration: 0.28 * d,
+			delay: 0.15 * d,
+			ease: "power2.in",
+			force3D: true,
+			onComplete: () => {
+				gsap.set(overlay, {
+					autoAlpha: 0,
+					pointerEvents: "none",
+					clearProps: "opacity,scale,transformOrigin,force3D",
+				})
+			},
+		})
+	}
+
+	function animateMenuIcon(isOpen: boolean) {
+		const d = prefersReducedMotion ? 0.01 : 1
+
+		const dots = [...cornerDots, ...centerDot, ...edgeDots]
+
+		gsap.killTweensOf(dots)
+
+		if (isOpen) {
+			gsap
+				.timeline()
+				.to(edgeDots, {
+					scale: 0,
+					opacity: 0,
+					duration: 0.4 * d,
+					ease: "power2.inOut",
+				})
+				.to(
+					[...cornerDots, ...centerDot],
+					{
+						scale: 1.18,
+						duration: 0.24 * d,
+						ease: "power2.out",
+					},
+					"<"
+				)
+				.to(
+					[...cornerDots, ...centerDot],
+					{
+						scale: 1,
+						duration: 0.4 * d,
+						ease: "elastic.out(1, 0.55)",
+					},
+					">-0.1"
+				)
+		} else {
+			gsap.to(edgeDots, {
+				scale: 1,
+				opacity: 1,
+				duration: 0.4 * d,
+				ease: "power2.out",
+				overwrite: "auto",
+			})
+		}
+	}
+
+	toggleMenu = () => {
+		const nextOpen = !open.value
+
+		open.value = nextOpen
+
+		animateMenuIcon(nextOpen)
+		animateLogoFlip(nextOpen)
+
+		if (nextOpen) {
+			lockScroll()
+			playMobileMenuOpen()
+		} else {
+			unlockScroll()
+			playMobileMenuClose()
+		}
 	}
 
 	closeMenu = () => {
 		if (!open.value) return
-		const box = boxRef.value
-		const mobileNav = mobileNavRef.value
-		if (!box || !mobileNav) return
 
-		isAnimating.value = true
+		open.value = false
 
-		gsap.set(box, { willChange: "width, padding" })
-		gsap.set(mobileNav, { willChange: "height" })
+		animateMenuIcon(false)
+		animateLogoFlip(false)
 
-		const d = prefersReducedMotion ? 0.01 : 1
-
-		const tl = gsap.timeline({
-			defaults: { ease: CONFIG.ease },
-			onComplete: () => {
-				open.value = false
-				isAnimating.value = false
-				gsap.set(box, { clearProps: "width,paddingTop,paddingBottom,willChange" })
-				gsap.set(mobileNav, { clearProps: "willChange" })
-			},
-		})
-
-		tl.to([...mobileLinkEls].filter(Boolean).reverse(), {
-			autoAlpha: 0,
-			y: 10,
-			duration: 0.18 * d,
-			stagger: 0.045 * d,
-			ease: "power2.in",
-		}).addLabel("shrink", ">-0.05")
-
-		tl.to(
-			edgeDots,
-			{ scale: 1, opacity: 1, duration: 0.4 * d, ease: "power2.out" },
-			"shrink"
-		)
-
-		tl.to(
-			box,
-			{
-				paddingTop: CONFIG.collapsedPadY,
-				paddingBottom: CONFIG.collapsedPadY,
-				duration: 0.4 * d,
-			},
-			"shrink"
-		)
-			.to(mobileNav, { height: 0, duration: 0.4 * d, ease: "power3.in" }, "shrink")
-			.to(box, { width: collapsedWidth, duration: 0.4 * d }, ">-0.05")
+		unlockScroll()
+		playMobileMenuClose()
 	}
 
 	function onDocumentClick(e: MouseEvent) {
-		if (!open.value || isAnimating.value) return
-		if (boxRef.value && !boxRef.value.contains(e.target as Node)) closeMenu()
+		if (!open.value) return
+
+		const target = e.target as Node
+
+		if (boxRef.value && !boxRef.value.contains(target)) {
+			closeMenu()
+		}
 	}
-	document.addEventListener("click", onDocumentClick, { passive: true })
+
+	document.addEventListener("click", onDocumentClick, {
+		passive: true,
+	})
 
 	return () => {
 		clearHideTimer()
+		clearStickerTimers()
+
 		document.removeEventListener("click", onDocumentClick)
+
+		mobileMenuTween?.kill()
+
+		killStickerTween(stickerOpenTween)
+		killStickerTween(stickerCloseTween)
+
 		gsap.killTweensOf([
 			boxRef.value,
-			mobileNavRef.value,
 			indicatorRef.value,
 			menuBtnRef.value,
 			menuIconRef.value,
+			logoFlipRef.value,
+			mobileOverlayRef.value,
+			stickersLayerRef.value,
+			...stickerRefs,
+			...linkEls,
 			...mobileLinkEls,
 			...navCharEls.flat(),
 			...cornerDots,
 			...centerDot,
 			...edgeDots,
 		])
+
+		if (open.value) {
+			unlockScroll()
+		}
 	}
 }, boxRef)
 </script>

@@ -32,18 +32,30 @@ export function useElementPop(
 
 	useGsapContext(({ gsap, ScrollTrigger }) => {
 		const el = unref(target)
+
 		if (!el) return
 
 		const prefersReducedMotion = window.matchMedia(
 			"(prefers-reduced-motion: reduce)"
 		).matches
 
+		/*
+		 * Reduced motion :
+		 * on affiche directement l'élément.
+		 */
 		if (prefersReducedMotion) {
-			gsap.set(el, { opacity: 1, scale: 1, rotation: rotateTo, y: 0 })
+			gsap.set(el, {
+				opacity: 1,
+				scale: 1,
+				rotation: rotateTo,
+				y: 0,
+			})
+
 			return
 		}
 
 		const jitter = organic ? gsap.utils.random(-4, 4) : 0
+
 		const finalRotate = rotateTo + jitter
 
 		gsap.set(el, {
@@ -58,8 +70,14 @@ export function useElementPop(
 		const tl = gsap.timeline({
 			paused: true,
 			delay,
-			onStart: () => (el.style.willChange = "transform, opacity"),
-			onComplete: () => (el.style.willChange = "auto"),
+
+			onStart: () => {
+				el.style.willChange = "transform, opacity"
+			},
+
+			onComplete: () => {
+				el.style.willChange = "auto"
+			},
 		})
 
 		tl.to(
@@ -72,40 +90,56 @@ export function useElementPop(
 			},
 			0
 		)
-			.to(
-				el,
-				{
-					y: 0,
-					scale: 1,
-					duration,
-					ease: "elastic.out(1, 0.55)",
-					overwrite: "auto",
-				},
-				0
-			)
-			.to(
-				el,
-				{
-					rotation: finalRotate,
-					duration,
-					ease: "elastic.out(1, 0.65)",
-					overwrite: "auto",
-				},
-				0
-			)
+
+		tl.to(
+			el,
+			{
+				y: 0,
+				scale: 1,
+				duration,
+				ease: "elastic.out(1, 0.55)",
+				overwrite: "auto",
+			},
+			0
+		)
+
+		tl.to(
+			el,
+			{
+				rotation: finalRotate,
+				duration,
+				ease: "elastic.out(1, 0.65)",
+				overwrite: "auto",
+			},
+			0
+		)
 
 		const st = ScrollTrigger.create({
 			trigger: el,
 			start,
 			once,
-			onEnter: () => tl.play(0),
-			onEnterBack: once ? undefined : () => tl.play(0),
-			onLeaveBack: once ? undefined : () => tl.pause(0),
+
+			onEnter: () => {
+				tl.play(0)
+			},
+
+			onEnterBack: once
+				? undefined
+				: () => {
+						tl.play(0)
+					},
+
+			onLeaveBack: once
+				? undefined
+				: () => {
+						tl.pause(0)
+					},
 		})
 
 		return () => {
 			st.kill()
 			tl.kill()
+
 			gsap.set(el, {
 				clearProps: "opacity,scale,rotation,y,transformOrigin,willChange",
 			})

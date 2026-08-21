@@ -4,7 +4,7 @@ const heroRef = useTemplateRef<HTMLElement>("heroRef")
 useStackSection(heroRef, {
 	scaleTo: 0.72,
 	rotateTo: -4,
-	roundedClass: "rounded-t-3xl",
+	roundedClass: "rounded-t-lg",
 })
 </script>
 
