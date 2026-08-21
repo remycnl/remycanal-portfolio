@@ -3,10 +3,10 @@
 		<div
 			ref="mobileOverlayRef"
 			style="visibility: hidden; opacity: 0; pointer-events: none"
-			class="bg-violet bg-grid-violet pointer-events-auto fixed inset-0 z-0 overflow-hidden overscroll-contain md:hidden"
+			class="bg-violet bg-grid-violet pointer-events-auto fixed inset-x-0 top-0 z-0 h-svh overflow-hidden overscroll-contain md:hidden"
 		>
 			<div
-				class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6"
+				class="pointer-events-none absolute inset-x-0 top-18.5 bottom-0 flex flex-col items-center justify-center gap-6"
 			>
 				<NuxtLink
 					v-for="(link, index) in links"
@@ -131,6 +131,11 @@
 					aria-label="Menu"
 					:aria-expanded="open"
 					@click="toggleMenu"
+					@pointerdown="onMenuIconPress"
+					@pointerup="onMenuIconRelease"
+					@pointerleave="onMenuIconRelease"
+					@pointercancel="onMenuIconRelease"
+					@lostpointercapture="onMenuIconRelease"
 				>
 					<svg ref="menuIconRef" width="24" height="24" viewBox="0 0 18 18" fill="none">
 						<circle class="dot dot-c" cx="3" cy="3" r="1.7" fill="currentColor" />
@@ -194,13 +199,13 @@ const stickers: MenuSticker[] = [
 		id: "computer",
 		src: "/stickers/sticker-computer.png",
 		rotate: 24,
-		class: "top-[52%] right-[7%] w-20 sm:top-[50%] sm:right-[13%] sm:w-20",
+		class: "top-[55%] right-[7%] w-20 sm:top-[60%] sm:right-[13%] sm:w-20",
 	},
 	{
 		id: "robot",
 		src: "/stickers/sticker-robot.png",
 		rotate: -12,
-		class: "bottom-[10%] left-[10%] w-20 sm:bottom-[15%] sm:left-[15%] sm:w-20",
+		class: "bottom-[15%] left-[7%] w-20 sm:bottom-[20%] sm:left-[10%] sm:w-20",
 	},
 ]
 
@@ -270,20 +275,57 @@ let onLinkEnter: (index: number) => void = () => {}
 let onNavLeave: () => void = () => {}
 let onLinkClick: (index: number) => void = () => {}
 let onMobileLinkClick: (index: number) => void = () => {}
+let onMenuIconPress: () => void = () => {}
+let onMenuIconRelease: () => void = () => {}
 let toggleMenu: () => void = () => {}
 let closeMenu: () => void = () => {}
 
 let lockedScrollY = 0
 
+function getStableViewportHeight() {
+	return Math.round(window.visualViewport?.height ?? window.innerHeight)
+}
+
+function isTouchLikeDevice() {
+	return window.matchMedia("(hover: none), (pointer: coarse)").matches
+}
+
+function isDragTarget(target: EventTarget | null) {
+	return target instanceof Element && Boolean(target.closest("[data-drag-bounds]"))
+}
+
+function onTouchMoveLock(e: TouchEvent) {
+	if (isDragTarget(e.target)) return
+	e.preventDefault()
+}
+
+function onWheelLock(e: WheelEvent) {
+	if (isDragTarget(e.target)) return
+	e.preventDefault()
+}
+
+let touchScrollLockActive = false
+
 function lockScroll() {
 	lockedScrollY = window.scrollY
 
+	const viewportHeight = getStableViewportHeight()
+
+	if (mobileOverlayRef.value) {
+		mobileOverlayRef.value.style.height = `${viewportHeight}px`
+	}
+
+	document.documentElement.style.setProperty("--app-vh", `${viewportHeight}px`)
+
+	if (isTouchLikeDevice()) {
+		document.addEventListener("touchmove", onTouchMoveLock, { passive: false })
+		document.addEventListener("wheel", onWheelLock, { passive: false })
+		touchScrollLockActive = true
+		return
+	}
+
 	const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
 
-	document.body.style.position = "fixed"
-	document.body.style.top = `-${lockedScrollY}px`
-	document.body.style.left = "0"
-	document.body.style.right = "0"
 	document.body.style.overflow = "hidden"
 
 	if (scrollbarWidth > 0) {
@@ -292,12 +334,20 @@ function lockScroll() {
 }
 
 function unlockScroll() {
-	document.body.style.position = ""
-	document.body.style.top = ""
-	document.body.style.left = ""
-	document.body.style.right = ""
+	if (touchScrollLockActive) {
+		document.removeEventListener("touchmove", onTouchMoveLock)
+		document.removeEventListener("wheel", onWheelLock)
+		touchScrollLockActive = false
+	}
+
 	document.body.style.overflow = ""
 	document.body.style.paddingRight = ""
+
+	document.documentElement.style.removeProperty("--app-vh")
+
+	if (mobileOverlayRef.value) {
+		mobileOverlayRef.value.style.removeProperty("height")
+	}
 
 	window.scrollTo(0, lockedScrollY)
 }
@@ -481,6 +531,58 @@ useGsapContext(({ gsap }) => {
 	gsap.set([...cornerDots, ...centerDot, ...edgeDots], {
 		transformOrigin: "50% 50%",
 	})
+
+	if (menuIconRef.value) {
+		gsap.set(menuIconRef.value, {
+			transformOrigin: "50% 50%",
+			scaleX: 1,
+			scaleY: 1,
+			force3D: true,
+		})
+	}
+
+	const setIconPressScaleX = menuIconRef.value
+		? gsap.quickTo(menuIconRef.value, "scaleX", {
+				duration: 0.32,
+				ease: "power3.out",
+			})
+		: null
+
+	const setIconPressScaleY = menuIconRef.value
+		? gsap.quickTo(menuIconRef.value, "scaleY", {
+				duration: 0.32,
+				ease: "power3.out",
+			})
+		: null
+
+	const setIconPressY = menuIconRef.value
+		? gsap.quickTo(menuIconRef.value, "y", {
+				duration: 0.32,
+				ease: "power3.out",
+			})
+		: null
+
+	let isIconPressed = false
+
+	onMenuIconPress = () => {
+		if (prefersReducedMotion || isIconPressed) return
+
+		isIconPressed = true
+
+		setIconPressScaleX?.(0.78)
+		setIconPressScaleY?.(0.78)
+		setIconPressY?.(1.5)
+	}
+
+	onMenuIconRelease = () => {
+		if (prefersReducedMotion || !isIconPressed) return
+
+		isIconPressed = false
+
+		setIconPressScaleX?.(1)
+		setIconPressScaleY?.(1)
+		setIconPressY?.(0)
+	}
 
 	function animateLogoFlip(isOpen: boolean) {
 		const logo = logoFlipRef.value
@@ -821,13 +923,6 @@ useGsapContext(({ gsap }) => {
 		stickerCloseTween = tl
 	}
 
-	/**
-	 * Ouverture du menu mobile.
-	 *
-	 * Pas de pixel transition.
-	 * L'overlay apparaît directement avec une petite
-	 * animation d'opacité/scale, puis les stickers apparaissent.
-	 */
 	function playMobileMenuOpen() {
 		const overlay = mobileOverlayRef.value
 
@@ -867,7 +962,7 @@ useGsapContext(({ gsap }) => {
 			force3D: true,
 			onComplete: () => {
 				gsap.set(overlay, {
-					clearProps: "opacity,scale,transformOrigin,force3D",
+					clearProps: "opacity,scaleX,scaleY,transformOrigin,force3D",
 				})
 
 				popStickers()
@@ -875,11 +970,6 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
-	/**
-	 * Fermeture du menu mobile.
-	 *
-	 * Les stickers sortent d'abord puis l'overlay disparaît.
-	 */
 	function playMobileMenuClose() {
 		const overlay = mobileOverlayRef.value
 
@@ -911,7 +1001,7 @@ useGsapContext(({ gsap }) => {
 				gsap.set(overlay, {
 					autoAlpha: 0,
 					pointerEvents: "none",
-					clearProps: "opacity,scale,transformOrigin,force3D",
+					clearProps: "opacity,scaleX,scaleY,transformOrigin,force3D",
 				})
 			},
 		})
@@ -1036,6 +1126,9 @@ useGsapContext(({ gsap }) => {
 		if (open.value) {
 			unlockScroll()
 		}
+
+		document.removeEventListener("touchmove", onTouchMoveLock)
+		document.removeEventListener("wheel", onWheelLock)
 	}
 }, boxRef)
 </script>
