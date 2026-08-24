@@ -97,7 +97,7 @@
 				>
 					<span
 						ref="indicatorRef"
-						class="bg-lime/25 pointer-events-none absolute top-1/2 left-0 h-9 rounded-sm opacity-0 will-change-transform"
+						class="bg-violet pointer-events-none absolute top-1/2 left-0 h-9 rounded-sm opacity-0 will-change-transform"
 						style="transform: translateY(-50%) scale(0.85); width: 0"
 					/>
 
@@ -107,7 +107,7 @@
 						:ref="(el) => setLinkRef(el, index)"
 						:to="link.to"
 						class="relative z-10 block transition-colors duration-300"
-						:class="isActive(link) ? 'text-lime' : 'hover:text-lime'"
+						:class="{ 'text-lime': isActive(link) }"
 						@mouseenter="onLinkEnter(index)"
 						@focus="onLinkEnter(index)"
 						@click="onLinkClick(index)"

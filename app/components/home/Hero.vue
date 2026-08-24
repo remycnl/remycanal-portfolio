@@ -6,6 +6,17 @@ useStackSection(heroRef, {
 	rotateTo: -4,
 	roundedClass: "rounded-t-lg",
 })
+
+useHead({
+	link: [
+		{
+			rel: "preload",
+			as: "fetch",
+			href: "/models/logo-metal-lime.glb",
+			crossorigin: "anonymous",
+		},
+	],
+})
 </script>
 
 <template>
@@ -61,3 +72,12 @@ useStackSection(heroRef, {
 		</div>
 	</section>
 </template>
+
+<style scoped>
+.logo-scene-placeholder {
+	width: min(98vw, 95vh, 68rem);
+	max-width: 100%;
+	max-height: 100%;
+	aspect-ratio: 1 / 1;
+}
+</style>

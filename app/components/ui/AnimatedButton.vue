@@ -203,7 +203,7 @@ function buildTimeline() {
 		)
 		.to(
 			bubbleScaleEl.value,
-			{ scale: 0.2, rotation: -180, opacity: 0.12, duration: 0.18, ease: "power2.in" },
+			{ scale: 0.2, rotation: -360, opacity: 0.12, duration: 0.18, ease: "power2.in" },
 			0
 		)
 		.to(
