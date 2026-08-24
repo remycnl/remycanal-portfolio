@@ -1,9 +1,27 @@
 <template>
 	<header class="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4">
+		<svg width="0" height="0" class="absolute" aria-hidden="true">
+			<defs>
+				<filter id="nav-text-outline" x="-20%" y="-20%" width="140%" height="140%">
+					<feMorphology
+						operator="dilate"
+						radius="1.1"
+						in="SourceAlpha"
+						result="dilated"
+					/>
+					<feComposite in="dilated" in2="SourceAlpha" operator="out" result="outline" />
+					<feFlood flood-color="#ffffff" result="color" />
+					<feComposite in="color" in2="outline" operator="in" result="coloredOutline" />
+					<feMerge>
+						<feMergeNode in="coloredOutline" />
+					</feMerge>
+				</filter>
+			</defs>
+		</svg>
 		<div
 			ref="mobileOverlayRef"
 			style="visibility: hidden; opacity: 0; pointer-events: none"
-			class="bg-violet bg-grid-violet pointer-events-auto fixed inset-x-0 top-0 z-0 h-svh overflow-hidden overscroll-contain md:hidden"
+			class="bg-violet bg-grid-violet pointer-events-auto fixed inset-x-0 top-0 z-0 h-screen overflow-hidden overscroll-contain md:hidden"
 		>
 			<div
 				class="pointer-events-none absolute inset-x-0 top-18.5 bottom-0 flex flex-col items-center justify-center gap-6"
@@ -13,10 +31,18 @@
 					:key="link.to"
 					:ref="(el) => setMobileLinkRef(el, index)"
 					:to="link.to"
-					class="font-lineal-heavy pointer-events-auto relative z-10 text-4xl text-white uppercase sm:text-5xl"
+					class="pointer-events-auto relative z-10 flex items-start gap-1.5 uppercase"
+					:class="index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'"
 					@click="onMobileLinkClick(index)"
 				>
-					{{ link.label }}
+					<UiOutlineText
+						:text="link.label"
+						:active="isActive(link)"
+						font-class="font-lineal-heavy text-4xl leading-none text-white sm:text-5xl"
+					/>
+					<span class="font-vg5000 shrink-0 text-[10px] leading-none text-white">
+						{{ String(index + 1).padStart(2, "0") }}
+					</span>
 				</NuxtLink>
 			</div>
 
