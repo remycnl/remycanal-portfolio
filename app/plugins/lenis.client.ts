@@ -29,12 +29,6 @@ export default defineNuxtPlugin({
 
 		gsap.ticker.lagSmoothing(1000, 16)
 
-		ScrollTrigger.normalizeScroll({
-			allowNestedScroll: true,
-			momentum: () => 0,
-			type: "touch,wheel",
-		})
-
 		ScrollTrigger.config({ ignoreMobileResize: true })
 
 		let lastWidth = window.visualViewport?.width ?? window.innerWidth
