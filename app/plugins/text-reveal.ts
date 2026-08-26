@@ -1,4 +1,3 @@
-// app/plugins/text-reveal.ts
 import type { Directive } from "vue"
 
 interface TypewriterOptions {
@@ -54,10 +53,36 @@ interface RevealState {
 	stBackward?: any
 	cursors: HTMLElement[]
 	timelines: (any | undefined)[]
-	onResize?: () => void
+	responsive: boolean
 }
 
 const STATE = new WeakMap<HTMLElement, RevealState>()
+const RESPONSIVE_STATES = new Set<RevealState>()
+
+let responsiveResizeSubscribed = false
+
+function ensureResponsiveResizeSubscription(ScrollTrigger: any) {
+	if (responsiveResizeSubscribed) return
+	responsiveResizeSubscribed = true
+
+	useViewportResize(() => {
+		const next = getResponsiveTrigger()
+		let changed = false
+
+		RESPONSIVE_STATES.forEach((state) => {
+			if (state.stForward?.vars && state.stForward.vars.start !== next.start) {
+				state.stForward.vars.start = next.start
+				changed = true
+			}
+			if (state.stBackward?.vars && state.stBackward.vars.end !== next.end) {
+				state.stBackward.vars.end = next.end
+				changed = true
+			}
+		})
+
+		if (changed) ScrollTrigger.refresh()
+	})
+}
 
 export default defineNuxtPlugin({
 	name: "text-reveal",
@@ -80,7 +105,7 @@ export default defineNuxtPlugin({
 							state?.stBackward?.kill()
 							state?.ctx?.revert()
 							state?.cursors?.forEach((c) => c.remove())
-							if (state?.onResize) window.removeEventListener("resize", state.onResize)
+							if (state) RESPONSIVE_STATES.delete(state)
 							STATE.delete(el)
 						},
 					}
@@ -88,7 +113,8 @@ export default defineNuxtPlugin({
 		}
 
 		async function initTypewriter(el: HTMLElement, options: TypewriterOptions) {
-			const state: RevealState = { cursors: [], timelines: [] }
+			const responsive = !options.start && !options.end
+			const state: RevealState = { cursors: [], timelines: [], responsive }
 			STATE.set(el, state)
 
 			el.style.opacity = "0"
@@ -106,13 +132,13 @@ export default defineNuxtPlugin({
 				$SplitText: SplitText,
 			} = useNuxtApp()
 
-			const responsive = getResponsiveTrigger()
+			const responsiveTrigger = getResponsiveTrigger()
 
 			const {
 				speed = 38,
 				jitter = 0.55,
-				start = responsive.start,
-				end = responsive.end,
+				start = responsiveTrigger.start,
+				end = responsiveTrigger.end,
 				once = true,
 				theme = "lime",
 				cursorColor,
@@ -176,15 +202,9 @@ export default defineNuxtPlugin({
 									})
 								}
 
-								if (!options.start && !options.end) {
-									const onResize = () => {
-										const next = getResponsiveTrigger()
-										state.stForward?.vars && (state.stForward.vars.start = next.start)
-										state.stBackward?.vars && (state.stBackward.vars.end = next.end)
-										ScrollTrigger.refresh()
-									}
-									state.onResize = onResize
-									window.addEventListener("resize", onResize)
+								if (state.responsive) {
+									RESPONSIVE_STATES.add(state)
+									ensureResponsiveResizeSubscription(ScrollTrigger)
 								}
 							}
 

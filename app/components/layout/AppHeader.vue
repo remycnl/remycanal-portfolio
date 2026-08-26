@@ -21,7 +21,7 @@
 		<div
 			ref="mobileOverlayRef"
 			style="visibility: hidden; opacity: 0; pointer-events: none"
-			class="bg-violet bg-grid-violet pointer-events-auto fixed inset-x-0 top-0 z-0 h-viewport overflow-hidden overscroll-contain md:hidden"
+			class="bg-violet bg-grid-violet pointer-events-auto fixed inset-x-0 top-0 z-0 h-svh overflow-hidden overscroll-contain md:hidden"
 		>
 			<div
 				class="pointer-events-none absolute inset-x-0 top-18.5 bottom-0 flex flex-col items-center justify-center gap-6"

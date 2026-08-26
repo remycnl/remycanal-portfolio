@@ -28,20 +28,10 @@ export default defineNuxtPlugin({
 
 		gsap.ticker.lagSmoothing(1000, 16)
 
-		let lastWidth = window.innerWidth
-		let resizeTimeout: ReturnType<typeof setTimeout> | undefined
-		function handleResize() {
-			const width = window.innerWidth
-			if (width === lastWidth) return
-			lastWidth = width
-
-			clearTimeout(resizeTimeout)
-			resizeTimeout = setTimeout(() => {
-				lenis.resize()
-				ScrollTrigger.refresh()
-			}, 150)
-		}
-		window.addEventListener("resize", handleResize)
+		const unsubscribeResize = useViewportResize(() => {
+			lenis.resize()
+			ScrollTrigger.refresh()
+		})
 
 		function handleVisibilityChange() {
 			if (document.hidden) return
@@ -53,9 +43,8 @@ export default defineNuxtPlugin({
 		if (import.meta.hot) {
 			import.meta.hot.dispose(() => {
 				gsap.ticker.remove(update)
-				window.removeEventListener("resize", handleResize)
+				unsubscribeResize()
 				document.removeEventListener("visibilitychange", handleVisibilityChange)
-				clearTimeout(resizeTimeout)
 				lenis.destroy()
 			})
 		}
