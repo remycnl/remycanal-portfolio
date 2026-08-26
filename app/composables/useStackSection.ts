@@ -53,7 +53,7 @@ export function useStackSection(
 
 			const scaleTo = resolve(options.scaleTo, bp, 0.85)
 			const rotateTo = resolve(options.rotateTo, bp, -6)
-			const distancePx = resolve(options.distance, bp, window.innerHeight)
+			const baseDistancePx = resolve(options.distance, bp, window.innerHeight)
 			const zIndex = resolve(options.zIndex, bp, 0)
 			const roundedClass = resolve<string | undefined>(
 				options.roundedClass,
@@ -99,8 +99,22 @@ export function useStackSection(
 				nextSection.style.isolation = "isolate"
 			}
 
+			function computeRotationOverflowPx() {
+				const rad = Math.abs(rotateTo) * (Math.PI / 180)
+				if (rad === 0) return 0
+				const w = el!.offsetWidth * scaleTo
+				const h = el!.offsetHeight * scaleTo
+				const extra = w * Math.sin(rad) - h * (1 - Math.cos(rad))
+				return Math.max(0, Math.ceil(extra))
+			}
+
+			let distancePx = baseDistancePx
+
 			function syncLayout() {
 				const naturalHeight = el!.offsetHeight
+				// Recalculé à chaque refresh (resize, changement de breakpoint) car
+				// offsetWidth/Height peuvent avoir changé.
+				distancePx = baseDistancePx + computeRotationOverflowPx()
 				wrapper.style.height = `${naturalHeight + distancePx}px`
 				if (nextSection) nextSection.style.marginTop = `-${distancePx}px`
 			}
