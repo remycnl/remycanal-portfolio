@@ -63,28 +63,28 @@ export default defineNuxtPlugin({
 	name: "text-reveal",
 	setup(nuxtApp) {
 		const textReveal: Directive<HTMLElement, TypewriterOptions> = {
-			// getSSRProps() {
-			// 	return { style: { opacity: 0 } }
-			// },
+			getSSRProps() {
+				return { style: { opacity: 0 } }
+			},
 
-			// ...(import.meta.client
-			// 	? {
-			// 			mounted(el, binding) {
-			// 				if (STATE.has(el)) return
-			// 				initTypewriter(el, binding.value ?? {})
-			// 			},
+			...(import.meta.client
+				? {
+						mounted(el, binding) {
+							if (STATE.has(el)) return
+							initTypewriter(el, binding.value ?? {})
+						},
 
-			// 			unmounted(el) {
-			// 				const state = STATE.get(el)
-			// 				state?.stForward?.kill()
-			// 				state?.stBackward?.kill()
-			// 				state?.ctx?.revert()
-			// 				state?.cursors?.forEach((c) => c.remove())
-			// 				if (state?.onResize) window.removeEventListener("resize", state.onResize)
-			// 				STATE.delete(el)
-			// 			},
-			// 		}
-			// 	: {}),
+						unmounted(el) {
+							const state = STATE.get(el)
+							state?.stForward?.kill()
+							state?.stBackward?.kill()
+							state?.ctx?.revert()
+							state?.cursors?.forEach((c) => c.remove())
+							if (state?.onResize) window.removeEventListener("resize", state.onResize)
+							STATE.delete(el)
+						},
+					}
+				: {}),
 		}
 
 		async function initTypewriter(el: HTMLElement, options: TypewriterOptions) {
