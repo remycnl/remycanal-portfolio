@@ -7,20 +7,16 @@ export default defineNuxtPlugin({
 		const gsap = nuxtApp.$gsap
 		const ScrollTrigger = nuxtApp.$ScrollTrigger
 
+		ScrollTrigger.config({ ignoreMobileResize: true })
+
 		const prefersReducedMotion = window.matchMedia(
 			"(prefers-reduced-motion: reduce)"
 		).matches
 
-		document.documentElement.style.overscrollBehaviorY = "none"
-		document.body.style.overscrollBehaviorY = "none"
-
 		const lenis = new Lenis({
 			duration: prefersReducedMotion ? 0 : 1.2,
 			smoothWheel: !prefersReducedMotion,
-			syncTouch: true,
-			syncTouchLerp: 0.075,
-			touchInertiaExponent: 1.7,
-			autoRaf: false,
+			syncTouch: false,
 		})
 
 		lenis.on("scroll", ScrollTrigger.update)
@@ -30,29 +26,22 @@ export default defineNuxtPlugin({
 		}
 		gsap.ticker.add(update)
 
-		gsap.ticker.lagSmoothing(0)
+		gsap.ticker.lagSmoothing(1000, 16)
 
-		ScrollTrigger.config({ ignoreMobileResize: true })
-
-		let lastWidth = window.visualViewport?.width ?? window.innerWidth
+		let lastWidth = window.innerWidth
 		let resizeTimeout: ReturnType<typeof setTimeout> | undefined
-
-		function commitResize() {
-			lenis.resize()
-			ScrollTrigger.refresh()
-		}
-
 		function handleResize() {
-			const width = window.visualViewport?.width ?? window.innerWidth
+			const width = window.innerWidth
 			if (width === lastWidth) return
 			lastWidth = width
 
 			clearTimeout(resizeTimeout)
-			resizeTimeout = setTimeout(commitResize, 150)
+			resizeTimeout = setTimeout(() => {
+				lenis.resize()
+				ScrollTrigger.refresh()
+			}, 150)
 		}
-
-		window.addEventListener("resize", handleResize, { passive: true })
-		window.visualViewport?.addEventListener("resize", handleResize)
+		window.addEventListener("resize", handleResize)
 
 		function handleVisibilityChange() {
 			if (document.hidden) return
@@ -65,7 +54,6 @@ export default defineNuxtPlugin({
 			import.meta.hot.dispose(() => {
 				gsap.ticker.remove(update)
 				window.removeEventListener("resize", handleResize)
-				window.visualViewport?.removeEventListener("resize", handleResize)
 				document.removeEventListener("visibilitychange", handleVisibilityChange)
 				clearTimeout(resizeTimeout)
 				lenis.destroy()
