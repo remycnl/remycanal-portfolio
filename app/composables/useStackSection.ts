@@ -64,6 +64,8 @@ export function useStackSection(
 			const wrapper = document.createElement("div")
 			wrapper.style.position = "relative"
 			wrapper.style.overflowX = "clip"
+			wrapper.style.overflowY = "visible"
+
 			el.parentElement!.insertBefore(wrapper, el)
 			wrapper.appendChild(el)
 
