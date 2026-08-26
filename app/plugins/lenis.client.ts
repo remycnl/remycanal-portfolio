@@ -6,11 +6,13 @@ export default defineNuxtPlugin({
 	setup(nuxtApp) {
 		const gsap = nuxtApp.$gsap
 		const ScrollTrigger = nuxtApp.$ScrollTrigger
-		ScrollTrigger.config({ ignoreMobileResize: true })
 
 		const prefersReducedMotion = window.matchMedia(
 			"(prefers-reduced-motion: reduce)"
 		).matches
+
+		document.documentElement.style.overscrollBehaviorY = "none"
+		document.body.style.overscrollBehaviorY = "none"
 
 		const lenis = new Lenis({
 			duration: prefersReducedMotion ? 0 : 1.2,
@@ -27,8 +29,13 @@ export default defineNuxtPlugin({
 
 		gsap.ticker.lagSmoothing(1000, 16)
 
-		document.documentElement.style.overscrollBehaviorY = "none"
-		document.body.style.overscrollBehaviorY = "none"
+		ScrollTrigger.normalizeScroll({
+			allowNestedScroll: true,
+			momentum: () => 0,
+			type: "touch,wheel",
+		})
+
+		ScrollTrigger.config({ ignoreMobileResize: true })
 
 		let lastWidth = window.visualViewport?.width ?? window.innerWidth
 		let resizeTimeout: ReturnType<typeof setTimeout> | undefined
