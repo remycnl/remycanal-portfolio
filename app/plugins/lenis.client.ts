@@ -18,7 +18,7 @@ export default defineNuxtPlugin({
 			duration: prefersReducedMotion ? 0 : 1.2,
 			smoothWheel: !prefersReducedMotion,
 			syncTouch: true,
-			syncTouchLerp: 0.1,
+			syncTouchLerp: 0.075,
 			touchInertiaExponent: 1.7,
 			autoRaf: false,
 		})
