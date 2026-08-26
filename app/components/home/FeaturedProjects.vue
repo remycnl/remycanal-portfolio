@@ -409,7 +409,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 <template>
 	<div class="section-p-y relative bg-white">
 		<section ref="sectionRef" class="relative w-full">
-			<div ref="viewportRef" class="section-p-xy sticky top-0 h-svh w-full">
+			<div ref="viewportRef" class="section-p-xy sticky top-0 h-viewport w-full">
 				<div
 					class="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-px -translate-x-1/2 bg-[repeating-linear-gradient(to_bottom,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500"
 					:style="{

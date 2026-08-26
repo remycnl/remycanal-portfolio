@@ -22,7 +22,7 @@ useHead({
 <template>
 	<section
 		ref="heroRef"
-		class="section-p-x pb-section bg-grid-white relative flex h-svh w-full flex-col items-center justify-center overflow-hidden bg-white text-black shadow-xl"
+		class="section-p-x pb-section bg-grid-white relative flex h-viewport w-full flex-col items-center justify-center overflow-hidden bg-white text-black shadow-xl"
 	>
 		<UiGridBeams theme="white" />
 		<div
