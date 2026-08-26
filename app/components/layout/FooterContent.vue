@@ -1,6 +1,8 @@
 <template>
-	<footer class="p-edge bg-lime bg-grid-lime flex flex-col overflow-x-hidden text-black">
-    <UiGridBeams theme="lime" />
+	<footer
+		class="p-edge bg-lime bg-grid-lime flex flex-col overflow-x-hidden text-black shadow-[inset_0_-10px_20px_-10px_rgba(0,0,0,0.28)]"
+	>
+		<UiGridBeams theme="lime" />
 		<div class="relative z-20 flex flex-col gap-8 lg:gap-12">
 			<div
 				class="flex flex-col gap-12 pb-12 lg:flex-row lg:items-start lg:justify-between lg:gap-24"

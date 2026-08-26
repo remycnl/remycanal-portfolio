@@ -47,9 +47,8 @@ useHead({
 	<HomeResume />
 	<HomeBlog />
 	<UiInfiniteHorizontalLoop
-		item-class="uppercase font-lineal-heavy text-[5vw] text-white pr-[5vw] pt-2 [word-spacing:0.15em]"
+		item-class="uppercase font-lineal-heavy text-[10vw] lg:text-[5vw] text-white pr-[5vw] pt-2 [word-spacing:0.15em]"
 		text="Creative Developer"
-		:base-speed="1"
 		bg="var(--color-violet)"
 		outline
 		outline-color="var(--color-white)"
