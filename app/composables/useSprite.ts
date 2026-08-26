@@ -1238,6 +1238,9 @@ function createSprite(options: UseSpriteOptions) {
 
 	try {
 		const router = useRouter()
+		router.beforeEach(() => {
+			resetTransientState() // annule tout saut/balade en cours avant que les zones changent
+		})
 		router.afterEach(() => {
 			requestAnimationFrame(() => requestAnimationFrame(() => instancePublicResync()))
 		})
@@ -1277,6 +1280,19 @@ function createSprite(options: UseSpriteOptions) {
 	// API publique
 	// --------------------------------------------------
 
+	let placementScheduled = false
+
+	function scheduleInitialPlacement() {
+		if (placementScheduled || currentZone) return
+		placementScheduled = true
+		requestAnimationFrame(() => {
+			placementScheduled = false
+			if (!imageLoaded || currentZone) return
+			const zone = pickActiveInitialZone()
+			if (zone) placeInZone(zone)
+		})
+	}
+
 	function registerZone(
 		el: HTMLElement,
 		zoneOptions: RegisterZoneOptions = {}
@@ -1301,7 +1317,7 @@ function createSprite(options: UseSpriteOptions) {
 		if (isNewZone) resizeObserver.observe(el)
 
 		if (imageLoaded && !currentZone && isZoneActive(zone)) {
-			placeInZone(zone)
+			scheduleInitialPlacement()
 		}
 
 		return {

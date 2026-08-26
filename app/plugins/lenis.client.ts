@@ -7,6 +7,8 @@ export default defineNuxtPlugin({
 		const gsap = nuxtApp.$gsap
 		const ScrollTrigger = nuxtApp.$ScrollTrigger
 
+		ScrollTrigger.config({ ignoreMobileResize: true })
+
 		const prefersReducedMotion = window.matchMedia(
 			"(prefers-reduced-motion: reduce)"
 		).matches
