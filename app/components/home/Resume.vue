@@ -1,5 +1,5 @@
 <template>
-	<section ref="sectionRoot" class="section-p-xy relative">
+	<section ref="sectionRoot" class="bg-white section-p-xy relative">
 		<div
 			class="border-gray-dark/50 grid grid-cols-1 border-t border-l sm:grid-cols-2 lg:grid-cols-6 lg:grid-rows-[minmax(300px,auto)_minmax(300px,auto)_minmax(260px,auto)_minmax(200px,auto)]"
 		>

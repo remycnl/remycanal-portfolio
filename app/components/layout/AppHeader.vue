@@ -123,8 +123,7 @@
 				>
 					<span
 						ref="indicatorRef"
-						class="bg-violet pointer-events-none absolute top-1/2 left-0 h-9 rounded-sm opacity-0 will-change-transform"
-						style="transform: translateY(-50%) scale(0.85); width: 0"
+						class="bg-lime pointer-events-none absolute top-1/2 left-0 z-0 opacity-0 will-change-transform -translate-y-1/2 scale-[0.8] rounded-xs w-2 h-2"
 					/>
 
 					<NuxtLink
@@ -428,19 +427,31 @@ useGsapContext(({ gsap }) => {
 		}, delay)
 	}
 
+	const CUBE_SIZE = 8
+	const LINE_HEIGHT = 3
+	const CUBE_GAP = 4
+
+	function getCubeTargetX(link: HTMLElement) {
+		return link.offsetLeft - CUBE_GAP - CUBE_SIZE
+	}
+
 	function moveIndicatorTo(index: number) {
 		const link = getElementAt(linkEls, index)
 		const indicator = indicatorRef.value
 
 		if (!link || !indicator) return
 
-		const left = link.offsetLeft - 12
-		const width = link.offsetWidth + 24
+		const targetX = getCubeTargetX(link)
+
+		gsap.killTweensOf(indicator)
 
 		if (!isIndicatorVisible) {
 			gsap.set(indicator, {
-				x: left,
-				width,
+				x: targetX,
+				yPercent: -50,
+				width: CUBE_SIZE,
+				height: CUBE_SIZE,
+				borderRadius: 2,
 			})
 
 			gsap.to(indicator, {
@@ -455,15 +466,38 @@ useGsapContext(({ gsap }) => {
 			return
 		}
 
-		gsap.to(indicator, {
-			x: left,
-			width,
-			opacity: 1,
-			scale: 1,
-			duration: 0.32,
-			ease: "power2.out",
-			overwrite: "auto",
-		})
+		const currentX = Number(gsap.getProperty(indicator, "x"))
+
+		if (Math.abs(targetX - currentX) < 0.5) return
+
+		const leftEdge = Math.min(currentX, targetX)
+		const rightEdge = Math.max(currentX, targetX) + CUBE_SIZE
+		const travelWidth = rightEdge - leftEdge
+
+		gsap
+			.timeline({ overwrite: "auto" })
+			.to(indicator, {
+				x: leftEdge,
+				width: travelWidth,
+				height: LINE_HEIGHT,
+				borderRadius: 1.5,
+				opacity: 1,
+				scale: 1,
+				duration: 0.28,
+				ease: "power3.out",
+			})
+			.to(
+				indicator,
+				{
+					x: targetX,
+					width: CUBE_SIZE,
+					height: CUBE_SIZE,
+					borderRadius: 2,
+					duration: 0.5,
+					ease: "elastic.out(1, 0.6)",
+				},
+				"-=0.02"
+			)
 	}
 
 	onLinkEnter = (index) => {

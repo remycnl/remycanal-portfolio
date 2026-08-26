@@ -560,7 +560,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 									if (el) cardsRef[i] = el as HTMLElement
 								}
 							"
-							class="shrink-0 cursor-pointer touch-pan-y rounded-3xl bg-black p-2"
+							class="shrink-0 cursor-pointer touch-pan-y rounded-lg bg-black p-2"
 							@pointerenter="hoveredIndex = i"
 							@pointerleave="handleCardLeave(i)"
 							@pointerdown="onCardPress(i)"
@@ -568,7 +568,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 							@pointercancel="onCardRelease(i)"
 						>
 							<div
-								class="bg-black-light aspect-16/10 w-[72vw] overflow-hidden rounded-2xl md:w-[38vw] lg:w-[32vw]"
+								class="bg-black-light aspect-16/10 w-[72vw] overflow-hidden rounded-xs md:w-[38vw] lg:w-[32vw]"
 							>
 								<img
 									:src="p.image"

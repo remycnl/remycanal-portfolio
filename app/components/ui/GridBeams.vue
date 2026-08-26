@@ -64,7 +64,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	theme: "white",
-	interval: 4000,
+	interval: 5000,
 	poolSize: 3,
 	beamLength: 0.18,
 	darken: 30,
@@ -101,7 +101,7 @@ function setBeamRef(el: Element | ComponentPublicInstance | null, i: number) {
 
 let width = 0
 let height = 0
-let lastGlobalColumn = -1
+const activeColumns = new Set<number>()
 let resizeObserver: ResizeObserver | null = null
 let intersectionObserver: IntersectionObserver | null = null
 let isVisible = true
@@ -124,18 +124,29 @@ function measure() {
 	height = containerEl.value.clientHeight
 }
 
+function pickAvailableColumn(): number | null {
+	const total = columnCount()
+	const available: number[] = []
+	for (let c = 0; c < total; c++) {
+		if (!activeColumns.has(c)) available.push(c)
+	}
+	if (available.length === 0) return null
+	const index = Math.floor(Math.random() * available.length)
+	return available[index] ?? null
+}
+
 function fireBeam(beamIndex: number) {
 	const el = beamEls[beamIndex]
 	if (!el || !isVisible || reduceMotion || !height) return
 
-	const total = columnCount()
-	let col = lastGlobalColumn
-	if (total > 1) {
-		while (col === lastGlobalColumn) col = Math.floor(Math.random() * total)
-	} else {
-		col = 0
+	const col = pickAvailableColumn()
+	if (col === null) {
+		// Aucune colonne libre pour l'instant : on retente un peu plus tard
+		const retryId = setTimeout(() => fireBeam(beamIndex), 250)
+		timeouts.push(retryId)
+		return
 	}
-	lastGlobalColumn = col
+	activeColumns.add(col)
 
 	const x = col * spacingPx.value
 	const beamPx = Math.max(height * props.beamLength, 40)
@@ -166,7 +177,12 @@ function fireBeam(beamIndex: number) {
 	)
 
 	runningAnimations.add(anim)
-	anim.finished.catch(() => {}).finally(() => runningAnimations.delete(anim))
+	anim.finished
+		.catch(() => {})
+		.finally(() => {
+			runningAnimations.delete(anim)
+			activeColumns.delete(col)
+		})
 }
 
 function scheduleBeam(beamIndex: number) {

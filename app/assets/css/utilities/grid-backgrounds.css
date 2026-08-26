@@ -98,12 +98,12 @@
 		background-image:
 			linear-gradient(
 				to right,
-				color-mix(in srgb, var(--color-lime-dark) 60%, transparent) 1px,
+				color-mix(in srgb, var(--color-lime-dark) 50%, transparent) 1px,
 				transparent 1px
 			),
 			linear-gradient(
 				to bottom,
-				color-mix(in srgb, var(--color-lime-dark) 60%, transparent) 1px,
+				color-mix(in srgb, var(--color-lime-dark) 50%, transparent) 1px,
 				transparent 1px
 			);
 
@@ -146,12 +146,12 @@
 		background-image:
 			linear-gradient(
 				to right,
-				color-mix(in srgb, var(--color-violet-dark) 60%, transparent) 1px,
+				color-mix(in srgb, var(--color-violet-dark) 50%, transparent) 1px,
 				transparent 1px
 			),
 			linear-gradient(
 				to bottom,
-				color-mix(in srgb, var(--color-violet-dark) 60%, transparent) 1px,
+				color-mix(in srgb, var(--color-violet-dark) 50%, transparent) 1px,
 				transparent 1px
 			);
 		mask-image: radial-gradient(
