@@ -39,12 +39,12 @@ useHead({
 </script>
 
 <template>
-	<div class="bg-lime h-screen">
-		<!-- <HomeHero />
-		<HomeAbout /> -->
+	<div class="bg-lime">
+		<HomeHero />
+		<HomeAbout />
 	</div>
-	<!-- <HomeFeaturedProjects /> -->
-	<!-- <HomeResume /> -->
+	<HomeFeaturedProjects />
+	<HomeResume />
 	<HomeBlog />
 	<UiInfiniteHorizontalLoop
 		item-class="uppercase font-lineal-heavy text-[10vw] lg:text-[5vw] text-white pr-[5vw] pt-1.5 lg:pt-2 [word-spacing:0.15em]"
