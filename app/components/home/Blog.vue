@@ -1,5 +1,5 @@
 <template>
-	<div class="section-p-xy h-screen bg-white">
+	<div class="section-p-xy bg-white">
 		<div class="flex -rotate-10 flex-col">
 			<div class="bg-gray-light w-fit rounded-sm px-5 py-2">
 				<h2

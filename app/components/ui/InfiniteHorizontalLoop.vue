@@ -18,7 +18,7 @@
 				<span
 					v-for="n in rRepeatCount"
 					:key="n"
-					class="flex items-center whitespace-nowrap will-change-transform"
+					class="flex items-center whitespace-nowrap will-change-transform select-none"
 					:class="itemClass"
 					:style="{ marginInlineEnd: '3vw' }"
 				>

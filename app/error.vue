@@ -1,5 +1,5 @@
 <template>
-	<div class="flex min-h-svh lg:min-h-screen flex-col">
+	<div class="flex min-h-svh flex-col">
 		<LayoutAppHeader />
 
 		<main class="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
