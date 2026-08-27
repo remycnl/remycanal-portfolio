@@ -159,16 +159,21 @@ export default defineNuxtPlugin({
 					}
 
 					SplitText.create(block, {
-						type: "chars",
+						type: "words, chars",
+						wordsClass: "text-reveal-word",
 						charsClass: "text-reveal-char",
 						autoSplit: true,
 
 						onSplit(self: any) {
+							const wasAlreadyTriggered =
+								state.stForward?.isActive || (state.stForward?.progress ?? 0) > 0
+
+							state.timelines[i]?.kill()
 							state.cursors[i]?.remove()
 							const cursor = createCursor(block, resolvedCursorColor, cursorWidth)
 							state.cursors[i] = cursor
 
-							const childTl = buildTypingTimeline(gsap, self.chars, cursor, {
+							const childTl = buildTypingTimeline(gsap, self.chars, cursor, block, {
 								speed,
 								jitter,
 								delay: i * childStagger,
@@ -206,6 +211,9 @@ export default defineNuxtPlugin({
 									RESPONSIVE_STATES.add(state)
 									ensureResponsiveResizeSubscription(ScrollTrigger)
 								}
+							} else if (wasAlreadyTriggered) {
+								el.style.opacity = "1"
+								childTl.play(0)
 							}
 
 							return childTl
@@ -255,17 +263,23 @@ function buildTypingTimeline(
 	gsap: any,
 	chars: HTMLElement[],
 	cursor: HTMLElement,
+	container: HTMLElement,
 	options: { speed: number; jitter: number; delay: number }
 ) {
 	const { speed, jitter, delay } = options
 	const baseDuration = 1 / speed
 
-	const positions = chars.map((char) => ({
-		x: char.offsetLeft,
-		y: char.offsetTop,
-		width: char.offsetWidth,
-		height: char.offsetHeight,
-	}))
+	const containerRect = container.getBoundingClientRect()
+
+	const positions = chars.map((char) => {
+		const rect = char.getBoundingClientRect()
+		return {
+			x: rect.left - containerRect.left,
+			y: rect.top - containerRect.top,
+			width: rect.width,
+			height: rect.height,
+		}
+	})
 
 	gsap.set(chars, { autoAlpha: 0 })
 	gsap.set(cursor, { autoAlpha: 0 })

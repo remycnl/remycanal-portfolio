@@ -10,7 +10,7 @@
 	}
 
 	::selection {
-		background-color: var(--color-black);
+		background-color: var(--color-black-light);
 		color: var(--color-white);
 	}
 

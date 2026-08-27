@@ -19,7 +19,7 @@
 			class="py-section text-gray-dark relative max-w-6xl text-center text-2xl lg:text-5xl"
 		>
 			<div class="py-section max-w-xl lg:max-w-6xl">
-				<h2>
+				<h2 v-text-reveal="{ theme: 'violet', singlePhrase: true,  speed: 70 }">
 					I craft
 					<span class="text-white">distinctive digital experiences</span> through
 					thoughtful <span class="text-white">design</span>, creative
