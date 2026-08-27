@@ -86,15 +86,7 @@ export interface ResponsiveZoneGroup {
 	zones: ResponsiveZoneEntry[]
 }
 
-/** Délai de silence (ms) après une rafale de resize avant de recalculer. */
 const RESIZE_DEBOUNCE_MS = 150
-/**
- * Delta de hauteur (px) en dessous duquel, si la largeur n'a pas changé, un
- * resize est considéré comme un simple repli/dépli de barre d'outils ou de
- * clavier mobile — pas une vraie bascule de breakpoint. On se contente alors
- * de recaler la position dans la zone courante, sans ré-évaluer l'activité
- * des zones ni risquer un replacement complet.
- */
 const SOFT_RESIZE_HEIGHT_THRESHOLD = 140
 
 function range(start: number, count: number) {
@@ -116,6 +108,12 @@ function isRectUsable(rect: DOMRect) {
 
 function isFiniteCoord(value: number) {
 	return Number.isFinite(value)
+}
+
+function profileRangeWidth(profile: ZoneProfile) {
+	const min = profile.minWidth ?? Number.NEGATIVE_INFINITY
+	const max = profile.maxWidth ?? Number.POSITIVE_INFINITY
+	return max - min
 }
 
 let instance: ReturnType<typeof createSprite> | null = null
@@ -198,11 +196,6 @@ export function useCatZone(
 			orderCursor += group.zones.length
 		}
 
-		// Les zones de la page qui vient de se monter sont maintenant toutes
-		// enregistrées : on force un recalage propre au frame suivant, pour
-		// couvrir le cas d'une navigation de page où le chat aurait pu perdre
-		// sa zone entre le démontage de l'ancienne page et le montage de la
-		// nouvelle.
 		requestAnimationFrame(() => instance?.resync())
 	})
 
@@ -254,10 +247,6 @@ function createSprite(options: UseSpriteOptions) {
 	function wanderEnabled() {
 		return isRef(autoWander) ? autoWander.value : autoWander
 	}
-
-	// --------------------------------------------------
-	// DOM
-	// --------------------------------------------------
 
 	const canvas = document.createElement("canvas")
 	canvas.setAttribute("aria-hidden", "true")
@@ -318,11 +307,23 @@ function createSprite(options: UseSpriteOptions) {
 
 	function activeProfile(zone: Zone): ZoneProfile | undefined {
 		const w = window.innerWidth
-		return zone.profiles.find(
-			(p) =>
-				(p.minWidth === undefined || w >= p.minWidth) &&
-				(p.maxWidth === undefined || w <= p.maxWidth)
-		)
+		let best: ZoneProfile | undefined
+		let bestRangeWidth = Number.POSITIVE_INFINITY
+
+		for (const profile of zone.profiles) {
+			const matches =
+				(profile.minWidth === undefined || w >= profile.minWidth) &&
+				(profile.maxWidth === undefined || w <= profile.maxWidth)
+			if (!matches) continue
+
+			const rangeWidth = profileRangeWidth(profile)
+			if (best === undefined || rangeWidth < bestRangeWidth) {
+				best = profile
+				bestRangeWidth = rangeWidth
+			}
+		}
+
+		return best
 	}
 
 	function isZoneActive(zone: Zone) {
@@ -371,10 +372,6 @@ function createSprite(options: UseSpriteOptions) {
 	document.body.appendChild(meow)
 	document.body.appendChild(growl)
 
-	// --------------------------------------------------
-	// Sprites
-	// --------------------------------------------------
-
 	const spriteCache = new Map<string, HTMLImageElement>()
 	let activeImage: HTMLImageElement | null = null
 	let activeSpriteSrc: string | null = null
@@ -416,10 +413,6 @@ function createSprite(options: UseSpriteOptions) {
 			})
 	}
 
-	// --------------------------------------------------
-	// État
-	// --------------------------------------------------
-
 	let frameW = 0
 	let frameH = 0
 	let displayW = 0
@@ -457,18 +450,18 @@ function createSprite(options: UseSpriteOptions) {
 
 	let isBackgrounded = false
 
+	function isLocomotionActive() {
+		return isJumping || isHopping || (currentTween?.isActive() ?? false)
+	}
+
 	if (isRef(displayHeight)) {
 		watch(displayHeight, (next) => {
 			displayH = next
 			setupCanvas()
-			if (!isJumping) updateTravelArea()
+			if (!isLocomotionActive()) updateTravelArea()
 			draw()
 		})
 	}
-
-	// --------------------------------------------------
-	// Dessin
-	// --------------------------------------------------
 
 	function currentFrames() {
 		return state.mode === "idle"
@@ -539,10 +532,6 @@ function createSprite(options: UseSpriteOptions) {
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 	}
 
-	// --------------------------------------------------
-	// Géométrie
-	// --------------------------------------------------
-
 	function zoneBounds(zone: Zone) {
 		const rect = zone.el.getBoundingClientRect()
 		const left = rect.left + window.scrollX
@@ -571,11 +560,6 @@ function createSprite(options: UseSpriteOptions) {
 		return ra.right > rb.left && ra.left < rb.right
 	}
 
-	/**
-	 * Une zone `other` bloque le trajet de `from` vers `to` si son centre
-	 * tombe dans l'enveloppe rectangulaire des deux zones. Empêche de sauter
-	 * par-dessus une case pour en atteindre une plus loin.
-	 */
 	function isPathBlocked(from: Zone, to: Zone) {
 		const a = zoneRect(from)
 		const b = zoneRect(to)
@@ -627,7 +611,7 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	function updateTravelArea() {
-		if (!currentZone || isJumping) return
+		if (!currentZone || isLocomotionActive()) return
 
 		const bounds = zoneBounds(currentZone)
 		if (!isRectUsable(bounds.rect)) return
@@ -644,7 +628,6 @@ function createSprite(options: UseSpriteOptions) {
 		updateBubbleTextColor(zone)
 	}
 
-	/** Nettoie tout état transitoire (tweens, timers, bulles) avant un placement ou une pause. */
 	function resetTransientState() {
 		clearTimeout(pauseTimeout)
 		clearWanderTimer()
@@ -660,12 +643,6 @@ function createSprite(options: UseSpriteOptions) {
 		gsap.set(growl, { opacity: 0 })
 	}
 
-	/**
-	 * Place immédiatement le chat au centre d'une zone. Si la zone n'a pas
-	 * encore de rect exploitable (élément juste (dé)monté, display en cours
-	 * de transition), on réessaie au frame suivant plutôt que de figer une
-	 * position invalide.
-	 */
 	function placeInZone(zone: Zone, attempt = 0) {
 		const bounds = zoneBounds(zone)
 
@@ -694,13 +671,6 @@ function createSprite(options: UseSpriteOptions) {
 		scheduleWander()
 	}
 
-	/**
-	 * Recalage "léger" : si la zone courante est toujours active et son rect
-	 * exploitable, on se contente de recaler x/y dedans (pas de reset de
-	 * timers, pas de changement de zone). Sinon on retombe sur une zone
-	 * active valide. Appelée après resize, retour d'onglet, ou montage d'une
-	 * nouvelle page.
-	 */
 	function resync() {
 		lastScrollY = window.scrollY
 		lastScrollTime = performance.now()
@@ -726,10 +696,6 @@ function createSprite(options: UseSpriteOptions) {
 			[...zones.values()].sort((a, b) => zoneOrder(a) - zoneOrder(b))[0]
 		if (fallback) placeInZone(fallback)
 	}
-
-	// --------------------------------------------------
-	// Déplacement local : course + arrêts aléatoires
-	// --------------------------------------------------
 
 	function scheduleNextLeg() {
 		if (isBackgrounded || !imageLoaded || !currentZone || isJumping) return
@@ -809,12 +775,9 @@ function createSprite(options: UseSpriteOptions) {
 		}
 	}
 
-	// --------------------------------------------------
-	// Saut d'une zone à une autre (arc bas, sens figé)
-	// --------------------------------------------------
-
 	function jumpToZone(target: Zone, landingX?: number) {
 		if (isBackgrounded || !imageLoaded || target === currentZone) return
+		if (!isZoneActive(target)) return
 
 		const bounds = zoneBounds(target)
 		if (!isRectUsable(bounds.rect)) return
@@ -844,24 +807,14 @@ function createSprite(options: UseSpriteOptions) {
 			(currentZone ? zoneOrder(currentZone) : Number.NEGATIVE_INFINITY)
 
 		const velocityBoost = gsap.utils.clamp(1, 3.2, 1 + scrollVelocity / 2200)
-		// Multiplicateur dédié au saut inter-zones : un bond d'une section à
-		// l'autre doit être nettement plus vif qu'une simple balade locale.
 		const effectiveSpeed = speed * velocityBoost * 1.15
 
 		const arcHeight = gsap.utils.clamp(16, jumpArcHeight, straightDist * 0.22)
 
-		// Point de contrôle de la bézier quadratique. La courbe ne passant pas
-		// exactement par ce point (son sommet réel dépend des hauteurs de
-		// départ/arrivée), on compense sur Y pour que le point culminant visible
-		// corresponde bien à `arcHeight`.
 		const peakY = Math.min(startY, bounds.top) - arcHeight
 		const controlX = (startX + resolvedLandingX) / 2
 		const controlY = 2 * peakY - 0.5 * (startY + bounds.top)
 
-		// Une seule durée pour tout le trajet, parcourue à vitesse constante le
-		// long de la courbe (ease "none") : pas de ralenti au sommet, donc pas
-		// de flottement. La forme "naturelle" vient uniquement de la géométrie
-		// de la bézier, pas d'un jeu d'easing superposé.
 		const totalDuration = gsap.utils.clamp(0.18, 0.48, straightDist / effectiveSpeed)
 
 		let midFrameTriggered = false
@@ -898,10 +851,6 @@ function createSprite(options: UseSpriteOptions) {
 		})
 	}
 
-	// --------------------------------------------------
-	// Balade autonome (indépendante du scroll, toutes directions)
-	// --------------------------------------------------
-
 	function clearWanderTimer() {
 		clearTimeout(wanderTimeout)
 		wanderTimeout = undefined
@@ -924,7 +873,7 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	function collectWanderCandidates() {
-		if (!currentZone) return []
+		if (!currentZone || !isZoneActive(currentZone)) return []
 
 		const fromX = getX()
 		const fromY = getY()
@@ -993,10 +942,6 @@ function createSprite(options: UseSpriteOptions) {
 		scheduleWander()
 	}
 
-	// --------------------------------------------------
-	// Miaulement au survol
-	// --------------------------------------------------
-
 	function showMeow() {
 		if (meowVisible) return
 		meowVisible = true
@@ -1024,10 +969,6 @@ function createSprite(options: UseSpriteOptions) {
 
 	canvas.addEventListener("mouseenter", showMeow)
 	canvas.addEventListener("mouseleave", hideMeow)
-
-	// --------------------------------------------------
-	// Grognement au clic
-	// --------------------------------------------------
 
 	function showGrowl() {
 		clearTimeout(growlHideTimeout)
@@ -1058,10 +999,6 @@ function createSprite(options: UseSpriteOptions) {
 	}
 
 	canvas.addEventListener("click", showGrowl)
-
-	// --------------------------------------------------
-	// Scroll : saut inter-zones strictement vertical
-	// --------------------------------------------------
 
 	let scrollScheduled = false
 	let lastScrollY = 0
@@ -1118,6 +1055,11 @@ function createSprite(options: UseSpriteOptions) {
 
 			if (!currentZone) return
 
+			if (!isZoneActive(currentZone)) {
+				resync()
+				return
+			}
+
 			const viewportH = window.innerHeight
 
 			if (isJumping) {
@@ -1146,10 +1088,6 @@ function createSprite(options: UseSpriteOptions) {
 		})
 	}
 
-	// --------------------------------------------------
-	// Resize : rafales mobiles coalescées, distinction toolbar vs réel
-	// --------------------------------------------------
-
 	let lastKnownWidth = window.innerWidth
 	let lastKnownHeight = window.innerHeight
 	let resizeRafId: number | undefined
@@ -1166,12 +1104,8 @@ function createSprite(options: UseSpriteOptions) {
 		lastKnownWidth = width
 		lastKnownHeight = height
 
-		// Repli/dépli de barre d'outils ou de clavier mobile : la largeur ne
-		// bouge pas et le delta de hauteur reste dans une plage typique de
-		// chrome navigateur. On recale juste la position, sans réévaluer
-		// l'activité des zones ni risquer un replacement complet.
 		if (!widthChanged && heightDelta > 0 && heightDelta < SOFT_RESIZE_HEIGHT_THRESHOLD) {
-			if (!isJumping && !isHopping) updateTravelArea()
+			if (!isLocomotionActive()) updateTravelArea()
 			return
 		}
 
@@ -1192,10 +1126,6 @@ function createSprite(options: UseSpriteOptions) {
 	window.addEventListener("orientationchange", handleViewportChange, { passive: true })
 	window.visualViewport?.addEventListener("resize", handleViewportChange)
 
-	// --------------------------------------------------
-	// Onglet masqué / arrière-plan : pause propre, reprise sans casse
-	// --------------------------------------------------
-
 	function pauseForBackground() {
 		if (isBackgrounded) return
 		isBackgrounded = true
@@ -1206,9 +1136,6 @@ function createSprite(options: UseSpriteOptions) {
 		if (!isBackgrounded) return
 		isBackgrounded = false
 
-		// Laisse le navigateur stabiliser sa mise en page (barre d'outils,
-		// clavier, rotation) avant de relire des rects : les lire juste après
-		// un retour d'onglet peut renvoyer des valeurs transitoires fausses.
 		requestAnimationFrame(() => {
 			lastKnownWidth = window.innerWidth
 			lastKnownHeight = window.innerHeight
@@ -1216,32 +1143,31 @@ function createSprite(options: UseSpriteOptions) {
 		})
 	}
 
-	document.addEventListener("visibilitychange", () => {
+	function handleVisibilityChange() {
 		if (document.visibilityState === "hidden") pauseForBackground()
 		else resumeFromBackground()
-	})
+	}
+	document.addEventListener("visibilitychange", handleVisibilityChange)
 
-	window.addEventListener("pageshow", (event) => {
-		// Retour depuis le cache de navigation (bfcache) : équivalent à une
-		// reprise depuis l'arrière-plan, mêmes garde-fous.
-		if ((event as PageTransitionEvent).persisted) resumeFromBackground()
-	})
+	function handlePageShow(event: PageTransitionEvent) {
+		if (event.persisted) resumeFromBackground()
+	}
+	window.addEventListener("pageshow", handlePageShow)
 
 	const resizeObserver = new ResizeObserver((entries) => {
-		if (isBackgrounded || !currentZone) return
+		if (isBackgrounded || !currentZone || isLocomotionActive()) return
 		if (entries.some((e) => e.target === currentZone!.el)) updateTravelArea()
 	})
 
-	// --------------------------------------------------
-	// Changement de page (Nuxt) : recalage après navigation
-	// --------------------------------------------------
+	let unregisterBeforeEach: (() => void) | undefined
+	let unregisterAfterEach: (() => void) | undefined
 
 	try {
 		const router = useRouter()
-		router.beforeEach(() => {
-			resetTransientState() // annule tout saut/balade en cours avant que les zones changent
+		unregisterBeforeEach = router.beforeEach(() => {
+			resetTransientState()
 		})
-		router.afterEach(() => {
+		unregisterAfterEach = router.afterEach(() => {
 			requestAnimationFrame(() => requestAnimationFrame(() => instancePublicResync()))
 		})
 	} catch {
@@ -1251,10 +1177,6 @@ function createSprite(options: UseSpriteOptions) {
 	function instancePublicResync() {
 		resync()
 	}
-
-	// --------------------------------------------------
-	// Chargement du sprite initial
-	// --------------------------------------------------
 
 	loadSprite(options.spriteSrc).then((img) => {
 		activeImage = img
@@ -1275,10 +1197,6 @@ function createSprite(options: UseSpriteOptions) {
 	})
 
 	gsap.ticker.add(tick)
-
-	// --------------------------------------------------
-	// API publique
-	// --------------------------------------------------
 
 	let placementScheduled = false
 
@@ -1339,6 +1257,38 @@ function createSprite(options: UseSpriteOptions) {
 				}
 			},
 		}
+	}
+
+	function teardown() {
+		window.removeEventListener("scroll", onScroll)
+		window.removeEventListener("resize", handleViewportChange)
+		window.removeEventListener("orientationchange", handleViewportChange)
+		window.visualViewport?.removeEventListener("resize", handleViewportChange)
+		document.removeEventListener("visibilitychange", handleVisibilityChange)
+		window.removeEventListener("pageshow", handlePageShow)
+
+		resizeObserver.disconnect()
+		unregisterBeforeEach?.()
+		unregisterAfterEach?.()
+
+		gsap.ticker.remove(tick)
+		currentTween?.kill()
+		clearTimeout(pauseTimeout)
+		clearTimeout(wanderTimeout)
+		clearTimeout(growlHideTimeout)
+		clearTimeout(resizeDebounceTimer)
+		if (resizeRafId !== undefined) cancelAnimationFrame(resizeRafId)
+
+		canvas.remove()
+		meow.remove()
+		growl.remove()
+	}
+
+	if (import.meta.hot) {
+		import.meta.hot.dispose(() => {
+			teardown()
+			instance = null
+		})
 	}
 
 	return { registerZone, resync }

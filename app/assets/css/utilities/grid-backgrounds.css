@@ -180,141 +180,177 @@
 }
 
 /* @utility bg-grid-white {
-	position: relative;
-	isolation: isolate;
+    position: relative;
+    isolation: isolate;
 
-	&::before {
-		content: "";
-		position: absolute;
-		inset: 0;
-		z-index: -1;
-		pointer-events: none;
-		background-size: 96px 48px;
-		background-image: linear-gradient(to right, var(--color-gray-light) 1px, transparent 1px);
-		mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-		-webkit-mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-	}
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+
+        background-size: 96px 96px;
+        background-image: linear-gradient(
+            to right,
+            color-mix(in srgb, var(--color-black) 12%, transparent) 1px,
+            transparent 1px
+        );
+
+        mask-image: radial-gradient(
+            ellipse at center,
+            black 0%,
+            black 20%,
+            rgb(0 0 0 / 0.8) 40%,
+            rgb(0 0 0 / 0.45) 65%,
+            rgb(0 0 0 / 0.1) 85%,
+            transparent 100%
+        );
+
+        -webkit-mask-image: radial-gradient(
+            ellipse at center,
+            black 0%,
+            black 20%,
+            rgb(0 0 0 / 0.8) 40%,
+            rgb(0 0 0 / 0.45) 65%,
+            rgb(0 0 0 / 0.1) 85%,
+            transparent 100%
+        );
+
+        @media (min-width: 1024px) {
+            background-size: 160px 160px;
+        }
+    }
 }
 
 @utility bg-grid-black {
-	position: relative;
-	isolation: isolate;
+    position: relative;
+    isolation: isolate;
 
-	&::before {
-		content: "";
-		position: absolute;
-		inset: 0;
-		z-index: -1;
-		pointer-events: none;
-		background-size: 96px 48px;
-		background-image: linear-gradient(to right, var(--color-black-light) 1px, transparent 1px);
-		mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-		-webkit-mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-	}
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+
+        background-size: 96px 96px;
+        background-image: linear-gradient(
+            to right,
+            var(--color-black-light) 1px,
+            transparent 1px
+        );
+
+        mask-image: radial-gradient(
+            ellipse at center,
+            black 0%,
+            black 20%,
+            rgb(0 0 0 / 0.8) 40%,
+            rgb(0 0 0 / 0.45) 65%,
+            rgb(0 0 0 / 0.1) 85%,
+            transparent 100%
+        );
+
+        -webkit-mask-image: radial-gradient(
+            ellipse at center,
+            black 0%,
+            black 20%,
+            rgb(0 0 0 / 0.8) 40%,
+            rgb(0 0 0 / 0.45) 65%,
+            rgb(0 0 0 / 0.1) 85%,
+            transparent 100%
+        );
+
+        @media (min-width: 1024px) {
+            background-size: 160px 160px;
+        }
+    }
 }
 
 @utility bg-grid-lime {
-	position: relative;
-	isolation: isolate;
+    position: relative;
+    isolation: isolate;
 
-	&::before {
-		content: "";
-		position: absolute;
-		inset: 0;
-		z-index: -1;
-		pointer-events: none;
-		background-size: 96px 48px;
-		background-image: linear-gradient(
-			to right,
-			var(--color-lime-dark) 1px,
-			transparent 1px
-		);
-		mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-		-webkit-mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-	}
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+
+        background-size: 96px 96px;
+        background-image: linear-gradient(
+            to right,
+            color-mix(in srgb, var(--color-lime-dark) 55%, transparent) 1px,
+            transparent 1px
+        );
+
+        mask-image: radial-gradient(
+            ellipse at center,
+            black 0%,
+            black 20%,
+            rgb(0 0 0 / 0.8) 40%,
+            rgb(0 0 0 / 0.45) 65%,
+            rgb(0 0 0 / 0.1) 85%,
+            transparent 100%
+        );
+
+        -webkit-mask-image: radial-gradient(
+            ellipse at center,
+            black 0%,
+            black 20%,
+            rgb(0 0 0 / 0.8) 40%,
+            rgb(0 0 0 / 0.45) 65%,
+            rgb(0 0 0 / 0.1) 85%,
+            transparent 100%
+        );
+
+        @media (min-width: 1024px) {
+            background-size: 160px 160px;
+        }
+    }
 }
 
 @utility bg-grid-violet {
-	position: relative;
-	isolation: isolate;
+    position: relative;
+    isolation: isolate;
 
-	&::before {
-		content: "";
-		position: absolute;
-		inset: 0;
-		z-index: -1;
-		pointer-events: none;
-		background-size: 96px 48px;
-		background-image: linear-gradient(
-			to right,
-			var(--color-violet-light) 1px,
-			transparent 1px
-		);
-		mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-		-webkit-mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-	}
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+
+        background-size: 96px 96px;
+        background-image: linear-gradient(
+            to right,
+            color-mix(in srgb, var(--color-violet-dark) 55%, transparent) 1px,
+            transparent 1px
+        );
+
+        mask-image: radial-gradient(
+            ellipse at center,
+            black 0%,
+            black 20%,
+            rgb(0 0 0 / 0.8) 40%,
+            rgb(0 0 0 / 0.45) 65%,
+            rgb(0 0 0 / 0.1) 85%,
+            transparent 100%
+        );
+
+        -webkit-mask-image: radial-gradient(
+            ellipse at center,
+            black 0%,
+            black 20%,
+            rgb(0 0 0 / 0.8) 40%,
+            rgb(0 0 0 / 0.45) 65%,
+            rgb(0 0 0 / 0.1) 85%,
+            transparent 100%
+        );
+
+        @media (min-width: 1024px) {
+            background-size: 160px 160px;
+        }
+    }
 } */

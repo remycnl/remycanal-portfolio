@@ -1031,7 +1031,7 @@ function onWrapperPointerDown(event: PointerEvent) {
 	dragVelocityY = 0
 	inertiaVelocityY = 0
 
-	wrapperEl?.setPointerCapture(event.pointerId)
+	sceneEl?.setPointerCapture(event.pointerId)
 }
 
 function onWrapperPointerDragMove(event: PointerEvent) {
@@ -1330,27 +1330,27 @@ async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | nu
 	watchDevicePixelRatio()
 
 	if (!isTouchDevice.value) {
-		wrap.addEventListener("pointerenter", onWrapperPointerActivity)
+		element.addEventListener("pointerenter", onWrapperPointerActivity)
 
-		wrap.addEventListener("pointermove", onWrapperPointerActivity, {
+		element.addEventListener("pointermove", onWrapperPointerActivity, {
 			passive: true,
 		})
 
-		wrap.addEventListener("pointerleave", onWrapperPointerLeave)
+		element.addEventListener("pointerleave", onWrapperPointerLeave)
 	} else {
-		wrap.style.touchAction = "pan-y"
+		element.style.touchAction = "pan-y"
 
-		wrap.addEventListener("pointerdown", onWrapperPointerDown, {
+		element.addEventListener("pointerdown", onWrapperPointerDown, {
 			passive: true,
 		})
 
-		wrap.addEventListener("pointermove", onWrapperPointerDragMove, {
+		element.addEventListener("pointermove", onWrapperPointerDragMove, {
 			passive: true,
 		})
 
-		wrap.addEventListener("pointerup", onWrapperPointerDragEnd)
+		element.addEventListener("pointerup", onWrapperPointerDragEnd)
 
-		wrap.addEventListener("pointercancel", onWrapperPointerDragEnd)
+		element.addEventListener("pointercancel", onWrapperPointerDragEnd)
 	}
 
 	containerResizeObserver = new ResizeObserver(() => {
@@ -1376,7 +1376,7 @@ async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | nu
 		}
 	)
 
-	visibilityObserver.observe(wrap)
+	visibilityObserver.observe(element)
 
 	if (isVisible) {
 		startLoop()
@@ -1456,20 +1456,20 @@ function teardownInteractionListeners() {
 
 	dprQuery?.removeEventListener("change", handleDprChange)
 
-	if (wrapperEl) {
-		wrapperEl.removeEventListener("pointerenter", onWrapperPointerActivity)
+	if (sceneEl) {
+		sceneEl.removeEventListener("pointerenter", onWrapperPointerActivity)
 
-		wrapperEl.removeEventListener("pointermove", onWrapperPointerActivity)
+		sceneEl.removeEventListener("pointermove", onWrapperPointerActivity)
 
-		wrapperEl.removeEventListener("pointerleave", onWrapperPointerLeave)
+		sceneEl.removeEventListener("pointerleave", onWrapperPointerLeave)
 
-		wrapperEl.removeEventListener("pointerdown", onWrapperPointerDown)
+		sceneEl.removeEventListener("pointerdown", onWrapperPointerDown)
 
-		wrapperEl.removeEventListener("pointermove", onWrapperPointerDragMove)
+		sceneEl.removeEventListener("pointermove", onWrapperPointerDragMove)
 
-		wrapperEl.removeEventListener("pointerup", onWrapperPointerDragEnd)
+		sceneEl.removeEventListener("pointerup", onWrapperPointerDragEnd)
 
-		wrapperEl.removeEventListener("pointercancel", onWrapperPointerDragEnd)
+		sceneEl.removeEventListener("pointercancel", onWrapperPointerDragEnd)
 	}
 
 	containerResizeObserver?.disconnect()
@@ -1556,6 +1556,8 @@ onBeforeUnmount(() => {
 	touch-action: pan-y;
 	user-select: none;
 	-webkit-user-select: none;
+
+	pointer-events: none;
 }
 
 .logo-scene {
@@ -1573,7 +1575,7 @@ onBeforeUnmount(() => {
 
 	background: transparent;
 
-	pointer-events: none;
+	pointer-events: auto;
 }
 
 .logo-scene :deep(.logo-scene__canvas) {

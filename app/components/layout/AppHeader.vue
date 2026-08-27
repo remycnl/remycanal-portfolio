@@ -31,8 +31,7 @@
 					:key="link.to"
 					:ref="(el) => setMobileLinkRef(el, index)"
 					:to="link.to"
-					class="pointer-events-auto relative z-10 flex items-start gap-1.5 uppercase"
-					:class="index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'"
+					class="pointer-events-auto relative z-10 inline-block uppercase"
 					@click="onMobileLinkClick(index)"
 				>
 					<UiOutlineText
@@ -40,7 +39,10 @@
 						:active="isActive(link)"
 						font-class="font-lineal-heavy text-4xl leading-none text-white sm:text-5xl"
 					/>
-					<span class="font-vg5000 shrink-0 text-[10px] leading-none text-white">
+					<span
+						class="font-vg5000 absolute top-0 text-[10px] leading-none text-white"
+						:class="index % 2 === 0 ? 'left-full ml-1.5' : 'right-full mr-1.5'"
+					>
 						{{ String(index + 1).padStart(2, "0") }}
 					</span>
 				</NuxtLink>
@@ -123,7 +125,7 @@
 				>
 					<span
 						ref="indicatorRef"
-						class="bg-lime pointer-events-none absolute top-1/2 left-0 z-0 opacity-0 will-change-transform -translate-y-1/2 scale-[0.8] rounded-xs w-2 h-2"
+						class="bg-lime pointer-events-none absolute top-1/2 left-0 z-0 h-2 w-2 -translate-y-1/2 scale-[0.8] rounded-xs opacity-0 will-change-transform"
 					/>
 
 					<NuxtLink

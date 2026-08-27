@@ -10,12 +10,21 @@
 			>
 				<span class="bg-lime absolute top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
 
+				<div
+					class="text-lime relative z-10 mb-auto flex self-end lg:self-start"
+				>
+					<span
+						class="font-vg5000 text-[10px] tracking-[0.15em] uppercase sm:text-xs"
+						>(<span class="text-white">resume</span>)</span
+					>
+				</div>
+
 				<UiGridBeams theme="black" />
 
 				<div
 					class="relative z-10 ml-auto max-w-[85%] space-y-2 text-right sm:max-w-[65%]"
 				>
-					<p class="font-vg5000 text-lime text-xs tracking-[0.3em] uppercase">
+					<p class="font-vg5000 text-lime text-xs tracking-[0.25em] uppercase">
 						Previously on
 					</p>
 					<h2
@@ -302,10 +311,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { theme } from '#og-image-virtual/unocss-config.mjs'
-
-const sectionRoot = useTemplateRef<HTMLElement>("sectionRoot")
-
 const zoneIntro = useTemplateRef<HTMLElement>("zoneIntro")
 const zoneChapter01 = useTemplateRef<HTMLElement>("zoneChapter01")
 const zoneChapter02 = useTemplateRef<HTMLElement>("zoneChapter02")
@@ -332,8 +337,6 @@ const updateMediaQuery = () => {
 	if (mediaQuery) isDesktop.value = mediaQuery.matches
 }
 
-// Toggle tactile : activé uniquement sur les appareils sans hover réel
-// (mobile/tablette), jamais sur desktop même à écran tactile hybride.
 const isTouchDevice = ref(false)
 const activeCards = reactive(new Set<string>())
 
@@ -362,6 +365,9 @@ useSprite({
 	speed: 250,
 	textColorClass: "text-black",
 	autoWander: true,
+	autoWanderMinDelay: 3000,
+	autoWanderMaxDelay: 6500,
+	autoWanderChance: 0.6,
 })
 
 useCatZone({
