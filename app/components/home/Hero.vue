@@ -75,7 +75,7 @@ useHead({
 
 <style scoped>
 .logo-scene-placeholder {
-	width: min(98vw, 95vh, 68rem);
+	width: min(98vw, 95svh, 68rem);
 	max-width: 100%;
 	max-height: 100%;
 	aspect-ratio: 1 / 1;

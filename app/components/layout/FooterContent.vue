@@ -1,65 +1,83 @@
 <template>
 	<footer
-		class="p-edge bg-lime bg-grid-lime flex flex-col overflow-x-hidden text-black shadow-[inset_0_-10px_20px_-10px_rgba(0,0,0,0.28)]"
+		class="p-edge bg-grid-white from-violet to-violet relative isolate flex flex-col overflow-x-hidden bg-white via-white text-black shadow-[inset_0_-10px_20px_-10px_rgba(0,0,0,0.28)] lg:bg-linear-to-r lg:text-white"
 	>
-		<UiGridBeams theme="lime" />
-		<div class="relative z-20 flex flex-col gap-8 lg:gap-12">
-			<div
-				class="flex flex-col gap-12 pb-12 lg:flex-row lg:items-start lg:justify-between lg:gap-24"
-			>
-				<nav aria-label="Footer navigation" class="flex flex-col gap-3">
-					<div v-for="link in links" :key="link.to" class="overflow-hidden">
-						<NuxtLink
-							:to="link.to"
-							:tabindex="interactive ? undefined : -1"
-							:prefetch="interactive ? undefined : false"
-							class="footer-link font-lineal-medium hover:text-violet inline-block w-fit text-2xl leading-none tracking-tight uppercase transition-colors duration-200 sm:text-3xl"
-						>
-							{{ link.label }}
-						</NuxtLink>
-					</div>
-				</nav>
+		<UiGridBeams theme="white" />
+		<div
+			class="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden lg:-mt-10"
+		>
+			<HomeLogoScene
+				v-if="interactive && triggerEl"
+				class="pointer-events-auto"
+				skip-intro
+				scroll-reveal
+				body-color="var(--color-violet)"
+				face-color="var(--color-violet)"
+				:trigger-el="triggerEl"
+				style="--logo-scene-width: min(80vw, 62svh, 40rem)"
+			/>
+		</div>
 
-				<div class="flex flex-col gap-6 lg:items-end lg:text-right">
+		<div class="pointer-events-none relative z-10 flex flex-col">
+			<div class="grid grid-cols-1 gap-12 sm:grid-cols-2 sm:items-start lg:grid-cols-3">
+				<div class="flex flex-col gap-5 sm:gap-6">
 					<p
-						class="footer-fade font-vg5000 text-xs tracking-[0.2em] text-black/60 uppercase"
+						class="font-vg5000 text-[0.65rem] tracking-[0.35em] text-white/50 uppercase sm:text-xs"
 					>
 						Available for work
 					</p>
+
 					<a
 						href="mailto:hello@remycanal.me"
 						:tabindex="interactive ? undefined : -1"
-						class="footer-fade font-vg5000 hover:text-violet text-2xl leading-none tracking-tight transition-colors duration-200 sm:text-3xl"
+						class="font-vg5000 hover:text-lime pointer-events-auto w-fit text-2xl leading-[0.95] tracking-tight break-all whitespace-nowrap transition-colors duration-300 sm:text-3xl lg:text-4xl"
 					>
 						hello@remycanal.me
 					</a>
+
 					<NuxtLink
 						to="/contact"
 						:tabindex="interactive ? undefined : -1"
 						:prefetch="interactive ? undefined : false"
-						class="footer-fade font-vg5000 hover:text-lime inline-flex w-fit items-center gap-2 border border-black px-5 py-2 text-xs tracking-[0.15em] uppercase transition-colors duration-200 hover:bg-black"
+						class="font-vg5000 hover:text-violet hover:border-violet pointer-events-auto mt-2 inline-flex w-fit items-center gap-2 border border-white px-6 py-2.5 text-[0.65rem] tracking-[0.2em] uppercase transition-colors duration-300 hover:bg-white sm:text-xs"
 					>
 						Start a project
 					</NuxtLink>
 				</div>
+
+				<nav
+					aria-label="Footer navigation"
+					class="flex flex-col gap-3 sm:items-end lg:col-start-3"
+				>
+					<NuxtLink
+						v-for="link in links"
+						:key="link.to"
+						:to="link.to"
+						:tabindex="interactive ? undefined : -1"
+						:prefetch="interactive ? undefined : false"
+						class="font-lineal-bold hover:text-lime pointer-events-auto w-fit text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs"
+					>
+						{{ link.label }}
+					</NuxtLink>
+				</nav>
 			</div>
 
-			<div
-				class="footer-fade flex flex-col-reverse gap-6 pt-2 sm:flex-row sm:items-center sm:justify-between"
-			>
-				<p class="font-vg5000 text-xs tracking-[0.15em] text-black/60">
+			<div class="min-h-24 sm:min-h-32 lg:min-h-50" aria-hidden="true" />
+
+			<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<p class="font-vg5000 text-[0.65rem] tracking-[0.15em] text-white/60">
 					© {{ year }} Rémy Canal — All rights reserved
 				</p>
 
 				<ul
-					class="font-vg5000 flex flex-wrap gap-x-6 gap-y-2 text-xs tracking-[0.15em] uppercase"
+					class="font-vg5000 flex flex-wrap items-center gap-x-6 gap-y-2 text-[0.65rem] tracking-[0.15em] uppercase"
 				>
 					<li v-for="legal in legalLinks" :key="legal.to">
 						<NuxtLink
 							:to="legal.to"
 							:tabindex="interactive ? undefined : -1"
 							:prefetch="interactive ? undefined : false"
-							class="hover:text-violet transition-colors duration-200"
+							class="hover:text-lime pointer-events-auto transition-colors duration-200"
 						>
 							{{ legal.label }}
 						</NuxtLink>
@@ -76,9 +94,16 @@ interface FooterLink {
 	label: string
 }
 
-withDefaults(defineProps<{ interactive?: boolean }>(), {
-	interactive: false,
-})
+withDefaults(
+	defineProps<{
+		interactive?: boolean
+		triggerEl?: HTMLElement | null
+	}>(),
+	{
+		interactive: false,
+		triggerEl: null,
+	}
+)
 
 const links: FooterLink[] = [
 	{ to: "/", label: "Home" },

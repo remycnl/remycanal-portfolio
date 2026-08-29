@@ -10,13 +10,10 @@
 			>
 				<span class="bg-lime absolute top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
 
-				<div
-					class="text-lime relative z-10 mb-auto flex self-end lg:self-start"
-				>
-					<span
-						class="font-vg5000 text-[10px] tracking-[0.15em] uppercase sm:text-xs"
-						>(<span class="text-white">resume</span>)</span
-					>
+				<div class="text-lime relative z-10 mb-auto flex self-end lg:self-start">
+					<span v-text-reveal="{singlePhrase: true}" class="font-vg5000 text-[10px] tracking-[0.15em] uppercase sm:text-xs">
+						(<span class="text-white">resume</span>)
+					</span>
 				</div>
 
 				<UiGridBeams theme="black" />
@@ -164,7 +161,7 @@
 
 			<!-- Dublin — 03 — lime -->
 			<div
-				v-text-reveal="{theme:'white'}"
+				v-text-reveal="{ theme: 'white' }"
 				ref="zoneDublin"
 				:data-active="activeCards.has('dublin')"
 				class="p-edge border-gray-dark/50 bg-lime group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b lg:col-span-2 lg:cursor-default"
