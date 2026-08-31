@@ -94,7 +94,8 @@ import {
 	acquireLogoSceneAssets,
 	bakeEnvironmentTexture,
 	releaseLogoSceneAssets,
-} from "~/composables/useLogoSceneAssets"
+} from "@/composables/useLogoSceneAssets"
+import { DEFAULT_LOGO_MODEL_URL } from "@/constants/logo"
 
 const XRAY_TINT_COLOR = 0x8fd8ff
 const XRAY_TINT_MIX = 0.85
@@ -164,7 +165,7 @@ const props = withDefaults(
 		triggerEl?: HTMLElement | null
 	}>(),
 	{
-		modelUrl: "/models/logo-metal-lime.glb",
+		modelUrl: DEFAULT_LOGO_MODEL_URL,
 		skipIntro: false,
 		bodyColor: undefined,
 		faceColor: undefined,

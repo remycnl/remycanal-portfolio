@@ -1,5 +1,5 @@
 <template>
-	<div ref="wrapRef" class="relative w-full" :style="{ clipPath: wrapClipPath }">
+	<div ref="wrapRef" class="z-5000 relative w-full" :style="{ clipPath: wrapClipPath }">
 		<!-- Spacer : invisible, en flux normal, définit la hauteur réelle -->
 		<div inert aria-hidden="true" class="invisible">
 			<LayoutFooterContent />

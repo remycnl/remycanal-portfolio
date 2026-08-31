@@ -49,9 +49,6 @@ export default defineNuxtConfig({
 
 	vite: {
 		plugins: [tailwindcss()],
-		build: {
-			target: "esnext",
-		},
 	},
 
 	modules: ["@nuxtjs/seo", "@nuxt/image", "@nuxt/icon"],

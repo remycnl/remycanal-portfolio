@@ -53,12 +53,6 @@ export default defineNuxtPlugin({
 			ScrollTrigger.refresh()
 		})
 
-		const router = useRouter()
-		router.afterEach((to) => {
-			if (to.hash) return
-			lenis.scrollTo(0, { immediate: true })
-		})
-
 		return {
 			provide: { lenis },
 		}

@@ -1,3 +1,15 @@
+:root {
+	--grid-mask: radial-gradient(
+		ellipse at center,
+		black 0%,
+		black 20%,
+		rgb(0 0 0 / 0.75) 40%,
+		rgb(0 0 0 / 0.4) 60%,
+		rgb(0 0 0 / 0.12) 80%,
+		transparent 95%
+	);
+}
+
 @utility bg-grid-white {
 	position: relative;
 	isolation: isolate;
@@ -20,24 +32,8 @@
 				color-mix(in srgb, var(--color-black) 10%, transparent) 1px,
 				transparent 1px
 			);
-		mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-		-webkit-mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
+		mask-image: var(--grid-mask);
+		-webkit-mask-image: var(--grid-mask);
 
 		@media (min-width: 1024px) {
 			background-size: 96px 96px;
@@ -59,24 +55,8 @@
 		background-image:
 			linear-gradient(to right, var(--color-black-light) 1px, transparent 1px),
 			linear-gradient(to bottom, var(--color-black-light) 1px, transparent 1px);
-		mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-		-webkit-mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
+		mask-image: var(--grid-mask);
+		-webkit-mask-image: var(--grid-mask);
 
 		@media (min-width: 1024px) {
 			background-size: 96px 96px;
@@ -106,25 +86,8 @@
 				color-mix(in srgb, var(--color-lime-dark) 50%, transparent) 1px,
 				transparent 1px
 			);
-
-		mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-		-webkit-mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
+		mask-image: var(--grid-mask);
+		-webkit-mask-image: var(--grid-mask);
 
 		@media (min-width: 1024px) {
 			background-size: 96px 96px;
@@ -154,24 +117,8 @@
 				color-mix(in srgb, var(--color-violet-dark) 50%, transparent) 1px,
 				transparent 1px
 			);
-		mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
-		-webkit-mask-image: radial-gradient(
-			ellipse at center,
-			black 0%,
-			black 20%,
-			rgb(0 0 0 / 0.75) 40%,
-			rgb(0 0 0 / 0.4) 60%,
-			rgb(0 0 0 / 0.12) 80%,
-			transparent 95%
-		);
+		mask-image: var(--grid-mask);
+		-webkit-mask-image: var(--grid-mask);
 
 		@media (min-width: 1024px) {
 			background-size: 96px 96px;
@@ -197,25 +144,8 @@
             transparent 1px
         );
 
-        mask-image: radial-gradient(
-            ellipse at center,
-            black 0%,
-            black 20%,
-            rgb(0 0 0 / 0.8) 40%,
-            rgb(0 0 0 / 0.45) 65%,
-            rgb(0 0 0 / 0.1) 85%,
-            transparent 100%
-        );
-
-        -webkit-mask-image: radial-gradient(
-            ellipse at center,
-            black 0%,
-            black 20%,
-            rgb(0 0 0 / 0.8) 40%,
-            rgb(0 0 0 / 0.45) 65%,
-            rgb(0 0 0 / 0.1) 85%,
-            transparent 100%
-        );
+        mask-image: var(--grid-mask);
+		-webkit-mask-image: var(--grid-mask);
 
         @media (min-width: 1024px) {
             background-size: 160px 160px;
@@ -241,25 +171,8 @@
             transparent 1px
         );
 
-        mask-image: radial-gradient(
-            ellipse at center,
-            black 0%,
-            black 20%,
-            rgb(0 0 0 / 0.8) 40%,
-            rgb(0 0 0 / 0.45) 65%,
-            rgb(0 0 0 / 0.1) 85%,
-            transparent 100%
-        );
-
-        -webkit-mask-image: radial-gradient(
-            ellipse at center,
-            black 0%,
-            black 20%,
-            rgb(0 0 0 / 0.8) 40%,
-            rgb(0 0 0 / 0.45) 65%,
-            rgb(0 0 0 / 0.1) 85%,
-            transparent 100%
-        );
+        mask-image: var(--grid-mask);
+		-webkit-mask-image: var(--grid-mask);
 
         @media (min-width: 1024px) {
             background-size: 160px 160px;
@@ -285,25 +198,8 @@
             transparent 1px
         );
 
-        mask-image: radial-gradient(
-            ellipse at center,
-            black 0%,
-            black 20%,
-            rgb(0 0 0 / 0.8) 40%,
-            rgb(0 0 0 / 0.45) 65%,
-            rgb(0 0 0 / 0.1) 85%,
-            transparent 100%
-        );
-
-        -webkit-mask-image: radial-gradient(
-            ellipse at center,
-            black 0%,
-            black 20%,
-            rgb(0 0 0 / 0.8) 40%,
-            rgb(0 0 0 / 0.45) 65%,
-            rgb(0 0 0 / 0.1) 85%,
-            transparent 100%
-        );
+        mask-image: var(--grid-mask);
+		-webkit-mask-image: var(--grid-mask);
 
         @media (min-width: 1024px) {
             background-size: 160px 160px;
@@ -329,25 +225,8 @@
             transparent 1px
         );
 
-        mask-image: radial-gradient(
-            ellipse at center,
-            black 0%,
-            black 20%,
-            rgb(0 0 0 / 0.8) 40%,
-            rgb(0 0 0 / 0.45) 65%,
-            rgb(0 0 0 / 0.1) 85%,
-            transparent 100%
-        );
-
-        -webkit-mask-image: radial-gradient(
-            ellipse at center,
-            black 0%,
-            black 20%,
-            rgb(0 0 0 / 0.8) 40%,
-            rgb(0 0 0 / 0.45) 65%,
-            rgb(0 0 0 / 0.1) 85%,
-            transparent 100%
-        );
+        mask-image: var(--grid-mask);
+		-webkit-mask-image: var(--grid-mask);
 
         @media (min-width: 1024px) {
             background-size: 160px 160px;

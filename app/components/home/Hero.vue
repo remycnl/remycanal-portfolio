@@ -6,17 +6,6 @@ useStackSection(heroRef, {
 	rotateTo: -4,
 	roundedClass: "rounded-t-lg",
 })
-
-useHead({
-	link: [
-		{
-			rel: "preload",
-			as: "fetch",
-			href: "/models/logo-metal-lime.glb",
-			crossorigin: "anonymous",
-		},
-	],
-})
 </script>
 
 <template>
@@ -63,21 +52,7 @@ useHead({
 		<div
 			class="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
 		>
-			<ClientOnly>
 				<HomeLogoScene class="pointer-events-auto" />
-				<template #fallback>
-					<div class="logo-scene-placeholder" />
-				</template>
-			</ClientOnly>
 		</div>
 	</section>
 </template>
-
-<style scoped>
-.logo-scene-placeholder {
-	width: min(98vw, 95svh, 68rem);
-	max-width: 100%;
-	max-height: 100%;
-	aspect-ratio: 1 / 1;
-}
-</style>

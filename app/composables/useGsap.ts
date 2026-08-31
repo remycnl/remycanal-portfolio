@@ -1,13 +1,12 @@
-// app/composables/useGsap.ts
 import type { gsap as gsapValue } from "gsap"
 import type { ScrollTrigger as ScrollTriggerValue } from "gsap/ScrollTrigger"
 import type { Draggable as DraggableValue } from "gsap/Draggable"
 import type { SplitText as SplitTextValue } from "gsap/SplitText"
 
-type GsapInstance = typeof gsapValue
-type ScrollTriggerInstance = typeof ScrollTriggerValue
-type DraggableInstance = typeof DraggableValue
-type SplitTextInstance = typeof SplitTextValue
+export type GsapInstance = typeof gsapValue
+export type ScrollTriggerInstance = typeof ScrollTriggerValue
+export type DraggableInstance = typeof DraggableValue
+export type SplitTextInstance = typeof SplitTextValue
 
 export function useGsap() {
 	const { $gsap, $ScrollTrigger, $Draggable, $SplitText } = useNuxtApp()

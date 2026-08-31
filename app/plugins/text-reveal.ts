@@ -1,4 +1,5 @@
 import type { Directive } from "vue"
+import type { GsapInstance, ScrollTriggerInstance } from "@/composables/useGsap"
 
 interface TypewriterOptions {
 	/** Vitesse de frappe en caractères/seconde. Plus haut = plus rapide. */
@@ -48,11 +49,11 @@ function getResponsiveTrigger(): { start: string; end: string } {
 }
 
 interface RevealState {
-	ctx?: any
-	stForward?: any
-	stBackward?: any
+	ctx?: ReturnType<GsapInstance["context"]>
+	stForward?: ReturnType<ScrollTriggerInstance["create"]>
+	stBackward?: ReturnType<ScrollTriggerInstance["create"]>
 	cursors: HTMLElement[]
-	timelines: (any | undefined)[]
+	timelines: (ReturnType<GsapInstance["timeline"]> | undefined)[]
 	responsive: boolean
 }
 
@@ -61,7 +62,7 @@ const RESPONSIVE_STATES = new Set<RevealState>()
 
 let responsiveResizeSubscribed = false
 
-function ensureResponsiveResizeSubscription(ScrollTrigger: any) {
+function ensureResponsiveResizeSubscription(ScrollTrigger: ScrollTriggerInstance) {
 	if (responsiveResizeSubscribed) return
 	responsiveResizeSubscribed = true
 
@@ -124,13 +125,14 @@ export default defineNuxtPlugin({
 				return
 			}
 
+			await waitForAppReady()
+			await waitForPageTransition()
+
+			if (!STATE.has(el)) return
+
 			if (document.fonts?.ready) await document.fonts.ready
 
-			const {
-				$gsap: gsap,
-				$ScrollTrigger: ScrollTrigger,
-				$SplitText: SplitText,
-			} = useNuxtApp()
+			const { gsap, ScrollTrigger, SplitText } = useGsap()
 
 			const responsiveTrigger = getResponsiveTrigger()
 
@@ -260,7 +262,7 @@ function createCursor(el: HTMLElement, color: string, width: number) {
 }
 
 function buildTypingTimeline(
-	gsap: any,
+	gsap: GsapInstance,
 	chars: HTMLElement[],
 	cursor: HTMLElement,
 	container: HTMLElement,

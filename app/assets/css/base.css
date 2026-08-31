@@ -9,12 +9,18 @@
 		height: 100%;
 	}
 
-	::selection {
+	*::selection {
 		background-color: var(--color-black-light);
 		color: var(--color-white);
 	}
 
 	button {
 		cursor: pointer;
+	}
+
+	@media (max-width: 767px) {
+		:where(input, textarea, select) {
+			font-size: 16px;
+		}
 	}
 }

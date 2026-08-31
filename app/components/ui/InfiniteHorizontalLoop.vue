@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { horizontalLoop } from "~/utils/gsap/horizontalLoop"
+import { horizontalLoop } from "@/utils/gsap/horizontalLoop"
 
 type Tier = "mobile" | "tablet" | "desktop"
 type ResponsiveValue<T> = T | Partial<Record<Tier, T>>
