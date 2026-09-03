@@ -1,7 +1,7 @@
 <template>
 	<section
 		data-drag-bounds
-		class="relative section-p-xy font-lineal-medium bg-grid-black flex justify-center bg-black"
+		class="section-p-xy font-lineal-medium bg-grid-black relative flex justify-center bg-black"
 	>
 		<UiGridBeams theme="black" />
 		<div
@@ -19,7 +19,7 @@
 			class="py-section text-gray-dark relative max-w-6xl text-center text-2xl lg:text-5xl"
 		>
 			<div class="py-section max-w-xl lg:max-w-6xl">
-				<h2 v-text-reveal="{ theme: 'violet', singlePhrase: true,  speed: 70 }">
+				<h2 v-text-reveal="{ theme: 'violet', singlePhrase: true, speed: 70 }">
 					I craft
 					<span class="text-white">distinctive digital experiences</span> through
 					thoughtful <span class="text-white">design</span>, creative

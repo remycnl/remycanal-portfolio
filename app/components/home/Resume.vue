@@ -11,7 +11,10 @@
 				<span class="bg-lime absolute top-3 left-3 z-20 h-2 w-2" aria-hidden="true" />
 
 				<div class="text-lime relative z-10 mb-auto flex self-end lg:self-start">
-					<span v-text-reveal="{singlePhrase: true}" class="font-vg5000 text-[10px] tracking-[0.15em] uppercase sm:text-xs">
+					<span
+						v-text-reveal="{ singlePhrase: true }"
+						class="font-vg5000 text-[10px] tracking-[0.15em] uppercase sm:text-xs"
+					>
 						(<span class="text-white">resume</span>)
 					</span>
 				</div>
@@ -40,7 +43,7 @@
 				v-text-reveal
 				ref="zoneChapter01"
 				:data-active="activeCards.has('chapter01')"
-				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-gray-light md:bg-white lg:col-span-2 lg:cursor-default"
+				class="p-edge border-gray-dark/50 group bg-gray-light relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b md:bg-white lg:col-span-2 lg:cursor-default"
 				@click="toggleCard('chapter01')"
 			>
 				<span
@@ -108,7 +111,7 @@
 				v-text-reveal
 				ref="zoneChapter02"
 				:data-active="activeCards.has('chapter02')"
-				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white md:bg-gray-light lg:bg-white lg:col-span-2 lg:cursor-default"
+				class="p-edge border-gray-dark/50 group md:bg-gray-light relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-default lg:bg-white"
 				@click="toggleCard('chapter02')"
 			>
 				<span

@@ -16,10 +16,10 @@ export function useFontsReady(): Ref<boolean> {
 					document.fonts.load(font.loadDescriptor).catch((error: unknown) => {
 						console.error(
 							`[useFontsReady] Échec du chargement de la police ${font.family} :`,
-							error,
+							error
 						)
-					}),
-				),
+					})
+				)
 			).then(() => {
 				isReady.value = true
 			})

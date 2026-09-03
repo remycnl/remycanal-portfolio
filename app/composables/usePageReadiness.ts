@@ -21,7 +21,7 @@ export function usePageReadiness(): Ref<boolean> {
 						evaluate()
 					}
 				},
-				{ once: true },
+				{ once: true }
 			)
 		}
 
@@ -32,7 +32,7 @@ export function usePageReadiness(): Ref<boolean> {
 					loadReady = true
 					evaluate()
 				},
-				{ once: true },
+				{ once: true }
 			)
 		}
 

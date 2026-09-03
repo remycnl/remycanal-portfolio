@@ -1,4 +1,3 @@
-<!-- app/components/StackCard.vue -->
 <script setup lang="ts">
 interface Props {
 	bg: string
@@ -15,8 +14,6 @@ const props = withDefaults(defineProps<Props>(), { stacked: true })
 
 const cardRef = useTemplateRef<HTMLElement>("cardRef")
 
-// La dernière carte n'a pas de section suivante pour la recouvrir :
-// pas d'intérêt (et effet cassé) à la rendre sticky/scalable.
 if (props.stacked) {
 	useStackSection(cardRef, {
 		scaleTo: 0.72,
