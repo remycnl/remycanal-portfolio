@@ -18,11 +18,23 @@
 				</filter>
 			</defs>
 		</svg>
+
 		<div
 			ref="mobileOverlayRef"
-			style="visibility: hidden; opacity: 0; pointer-events: none"
-			class="bg-violet bg-grid-violet pointer-events-auto fixed inset-x-0 top-0 z-0 h-svh overflow-hidden overscroll-contain md:hidden"
+			:style="mobileOverlayStyle"
+			class="pointer-events-auto fixed inset-x-0 top-0 z-0 h-svh overflow-hidden overscroll-contain md:hidden"
 		>
+			<UiPixelReveal
+				:active="overlayActive"
+				direction="corners"
+				base-color="--color-violet"
+				accent-color="--color-gray-light"
+				:in-duration="MOBILE_REVEAL_IN"
+				:out-duration="MOBILE_REVEAL_OUT"
+				@opened="onOverlayOpened"
+				@closed="onOverlayClosed"
+			/>
+
 			<div
 				class="pointer-events-none absolute inset-x-0 top-18.5 bottom-0 flex flex-col items-center justify-center gap-6"
 			>
@@ -120,34 +132,17 @@
 
 				<nav
 					ref="navRef"
-					class="font-lineal-bold relative hidden shrink-0 items-center gap-7 tracking-wide text-white uppercase md:flex"
-					@mouseleave="onNavLeave"
+					class="font-lineal-bold hidden shrink-0 items-center gap-7 tracking-wide text-white uppercase md:flex"
 				>
-					<span
-						ref="indicatorRef"
-						class="bg-lime pointer-events-none absolute top-1/2 left-0 z-0 h-2 w-2 -translate-y-1/2 scale-[0.8] rounded-xs opacity-0 will-change-transform"
-					/>
-
 					<NuxtLink
-						v-for="(link, index) in links"
+						v-for="link in links"
 						:key="link.to"
-						:ref="(el) => setLinkRef(el, index)"
 						:to="link.to"
-						class="relative z-10 block transition-colors duration-300"
-						:class="{ 'text-lime': isActive(link) }"
-						@mouseenter="onLinkEnter(index)"
-						@focus="onLinkEnter(index)"
-						@click="onLinkClick(index)"
+						v-roll-hover
+						class="hover:text-lime lg:hover:text-gray-light focus-visible:text-lime relative block transition-colors duration-300"
+						:class="{ 'text-lime lg:hover:text-lime!': isActive(link) }"
 					>
-						<span
-							v-for="(char, ci) in link.label.split('')"
-							:key="ci"
-							:ref="(el) => setNavCharRef(el, index, ci)"
-							class="inline-block"
-							style="opacity: 0"
-						>
-							{{ char === " " ? "\u00A0" : char }}
-						</span>
+						{{ link.label }}
 					</NuxtLink>
 				</nav>
 
@@ -177,6 +172,14 @@
 					</svg>
 				</button>
 			</div>
+
+			<canvas
+				v-if="showRevealCanvas"
+				ref="revealCanvasRef"
+				style="visibility: visible"
+				class="pointer-events-none absolute inset-0 z-20 block"
+				aria-hidden="true"
+			/>
 		</div>
 	</header>
 </template>
@@ -240,14 +243,33 @@ function isActive(link: { to: string }) {
 	return route.path === link.to || route.path.startsWith(`${link.to}/`)
 }
 
+function themeColor(name: string) {
+	if (!name.startsWith("--")) return name
+	return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
+const MOBILE_REVEAL_IN = 620
+const MOBILE_REVEAL_OUT = 420
+
 const boxRef = useTemplateRef<HTMLElement>("boxRef")
-const indicatorRef = useTemplateRef<HTMLElement>("indicatorRef")
+const revealCanvasRef = useTemplateRef<HTMLCanvasElement>("revealCanvasRef")
 const menuBtnRef = useTemplateRef<HTMLElement>("menuBtnRef")
 const menuIconRef = useTemplateRef<HTMLElement>("menuIconRef")
 const logoFlipRef = useTemplateRef<HTMLElement>("logoFlipRef")
-const navRef = useTemplateRef<HTMLElement>("navRef")
 const mobileOverlayRef = useTemplateRef<HTMLElement>("mobileOverlayRef")
 const stickersLayerRef = useTemplateRef<HTMLElement>("stickersLayerRef")
+
+const open = ref(false)
+
+const overlayActive = ref(false)
+const showRevealCanvas = ref(!hasPlayedIntro)
+
+const overlayShown = ref(false)
+const overlayInteractive = ref(false)
+const mobileOverlayStyle = computed(() => ({
+	visibility: overlayShown.value ? ("visible" as const) : ("hidden" as const),
+	pointerEvents: overlayInteractive.value ? ("auto" as const) : ("none" as const),
+}))
 
 const {
 	onWiggleEnter: onLogoEnterBase,
@@ -263,32 +285,11 @@ function onLogoEnter() {
 	onLogoEnterBase()
 }
 
-const linkEls: (HTMLElement | null)[] = []
 const mobileLinkEls: (HTMLElement | null)[] = []
-const navCharEls: (HTMLElement | null)[][] = []
 const stickerRefs: (HTMLElement | null)[] = []
-
-function getElementAt(
-	elements: (HTMLElement | null)[],
-	index: number
-): HTMLElement | null {
-	return elements[index] ?? null
-}
-
-function setLinkRef(el: any, index: number) {
-	linkEls[index] = (el?.$el ?? el) as HTMLElement | null
-}
 
 function setMobileLinkRef(el: any, index: number) {
 	mobileLinkEls[index] = (el?.$el ?? el) as HTMLElement | null
-}
-
-function setNavCharRef(el: any, index: number, charIndex: number) {
-	if (!navCharEls[index]) {
-		navCharEls[index] = []
-	}
-
-	navCharEls[index][charIndex] = (el?.$el ?? el) as HTMLElement | null
 }
 
 function setStickerRef(el: any, index: number) {
@@ -296,16 +297,14 @@ function setStickerRef(el: any, index: number) {
 }
 
 const visibleStickers = ref<MenuSticker[]>([])
-const open = ref(false)
 
-let onLinkEnter: (index: number) => void = () => {}
-let onNavLeave: () => void = () => {}
-let onLinkClick: (index: number) => void = () => {}
 let onMobileLinkClick: (index: number) => void = () => {}
 let onMenuIconPress: () => void = () => {}
 let onMenuIconRelease: () => void = () => {}
 let toggleMenu: () => void = () => {}
 let closeMenu: () => void = () => {}
+let onOverlayOpened: () => void = () => {}
+let onOverlayClosed: () => void = () => {}
 
 let lockedScrollY = 0
 
@@ -390,124 +389,12 @@ useGsapContext(({ gsap }) => {
 
 	async function waitForFonts() {
 		if (!("fonts" in document)) return
-
 		try {
 			await document.fonts.ready
 		} catch {
 			// noop
 		}
 	}
-
-	let hideTimer: ReturnType<typeof setTimeout> | null = null
-	let isIndicatorVisible = false
-
-	function clearHideTimer() {
-		if (hideTimer) {
-			clearTimeout(hideTimer)
-		}
-
-		hideTimer = null
-	}
-
-	function hideIndicator(delay = 120) {
-		clearHideTimer()
-
-		isIndicatorVisible = false
-
-		hideTimer = setTimeout(() => {
-			const indicator = indicatorRef.value
-
-			if (!indicator) return
-
-			gsap.to(indicator, {
-				opacity: 0,
-				scale: 0.9,
-				duration: 0.22,
-				ease: "power2.out",
-				overwrite: "auto",
-			})
-		}, delay)
-	}
-
-	const CUBE_SIZE = 8
-	const LINE_HEIGHT = 3
-	const CUBE_GAP = 4
-
-	function getCubeTargetX(link: HTMLElement) {
-		return link.offsetLeft - CUBE_GAP - CUBE_SIZE
-	}
-
-	function moveIndicatorTo(index: number) {
-		const link = getElementAt(linkEls, index)
-		const indicator = indicatorRef.value
-
-		if (!link || !indicator) return
-
-		const targetX = getCubeTargetX(link)
-
-		gsap.killTweensOf(indicator)
-
-		if (!isIndicatorVisible) {
-			gsap.set(indicator, {
-				x: targetX,
-				yPercent: -50,
-				width: CUBE_SIZE,
-				height: CUBE_SIZE,
-				borderRadius: 2,
-			})
-
-			gsap.to(indicator, {
-				opacity: 1,
-				scale: 1,
-				duration: 0.16,
-				ease: "power2.out",
-				overwrite: "auto",
-			})
-
-			isIndicatorVisible = true
-			return
-		}
-
-		const currentX = Number(gsap.getProperty(indicator, "x"))
-
-		if (Math.abs(targetX - currentX) < 0.5) return
-
-		const leftEdge = Math.min(currentX, targetX)
-		const rightEdge = Math.max(currentX, targetX) + CUBE_SIZE
-		const travelWidth = rightEdge - leftEdge
-
-		gsap
-			.timeline({ overwrite: "auto" })
-			.to(indicator, {
-				x: leftEdge,
-				width: travelWidth,
-				height: LINE_HEIGHT,
-				borderRadius: 1.5,
-				opacity: 1,
-				scale: 1,
-				duration: 0.28,
-				ease: "power3.out",
-			})
-			.to(
-				indicator,
-				{
-					x: targetX,
-					width: CUBE_SIZE,
-					height: CUBE_SIZE,
-					borderRadius: 2,
-					duration: 0.5,
-					ease: "elastic.out(1, 0.6)",
-				},
-				"-=0.02"
-			)
-	}
-
-	onLinkEnter = (index) => {
-		clearHideTimer()
-		moveIndicatorTo(index)
-	}
-
-	onNavLeave = () => hideIndicator(140)
 
 	function bounceLink(el: HTMLElement | null) {
 		if (!el || prefersReducedMotion || !isTouchDevice) return
@@ -516,20 +403,9 @@ useGsapContext(({ gsap }) => {
 
 		gsap
 			.timeline()
-			.set(el, {
-				transformOrigin: "50% 50%",
-				willChange: "transform",
-			})
-			.to(el, {
-				scale: 0.9,
-				duration: 0.1,
-				ease: "power2.out",
-			})
-			.to(el, {
-				scale: 1.08,
-				duration: 0.2,
-				ease: "back.out(2.8)",
-			})
+			.set(el, { transformOrigin: "50% 50%", willChange: "transform" })
+			.to(el, { scale: 0.9, duration: 0.1, ease: "power2.out" })
+			.to(el, { scale: 1.08, duration: 0.2, ease: "back.out(2.8)" })
 			.to(el, {
 				scale: 1,
 				duration: 0.28,
@@ -538,33 +414,8 @@ useGsapContext(({ gsap }) => {
 			})
 	}
 
-	onLinkClick = (index) => {
-		const link = getElementAt(linkEls, index)
-
-		bounceLink(link)
-
-		const indicator = indicatorRef.value
-
-		if (!indicator || !isIndicatorVisible) return
-
-		gsap
-			.timeline({ overwrite: "auto" })
-			.to(indicator, {
-				scale: 0.85,
-				duration: 0.12,
-				ease: "power2.in",
-			})
-			.to(indicator, {
-				scale: 1,
-				duration: 0.32,
-				ease: "back.out(2.5)",
-			})
-	}
-
 	onMobileLinkClick = (index) => {
-		const link = getElementAt(mobileLinkEls, index)
-
-		bounceLink(link)
+		bounceLink(mobileLinkEls[index] ?? null)
 
 		if (prefersReducedMotion) {
 			closeMenu()
@@ -572,27 +423,21 @@ useGsapContext(({ gsap }) => {
 		}
 
 		window.setTimeout(() => {
-			if (open.value) {
-				closeMenu()
-			}
+			if (open.value) closeMenu()
 		}, 110)
 	}
 
 	const cornerDots = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-c"))
 		: []
-
 	const centerDot = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-m"))
 		: []
-
 	const edgeDots = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-e"))
 		: []
 
-	gsap.set([...cornerDots, ...centerDot, ...edgeDots], {
-		transformOrigin: "50% 50%",
-	})
+	gsap.set([...cornerDots, ...centerDot, ...edgeDots], { transformOrigin: "50% 50%" })
 
 	if (menuIconRef.value) {
 		gsap.set(menuIconRef.value, {
@@ -604,33 +449,20 @@ useGsapContext(({ gsap }) => {
 	}
 
 	const setIconPressScaleX = menuIconRef.value
-		? gsap.quickTo(menuIconRef.value, "scaleX", {
-				duration: 0.32,
-				ease: "power3.out",
-			})
+		? gsap.quickTo(menuIconRef.value, "scaleX", { duration: 0.32, ease: "power3.out" })
 		: null
-
 	const setIconPressScaleY = menuIconRef.value
-		? gsap.quickTo(menuIconRef.value, "scaleY", {
-				duration: 0.32,
-				ease: "power3.out",
-			})
+		? gsap.quickTo(menuIconRef.value, "scaleY", { duration: 0.32, ease: "power3.out" })
 		: null
-
 	const setIconPressY = menuIconRef.value
-		? gsap.quickTo(menuIconRef.value, "y", {
-				duration: 0.32,
-				ease: "power3.out",
-			})
+		? gsap.quickTo(menuIconRef.value, "y", { duration: 0.32, ease: "power3.out" })
 		: null
 
 	let isIconPressed = false
 
 	onMenuIconPress = () => {
 		if (prefersReducedMotion || isIconPressed) return
-
 		isIconPressed = true
-
 		setIconPressScaleX?.(0.78)
 		setIconPressScaleY?.(0.78)
 		setIconPressY?.(1.5)
@@ -638,9 +470,7 @@ useGsapContext(({ gsap }) => {
 
 	onMenuIconRelease = () => {
 		if (prefersReducedMotion || !isIconPressed) return
-
 		isIconPressed = false
-
 		setIconPressScaleX?.(1)
 		setIconPressScaleY?.(1)
 		setIconPressY?.(0)
@@ -648,7 +478,6 @@ useGsapContext(({ gsap }) => {
 
 	function animateLogoFlip(isOpen: boolean) {
 		const logo = logoFlipRef.value
-
 		if (!logo) return
 
 		const rotation = isOpen ? 180 : 0
@@ -656,12 +485,7 @@ useGsapContext(({ gsap }) => {
 		gsap.killTweensOf(logo)
 
 		if (prefersReducedMotion) {
-			gsap.set(logo, {
-				rotationY: rotation,
-				rotationX: 0,
-				rotationZ: 0,
-			})
-
+			gsap.set(logo, { rotationY: rotation, rotationX: 0, rotationZ: 0 })
 			return
 		}
 
@@ -678,400 +502,242 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
-	async function playHeaderIntro() {
-		const box = boxRef.value
-		const logo = logoFlipRef.value
+	async function revealHeader() {
+		const boxEl = boxRef.value
+		const canvasEl = revealCanvasRef.value
 
-		if (!box || !logo) return
+		if (!boxEl) return
 
-		const offFlowEls = [navRef.value, menuBtnRef.value].filter((el): el is HTMLElement =>
-			Boolean(el)
-		)
-
-		const naturalWidth = box.getBoundingClientRect().width
-
-		const circleSize = box.getBoundingClientRect().height
-
-		const boxStyles = window.getComputedStyle(box)
-
-		const naturalPaddingX = parseFloat(boxStyles.paddingLeft)
-
-		const collapsedPaddingX = parseFloat(boxStyles.paddingTop)
-
-		const charGroups = navCharEls.map((chars) =>
-			(chars ?? []).filter((el): el is HTMLElement => Boolean(el))
-		)
-
-		const d = prefersReducedMotion ? 0.01 : 1
+		if (!canvasEl || prefersReducedMotion) {
+			gsap.set(boxEl, { visibility: "visible" })
+			hasPlayedIntro = true
+			return
+		}
 
 		introInProgress = true
 
-		gsap.set(box, {
-			visibility: "visible",
-			width: circleSize,
-			paddingLeft: collapsedPaddingX,
-			paddingRight: collapsedPaddingX,
-			opacity: 0,
-			y: -64,
-			contain: "layout paint style",
-			transition: "none",
-			willChange: "opacity, transform",
-			force3D: true,
-		})
-
-		gsap.set(logo, {
-			pointerEvents: "none",
-			rotationY: 0,
-			rotationX: 0,
-			rotationZ: 0,
-		})
-
-		gsap.set(charGroups.flat(), {
-			opacity: 0,
-			force3D: false,
-		})
-
-		gsap.set(offFlowEls, {
-			display: "none",
-		})
-
-		if (menuBtnRef.value) {
-			gsap.set(menuBtnRef.value, {
-				autoAlpha: 0,
-			})
+		const getBoxSize = () => {
+			const rect = boxEl.getBoundingClientRect()
+			return { width: rect.width, height: rect.height }
 		}
 
-		await gsap.delayedCall(1 * d, () => {})
-
-		await gsap.to(box, {
-			y: 0,
-			opacity: 1,
-			duration: 0.9 * d,
-			ease: "power3.out",
-		})
-
-		await playLogoWiggle()
-
-		const tl = gsap.timeline({
-			defaults: {
-				overwrite: "auto",
-				force3D: true,
-			},
-
-			onComplete: () => {
-				gsap.set(box, {
-					clearProps:
-						"width,paddingLeft,paddingRight,opacity,y,willChange,transition,force3D,contain",
-				})
-
-				gsap.set(logo, {
-					clearProps: "pointerEvents",
-				})
-
-				introInProgress = false
-				hasPlayedIntro = true
+		const engine = createPixelWipeEngine({
+			gsap,
+			getCanvas: () => canvasEl,
+			getSize: getBoxSize,
+			cellSize: () => {
+				const { width, height } = getBoxSize()
+				const shortSide = Math.min(width, height)
+				return Math.max(4, Math.min(14, Math.round(shortSide / 6)))
 			},
 		})
 
-		tl.to(box, {
-			width: naturalWidth,
-			paddingLeft: naturalPaddingX,
-			paddingRight: naturalPaddingX,
-			duration: 1.05 * d,
-			ease: "back.out(1.7)",
-			onStart: () => {
-				gsap.set(box, {
-					willChange: "width, padding",
-				})
+		engine.resize()
+		engine.fillInstant(themeColor("--color-black"))
+
+		gsap.set(boxEl, { visibility: "visible" })
+
+		await Promise.all([waitForFonts(), waitForAppReady()])
+
+		engine.resize()
+
+		await engine.run({
+			mode: "out",
+			direction: "left",
+			colors: {
+				base: themeColor("--color-black"),
+				accent: themeColor("--color-lime"),
 			},
+			duration: 700,
 		})
-			.set(
-				offFlowEls,
-				{
-					clearProps: "display",
-				},
-				"-=0.35"
-			)
-			.addLabel("links", "-=0.4")
 
-		if (menuBtnRef.value) {
-			tl.to(
-				menuBtnRef.value,
-				{
-					autoAlpha: 1,
-					scale: 1,
-					duration: 0.5 * d,
-					ease: "elastic.out(1, 0.6)",
-				},
-				"links"
-			)
-		}
+		engine.destroy()
+		showRevealCanvas.value = false
+		hasPlayedIntro = true
+		introInProgress = false
 
-		charGroups.forEach((chars, index) => {
-			if (!chars.length) return
-
-			tl.to(
-				chars,
-				{
-					opacity: 1,
-					duration: 0.22 * d,
-					stagger: 0.035 * d,
-					ease: "power1.out",
-					force3D: false,
-					clearProps: "opacity",
-				},
-				`links+=${index * 0.1 * d}`
-			)
-		})
+		playLogoWiggle()
 	}
 
 	if (hasPlayedIntro) {
-		gsap.set(boxRef.value, {
-			visibility: "visible",
-		})
-
-		gsap.set(
-			navCharEls.flat().filter((el): el is HTMLElement => Boolean(el)),
-			{
-				clearProps: "opacity",
-			}
-		)
+		gsap.set(boxRef.value, { visibility: "visible" })
 	} else {
-		waitForFonts().then(playHeaderIntro)
+		revealHeader()
 	}
 
-	let mobileMenuTween: gsap.core.Tween | gsap.core.Timeline | null = null
+	// --- Liens de l'overlay mobile --------------------------------------
 
-	let stickerOpenTween: ReturnType<typeof gsap.timeline> | null = null
+	const d = prefersReducedMotion ? 0.01 : 1
 
-	let stickerCloseTween: ReturnType<typeof gsap.timeline> | null = null
+	const LINK_POP_BEAT = 0.04
+	const LINK_POP_STAGGER = 0.06
+	const LINK_CLOSE_STAGGER = 0.035
+	const LINK_CLOSE_DURATION = 0.2
 
-	let stickerTimers: ReturnType<typeof setTimeout>[] = []
+	let linksTimeline: ReturnType<typeof gsap.timeline> | null = null
 
-	const STICKER_OPEN_DELAY = 0.25
+	function resetLinksHidden(els: HTMLElement[]) {
+		gsap.set(els, {
+			opacity: 0,
+			y: 24,
+			scale: 0.92,
+			pointerEvents: "none",
+			transformOrigin: "50% 50%",
+		})
+	}
+
+	resetLinksHidden(mobileLinkEls.filter((el): el is HTMLElement => Boolean(el)))
+
+	function popLinks() {
+		linksTimeline?.kill()
+
+		const els = mobileLinkEls.filter((el): el is HTMLElement => Boolean(el))
+		if (!els.length) return
+
+		resetLinksHidden(els)
+
+		linksTimeline = gsap
+			.timeline({
+				onStart: () => els.forEach((el) => (el.style.pointerEvents = "auto")),
+			})
+			.to(
+				els,
+				{
+					opacity: 1,
+					y: 0,
+					scale: 1,
+					duration: 0.5 * d,
+					ease: "back.out(1.8)",
+					stagger: LINK_POP_STAGGER * d,
+				},
+				LINK_POP_BEAT * d
+			)
+	}
+
+	function depopLinks(): Promise<void> {
+		linksTimeline?.kill()
+
+		const els = mobileLinkEls.filter((el): el is HTMLElement => Boolean(el))
+		if (!els.length) return Promise.resolve()
+
+		return new Promise((resolve) => {
+			linksTimeline = gsap
+				.timeline({
+					onStart: () => els.forEach((el) => (el.style.pointerEvents = "none")),
+					onComplete: resolve,
+				})
+				.to(els, {
+					opacity: 0,
+					y: 16,
+					scale: 0.92,
+					duration: LINK_CLOSE_DURATION * d,
+					ease: "power2.in",
+					stagger: LINK_CLOSE_STAGGER * d,
+					overwrite: "auto",
+				})
+		})
+	}
+
+	// --- Stickers ---------------------------------------------------------
+
+	const STICKER_POP_BEAT = 0.04
 	const STICKER_STAGGER = 0.08
 	const STICKER_CLOSE_STAGGER = 0.045
 	const STICKER_CLOSE_DURATION = 0.28
 
-	function killStickerTween(tween: ReturnType<typeof gsap.timeline> | null) {
-		tween?.kill()
-	}
-
-	function clearStickerTimers() {
-		stickerTimers.forEach(clearTimeout)
-		stickerTimers = []
-	}
+	let stickersTimeline: ReturnType<typeof gsap.timeline> | null = null
 
 	function popStickers() {
-		clearStickerTimers()
-		killStickerTween(stickerOpenTween)
-		killStickerTween(stickerCloseTween)
+		stickersTimeline?.kill()
 
 		visibleStickers.value = [...stickers]
 
 		nextTick(() => {
-			const d = prefersReducedMotion ? 0.01 : 1
+			const els = stickerRefs.filter((el): el is HTMLElement => Boolean(el))
+			if (!els.length) return
 
-			stickerRefs.forEach((el, index) => {
-				if (!el) return
-
-				const sticker = stickers[index]
-
-				if (!sticker) return
-
-				const jitter = gsap.utils.random(-4, 4)
-
-				gsap.set(el, {
-					opacity: 0,
-					scale: 0.25,
-					y: 60,
-					rotation: sticker.rotate - 35,
-					transformOrigin: "50% 50%",
-					force3D: true,
-					pointerEvents: "none",
-				})
-
-				const timer = setTimeout(
-					() => {
-						if (!open.value) return
-
-						el.style.pointerEvents = "auto"
-						el.style.willChange = "transform, opacity"
-
-						gsap
-							.timeline({
-								onComplete: () => {
-									el.style.willChange = "auto"
-								},
-							})
-							.to(
-								el,
-								{
-									opacity: 1,
-									duration: 0.25 * d,
-									ease: "power1.out",
-								},
-								0
-							)
-							.to(
-								el,
-								{
-									y: 0,
-									scale: 1,
-									duration: 0.6 * d,
-									ease: "elastic.out(1, 0.55)",
-								},
-								0
-							)
-							.to(
-								el,
-								{
-									rotation: sticker.rotate + jitter,
-									duration: 0.6 * d,
-									ease: "elastic.out(1, 0.65)",
-								},
-								0
-							)
-					},
-					(STICKER_OPEN_DELAY + index * STICKER_STAGGER) * 1000
-				)
-
-				stickerTimers.push(timer)
-			})
-		})
-	}
-
-	function depopStickers() {
-		clearStickerTimers()
-		killStickerTween(stickerOpenTween)
-		killStickerTween(stickerCloseTween)
-
-		const elements = stickerRefs.filter((el): el is HTMLElement => Boolean(el))
-
-		const d = prefersReducedMotion ? 0.01 : 1
-
-		if (!elements.length) {
-			visibleStickers.value = []
-			stickerRefs.length = 0
-			return
-		}
-
-		const tl = gsap.timeline({
-			onComplete: () => {
-				visibleStickers.value = []
-				stickerRefs.length = 0
-			},
-		})
-
-		elements
-			.slice()
-			.reverse()
-			.forEach((el, index) => {
-				tl.to(
-					el,
-					{
-						opacity: 0,
-						scale: 0.25,
-						y: 60,
-						rotation: "-=35",
-						duration: STICKER_CLOSE_DURATION * d,
-						ease: "power2.in",
-						overwrite: "auto",
-					},
-					index * STICKER_CLOSE_STAGGER * d
-				)
-			})
-
-		stickerCloseTween = tl
-	}
-
-	function playMobileMenuOpen() {
-		const overlay = mobileOverlayRef.value
-
-		if (!overlay) return
-
-		mobileMenuTween?.kill()
-
-		const d = prefersReducedMotion ? 0.01 : 1
-
-		gsap.set(overlay, {
-			autoAlpha: 1,
-			pointerEvents: "auto",
-		})
-
-		if (prefersReducedMotion) {
-			gsap.set(overlay, {
-				opacity: 1,
-				scale: 1,
-			})
-
-			popStickers()
-			return
-		}
-
-		gsap.set(overlay, {
-			opacity: 0,
-			scale: 0.98,
-			transformOrigin: "50% 50%",
-			force3D: true,
-		})
-
-		mobileMenuTween = gsap.to(overlay, {
-			opacity: 1,
-			scale: 1,
-			duration: 0.38 * d,
-			ease: "power3.out",
-			force3D: true,
-			onComplete: () => {
-				gsap.set(overlay, {
-					clearProps: "opacity,scaleX,scaleY,transformOrigin,force3D",
-				})
-
-				popStickers()
-			},
-		})
-	}
-
-	function playMobileMenuClose() {
-		const overlay = mobileOverlayRef.value
-
-		if (!overlay) return
-
-		mobileMenuTween?.kill()
-
-		const d = prefersReducedMotion ? 0.01 : 1
-
-		depopStickers()
-
-		if (prefersReducedMotion) {
-			gsap.set(overlay, {
-				autoAlpha: 0,
+			gsap.set(els, {
+				opacity: 0,
+				scale: 0.25,
+				y: 60,
+				rotation: (i: number) => stickers[i]!.rotate - 35,
+				transformOrigin: "50% 50%",
+				force3D: true,
 				pointerEvents: "none",
 			})
 
-			return
+			stickersTimeline = gsap
+				.timeline({
+					onStart: () => els.forEach((el) => (el.style.pointerEvents = "auto")),
+				})
+				.to(
+					els,
+					{
+						opacity: 1,
+						duration: 0.25 * d,
+						ease: "power1.out",
+						stagger: STICKER_STAGGER * d,
+					},
+					STICKER_POP_BEAT * d
+				)
+				.to(
+					els,
+					{
+						y: 0,
+						scale: 1,
+						duration: 0.6 * d,
+						ease: "elastic.out(1, 0.55)",
+						stagger: STICKER_STAGGER * d,
+					},
+					STICKER_POP_BEAT * d
+				)
+				.to(
+					els,
+					{
+						rotation: (i: number) => stickers[i]!.rotate + gsap.utils.random(-4, 4),
+						duration: 0.6 * d,
+						ease: "elastic.out(1, 0.65)",
+						stagger: STICKER_STAGGER * d,
+					},
+					STICKER_POP_BEAT * d
+				)
+		})
+	}
+
+	function depopStickers(): Promise<void> {
+		stickersTimeline?.kill()
+
+		const els = stickerRefs.filter((el): el is HTMLElement => Boolean(el))
+
+		if (!els.length) {
+			visibleStickers.value = []
+			stickerRefs.length = 0
+			return Promise.resolve()
 		}
 
-		mobileMenuTween = gsap.to(overlay, {
-			opacity: 0,
-			scale: 0.98,
-			duration: 0.28 * d,
-			delay: 0.15 * d,
-			ease: "power2.in",
-			force3D: true,
-			onComplete: () => {
-				gsap.set(overlay, {
-					autoAlpha: 0,
-					pointerEvents: "none",
-					clearProps: "opacity,scaleX,scaleY,transformOrigin,force3D",
+		return new Promise((resolve) => {
+			stickersTimeline = gsap
+				.timeline({
+					onComplete: () => {
+						visibleStickers.value = []
+						stickerRefs.length = 0
+						resolve()
+					},
 				})
-			},
+				.to([...els].reverse(), {
+					opacity: 0,
+					scale: 0.25,
+					y: 60,
+					rotation: "-=35",
+					duration: STICKER_CLOSE_DURATION * d,
+					ease: "power2.in",
+					stagger: STICKER_CLOSE_STAGGER * d,
+					overwrite: "auto",
+				})
 		})
 	}
 
 	function animateMenuIcon(isOpen: boolean) {
-		const d = prefersReducedMotion ? 0.01 : 1
-
 		const dots = [...cornerDots, ...centerDot, ...edgeDots]
 
 		gsap.killTweensOf(dots)
@@ -1079,28 +745,15 @@ useGsapContext(({ gsap }) => {
 		if (isOpen) {
 			gsap
 				.timeline()
-				.to(edgeDots, {
-					scale: 0,
-					opacity: 0,
-					duration: 0.4 * d,
-					ease: "power2.inOut",
-				})
+				.to(edgeDots, { scale: 0, opacity: 0, duration: 0.4 * d, ease: "power2.inOut" })
 				.to(
 					[...cornerDots, ...centerDot],
-					{
-						scale: 1.18,
-						duration: 0.24 * d,
-						ease: "power2.out",
-					},
+					{ scale: 1.18, duration: 0.24 * d, ease: "power2.out" },
 					"<"
 				)
 				.to(
 					[...cornerDots, ...centerDot],
-					{
-						scale: 1,
-						duration: 0.4 * d,
-						ease: "elastic.out(1, 0.55)",
-					},
+					{ scale: 1, duration: 0.4 * d, ease: "elastic.out(1, 0.55)" },
 					">-0.1"
 				)
 		} else {
@@ -1114,80 +767,77 @@ useGsapContext(({ gsap }) => {
 		}
 	}
 
-	toggleMenu = () => {
-		const nextOpen = !open.value
+	function openOverlayMenu() {
+		open.value = true
 
-		open.value = nextOpen
+		animateMenuIcon(true)
+		animateLogoFlip(true)
 
-		animateMenuIcon(nextOpen)
-		animateLogoFlip(nextOpen)
-
-		if (nextOpen) {
-			lockScroll()
-			playMobileMenuOpen()
-		} else {
-			unlockScroll()
-			playMobileMenuClose()
-		}
+		lockScroll()
+		overlayInteractive.value = true
+		overlayShown.value = true
+		overlayActive.value = true
 	}
 
-	closeMenu = () => {
-		if (!open.value) return
-
+	function closeOverlayMenu() {
 		open.value = false
 
 		animateMenuIcon(false)
 		animateLogoFlip(false)
 
+		overlayInteractive.value = false
 		unlockScroll()
-		playMobileMenuClose()
+
+		Promise.all([depopLinks(), depopStickers()]).then(() => {
+			overlayActive.value = false
+		})
+	}
+
+	toggleMenu = () => (open.value ? closeOverlayMenu() : openOverlayMenu())
+
+	closeMenu = () => {
+		if (open.value) closeOverlayMenu()
+	}
+
+	onOverlayOpened = () => {
+		if (!open.value) return
+		popLinks()
+		popStickers()
+	}
+
+	onOverlayClosed = () => {
+		if (!open.value) overlayShown.value = false
 	}
 
 	function onDocumentClick(e: MouseEvent) {
 		if (!open.value) return
-
 		const target = e.target as Node
-
-		if (boxRef.value && !boxRef.value.contains(target)) {
-			closeMenu()
-		}
+		if (boxRef.value && !boxRef.value.contains(target)) closeMenu()
 	}
 
-	document.addEventListener("click", onDocumentClick, {
-		passive: true,
-	})
+	document.addEventListener("click", onDocumentClick, { passive: true })
 
 	return () => {
-		clearHideTimer()
-		clearStickerTimers()
-
 		document.removeEventListener("click", onDocumentClick)
 
-		mobileMenuTween?.kill()
-
-		killStickerTween(stickerOpenTween)
-		killStickerTween(stickerCloseTween)
+		linksTimeline?.kill()
+		stickersTimeline?.kill()
 
 		gsap.killTweensOf([
 			boxRef.value,
-			indicatorRef.value,
 			menuBtnRef.value,
 			menuIconRef.value,
 			logoFlipRef.value,
 			mobileOverlayRef.value,
 			stickersLayerRef.value,
 			...stickerRefs,
-			...linkEls,
 			...mobileLinkEls,
-			...navCharEls.flat(),
 			...cornerDots,
 			...centerDot,
 			...edgeDots,
 		])
 
-		if (open.value) {
-			unlockScroll()
-		}
+		if (open.value) unlockScroll()
 
 		document.removeEventListener("touchmove", onTouchMoveLock)
 		document.removeEventListener("wheel", onWheelLock)

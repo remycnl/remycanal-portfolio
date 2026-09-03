@@ -88,6 +88,7 @@ export interface ResponsiveZoneGroup {
 
 const RESIZE_DEBOUNCE_MS = 150
 const SOFT_RESIZE_HEIGHT_THRESHOLD = 140
+const ROUTE_RESYNC_MAX_ATTEMPTS = 12
 
 function range(start: number, count: number) {
 	return Array.from({ length: count }, (_, i) => start + i)
@@ -255,9 +256,11 @@ function createSprite(options: UseSpriteOptions) {
 		top: "0",
 		left: "0",
 		zIndex: "40",
-		willChange: "transform",
-		pointerEvents: "auto",
+		willChange: "transform, opacity",
+		pointerEvents: "none",
 		cursor: "pointer",
+		opacity: "0",
+		transition: "opacity 0.15s ease",
 	})
 
 	const meow = document.createElement("div")
@@ -371,6 +374,17 @@ function createSprite(options: UseSpriteOptions) {
 	document.body.appendChild(canvas)
 	document.body.appendChild(meow)
 	document.body.appendChild(growl)
+
+	function hideSprite() {
+		resetTransientState()
+		canvas.style.opacity = "0"
+		canvas.style.pointerEvents = "none"
+	}
+
+	function showSprite() {
+		canvas.style.opacity = "1"
+		canvas.style.pointerEvents = "auto"
+	}
 
 	const spriteCache = new Map<string, HTMLImageElement>()
 	let activeImage: HTMLImageElement | null = null
@@ -655,6 +669,7 @@ function createSprite(options: UseSpriteOptions) {
 
 		resetTransientState()
 		activateZone(zone)
+		showSprite()
 
 		const x = bounds.left + (bounds.maxX - bounds.left) / 2
 		if (isFiniteCoord(x) && isFiniteCoord(bounds.top)) {
@@ -679,14 +694,11 @@ function createSprite(options: UseSpriteOptions) {
 		if (isBackgrounded || isJumping || isHopping) return
 
 		if (currentZone && !isZoneActive(currentZone)) {
-			const next = pickActiveInitialZone()
-			if (next) {
-				placeInZone(next)
-				return
-			}
+			currentZone = null
 		}
 
 		if (currentZone && zones.has(currentZone.el)) {
+			showSprite()
 			updateTravelArea()
 			return
 		}
@@ -694,7 +706,13 @@ function createSprite(options: UseSpriteOptions) {
 		const fallback =
 			pickActiveInitialZone() ??
 			[...zones.values()].sort((a, b) => zoneOrder(a) - zoneOrder(b))[0]
-		if (fallback) placeInZone(fallback)
+
+		if (fallback) {
+			placeInZone(fallback)
+		} else {
+			currentZone = null
+			hideSprite()
+		}
 	}
 
 	function scheduleNextLeg() {
@@ -1129,7 +1147,7 @@ function createSprite(options: UseSpriteOptions) {
 	function pauseForBackground() {
 		if (isBackgrounded) return
 		isBackgrounded = true
-		resetTransientState()
+		hideSprite()
 	}
 
 	function resumeFromBackground() {
@@ -1162,20 +1180,26 @@ function createSprite(options: UseSpriteOptions) {
 	let unregisterBeforeEach: (() => void) | undefined
 	let unregisterAfterEach: (() => void) | undefined
 
+	function scheduleRouteResync(attempt = 0) {
+		if (isBackgrounded) return
+		requestAnimationFrame(() => {
+			resync()
+			if (!currentZone && attempt < ROUTE_RESYNC_MAX_ATTEMPTS) {
+				scheduleRouteResync(attempt + 1)
+			}
+		})
+	}
+
 	try {
 		const router = useRouter()
 		unregisterBeforeEach = router.beforeEach(() => {
-			resetTransientState()
+			hideSprite()
 		})
 		unregisterAfterEach = router.afterEach(() => {
-			requestAnimationFrame(() => requestAnimationFrame(() => instancePublicResync()))
+			scheduleRouteResync()
 		})
 	} catch {
 		// Hors contexte Nuxt (tests, usage standalone) : pas de hook routeur.
-	}
-
-	function instancePublicResync() {
-		resync()
 	}
 
 	loadSprite(options.spriteSrc).then((img) => {
@@ -1252,8 +1276,8 @@ function createSprite(options: UseSpriteOptions) {
 				resizeObserver.unobserve(el)
 
 				if (currentZone === target) {
-					resetTransientState()
 					currentZone = null
+					hideSprite()
 				}
 			},
 		}

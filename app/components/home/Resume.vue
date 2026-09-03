@@ -40,7 +40,7 @@
 				v-text-reveal
 				ref="zoneChapter01"
 				:data-active="activeCards.has('chapter01')"
-				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-default"
+				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-gray-light md:bg-white lg:col-span-2 lg:cursor-default"
 				@click="toggleCard('chapter01')"
 			>
 				<span
@@ -100,7 +100,7 @@
 			<!-- vide — chat (desktop uniquement) -->
 			<div
 				ref="zoneEmpty2"
-				class="border-gray-dark/50 hidden items-center justify-center border-r border-b lg:flex"
+				class="border-gray-dark/50 bg-gray-light hidden items-center justify-center border-r border-b lg:flex"
 			/>
 
 			<!-- Chapitre 02 -->
@@ -108,7 +108,7 @@
 				v-text-reveal
 				ref="zoneChapter02"
 				:data-active="activeCards.has('chapter02')"
-				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-default"
+				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white md:bg-gray-light lg:bg-white lg:col-span-2 lg:cursor-default"
 				@click="toggleCard('chapter02')"
 			>
 				<span
@@ -270,7 +270,7 @@
 			<!-- vide — chat (desktop uniquement) -->
 			<div
 				ref="zoneEmpty5"
-				class="border-gray-dark/50 hidden items-center justify-center border-r border-b lg:col-span-2 lg:flex"
+				class="border-gray-dark/50 bg-gray-light hidden items-center justify-center border-r border-b lg:col-span-2 lg:flex"
 			/>
 
 			<!-- vide — chat (desktop uniquement) -->

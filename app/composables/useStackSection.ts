@@ -1,4 +1,3 @@
-// app/composables/useStackSection.ts
 import type { MaybeRef } from "vue"
 
 type Breakpoint = "mobile" | "tablet" | "desktop"
@@ -36,134 +35,150 @@ export function useStackSection(
 	const baseId = options.id ?? `stack-section-${autoId++}`
 
 	useGsapContext(({ gsap, ScrollTrigger }) => {
-		const el = unref(target)
-		if (!el || !el.parentElement) return
+		let cleanup: (() => void) | undefined
 
-		const prefersReducedMotion = window.matchMedia(
-			"(prefers-reduced-motion: reduce)"
-		).matches
-		if (prefersReducedMotion) return
+		onNuxtReady(() => {
+			const el = unref(target)
+			if (!el || !el.parentElement) return
 
-		const mm = gsap.matchMedia()
+			const prefersReducedMotion = window.matchMedia(
+				"(prefers-reduced-motion: reduce)"
+			).matches
+			if (prefersReducedMotion) return
 
-		mm.add(QUERIES, (context) => {
-			const bp = (["mobile", "tablet", "desktop"] as Breakpoint[]).find(
-				(key) => (context.conditions as Record<string, boolean>)[key]
-			)!
+			const mm = gsap.matchMedia()
 
-			const scaleTo = resolve(options.scaleTo, bp, 0.85)
-			const rotateTo = resolve(options.rotateTo, bp, -6)
-			const baseDistancePx = resolve(options.distance, bp, window.innerHeight)
-			const zIndex = resolve(options.zIndex, bp, 0)
-			const roundedClass = resolve<string | undefined>(
-				options.roundedClass,
-				bp,
-				undefined
-			)
+			mm.add(QUERIES, (context) => {
+				const bp = (["mobile", "tablet", "desktop"] as Breakpoint[]).find(
+					(key) => (context.conditions as Record<string, boolean>)[key]
+				)!
 
-			const wrapper = document.createElement("div")
-			wrapper.style.position = "relative"
-			wrapper.style.overflowX = "clip"
-			wrapper.style.overflowY = "visible"
+				const scaleTo = resolve(options.scaleTo, bp, 0.85)
+				const rotateTo = resolve(options.rotateTo, bp, -6)
+				const baseDistancePx = resolve(options.distance, bp, window.innerHeight)
+				const zIndex = resolve(options.zIndex, bp, 0)
+				const roundedClass = resolve<string | undefined>(
+					options.roundedClass,
+					bp,
+					undefined
+				)
 
-			el.parentElement!.insertBefore(wrapper, el)
-			wrapper.appendChild(el)
+				const wrapper = document.createElement("div")
+				wrapper.style.position = "relative"
+				wrapper.style.overflowX = "clip"
+				wrapper.style.overflowY = "visible"
 
-			const nextSection = wrapper.nextElementSibling as HTMLElement | null
+				el.parentElement!.insertBefore(wrapper, el)
+				wrapper.appendChild(el)
 
-			gsap.set(el, {
-				position: "sticky",
-				top: 0,
-				transformOrigin: "50% 50%",
-				force3D: true,
-				zIndex,
-			})
-			el.style.isolation = "isolate"
+				const nextSection = wrapper.nextElementSibling as HTMLElement | null
 
-			if (roundedClass) {
-				el.style.transition = "border-radius 0.2s cubic-bezier(0.65, 0, 0.35, 1)"
-			}
-
-			let prevNextStyles: { marginTop: string; zIndex: string; position: string } | null =
-				null
-			if (nextSection) {
-				prevNextStyles = {
-					marginTop: nextSection.style.marginTop,
-					zIndex: nextSection.style.zIndex,
-					position: nextSection.style.position,
-				}
-				if (getComputedStyle(nextSection).position === "static") {
-					nextSection.style.position = "relative"
-				}
-				nextSection.style.zIndex = String(zIndex + 1)
-				nextSection.style.isolation = "isolate"
-			}
-
-			function computeRotationOverflowPx() {
-				const rad = Math.abs(rotateTo) * (Math.PI / 180)
-				if (rad === 0) return 0
-				const w = el!.offsetWidth * scaleTo
-				const h = el!.offsetHeight * scaleTo
-				const extra = w * Math.sin(rad) - h * (1 - Math.cos(rad))
-				return Math.max(0, Math.ceil(extra))
-			}
-
-			let distancePx = baseDistancePx
-
-			function syncLayout() {
-				const naturalHeight = el!.offsetHeight
-				// Recalculé à chaque refresh (resize, changement de breakpoint) car
-				// offsetWidth/Height peuvent avoir changé.
-				distancePx = baseDistancePx + computeRotationOverflowPx()
-				wrapper.style.height = `${naturalHeight + distancePx}px`
-				if (nextSection) nextSection.style.marginTop = `-${distancePx}px`
-			}
-			syncLayout()
-
-			const tween = gsap.to(el, {
-				scale: scaleTo,
-				rotate: rotateTo,
-				ease: "none",
-			})
-
-			const st = ScrollTrigger.create({
-				id: `${baseId}-${bp}`,
-				trigger: wrapper,
-				start: "top top",
-				end: () => `+=${distancePx}`,
-				scrub: true,
-				invalidateOnRefresh: true,
-				animation: tween,
-				onRefreshInit: syncLayout,
-				toggleClass: roundedClass ? { targets: el, className: roundedClass } : undefined,
-				onToggle: (self) => {
-					el!.style.willChange = self.isActive
-						? `transform${roundedClass ? ",border-radius" : ""}`
-						: "auto"
-				},
-			})
-
-			return () => {
-				st.kill()
-				gsap.set(el!, {
-					clearProps: "transform,willChange,zIndex,position,top",
+				gsap.set(el, {
+					position: "sticky",
+					top: 0,
+					transformOrigin: "50% 50%",
+					force3D: true,
+					zIndex,
 				})
-				el!.style.isolation = ""
-				el!.style.transition = ""
-				if (roundedClass) el!.classList.remove(roundedClass)
+				el.style.isolation = "isolate"
 
-				if (nextSection && prevNextStyles) {
-					nextSection.style.marginTop = prevNextStyles.marginTop
-					nextSection.style.zIndex = prevNextStyles.zIndex
-					nextSection.style.position = prevNextStyles.position
-					nextSection.style.isolation = ""
+				if (roundedClass) {
+					el.style.transition = "border-radius 0.2s cubic-bezier(0.65, 0, 0.35, 1)"
 				}
 
-				wrapper.parentElement?.insertBefore(el!, wrapper)
-				wrapper.remove()
-			}
+				let prevNextStyles: {
+					marginTop: string
+					zIndex: string
+					position: string
+				} | null = null
+				if (nextSection) {
+					prevNextStyles = {
+						marginTop: nextSection.style.marginTop,
+						zIndex: nextSection.style.zIndex,
+						position: nextSection.style.position,
+					}
+					if (getComputedStyle(nextSection).position === "static") {
+						nextSection.style.position = "relative"
+					}
+					nextSection.style.zIndex = String(zIndex + 1)
+					nextSection.style.isolation = "isolate"
+				}
+
+				function computeRotationOverflowPx() {
+					const rad = Math.abs(rotateTo) * (Math.PI / 180)
+					if (rad === 0) return 0
+					const w = el!.offsetWidth * scaleTo
+					const h = el!.offsetHeight * scaleTo
+					const extra = w * Math.sin(rad) - h * (1 - Math.cos(rad))
+					return Math.max(0, Math.ceil(extra))
+				}
+
+				let distancePx = baseDistancePx
+
+				function syncLayout() {
+					const naturalHeight = el!.offsetHeight
+					distancePx = baseDistancePx + computeRotationOverflowPx()
+					wrapper.style.height = `${naturalHeight + distancePx}px`
+					if (nextSection) nextSection.style.marginTop = `-${distancePx}px`
+				}
+				syncLayout()
+
+				const tween = gsap.to(el, {
+					scale: scaleTo,
+					rotate: rotateTo,
+					ease: "none",
+				})
+
+				const st = ScrollTrigger.create({
+					id: `${baseId}-${bp}`,
+					trigger: wrapper,
+					start: "top top",
+					end: () => `+=${distancePx}`,
+					scrub: true,
+					invalidateOnRefresh: true,
+					animation: tween,
+					onRefreshInit: syncLayout,
+					toggleClass: roundedClass
+						? { targets: el, className: roundedClass }
+						: undefined,
+					onToggle: (self) => {
+						el!.style.willChange = self.isActive
+							? `transform${roundedClass ? ",border-radius" : ""}`
+							: "auto"
+					},
+					onLeave: () => {
+						el!.style.visibility = "hidden"
+					},
+					onEnterBack: () => {
+						el!.style.visibility = "visible"
+					},
+				})
+
+				return () => {
+					st.kill()
+					gsap.set(el!, {
+						clearProps: "transform,willChange,zIndex,position,top",
+					})
+					el!.style.isolation = ""
+					el!.style.transition = ""
+					el!.style.visibility = ""
+					if (roundedClass) el!.classList.remove(roundedClass)
+
+					if (nextSection && prevNextStyles) {
+						nextSection.style.marginTop = prevNextStyles.marginTop
+						nextSection.style.zIndex = prevNextStyles.zIndex
+						nextSection.style.position = prevNextStyles.position
+						nextSection.style.isolation = ""
+					}
+
+					wrapper.parentElement?.insertBefore(el!, wrapper)
+					wrapper.remove()
+				}
+			})
+
+			cleanup = () => mm.revert()
 		})
 
-		return () => mm.revert()
+		return () => cleanup?.()
 	}, target as any)
 }
