@@ -1,21 +1,42 @@
 import { acquireLogoSceneAssets } from "@/composables/useLogoSceneAssets"
 import { DEFAULT_LOGO_MODEL_URL } from "@/constants/logo"
 
-export function useLogoScenePreload(modelUrl = DEFAULT_LOGO_MODEL_URL) {
-	const isReady = useState(`logo-scene-preload-ready:${modelUrl}`, () => false)
-	const hasStarted = useState(`logo-scene-preload-started:${modelUrl}`, () => false)
+interface IdleCallbackWindow {
+	requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number
+}
 
-	if (import.meta.client && !hasStarted.value) {
-		hasStarted.value = true
+let preloadStarted = false
 
-		acquireLogoSceneAssets(modelUrl)
-			.then(() => {
-				isReady.value = true
-			})
-			.catch((error: unknown) => {
-				console.error("[useLogoScenePreload] Échec du préchargement du logo :", error)
-				isReady.value = true
-			})
+function scheduleIdlePreload(task: () => void) {
+	const idleWindow = window as unknown as IdleCallbackWindow
+
+	if (typeof idleWindow.requestIdleCallback === "function") {
+		idleWindow.requestIdleCallback(task, { timeout: 1500 })
+	} else {
+		window.setTimeout(task, 1)
+	}
+}
+
+export function useLogoScenePreload() {
+	const isReady = useState("logo-scene-preload-ready", () => false)
+
+	if (import.meta.client && !preloadStarted) {
+		preloadStarted = true
+
+		scheduleIdlePreload(() => {
+			acquireLogoSceneAssets(DEFAULT_LOGO_MODEL_URL)
+				.then(() => {
+					isReady.value = true
+				})
+				.catch((error) => {
+					console.error(
+						"[useLogoScenePreload] Échec du préchargement des assets du logo.",
+						error
+					)
+
+					isReady.value = true
+				})
+		})
 	}
 
 	return isReady

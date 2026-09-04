@@ -1,5 +1,5 @@
 <template>
-	<header class="pointer-events-none fixed inset-x-0 top-5 z-50 flex justify-center px-4">
+	<header class="pointer-events-none fixed inset-x-0 top-5 z-9000 flex justify-center px-4">
 		<svg width="0" height="0" class="absolute" aria-hidden="true">
 			<defs>
 				<filter id="nav-text-outline" x="-20%" y="-20%" width="140%" height="140%">

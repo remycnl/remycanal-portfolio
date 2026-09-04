@@ -25,6 +25,12 @@ const projects: Project[] = [
 		name: "Vikl — Marketing Website",
 		image: "https://www.remycanal.me/img/mockup-vikl.webp",
 	},
+	{
+		id: "04",
+		year: "2020",
+		name: "Animaux d'à côté — Web App",
+		image: "https://animauxdacote.fr/img/carrousel-home-1.png",
+	},
 ]
 
 const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
@@ -43,7 +49,7 @@ const activeIndex = ref(0)
 const hoveredIndex = ref<number | null>(null)
 const pressedIndex = ref<number | null>(null)
 const scrollDirection = ref(1)
-const cardBaseScale = ref<number[]>(projects.map(() => 0.82))
+const cardBaseScale = ref<number[]>(projects.map(() => 0.84))
 
 const isActiveHovered = computed(
 	() => hoveredIndex.value !== null && hoveredIndex.value === activeIndex.value
@@ -78,18 +84,19 @@ function applyCardScale(i: number, animate = false) {
 	const card = cardsRef.value[i]
 	if (!card) return
 
-	const base = cardBaseScale.value[i] ?? 0.82
+	const base = cardBaseScale.value[i] ?? 0.84
 	const pressed = pressedIndex.value === i
-	const target = pressed ? base * 0.94 : base
+	const target = pressed ? base * 0.96 : base
 
 	if (animate) {
 		gsap.to(card, {
 			scale: target,
-			duration: pressed ? 0.25 : 0.5,
-			ease: pressed ? "power3.out" : "back.out(1.7)",
+			duration: pressed ? 0.22 : 0.45,
+			ease: pressed ? "power2.out" : "power3.out",
 			overwrite: "auto",
 		})
 	} else {
+		if (gsap.isTweening(card)) return
 		gsap.set(card, { scale: target })
 	}
 }
@@ -117,7 +124,6 @@ function driveScroll(
 		lenis.scrollTo(target, options)
 		return
 	}
-	// Fallback sans Lenis : pas d'inertie propre possible, scroll direct.
 	window.scrollTo({ top: target, behavior: options.immediate ? "auto" : "smooth" })
 }
 
@@ -308,9 +314,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 				: rect.top + rect.height / 2
 			const dist = Math.abs(cardCenter - center)
 
-			const norm = gsap.utils.clamp(0, 1, dist / (viewportExtent * 0.55))
-			const eased = gsap.parseEase("power2.out")(1 - norm)
-			cardBaseScale.value[i] = gsap.utils.interpolate(0.82, 1, eased)
+			const norm = gsap.utils.clamp(0, 1, dist / (viewportExtent * 0.68))
+			const eased = gsap.parseEase("sine.inOut")(1 - norm)
+			cardBaseScale.value[i] = gsap.utils.interpolate(0.84, 1, eased)
 			applyCardScale(i)
 
 			if (dist < closestDist) {
@@ -342,7 +348,6 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 			invalidateOnRefresh: true,
 			onUpdate: (self) => {
 				scrollDirection.value = self.direction
-				updateActiveIndex()
 			},
 			snap: {
 				snapTo: (progress: number) => {
@@ -357,6 +362,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 			},
 		},
 	})
+
+	updateActiveIndex()
+	gsap.ticker.add(updateActiveIndex)
 
 	let cardDraggable: ReturnType<typeof Draggable.create>[number] | undefined
 
@@ -399,6 +407,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 
 	return () => {
 		gsap.set(sectionEl, { clearProps: "height" })
+		gsap.ticker.remove(updateActiveIndex)
 		tween.scrollTrigger?.kill()
 		tween.kill()
 		cardDraggable?.kill()
@@ -450,7 +459,6 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					</div>
 				</div>
 
-				<!-- Header : titre seul en haut -->
 				<div class="inset-x-edge top-section absolute z-20 pt-15 lg:pt-6">
 					<h2
 						v-text-reveal
@@ -460,7 +468,6 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					</h2>
 				</div>
 
-				<!-- Bouton, en bas à droite -->
 				<div
 					class="lg:right-edge lg:bottom-edge absolute right-1/2 bottom-20 z-20 translate-x-1/2 md:bottom-50 lg:translate-x-0"
 				>
@@ -473,9 +480,6 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					/>
 				</div>
 
-				<!--
-					Année
-				-->
 				<div
 					class="lg:left-edge absolute bottom-[calc(50%+21.875vw+1.2rem)] left-0 z-10 w-[70vw] md:bottom-[calc(50%+21.875vw-3.5rem)] lg:top-1/2 lg:bottom-auto lg:w-auto lg:-translate-y-1/2"
 				>
@@ -501,9 +505,6 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					</div>
 				</div>
 
-				<!--
-					Titre du projet
-				-->
 				<div
 					class="lg:right-edge absolute bottom-[calc(50%+21.875vw)] left-0 z-10 w-[70vw] md:bottom-[calc(50%+21.875vw-4.7rem)] lg:top-1/2 lg:bottom-auto lg:left-auto lg:w-auto lg:-translate-y-1/2"
 				>
@@ -531,7 +532,6 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					</div>
 				</div>
 
-				<!-- Compteur -->
 				<div
 					class="bottom-edge bg-gray-light font-vg5000 text-gray-dark absolute left-1/2 z-10 -translate-x-1/2 rounded-full px-3 py-1.5 text-xs whitespace-nowrap"
 				>
@@ -542,9 +542,6 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					<span>{{ pad(projects.length) }}</span>
 				</div>
 
-				<!--
-					Track : défilement horizontal en mobile (flex-row), vertical à partir de md (flex-col, comportement d'origine).
-				-->
 				<div
 					class="absolute inset-0 z-5 flex items-center justify-start overflow-hidden lg:items-stretch lg:justify-center"
 				>

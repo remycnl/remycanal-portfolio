@@ -28,30 +28,54 @@ export default defineNuxtPlugin({
 
 		gsap.ticker.lagSmoothing(1000, 16)
 
-		const unsubscribeResize = useViewportResize(() => {
+		function refreshScroll() {
 			lenis.resize()
 			ScrollTrigger.refresh()
+		}
+
+		const unsubscribeResize = useViewportResize(() => {
+			refreshScroll()
 		})
 
 		function handleVisibilityChange() {
 			if (document.hidden) return
-			lenis.resize()
-			ScrollTrigger.refresh()
+			refreshScroll()
 		}
 		document.addEventListener("visibilitychange", handleVisibilityChange)
 
+		let disposed = false
+		let raf1: number | null = null
+		let raf2: number | null = null
+
+		function cancelPendingTransitionRefresh() {
+			if (raf1 !== null) cancelAnimationFrame(raf1)
+			if (raf2 !== null) cancelAnimationFrame(raf2)
+			raf1 = raf2 = null
+		}
+
+		nuxtApp.hook("page:finish", async () => {
+			await waitForPageTransition()
+			if (disposed) return
+
+			await nextTick()
+			cancelPendingTransitionRefresh()
+			raf1 = requestAnimationFrame(() => {
+				raf2 = requestAnimationFrame(() => {
+					if (!disposed) refreshScroll()
+				})
+			})
+		})
+
 		if (import.meta.hot) {
 			import.meta.hot.dispose(() => {
+				disposed = true
+				cancelPendingTransitionRefresh()
 				gsap.ticker.remove(update)
 				unsubscribeResize()
 				document.removeEventListener("visibilitychange", handleVisibilityChange)
 				lenis.destroy()
 			})
 		}
-
-		nuxtApp.hook("page:finish", () => {
-			ScrollTrigger.refresh()
-		})
 
 		return {
 			provide: { lenis },

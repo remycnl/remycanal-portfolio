@@ -1,12 +1,12 @@
 <template>
-	<div ref="wrapRef" class="relative z-5000 w-full" :style="{ clipPath: wrapClipPath }">
+	<div ref="wrapRef" class="relative z-50 w-full" :style="{ clipPath: wrapClipPath }">
 		<!-- Spacer : invisible, en flux normal, définit la hauteur réelle -->
 		<div inert aria-hidden="true" class="invisible">
 			<LayoutFooterContent />
 		</div>
 
 		<!-- Copie visible, superposée, sans hauteur imposée -->
-		<div class="fixed inset-x-0 bottom-0 w-full">
+		<div class="fixed inset-x-0 bottom-0 z-40 w-full">
 			<LayoutFooterContent interactive :trigger-el="wrapRef" />
 		</div>
 	</div>

@@ -10,6 +10,20 @@ interface AssetCacheEntry {
 	refCount: number
 }
 
+const DISPOSABLE_TEXTURE_KEYS = [
+	"map",
+	"aoMap",
+	"alphaMap",
+	"bumpMap",
+	"displacementMap",
+	"emissiveMap",
+	"envMap",
+	"lightMap",
+	"metalnessMap",
+	"normalMap",
+	"roughnessMap",
+] as const
+
 const assetCache = new Map<string, AssetCacheEntry>()
 
 const roomEnvironmentModulePromise =
@@ -19,10 +33,18 @@ export function acquireLogoSceneAssets(modelUrl: string): Promise<LogoAssets> {
 	let entry = assetCache.get(modelUrl)
 
 	if (!entry) {
-		entry = {
-			promise: loadAssets(modelUrl),
+		const newEntry: AssetCacheEntry = {
+			promise: loadAssets(modelUrl).catch((error) => {
+				if (assetCache.get(modelUrl) === newEntry) {
+					assetCache.delete(modelUrl)
+				}
+
+				throw error
+			}),
 			refCount: 0,
 		}
+
+		entry = newEntry
 
 		assetCache.set(modelUrl, entry)
 	}
@@ -47,13 +69,39 @@ export function releaseLogoSceneAssets(modelUrl: string) {
 
 	assetCache.delete(modelUrl)
 
-	void entry.promise.then((assets) => {
-		assets.gltfScene.traverse((child) => {
-			if (child instanceof assets.THREE.Mesh) {
+	void entry.promise
+		.then((assets) => {
+			assets.gltfScene.traverse((child) => {
+				if (!(child instanceof assets.THREE.Mesh)) {
+					return
+				}
+
 				child.geometry.dispose()
-			}
+
+				const materials = Array.isArray(child.material)
+					? child.material
+					: [child.material]
+
+				for (const material of materials) {
+					if (!material) {
+						continue
+					}
+
+					for (const key of DISPOSABLE_TEXTURE_KEYS) {
+						const value = (material as unknown as Record<string, unknown>)[key]
+
+						if (value instanceof assets.THREE.Texture) {
+							value.dispose()
+						}
+					}
+
+					material.dispose()
+				}
+			})
 		})
-	})
+		.catch(() => {
+			return
+		})
 }
 
 export async function bakeEnvironmentTexture(

@@ -11,6 +11,11 @@ let sharedFlakeNormalMap: THREE_TYPES.CanvasTexture | null = null
 let flakeNormalMapRefCount = 0
 let scrollTriggerMobileResizeConfigured = false
 
+let activeRendererCount = 0
+let hasWarnedContextBudget = false
+
+const MAX_RECOMMENDED_CONTEXTS = 6
+
 function createFlakeNormalMapTexture(
 	THREE: typeof THREE_TYPES,
 	size = 256,
@@ -141,6 +146,10 @@ const FACE_MATERIAL_NAME = "Metal_Face_Fonce"
 
 const IDLE_EPSILON = 0.0005
 
+const MAX_PIXEL_RATIO = 2
+const MAX_PIXEL_RATIO_UNDER_LOAD = 1.5
+const PIXEL_RATIO_BUDGET_THRESHOLD = 2
+
 const DISPOSABLE_TEXTURE_KEYS = [
 	"map",
 	"aoMap",
@@ -223,8 +232,11 @@ let dprQuery: MediaQueryList | null = null
 let cachedSceneRect: DOMRect | null = null
 
 let initialized = false
+let isUnmounted = false
 let assetsAcquired = false
+let rendererRegistered = false
 let isVisible = true
+let isTabVisible = true
 let loopActive = false
 
 let prefersReducedMotion = false
@@ -1020,6 +1032,10 @@ function onContextLost(event: Event) {
 }
 
 function onContextRestored() {
+	if (isUnmounted) {
+		return
+	}
+
 	teardownRenderResources()
 	teardownInteractionListeners()
 
@@ -1030,8 +1046,44 @@ function onContextRestored() {
 	}
 }
 
+function pixelRatioCap() {
+	return activeRendererCount > PIXEL_RATIO_BUDGET_THRESHOLD
+		? MAX_PIXEL_RATIO_UNDER_LOAD
+		: MAX_PIXEL_RATIO
+}
+
+function registerActiveRenderer() {
+	if (rendererRegistered) {
+		return
+	}
+
+	rendererRegistered = true
+	activeRendererCount++
+
+	if (activeRendererCount > MAX_RECOMMENDED_CONTEXTS && !hasWarnedContextBudget) {
+		hasWarnedContextBudget = true
+
+		console.warn(
+			`[LogoScene] ${activeRendererCount} contextes WebGL actifs simultanément (seuil recommandé: ${MAX_RECOMMENDED_CONTEXTS}). Le navigateur peut commencer à évincer les plus anciens. Envisager de réduire le nombre d'occurrences simultanées ou un rendu mutualisé.`
+		)
+	}
+}
+
+function unregisterActiveRenderer() {
+	if (!rendererRegistered) {
+		return
+	}
+
+	rendererRegistered = false
+	activeRendererCount = Math.max(0, activeRendererCount - 1)
+}
+
 async function initScene(el: HTMLDivElement) {
 	const assets = await acquireLogoSceneAssets(props.modelUrl)
+
+	if (isUnmounted) {
+		return
+	}
 
 	assetsAcquired = true
 
@@ -1060,10 +1112,12 @@ async function initScene(el: HTMLDivElement) {
 	renderer = new THREE.WebGLRenderer({
 		antialias: true,
 		alpha: true,
-		powerPreference: "high-performance",
+		powerPreference: isTouchDevice ? "low-power" : "high-performance",
 	})
 
-	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+	registerActiveRenderer()
+
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, pixelRatioCap()))
 
 	renderer.setSize(width, height, false)
 
@@ -1082,6 +1136,10 @@ async function initScene(el: HTMLDivElement) {
 	el.appendChild(renderer.domElement)
 
 	envTexture = await bakeEnvironmentTexture(THREE, renderer)
+
+	if (isUnmounted) {
+		return
+	}
 
 	scene.environment = envTexture
 
@@ -1443,6 +1501,14 @@ function stopLoop() {
 	gsap.ticker.remove(animate)
 }
 
+function evaluateLoopState() {
+	if (isVisible && isTabVisible) {
+		startLoop()
+	} else {
+		stopLoop()
+	}
+}
+
 function handleContainerResize(element: HTMLDivElement) {
 	if (!renderer || !camera) {
 		return
@@ -1480,7 +1546,7 @@ function handleDprChange() {
 		return
 	}
 
-	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, pixelRatioCap()))
 
 	handleContainerResize(sceneEl)
 
@@ -1505,8 +1571,28 @@ function handleTouchChange(event: MediaQueryListEvent) {
 	isTouchDevice = event.matches
 }
 
+function handleVisibilityChange() {
+	isTabVisible = !document.hidden
+
+	evaluateLoopState()
+}
+
+function disposeInstance() {
+	pendingInitObserver?.disconnect()
+	pendingInitObserver = null
+
+	teardownRenderResources()
+	teardownInteractionListeners()
+
+	cachedSceneRect = null
+	sceneEl = null
+	wrapperEl = null
+
+	initialized = false
+}
+
 async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | null) {
-	if (initialized || !element || !wrap) {
+	if (initialized || !element || !wrap || isUnmounted) {
 		return
 	}
 
@@ -1514,6 +1600,13 @@ async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | nu
 		pendingInitObserver?.disconnect()
 
 		pendingInitObserver = new ResizeObserver(() => {
+			if (isUnmounted) {
+				pendingInitObserver?.disconnect()
+				pendingInitObserver = null
+
+				return
+			}
+
 			if (element.clientWidth > 0 && element.clientHeight > 0) {
 				pendingInitObserver?.disconnect()
 				pendingInitObserver = null
@@ -1549,9 +1642,27 @@ async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | nu
 
 	touchQuery.addEventListener("change", handleTouchChange)
 
+	isTabVisible = !document.hidden
+
+	document.addEventListener("visibilitychange", handleVisibilityChange)
+
 	lastScrollY = window.scrollY
 
-	await initScene(element)
+	try {
+		await initScene(element)
+	} catch (error) {
+		console.error("[LogoScene] Échec de l'initialisation de la scène.", error)
+
+		disposeInstance()
+
+		return
+	}
+
+	if (isUnmounted) {
+		disposeInstance()
+
+		return
+	}
 
 	refreshSceneRect()
 
@@ -1611,11 +1722,7 @@ async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | nu
 		(entries) => {
 			isVisible = entries[0]?.isIntersecting ?? true
 
-			if (isVisible) {
-				startLoop()
-			} else {
-				stopLoop()
-			}
+			evaluateLoopState()
 		},
 		{
 			threshold: 0,
@@ -1624,9 +1731,7 @@ async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | nu
 
 	visibilityObserver.observe(element)
 
-	if (isVisible) {
-		startLoop()
-	}
+	evaluateLoopState()
 }
 
 function collectMaterialTextures(
@@ -1687,6 +1792,8 @@ function teardownInteractionListeners() {
 	touchQuery?.removeEventListener("change", handleTouchChange)
 
 	dprQuery?.removeEventListener("change", handleDprChange)
+
+	document.removeEventListener("visibilitychange", handleVisibilityChange)
 
 	if (lenis) {
 		lenis.off("scroll", refreshSceneRect)
@@ -1750,6 +1857,8 @@ function teardownRenderResources() {
 
 	renderer?.dispose()
 	renderer?.forceContextLoss()
+
+	unregisterActiveRenderer()
 
 	logo = null
 	maskUniforms = null
@@ -1881,17 +1990,9 @@ watch([container, wrapper], ([element, wrap]) => {
 })
 
 onBeforeUnmount(() => {
-	pendingInitObserver?.disconnect()
-	pendingInitObserver = null
+	isUnmounted = true
 
-	teardownRenderResources()
-	teardownInteractionListeners()
-
-	cachedSceneRect = null
-	sceneEl = null
-	wrapperEl = null
-
-	initialized = false
+	disposeInstance()
 })
 </script>
 

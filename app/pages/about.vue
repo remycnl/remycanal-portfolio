@@ -1,4 +1,3 @@
-<!-- app/pages/about.vue -->
 <script lang="ts" setup>
 definePageMeta({
 	transitionBase: "var(--color-black)",
@@ -77,16 +76,6 @@ const cards: StackCardData[] = [
 </template>
 
 <style>
-/* Volontairement NON scoped : le `wrapper` que crée useStackSection est un
-   <div> créé côté client via document.createElement, donc il ne porte
-   jamais l'attribut data-v-xxxxx du CSS scopé Vue — une règle scoped ne
-   l'atteindrait jamais. On cadre la fuite globale via .about-stack.
-
-   Le wrapper prend systématiquement la place exacte de la <section>
-   d'origine (insertBefore juste avant, puis déplacement dedans), donc il
-   devient le Nᵉ enfant direct de <main>, dans le même ordre que `cards` —
-   d'où le ciblage par nth-child. La 5ᵉ carte (contact, stacked=false)
-   reste une <section> nue, jamais enveloppée : pas de règle nécessaire. */
 .about-stack > div:nth-child(1) {
 	background-color: var(--color-black);
 }
