@@ -42,7 +42,11 @@
 					class="mb-2 flex w-full items-center justify-between font-sans text-[7px] leading-none tracking-[0.22em] text-white/30 uppercase sm:text-[8px]"
 				>
 					<div class="flex items-center gap-2">
-						<span class="h-0.75 w-0.75 shrink-0 rounded-full bg-white/60" />
+						<div class="flex items-center gap-0.5">
+							<span class="h-0.75 w-0.75 shrink-0 animate-pulse rounded-full bg-white/60 [animation-delay:-0.4s]" />
+							<span class="h-0.75 w-0.75 shrink-0 animate-pulse rounded-full bg-white/60 [animation-delay:-0.2s]" />
+							<span class="h-0.75 w-0.75 shrink-0 animate-pulse rounded-full bg-white/60" />
+						</div>
 
 						<span> Loading </span>
 					</div>
