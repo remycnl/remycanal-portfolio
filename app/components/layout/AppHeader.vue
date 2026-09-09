@@ -85,14 +85,15 @@
 		<div
 			ref="boxRef"
 			style="visibility: hidden"
-			:class="{ 'is-open': open }"
-			class="nav-notch pointer-events-auto relative z-10 flex flex-col px-6 py-2.5 transition-[padding-left,padding-right] duration-400 lg:hover:px-10"
+			:class="
+				open
+					? 'border-white bg-white text-black'
+					: 'border-black-light bg-black text-white'
+			"
+			class="pointer-events-auto relative z-10 flex flex-col overflow-hidden rounded-lg border px-6 py-2.5 transition-[background-color,border-color,color,padding-left,padding-right] duration-400 lg:hover:px-10"
 		>
-			<div
-				class="nav-content-row relative z-10 flex items-center justify-between md:justify-start"
-			>
+			<div class="flex items-center justify-between gap-10 md:justify-start">
 				<NuxtLink
-					ref="logoLinkRef"
 					to="/"
 					class="flex max-h-8 max-w-8 shrink-0 items-center justify-center select-none"
 					@contextmenu.prevent
@@ -133,7 +134,7 @@
 
 				<nav
 					ref="navRef"
-					class="font-lineal-bold hidden shrink-0 items-center gap-7 tracking-wide uppercase md:flex"
+					class="font-lineal-bold hidden shrink-0 items-center gap-7 tracking-wide text-white uppercase md:flex"
 				>
 					<NuxtLink
 						v-for="link in links"
@@ -184,106 +185,6 @@
 		</div>
 	</header>
 </template>
-
-<style scoped>
-.nav-notch {
-	position: relative;
-
-	--edge-gap: 24px;
-	--content-gap: 16px;
-
-	--split-offset: -20px;
-	--split: calc(50% + var(--split-offset));
-	--b: 26px;
-	--k: calc(var(--b) / 2);
-	--h: 13px;
-	--r: 8px;
-	--t: 0.7;
-	--u: 0.3;
-
-	--fill: var(--color-black);
-	--border: var(--color-black-light);
-
-	background-color: var(--border);
-	color: white;
-	transition:
-		background-color 0.4s,
-		color 0.4s,
-		padding-left 0.4s,
-		padding-right 0.4s;
-
-	clip-path: polygon(
-		round var(--r),
-		0 0,
-		0 100%,
-		calc(var(--split) - var(--k)) 100%,
-		calc(var(--split) - var(--u) * var(--k)) calc(100% - var(--t) * var(--h)),
-		var(--split) calc(100% - var(--h)),
-		calc(var(--split) + var(--u) * var(--k)) calc(100% - var(--t) * var(--h)),
-		calc(var(--split) + var(--k)) 100%,
-		100% 100%,
-		100% 0,
-		calc(var(--split) + var(--k)) 0,
-		calc(var(--split) + var(--u) * var(--k)) calc(var(--t) * var(--h)),
-		var(--split) var(--h),
-		calc(var(--split) - var(--u) * var(--k)) calc(var(--t) * var(--h)),
-		calc(var(--split) - var(--k)) 0
-	);
-}
-
-.nav-content-row {
-	gap: calc(2 * var(--content-gap) + var(--b));
-}
-
-.nav-notch.is-open {
-	--fill: #fff;
-	--border: #fff;
-	color: black;
-}
-
-.nav-notch::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 0;
-	background-color: var(--fill);
-	transition: background-color 0.4s;
-
-	--bw: 1px;
-	--diag: hypot(var(--k), var(--h));
-	--nax: calc(-1 * var(--h) / var(--diag));
-	--nay: calc(var(--k) / var(--diag));
-	--s: calc(var(--bw) * (var(--diag) - var(--k)) / (var(--h) * var(--diag)));
-	--xA: calc(
-		var(--split) - var(--k) - (var(--bw) * var(--h) / var(--diag)) + (var(--s) * var(--k))
-	);
-	--xB: calc(2 * var(--split) - var(--xA));
-	--xNearA: calc(var(--split) - var(--u) * var(--k) - var(--bw) * var(--h) / var(--diag));
-	--xNearB: calc(var(--split) + var(--u) * var(--k) + var(--bw) * var(--h) / var(--diag));
-	--yNearTop: calc(var(--t) * var(--h) + var(--bw) * var(--k) / var(--diag));
-	--yNearBottom: calc(100% - var(--t) * var(--h) - var(--bw) * var(--k) / var(--diag));
-	--yTipTop: calc(var(--h) + var(--bw) * var(--k) / var(--diag));
-	--yTipBottom: calc(100% - var(--h) - var(--bw) * var(--k) / var(--diag));
-
-	clip-path: polygon(
-		round max(0px, calc(var(--r) - var(--bw))),
-		var(--bw) var(--bw),
-		var(--bw) calc(100% - var(--bw)),
-		var(--xA) calc(100% - var(--bw)),
-		var(--xNearA) var(--yNearBottom),
-		var(--split) var(--yTipBottom),
-		var(--xNearB) var(--yNearBottom),
-		var(--xB) calc(100% - var(--bw)),
-		calc(100% - var(--bw)) calc(100% - var(--bw)),
-		calc(100% - var(--bw)) var(--bw),
-		var(--xB) var(--bw),
-		var(--xNearB) var(--yNearTop),
-		var(--split) var(--yTipTop),
-		var(--xNearA) var(--yNearTop),
-		var(--xA) var(--bw)
-	);
-}
-</style>
 
 <script setup lang="ts">
 let hasPlayedIntro = false
@@ -357,8 +258,6 @@ const revealCanvasRef = useTemplateRef<HTMLCanvasElement>("revealCanvasRef")
 const menuBtnRef = useTemplateRef<HTMLElement>("menuBtnRef")
 const menuIconRef = useTemplateRef<HTMLElement>("menuIconRef")
 const logoFlipRef = useTemplateRef<HTMLElement>("logoFlipRef")
-const logoLinkRef = useTemplateRef<any>("logoLinkRef")
-const navRef = useTemplateRef<HTMLElement>("navRef")
 const mobileOverlayRef = useTemplateRef<HTMLElement>("mobileOverlayRef")
 const stickersLayerRef = useTemplateRef<HTMLElement>("stickersLayerRef")
 
@@ -373,69 +272,6 @@ const mobileOverlayStyle = computed(() => ({
 	visibility: overlayShown.value ? ("visible" as const) : ("hidden" as const),
 	pointerEvents: overlayInteractive.value ? ("auto" as const) : ("none" as const),
 }))
-
-const DESKTOP_NAV_QUERY = "(min-width: 768px)"
-
-function updateSplit() {
-	const boxEl = boxRef.value
-	const logoEl = (logoLinkRef.value?.$el ?? logoLinkRef.value) as HTMLElement | null
-	if (!boxEl || !logoEl) return
-
-	const isDesktopNav = window.matchMedia(DESKTOP_NAV_QUERY).matches
-	const targetEl = isDesktopNav ? navRef.value : menuBtnRef.value
-	if (!targetEl) return
-
-	const boxRect = boxEl.getBoundingClientRect()
-	const logoRect = logoEl.getBoundingClientRect()
-	const targetRect = targetEl.getBoundingClientRect()
-
-	if (targetRect.width === 0) return
-
-	const splitFromLeft =
-		(logoRect.right - boxRect.left + (targetRect.left - boxRect.left)) / 2
-	const offsetFromCenter = splitFromLeft - boxRect.width / 2
-
-	boxEl.style.setProperty("--split-offset", `${offsetFromCenter}px`)
-}
-
-let splitUpdateQueued = false
-function scheduleSplitUpdate() {
-	if (splitUpdateQueued) return
-	splitUpdateQueued = true
-	requestAnimationFrame(() => {
-		splitUpdateQueued = false
-		updateSplit()
-	})
-}
-
-let splitResizeObserver: ResizeObserver | null = null
-let desktopNavQuery: MediaQueryList | null = null
-
-onMounted(() => {
-	updateSplit()
-
-	splitResizeObserver = new ResizeObserver(scheduleSplitUpdate)
-	if (boxRef.value) splitResizeObserver.observe(boxRef.value)
-
-	desktopNavQuery = window.matchMedia(DESKTOP_NAV_QUERY)
-	desktopNavQuery.addEventListener("change", scheduleSplitUpdate)
-
-	window.addEventListener("resize", scheduleSplitUpdate, { passive: true })
-
-	if ("fonts" in document) {
-		document.fonts.ready.then(updateSplit).catch(() => {})
-	}
-})
-
-onBeforeUnmount(() => {
-	splitResizeObserver?.disconnect()
-	splitResizeObserver = null
-
-	desktopNavQuery?.removeEventListener("change", scheduleSplitUpdate)
-	desktopNavQuery = null
-
-	window.removeEventListener("resize", scheduleSplitUpdate)
-})
 
 const {
 	onWiggleEnter: onLogoEnterBase,
@@ -706,7 +542,6 @@ useGsapContext(({ gsap }) => {
 		await Promise.all([waitForFonts(), waitForAppReady()])
 
 		engine.resize()
-		updateSplit()
 
 		await engine.run({
 			mode: "out",
