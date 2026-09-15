@@ -47,15 +47,19 @@ useHead({
 		<HomeFeaturedProjects />
 		<HomeResume />
 		<HomeBlog />
-		<UiInfiniteHorizontalLoop
-			class="mt-section"
-			item-class="uppercase font-lineal-heavy text-[10vw] lg:text-[5vw] text-white pr-[5vw] pt-1.5 lg:pt-2 [word-spacing:0.15em]"
-			text="Creative Developer"
-			bg="var(--color-violet)"
-			outline
-			:outline-width="{ mobile: '3px', tablet: '5px', desktop: '7px' }"
-			:outline-offset="{ mobile: '5px', tablet: '8px', desktop: '9px' }"
-			outline-color="var(--color-white)"
-		/>
+		<HomeQuote />
+		<div class="bg-violet w-full h-1 lg:h-2">
+
+		</div>
+		<!-- <UiInfiniteHorizontalLoop
+    class="mt-section"
+    item-class="uppercase font-lineal-heavy text-[7vw] lg:text-[3.5vw] text-white pr-[3.5vw] pt-1 lg:pt-1.5 [word-spacing:0.1em]"
+    text="Creative Developer"
+    bg="var(--color-violet)"
+    outline
+    :outline-width="{ mobile: '2px', tablet: '3px', desktop: '5px' }"
+    :outline-offset="{ mobile: '3px', tablet: '5px', desktop: '6px' }"
+    outline-color="var(--color-white)"
+/> -->
 	</div>
 </template>

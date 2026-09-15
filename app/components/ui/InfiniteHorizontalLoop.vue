@@ -1,40 +1,3 @@
-<template>
-	<div class="relative w-full" :style="outerStyle">
-		<div
-			ref="wrapperEl"
-			class="flex items-center overflow-hidden"
-			:class="rRotation ? 'absolute top-1/2 left-1/2' : 'relative w-full'"
-			role="marquee"
-			:aria-label="text"
-			:style="innerStyle"
-		>
-			<span
-				v-if="rOutline"
-				aria-hidden="true"
-				class="pointer-events-none absolute inset-x-0"
-				:style="outlineLineStyle('top')"
-			/>
-			<div ref="railEl" class="flex w-max">
-				<span
-					v-for="n in rRepeatCount"
-					:key="n"
-					class="flex items-center whitespace-nowrap will-change-transform select-none"
-					:class="itemClass"
-					:style="{ marginInlineEnd: '3vw' }"
-				>
-					{{ text }}
-				</span>
-			</div>
-			<span
-				v-if="rOutline"
-				aria-hidden="true"
-				class="pointer-events-none absolute inset-x-0"
-				:style="outlineLineStyle('bottom')"
-			/>
-		</div>
-	</div>
-</template>
-
 <script setup lang="ts">
 import { horizontalLoop } from "@/utils/gsap/horizontalLoop"
 
@@ -54,7 +17,6 @@ function isResponsiveObject<T>(value: unknown): value is Partial<Record<Tier, T>
 	)
 }
 
-/** Cascade mobile-first : tablet hérite de mobile si absent, desktop hérite de tablet puis mobile. */
 function resolveResponsive<T>(value: ResponsiveValue<T>, tier: Tier): T {
 	if (!isResponsiveObject<T>(value)) return value as T
 	for (let i = TIER_ORDER.indexOf(tier); i >= 0; i--) {
@@ -105,7 +67,6 @@ const props = withDefaults(defineProps<Props>(), {
 const wrapperEl = shallowRef<HTMLElement | null>(null)
 const railEl = shallowRef<HTMLElement | null>(null)
 
-// --- Tracking du tier courant (mobile / tablet / desktop) ---
 const tier = shallowRef<Tier>("mobile")
 
 onMounted(() => {
@@ -125,7 +86,7 @@ onMounted(() => {
 		desktopMql.removeEventListener("change", updateTier)
 	})
 })
-// --- Résolution des props responsive pour le tier courant ---
+
 const rRepeatCount = computed(() => resolveResponsive(props.repeatCount, tier.value))
 const rBaseSpeed = computed(() => resolveResponsive(props.baseSpeed, tier.value))
 const rMaxScrollBoost = computed(() =>
@@ -191,6 +152,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 	let loop: ReturnType<typeof horizontalLoop> | null = null
 	let scrollTrigger: ReturnType<typeof ScrollTrigger.create> | null = null
+	let intersectionObserver: IntersectionObserver | null = null
 	let rawVelocity = 0
 	let currentTimeScale = 1
 	let scrollDir = 1
@@ -220,15 +182,17 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 	function teardown() {
 		document.removeEventListener("visibilitychange", handleVisibilityChange)
+		intersectionObserver?.disconnect()
 		scrollTrigger?.kill()
 		gsap.ticker.remove(tick)
 		loop?.kill()
 		loop = null
 		scrollTrigger = null
+		intersectionObserver = null
 	}
 
 	function init() {
-		if (!railEl.value) return
+		if (!railEl.value || !wrapperEl.value) return
 		const items = Array.from(railEl.value.children) as HTMLElement[]
 		if (!items.length) return
 
@@ -241,11 +205,30 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 			speed: rBaseSpeed.value,
 			paddingRight: 0,
 		})
+		loop.pause()
 
 		if (reducedMotion) {
 			loop.timeScale(baseDir)
+			loop.play()
 			return
 		}
+
+		intersectionObserver = new IntersectionObserver(
+			([entry]) => {
+				if (!entry) return
+
+				if (entry.isIntersecting) {
+					rawVelocity = 0
+					loop?.play()
+					gsap.ticker.add(tick)
+				} else {
+					loop?.pause()
+					gsap.ticker.remove(tick)
+				}
+			},
+			{ threshold: 0 }
+		)
+		intersectionObserver.observe(wrapperEl.value)
 
 		scrollTrigger = ScrollTrigger.create({
 			trigger: wrapperEl.value,
@@ -257,24 +240,13 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				const v = Math.min(Math.abs(self.getVelocity()), MAX_RAW_VELOCITY)
 				rawVelocity = Math.max(rawVelocity, v)
 			},
-			onToggle(self) {
-				if (self.isActive) {
-					rawVelocity = 0
-					loop?.play()
-					gsap.ticker.add(tick)
-				} else {
-					loop?.pause()
-					gsap.ticker.remove(tick)
-				}
-			},
 		})
 	}
 
 	document.addEventListener("visibilitychange", handleVisibilityChange)
 	init()
 
-	// Rebuild la loop quand le tier change repeatCount, baseSpeed ou la direction
-	const stopWatch = watch(
+	const stopPropsWatch = watch(
 		[rRepeatCount, rBaseSpeed, rEnableScrollBoost, rEnableDirection, rDefaultDirection],
 		() => {
 			teardown()
@@ -283,9 +255,52 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		{ flush: "post" }
 	)
 
+	const stopViewportResize = useViewportResize(() => {
+		teardown()
+		nextTick(init)
+	}, 200)
+
 	return () => {
-		stopWatch()
+		stopPropsWatch()
+		stopViewportResize()
 		teardown()
 	}
 }, wrapperEl)
 </script>
+
+<template>
+	<div class="relative w-full" :style="outerStyle">
+		<div
+			ref="wrapperEl"
+			class="flex items-center overflow-hidden"
+			:class="rRotation ? 'absolute top-1/2 left-1/2' : 'relative w-full'"
+			role="marquee"
+			:aria-label="text"
+			:style="innerStyle"
+		>
+			<span
+				v-if="rOutline"
+				aria-hidden="true"
+				class="pointer-events-none absolute inset-x-0"
+				:style="outlineLineStyle('top')"
+			/>
+			<div ref="railEl" class="flex w-max">
+				<span
+					v-for="n in rRepeatCount"
+					:key="n"
+					class="flex items-center whitespace-nowrap will-change-transform select-none"
+					:class="itemClass"
+					:style="{ marginInlineEnd: '3vw' }"
+				>
+					{{ text }}
+				</span>
+			</div>
+			<span
+				v-if="rOutline"
+				aria-hidden="true"
+				class="pointer-events-none absolute inset-x-0"
+				:style="outlineLineStyle('bottom')"
+			/>
+		</div>
+	</div>
+</template>

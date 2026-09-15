@@ -38,6 +38,7 @@ const legalLinks: FooterLink[] = [
 const socialLinks: SocialLink[] = [
 	{ href: "https://www.linkedin.com/in/remy-canal", label: "LinkedIn" },
 	{ href: "https://www.pinterest.com/remycanal", label: "Pinterest" },
+	{ href: "https://dribbble.com/remycanal", label: "Dribbble" },
 	{ href: "https://github.com/remycnl", label: "GitHub" },
 	{ href: "https://www.awwwards.com/remy.cnl", label: "Awwwards" },
 ]
@@ -116,7 +117,7 @@ onUnmounted(() => {
 
 <template>
 	<footer
-		class="p-edge bg-grid-white from-violet to-violet relative isolate flex flex-col overflow-x-hidden bg-white via-white text-black shadow-[inset_0_-10px_20px_-10px_rgba(0,0,0,0.28)] lg:bg-linear-to-r lg:text-white"
+		class="p-edge bg-grid-white from-violet to-violet relative isolate flex flex-col overflow-x-hidden bg-white via-white text-black lg:bg-linear-to-r lg:text-white"
 	>
 		<UiGridBeams theme="violet" />
 
@@ -170,7 +171,7 @@ onUnmounted(() => {
 
 					<nav
 						aria-label="Social links"
-						class="pointer-events-auto flex flex-wrap gap-x-6 gap-y-2"
+						class="pointer-events-auto flex flex-nowrap gap-x-3 sm:flex-wrap sm:gap-x-6 sm:gap-y-2"
 					>
 						<a
 							v-for="social in socialLinks"
@@ -180,7 +181,7 @@ onUnmounted(() => {
 							rel="noopener noreferrer"
 							:tabindex="tabIndex"
 							v-roll-hover
-							class="font-lineal-bold hover:text-violet text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs lg:hover:text-[#ffffff]"
+							class="font-lineal-bold hover:text-violet shrink-0 text-[10px] tracking-[0.08em] uppercase transition-colors duration-200 sm:text-xs sm:tracking-[0.15em] lg:hover:text-[#ffffff]"
 						>
 							{{ social.label }}
 						</a>
@@ -217,7 +218,7 @@ onUnmounted(() => {
 				</p>
 
 				<ul
-					class="font-vg5000 flex flex-wrap items-center gap-x-6 gap-y-2 text-[0.65rem] tracking-[0.15em] uppercase"
+					class="font-vg5000 flex flex-wrap items-center gap-x-6 gap-y-2 text-[10px] tracking-[0.08em] uppercase sm:text-[0.65rem] sm:tracking-[0.15em]"
 				>
 					<li v-for="legal in legalLinks" :key="legal.to">
 						<NuxtLink
