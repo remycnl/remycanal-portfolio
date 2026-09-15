@@ -273,7 +273,7 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 	<section ref="sectionRef" class="relative">
 		<p class="sr-only">Simplicity is the ultimate sophistication — Leonardo da Vinci</p>
 
-		<div class="relative h-screen">
+		<div class="relative h-svh">
 			<div class="absolute inset-0 overflow-hidden">
 				<div
 					ref="quoteWrapRef"
@@ -306,11 +306,11 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 
 			<span
 				ref="authorRef"
-				class="right-edge bottom-edge absolute cursor-default text-base"
+				class="right-edge bottom-edge absolute group cursor-default text-base"
 				aria-hidden="true"
 			>
 				<div v-text-reveal class="flex items-center gap-4">
-					<UiShapeCross class="text-lime -mt-0.5 h-4 w-4 md:h-5 md:w-5" />
+					<UiShapeCross class="text-lime group-hover:-rotate-180 transition-transform duration-400 -mt-0.5 h-4 w-4 md:h-5 md:w-5" />
 					<span class="font-vg5000 inline-block w-max whitespace-nowrap">
 						Leonardo da Vinci
 					</span>

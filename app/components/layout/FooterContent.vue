@@ -171,7 +171,7 @@ onUnmounted(() => {
 
 					<nav
 						aria-label="Social links"
-						class="pointer-events-auto flex flex-nowrap gap-x-3 sm:flex-wrap sm:gap-x-6 sm:gap-y-2"
+						class="pointer-events-auto flex flex-nowrap gap-x-5 sm:flex-wrap sm:gap-x-6 sm:gap-y-2"
 					>
 						<a
 							v-for="social in socialLinks"
