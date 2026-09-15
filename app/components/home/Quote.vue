@@ -66,6 +66,18 @@ useHoverPop(authorRef, portraitRef, {
 	duration: 0.6,
 })
 
+const crossRotated = ref(false)
+const hasHover = ref(true)
+
+function toggleCrossRotation() {
+	if (hasHover.value) return
+	crossRotated.value = !crossRotated.value
+}
+
+onMounted(() => {
+	hasHover.value = window.matchMedia("(hover: hover)").matches
+})
+
 useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 	const section = sectionRef.value
 	const wrap = quoteWrapRef.value
@@ -308,9 +320,15 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 				ref="authorRef"
 				class="right-edge bottom-edge absolute group cursor-default text-base"
 				aria-hidden="true"
+				@click="toggleCrossRotation"
 			>
 				<div v-text-reveal class="flex items-center gap-4">
-					<UiShapeCross class="text-lime group-hover:-rotate-180 transition-transform duration-400 -mt-0.5 h-4 w-4 md:h-5 md:w-5" />
+					<UiShapeCross
+						:class="[
+							'text-lime -mt-0.5 h-4 w-4 transition-transform duration-400 md:h-5 md:w-5',
+							crossRotated ? '-rotate-180' : 'group-hover:-rotate-180',
+						]"
+					/>
 					<span class="font-vg5000 inline-block w-max whitespace-nowrap">
 						Leonardo da Vinci
 					</span>
