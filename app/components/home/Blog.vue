@@ -11,71 +11,54 @@ const { data: posts } = await useAsyncData(
 	{ default: () => [] }
 )
 
-/* -------------------------------------------------------------------------- */
-/*  Tuning                                                                    */
-/* -------------------------------------------------------------------------- */
-
 const DEG2RAD = Math.PI / 180
 const RAD2DEG = 180 / Math.PI
 
-// Wheel shape
 const CURVATURE_FACTOR = 1.2
 const SMALL_DESKTOP_CURVATURE_FACTOR = 0.7
 const TABLET_CURVATURE_FACTOR = 0.2
 const MOBILE_CURVATURE_FACTOR = 0.1
 const MIN_HALF_ARC_DEG = 18
 const MAX_HALF_ARC_DEG = 72
-// Cards are never drawn past this angle (they'd wrap around to the back of the wheel).
 const HARD_CUTOFF_ANGLE_DEG = 100
 
-// Guide line (graduations)
-// Distance between two ticks, measured along the arc.
 const TICK_SPACING_PX = 16
 const TICK_LENGTH_PX = 12
-// Décalage de la ligne par rapport au centre des cartes.
-// 0 = centrée derrière les cartes, > 0 = plus bas (vers l'intérieur de la roue).
 const GUIDE_OFFSET_PX = 0
-// Longueur dont la ligne dépasse de chaque côté de l'écran.
 const GUIDE_BLEED_PX = 24
 
-/** Idle rotation speed of the wheel, in degrees per second. */
 const AUTOPLAY_SPEED_DEG_PER_SEC = 2.5
 
-// Motion feel
-// Rate (1/s) at which the wheel speed eases toward the idle speed after a flick or
-// a scroll-direction change. Lower = longer, softer glide.
 const VELOCITY_SMOOTHING_RATE = 3
-// Time window (s) used to smooth the pointer speed measured while dragging.
 const DRAG_VELOCITY_TAU_S = 0.06
-// If the pointer stayed still this long before being released, there's no fling.
 const FLING_STALE_MS = 90
 const MAX_FLING_PX_PER_SEC = 2200
-// Caps the time step after a stall / tab switch so the wheel never jumps.
 const MAX_FRAME_DT_S = 0.05
-// Movement (px) after which a press counts as a drag and the click is swallowed.
 const DRAG_CLICK_THRESHOLD_PX = 4
-// Extra breathing room below the heading; the button remains close to the wheel.
+const TOUCH_DRAG_SLOP_PX = 8
+const TOUCH_AXIS_LOCK_RATIO = 1
+const TOUCH_HIT_PADDING_PX = 40
+const CLICK_REARM_MS = 120
 const MOBILE_WHEEL_TOP_OFFSET_PX = 32
 const TABLET_WHEEL_TOP_OFFSET_PX = 48
 const DESKTOP_WHEEL_TOP_OFFSET_PX = 80
-// When true, scrolling up reverses the idle direction (eased, never abrupt).
 const FOLLOW_SCROLL_DIRECTION = true
 
-// "Drag" bubble
 const BUBBLE_OFFSET_PX = 18
 const BUBBLE_HIDE_DELAY_S = 0.12
 
 const RESIZE_DEBOUNCE_MS = 150
 
-/* -------------------------------------------------------------------------- */
-/*  Helpers                                                                   */
-/* -------------------------------------------------------------------------- */
-
 interface WheelCard {
+	/** Card root element driven by the wheel. */
 	el: HTMLElement
+	/** Resting angle of the card on the wheel, in degrees. */
 	baseAngle: number
+	/** Whether the card is currently shown. */
 	visible: boolean
+	/** Last z-index written to the element. */
 	z: number
+	/** Last transform string written to the element. */
 	transform: string
 }
 
@@ -101,11 +84,6 @@ function resolveCurvatureFactor(containerW: number) {
 	return MOBILE_CURVATURE_FACTOR
 }
 
-/**
- * Graduations along an arc: one short segment per step, perpendicular to the
- * curve (i.e. pointing toward the centre of the circle). The tick count is even
- * so one tick sits exactly at the centre (angle 0).
- */
 function buildGuideTicks(cx: number, cy: number, r: number, halfArcDeg: number) {
 	const arcLength = 2 * halfArcDeg * DEG2RAD * r
 	const count = Math.max(2, Math.floor(arcLength / TICK_SPACING_PX) & ~1)
@@ -130,16 +108,11 @@ function buildGuideTicks(cx: number, cy: number, r: number, halfArcDeg: number) 
 	return segments.join(" ")
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Template state                                                            */
-/* -------------------------------------------------------------------------- */
-
 const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
 const trackRef = useTemplateRef<HTMLElement>("trackRef")
 const bubbleRef = useTemplateRef<HTMLElement>("bubbleRef")
 const bubbleMotionRef = useTemplateRef<HTMLElement>("bubbleMotionRef")
 
-// Plain array on purpose: it's only read at init time, it never needs reactivity.
 let cardEls: HTMLElement[] = []
 
 const isDraggingRef = ref(false)
@@ -149,8 +122,6 @@ const isOpeningRef = ref(false)
 const guidePath = ref("")
 const guideViewBox = ref("0 0 100 100")
 
-// The angle between two cards is always 360 / slotCount, so the circle closes
-// perfectly (no wider/narrower gap as it rotates). initCards() snaps this value.
 const slotCount = ref(16)
 
 const slots = computed(() => {
@@ -174,10 +145,6 @@ onBeforeUpdate(() => {
 
 const { useGsapContext } = useGsap()
 
-/* -------------------------------------------------------------------------- */
-/*  Wheel                                                                     */
-/* -------------------------------------------------------------------------- */
-
 useGsapContext(({ gsap, ScrollTrigger }) => {
 	const trackEl = trackRef.value
 	const sectionEl = sectionRef.value
@@ -187,23 +154,17 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
-	// ---- Motion state -------------------------------------------------------
-	// `velocity` is the single source of truth for the wheel speed: a fling, the
-	// glide after it and the idle drift are all the same value easing toward its
-	// target, so there's never a jump between "inertia" and "autoplay".
-	let rotation = 0 // deg
-	let velocity = 0 // deg/s
+	let rotation = 0
+	let velocity = 0
 	let scrollDir = 1
 	let renderedRotation = Number.NaN
 
-	// ---- Geometry (recomputed in initCards) ---------------------------------
 	let containerW = 0
 	let trackH = 0
 	let cardW = 0
 	let cardH = 0
 	let radius = 0
 	let degreesPerPixel = 0
-	// Centre of the circle the *centres* of the cards travel on.
 	let wheelX = 0
 	let wheelY = 0
 	let visibleHalfArc = MIN_HALF_ARC_DEG
@@ -216,16 +177,16 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	let lastObservedW = 0
 	let lastObservedH = 0
 
-	// ---- Drag state ---------------------------------------------------------
+	let isPressed = false
 	let isDragging = false
 	let activePointerId = -1
 	let didDrag = false
 	let dragDistance = 0
+	let startPointerX = 0
+	let startPointerY = 0
 	let lastPointerX = 0
 	let lastPointerTime = 0
 
-	// ---- Rendering ----------------------------------------------------------
-	// One `transform` write per card per frame, no layout reads.
 	function render() {
 		for (let i = 0; i < cards.length; i++) {
 			const card = cards[i]!
@@ -271,7 +232,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	function tick() {
 		const dt = Math.min(gsap.ticker.deltaRatio(60) / 60, MAX_FRAME_DT_S)
 
-		if (!isDragging) {
+		if (!isPressed) {
 			const target = reduceMotion ? 0 : AUTOPLAY_SPEED_DEG_PER_SEC * scrollDir
 			velocity += (target - velocity) * expSmoothingFactor(VELOCITY_SMOOTHING_RATE, dt)
 			if (target === 0 && Math.abs(velocity) < 0.001) velocity = 0
@@ -279,26 +240,21 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 			if (Math.abs(rotation) > 3600) rotation %= 360
 		}
 
-		// Nothing moved (reduced motion, idle) → nothing to redraw.
 		if (rotation !== renderedRotation) {
 			renderedRotation = rotation
 			render()
 		}
 	}
 
-	// ---- Hit-testing --------------------------------------------------------
-	// A point belongs to the wheel if it lies inside the full curved band swept by
-	// the cards, including the spaces between cards.
-	function isOverWheel(px: number, py: number) {
+	function isOverWheel(px: number, py: number, padding = 0) {
 		const dx = px - wheelX
 		const dy = py - wheelY
 		const distance = Math.hypot(dx, dy)
 		const angle = Math.abs(Math.atan2(dx, -dy) * RAD2DEG)
 
-		return angle <= visibleHalfArc && Math.abs(distance - radius) <= cardH / 2
+		return angle <= visibleHalfArc && Math.abs(distance - radius) <= cardH / 2 + padding
 	}
 
-	// ---- "Drag" bubble ------------------------------------------------------
 	const bubble = bubbleRef.value
 	const bubbleMotion = bubbleMotionRef.value
 	let bubbleVisible = false
@@ -347,7 +303,26 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		})
 	}
 
-	// ---- Pointer handling ---------------------------------------------------
+	function capturePointer(pointerId: number) {
+		if (track.hasPointerCapture(pointerId)) return
+		try {
+			track.setPointerCapture(pointerId)
+		} catch {
+			return
+		}
+	}
+
+	function engageDrag(e: PointerEvent, immediateClickGuard: boolean) {
+		isDragging = true
+		isDraggingRef.value = true
+		lastPointerX = e.clientX
+		lastPointerTime = e.timeStamp
+		if (immediateClickGuard) {
+			didDrag = true
+			capturePointer(e.pointerId)
+		}
+	}
+
 	function updateHover(e: PointerEvent) {
 		if (e.pointerType !== "mouse") return
 		const rect = track.getBoundingClientRect()
@@ -368,52 +343,63 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	}
 
 	function onPointerDown(e: PointerEvent) {
-		if (isDragging) return
-		if (e.pointerType === "mouse" && e.button !== 0) return
+		if (isPressed) return
+		const isMouse = e.pointerType === "mouse"
+		if (isMouse && e.button !== 0) return
 
 		const rect = track.getBoundingClientRect()
-		if (!isOverWheel(e.clientX - rect.left, e.clientY - rect.top)) return
+		const padding = isMouse ? 0 : TOUCH_HIT_PADDING_PX
+		if (!isOverWheel(e.clientX - rect.left, e.clientY - rect.top, padding)) return
 
-		isDragging = true
-		isDraggingRef.value = true
+		isPressed = true
 		activePointerId = e.pointerId
 		didDrag = false
 		dragDistance = 0
+		startPointerX = e.clientX
+		startPointerY = e.clientY
 		lastPointerX = e.clientX
 		lastPointerTime = e.timeStamp
-		velocity = 0 // grabbing the wheel stops it
+		velocity = 0
 
 		isOpeningRef.value = false
 		bubbleLabel.value = "Drag"
 		hideBubble(true)
+
+		if (isMouse) engageDrag(e, false)
 	}
 
 	function onPointerMove(e: PointerEvent) {
-		if (!isDragging) {
+		if (!isPressed) {
 			updateHover(e)
 			return
 		}
 		if (e.pointerId !== activePointerId) return
 
+		if (!isDragging) {
+			const totalX = e.clientX - startPointerX
+			const totalY = e.clientY - startPointerY
+			if (Math.hypot(totalX, totalY) < TOUCH_DRAG_SLOP_PX) return
+
+			if (Math.abs(totalX) <= Math.abs(totalY) * TOUCH_AXIS_LOCK_RATIO) {
+				isPressed = false
+				activePointerId = -1
+				return
+			}
+
+			engageDrag(e, true)
+			return
+		}
+
 		const deltaX = e.clientX - lastPointerX
 		const dtSec = Math.max((e.timeStamp - lastPointerTime) / 1000, 0.001)
 		dragDistance += Math.abs(deltaX)
-		if (dragDistance > DRAG_CLICK_THRESHOLD_PX) {
+		if (!didDrag && dragDistance > DRAG_CLICK_THRESHOLD_PX) {
 			didDrag = true
-			if (!track.hasPointerCapture(e.pointerId)) {
-				try {
-					track.setPointerCapture(e.pointerId)
-				} catch {
-					// The pointer is already gone; the drag will end on its own.
-				}
-			}
+			capturePointer(e.pointerId)
 		}
 
-		// 1:1 with the pointer; the ticker draws it on the next frame.
 		rotation += deltaX * degreesPerPixel
 
-		// Smoothed pointer speed, so the fling on release is stable rather than
-		// dictated by the very last (often tiny/noisy) event.
 		const pxPerSec = clamp(deltaX / dtSec, -MAX_FLING_PX_PER_SEC, MAX_FLING_PX_PER_SEC)
 		velocity +=
 			(pxPerSec * degreesPerPixel - velocity) *
@@ -424,27 +410,28 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	}
 
 	function endDrag(e: PointerEvent) {
-		if (!isDragging || e.pointerId !== activePointerId) return
+		if (!isPressed || e.pointerId !== activePointerId) return
 
+		isPressed = false
 		isDragging = false
 		isDraggingRef.value = false
 		activePointerId = -1
 
 		if (track.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId)
 
-		// Held still before letting go → no fling, just ease back to the idle drift.
-		if (e.timeStamp - lastPointerTime > FLING_STALE_MS) velocity = 0
+		if (e.type === "pointercancel" || e.timeStamp - lastPointerTime > FLING_STALE_MS) {
+			velocity = 0
+		}
 
-		// Let the click that follows pointerup be swallowed, then re-arm.
 		setTimeout(() => {
 			didDrag = false
-		}, 0)
+		}, CLICK_REARM_MS)
 
 		updateHover(e)
 	}
 
 	function onPointerLeave() {
-		if (isDragging) return
+		if (isPressed) return
 		isOverWheelRef.value = false
 		hideBubble(true)
 	}
@@ -464,10 +451,12 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		}
 	}
 
-	// Native drag & drop (links / images inside the cards) would cancel the
-	// pointer stream mid-drag and make the wheel stall.
 	function onDragStart(e: DragEvent) {
 		e.preventDefault()
+	}
+
+	function onContextMenu(e: Event) {
+		if (isPressed) e.preventDefault()
 	}
 
 	const passivePointerOptions: AddEventListenerOptions = { passive: true }
@@ -479,8 +468,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	track.addEventListener("pointerleave", onPointerLeave, passivePointerOptions)
 	track.addEventListener("click", onClickCapture, true)
 	track.addEventListener("dragstart", onDragStart)
+	track.addEventListener("contextmenu", onContextMenu)
 
-	// ---- Setup / teardown ---------------------------------------------------
 	function teardownCards() {
 		if (ticker) {
 			gsap.ticker.remove(ticker)
@@ -530,25 +519,18 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		radius = availableWidth / Math.sin(halfArcDeg * DEG2RAD)
 		degreesPerPixel = RAD2DEG / radius
 
-		// Snap the slot count so that (count * angle) is exactly 360°.
 		const arcSpacingPx = cardW + cardH * 0.5
 		const idealAnglePerSlot = (arcSpacingPx / radius) * RAD2DEG
 		const idealSlotCount = Math.max(6, Math.round(360 / idealAnglePerSlot))
 		if (idealSlotCount !== slotCount.value) {
-			// Changing the count re-renders the cards; the watcher below re-inits.
 			slotCount.value = idealSlotCount
 			return
 		}
 
-		// Circle on which the cards' centres travel. The top card's upper edge sits
-		// at `topPadding`.
 		wheelX = containerW / 2
 		wheelY = topPadding + radius + cardH / 2
 		visibleHalfArc = halfArcDeg
 
-		// Smallest angle past which a card's rotated bounding box is entirely
-		// outside the container: cards are only hidden once they can't be seen,
-		// so nothing ever pops in or out on screen.
 		cullAngle = HARD_CUTOFF_ANGLE_DEG
 		for (let a = visibleHalfArc; a <= HARD_CUTOFF_ANGLE_DEG; a += 0.5) {
 			const rad = a * DEG2RAD
@@ -562,7 +544,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 		guideViewBox.value = `0 0 ${containerW} ${trackH}`
 
-		// Même centre que la roue ; l'arc est calculé pour sortir de l'écran des deux côtés.
 		const guideRadius = Math.max(radius - GUIDE_OFFSET_PX, 1)
 		const guideHalfArc =
 			Math.asin(Math.min(1, (containerW / 2 + GUIDE_BLEED_PX) / guideRadius)) * RAD2DEG
@@ -588,7 +569,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		render()
 		renderedRotation = rotation
 
-		// Only run the frame loop while the section is on screen.
 		intersectionObserver = new IntersectionObserver(
 			([entry]) => {
 				if (!entry) return
@@ -628,7 +608,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	const resizeObserver = new ResizeObserver(([entry]) => {
 		if (!entry) return
 		const { width, height } = entry.contentRect
-		// The first callback fires right after observe(); skip it when nothing changed.
 		if (Math.abs(width - lastObservedW) < 0.5 && Math.abs(height - lastObservedH) < 0.5) {
 			return
 		}
@@ -656,6 +635,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		track.removeEventListener("pointerleave", onPointerLeave)
 		track.removeEventListener("click", onClickCapture, true)
 		track.removeEventListener("dragstart", onDragStart)
+		track.removeEventListener("contextmenu", onContextMenu)
 	}
 }, sectionRef)
 </script>
@@ -697,13 +677,9 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				</div>
 			</div>
 
-			<!--
-				touch-pan-y: vertical swipes keep scrolling the page, horizontal ones drive the wheel.
-				The grab cursor only shows over the wheel band, never around it.
-			-->
 			<div
 				ref="trackRef"
-				class="relative min-h-0 flex-1 touch-pan-y overflow-visible contain-[layout] select-none"
+				class="relative min-h-0 flex-1 touch-pan-y overflow-visible contain-[layout] select-none [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none]"
 				:class="isDraggingRef ? 'cursor-grabbing' : isOverWheelRef ? 'cursor-grab' : ''"
 			>
 				<svg
@@ -723,7 +699,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 					/>
 				</svg>
 
-				<!-- Card height is natural (image + title/date), measured in initCards(). -->
 				<div
 					v-for="(item, i) in slots"
 					:key="`slot-${i}`"
