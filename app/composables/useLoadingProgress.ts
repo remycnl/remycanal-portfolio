@@ -121,9 +121,11 @@ export function useLoadingProgress(): LoadingProgressController {
 
 			hardTimeoutId = setTimeout(() => {
 				if (hasFinished) return
-				console.warn(
-					"[useLoadingProgress] Timeout de sécurité atteint : passage forcé à la complétion."
-				)
+				console.warn("[useLoadingProgress] Timeout de sécurité atteint.", {
+					page: isPageReady.value,
+					fonts: isFontsReady.value,
+					logo: isLogoReady.value,
+				})
 				target = 1
 			}, HARD_TIMEOUT_MS)
 		}

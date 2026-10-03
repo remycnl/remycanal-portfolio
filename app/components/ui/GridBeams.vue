@@ -1,8 +1,9 @@
 <template>
 	<div
 		ref="containerEl"
-		class="pointer-events-none absolute inset-0 overflow-hidden"
-		:style="maskStyle"
+		class="grid-beams pointer-events-none absolute inset-0 overflow-hidden"
+		:data-theme="theme"
+		:style="cssVars"
 		aria-hidden="true"
 	>
 		<span
@@ -18,34 +19,6 @@
 import type { ComponentPublicInstance } from "vue"
 
 type GridTheme = "white" | "black" | "lime" | "violet"
-
-const THEME_VAR_MAP: Record<GridTheme, string> = {
-	white: "--color-gray-light",
-	black: "--color-black-light",
-	lime: "--color-lime-dark",
-	violet: "--color-violet-light",
-}
-
-const FALLBACK_THEMES: Record<GridTheme, string> = {
-	white: "oklch(0.937 0 0)",
-	black: "oklch(0.3043 0.0043 17.39)",
-	lime: "oklch(0.6034 0.1497 123.94)",
-	violet: "oklch(0.7457 0.2614 283.1)",
-}
-
-const themeColors = ref<Record<GridTheme, string>>({ ...FALLBACK_THEMES })
-
-function readThemeColorsFromCSS() {
-	if (typeof document === "undefined") return
-	const rootStyles = getComputedStyle(document.documentElement)
-	for (const [name, varName] of Object.entries(THEME_VAR_MAP) as [GridTheme, string][]) {
-		const value = rootStyles.getPropertyValue(varName).trim()
-		if (value) themeColors.value[name] = value
-	}
-}
-
-const GRID_MASK =
-	"radial-gradient(ellipse at center, black 0%, black 20%, rgb(0 0 0 / 0.75) 40%, rgb(0 0 0 / 0.4) 60%, rgb(0 0 0 / 0.12) 80%, transparent 95%)"
 
 const DESKTOP_BREAKPOINT = 1024
 const MOBILE_SPACING = 48
@@ -72,17 +45,15 @@ const props = withDefaults(defineProps<Props>(), {
 	durationMax: 4800,
 })
 
-const maskStyle = {
-	maskImage: GRID_MASK,
-	WebkitMaskImage: GRID_MASK,
-}
-
-const beamColor = computed(() => {
-	const base = themeColors.value[props.theme]
-	return `color-mix(in oklch, ${base} ${100 - props.darken}%, black ${props.darken}%)`
-})
+// Seules variables injectées en inline : elles dépendent uniquement des props,
+// donc identiques côté serveur et côté client (plus de mismatch d'hydratation).
+const cssVars = computed(() => ({
+	"--beam-keep": `${100 - props.darken}%`,
+	"--beam-darken": `${props.darken}%`,
+}))
 
 const spacingPx = ref(DESKTOP_SPACING)
+
 let spacingMediaQuery: MediaQueryList | null = null
 
 function updateSpacing() {
@@ -90,23 +61,31 @@ function updateSpacing() {
 		spacingPx.value = props.spacing
 		return
 	}
+
 	spacingPx.value = spacingMediaQuery?.matches ? DESKTOP_SPACING : MOBILE_SPACING
 }
 
-const containerEl = ref<HTMLElement | null>(null)
+watch(() => props.spacing, updateSpacing)
+
+const containerEl = useTemplateRef<HTMLElement>("containerEl")
 const beamEls: (HTMLElement | null)[] = []
+
 function setBeamRef(el: Element | ComponentPublicInstance | null, i: number) {
 	beamEls[i] = (el as HTMLElement) ?? null
 }
 
 let width = 0
 let height = 0
+
 const activeColumns = new Set<number>()
+
 let resizeObserver: ResizeObserver | null = null
 let intersectionObserver: IntersectionObserver | null = null
+
 let isVisible = true
 let reduceMotion = false
 let destroyed = false
+
 const timeouts: ReturnType<typeof setTimeout>[] = []
 const runningAnimations = new Set<Animation>()
 
@@ -120,6 +99,7 @@ function randomBetween(min: number, max: number) {
 
 function measure() {
 	if (!containerEl.value) return
+
 	width = containerEl.value.clientWidth
 	height = containerEl.value.clientHeight
 }
@@ -127,37 +107,50 @@ function measure() {
 function pickAvailableColumn(): number | null {
 	const total = columnCount()
 	const available: number[] = []
+
 	for (let c = 0; c < total; c++) {
-		if (!activeColumns.has(c)) available.push(c)
+		if (!activeColumns.has(c)) {
+			available.push(c)
+		}
 	}
+
 	if (available.length === 0) return null
+
 	const index = Math.floor(Math.random() * available.length)
+
 	return available[index] ?? null
 }
 
 function fireBeam(beamIndex: number) {
 	const el = beamEls[beamIndex]
+
 	if (!el || !isVisible || reduceMotion || !height) return
 
 	const col = pickAvailableColumn()
+
 	if (col === null) {
-		// Aucune colonne libre pour l'instant : on retente un peu plus tard
 		const retryId = setTimeout(() => fireBeam(beamIndex), 250)
+
 		timeouts.push(retryId)
+
 		return
 	}
+
 	activeColumns.add(col)
 
 	const x = col * spacingPx.value
 	const beamPx = Math.max(height * props.beamLength, 40)
 	const duration = randomBetween(props.durationMin, props.durationMax)
 
-	el.style.transform = `translate3d(${x}px, -${beamPx}px, 0)`
+	el.style.transform = `translate3d(${x}px, ${-beamPx}px, 0)`
 	el.style.height = `${beamPx}px`
 
 	const anim = el.animate(
 		[
-			{ transform: `translate3d(${x}px, -${beamPx}px, 0)`, opacity: 0 },
+			{
+				transform: `translate3d(${x}px, ${-beamPx}px, 0)`,
+				opacity: 0,
+			},
 			{
 				transform: `translate3d(${x}px, ${-beamPx * 0.3}px, 0)`,
 				opacity: 1,
@@ -173,10 +166,15 @@ function fireBeam(beamIndex: number) {
 				opacity: 0,
 			},
 		],
-		{ duration, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
+		{
+			duration,
+			easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+			fill: "forwards",
+		}
 	)
 
 	runningAnimations.add(anim)
+
 	anim.finished
 		.catch(() => {})
 		.finally(() => {
@@ -187,45 +185,56 @@ function fireBeam(beamIndex: number) {
 
 function scheduleBeam(beamIndex: number) {
 	if (destroyed) return
+
 	const jitter = randomBetween(props.interval * 0.5, props.interval * 1.5)
+
 	const id = setTimeout(() => {
 		fireBeam(beamIndex)
 		scheduleBeam(beamIndex)
 	}, jitter)
+
 	timeouts.push(id)
 }
 
 onMounted(() => {
-	readThemeColorsFromCSS()
-
 	spacingMediaQuery = window.matchMedia(`(min-width: ${DESKTOP_BREAKPOINT}px)`)
+
 	updateSpacing()
+
 	spacingMediaQuery.addEventListener("change", updateSpacing)
 
 	measure()
+
 	reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
 	if (containerEl.value) {
 		resizeObserver = new ResizeObserver(() => measure())
+
 		resizeObserver.observe(containerEl.value)
 
 		intersectionObserver = new IntersectionObserver(
 			(entries) => {
 				const entry = entries[0]
-				if (entry) isVisible = entry.isIntersecting
+
+				if (entry) {
+					isVisible = entry.isIntersecting
+				}
 			},
 			{ threshold: 0 }
 		)
+
 		intersectionObserver.observe(containerEl.value)
 	}
 
 	if (!reduceMotion) {
 		for (let i = 0; i < props.poolSize; i++) {
 			const initialDelay = randomBetween(0, props.interval)
+
 			const id = setTimeout(() => {
 				fireBeam(i)
 				scheduleBeam(i)
 			}, initialDelay)
+
 			timeouts.push(id)
 		}
 	}
@@ -233,15 +242,66 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
 	destroyed = true
+
 	timeouts.forEach(clearTimeout)
-	runningAnimations.forEach((a) => a.cancel())
+
+	runningAnimations.forEach((animation) => {
+		animation.cancel()
+	})
+
 	resizeObserver?.disconnect()
 	intersectionObserver?.disconnect()
+
 	spacingMediaQuery?.removeEventListener("change", updateSpacing)
 })
 </script>
 
 <style scoped>
+.grid-beams {
+	/* Couleur de base : thème "white" par défaut, comme avant */
+	--beam-base: var(--color-gray-light, oklch(0.937 0 0));
+	--beam-color: color-mix(
+		in oklch,
+		var(--beam-base) var(--beam-keep),
+		black var(--beam-darken)
+	);
+
+	mask-image: radial-gradient(
+		ellipse at center,
+		black 0%,
+		black 20%,
+		rgb(0 0 0 / 0.75) 40%,
+		rgb(0 0 0 / 0.4) 60%,
+		rgb(0 0 0 / 0.12) 80%,
+		transparent 95%
+	);
+	-webkit-mask-image: radial-gradient(
+		ellipse at center,
+		black 0%,
+		black 20%,
+		rgb(0 0 0 / 0.75) 40%,
+		rgb(0 0 0 / 0.4) 60%,
+		rgb(0 0 0 / 0.12) 80%,
+		transparent 95%
+	);
+}
+
+.grid-beams[data-theme="white"] {
+	--beam-base: var(--color-gray-light, oklch(0.937 0 0));
+}
+
+.grid-beams[data-theme="black"] {
+	--beam-base: var(--color-black-light, oklch(0.3043 0.0043 17.39));
+}
+
+.grid-beams[data-theme="lime"] {
+	--beam-base: var(--color-lime-dark, oklch(0.6034 0.1497 123.94));
+}
+
+.grid-beams[data-theme="violet"] {
+	--beam-base: var(--color-violet-light, oklch(0.7457 0.2614 283.1));
+}
+
 .beam-line {
 	position: absolute;
 	top: 0;
@@ -252,8 +312,8 @@ onBeforeUnmount(() => {
 	background: linear-gradient(
 		to bottom,
 		transparent,
-		v-bind(beamColor) 20%,
-		v-bind(beamColor) 80%,
+		var(--beam-color) 20%,
+		var(--beam-color) 80%,
 		transparent
 	);
 }

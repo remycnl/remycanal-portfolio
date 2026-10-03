@@ -11,6 +11,7 @@ import type {
 	ResolvedPixelWipeDirection,
 	ResponsivePixelWipeDirection,
 } from "@/types/pixel-wipe"
+import { readThemeColor } from "@/utils/theme/readThemeColor"
 
 defineOptions({ name: "TransitionOverlay" })
 
@@ -53,23 +54,10 @@ function currentBreakpoint(): Breakpoint {
 	return window.innerWidth >= DESKTOP_BREAKPOINT ? "desktop" : "mobile"
 }
 
-function themeColor(name: string) {
-	return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
-}
-
-function resolveThemeColor(value: string | undefined, fallbackVar: string) {
-	if (!value) return themeColor(fallbackVar)
-	const trimmed = value.trim()
-	if (trimmed.startsWith("--")) return themeColor(trimmed)
-	const varMatch = trimmed.match(/^var\((--[\w-]+)\)$/)
-	if (varMatch?.[1]) return themeColor(varMatch[1])
-	return trimmed
-}
-
 function resolveColors(): PixelWipeColors {
 	return {
-		base: resolveThemeColor(props.baseColor, "--color-gray-light"),
-		accent: resolveThemeColor(props.accentColor, "--color-lime"),
+		base: readThemeColor(props.baseColor, "oklch(0.937 0 0)"),
+		accent: readThemeColor(props.accentColor, "oklch(0.928 0.2202 125)"),
 	}
 }
 

@@ -11,35 +11,34 @@ const projects: Project[] = [
 		id: "01",
 		year: "2024",
 		name: "Rémy Canal — Portfolio",
-		image: "https://www.remycanal.me/img/metaImg.png",
+		image: "https\://www.remycanal.me/img/metaImg.png",
 	},
 	{
 		id: "02",
 		year: "2022",
 		name: "Pascale Canal — Galery",
-		image: "https://www.remycanal.me/img/mockup-pascale-canal-galery.webp",
+		image: "https\://www.remycanal.me/img/mockup-pascale-canal-galery.webp",
 	},
 	{
 		id: "03",
 		year: "2021",
 		name: "Vikl — Marketing Website",
-		image: "https://www.remycanal.me/img/mockup-vikl.webp",
+		image: "https\://www.remycanal.me/img/mockup-vikl.webp",
 	},
 	{
 		id: "04",
 		year: "2020",
 		name: "Animaux d'à côté — Web App",
-		image: "https://animauxdacote.fr/img/carrousel-home-1.png",
+		image: "https\://animauxdacote.fr/img/carrousel-home-1.png",
 	},
 ]
 
 const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
 const viewportRef = useTemplateRef<HTMLElement>("viewportRef")
 const trackRef = useTemplateRef<HTMLElement>("trackRef")
-const cardsRef = ref<HTMLElement[]>([])
-const yearRefs = ref<HTMLElement[]>([])
-const nameRefs = ref<HTMLElement[]>([])
-
+const cardsRef = useTemplateRef<HTMLElement[]>("cardsRef")
+const yearRefs = useTemplateRef<HTMLElement[]>("yearRefs")
+const nameRefs = useTemplateRef<HTMLElement[]>("nameRefs")
 const cornerTL = useTemplateRef<HTMLElement>("cornerTL")
 const cornerTR = useTemplateRef<HTMLElement>("cornerTR")
 const cornerBL = useTemplateRef<HTMLElement>("cornerBL")
@@ -81,7 +80,7 @@ function handleCardLeave(i: number) {
 }
 
 function applyCardScale(i: number, animate = false) {
-	const card = cardsRef.value[i]
+	const card = cardsRef.value?.[i]
 	if (!card) return
 
 	const base = cardBaseScale.value[i] ?? 0.84
@@ -118,13 +117,20 @@ function getScrollY(): number {
 
 function driveScroll(
 	target: number,
-	options: { immediate?: boolean; duration?: number; easing?: (t: number) => number } = {}
+	options: {
+		immediate?: boolean
+		duration?: number
+		easing?: (t: number) => number
+	} = {}
 ) {
 	if (lenis) {
 		lenis.scrollTo(target, options)
 		return
 	}
-	window.scrollTo({ top: target, behavior: options.immediate ? "auto" : "smooth" })
+	window.scrollTo({
+		top: target,
+		behavior: options.immediate ? "auto" : "smooth",
+	})
 }
 
 const corners = [
@@ -200,9 +206,12 @@ function swapTextStack(
 }
 
 watch(activeIndex, (newVal, oldVal) => {
+	const years = yearRefs.value
+	const names = nameRefs.value
+	if (!years || !names) return
 	const forward = scrollDirection.value === 1
-	swapTextStack(yearRefs.value, oldVal, newVal, forward)
-	swapTextStack(nameRefs.value, oldVal, newVal, forward)
+	swapTextStack(years, oldVal, newVal, forward)
+	swapTextStack(names, oldVal, newVal, forward)
 })
 
 useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
@@ -218,16 +227,19 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)"
 	).matches
-	const cards = cardsRef.value
-
-	const firstYear = yearRefs.value[0]
-	const firstName = nameRefs.value[0]
-
-	gsap.set(yearRefs.value, { yPercent: 100 })
-	if (firstYear) gsap.set(firstYear, { yPercent: 0 })
-	gsap.set(nameRefs.value, { yPercent: 100 })
-	if (firstName) gsap.set(firstName, { yPercent: 0 })
-
+	const cards = cardsRef.value ?? []
+	const years = yearRefs.value ?? []
+	const names = nameRefs.value ?? []
+	const firstYear = years[0]
+	const firstName = names[0]
+	gsap.set(years, { yPercent: 100 })
+	if (firstYear) {
+		gsap.set(firstYear, { yPercent: 0 })
+	}
+	gsap.set(names, { yPercent: 100 })
+	if (firstName) {
+		gsap.set(firstName, { yPercent: 0 })
+	}
 	function setTrackPadding() {
 		const first = cards[0]
 		if (!first) return
@@ -235,11 +247,17 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 		if (isMobileMediaQuery) {
 			const cardWidth = first.getBoundingClientRect().width
 			const value = Math.max((window.innerWidth - cardWidth) / 2, 0)
-			gsap.set(trackElement, { paddingLeft: value, paddingRight: value })
+			gsap.set(trackElement, {
+				paddingLeft: value,
+				paddingRight: value,
+			})
 		} else {
 			const cardHeight = first.getBoundingClientRect().height
 			const value = Math.max((window.innerHeight - cardHeight) / 2, 0)
-			gsap.set(trackElement, { paddingTop: value, paddingBottom: value })
+			gsap.set(trackElement, {
+				paddingTop: value,
+				paddingBottom: value,
+			})
 		}
 	}
 
@@ -272,7 +290,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 			const centers = cards.map((card, i) => {
 				const width = card.offsetWidth
 				const center = cumulative + width / 2
-				if (i < cards.length - 1) cumulative += width + gap
+				if (i < cards.length - 1) {
+					cumulative += width + gap
+				}
 				return center - window.innerWidth / 2
 			})
 
@@ -289,7 +309,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 			const centers = cards.map((card, i) => {
 				const height = card.offsetHeight
 				const center = cumulative + height / 2
-				if (i < cards.length - 1) cumulative += height + gap
+				if (i < cards.length - 1) {
+					cumulative += height + gap
+				}
 				return center - window.innerHeight / 2
 			})
 
@@ -324,8 +346,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 				closest = i
 			}
 		})
-
-		if (closest !== activeIndex.value) activeIndex.value = closest
+		if (closest !== activeIndex.value) {
+			activeIndex.value = closest
+		}
 	}
 
 	setTrackPadding()
@@ -375,7 +398,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 		function relayToScroll(this: Draggable) {
 			const stepX = this.x - lastProxyX
 			lastProxyX = this.x
-			driveScroll(getScrollY() - stepX, { immediate: true })
+			driveScroll(getScrollY() - stepX, {
+				immediate: true,
+			})
 		}
 
 		const [instance] = Draggable.create(proxy, {
@@ -389,7 +414,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 			},
 			onDragStart() {
 				lastProxyX = this.x
-				if (pressedIndex.value !== null) onCardRelease(pressedIndex.value)
+				if (pressedIndex.value !== null) {
+					onCardRelease(pressedIndex.value)
+				}
 				hoveredIndex.value = null
 			},
 			onDrag: relayToScroll,
@@ -426,36 +453,36 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 						bottom: 'calc(var(--spacing-section) * -2)',
 					}"
 					:class="isActiveHovered ? 'opacity-100' : 'opacity-50'"
-				/>
-
+				></div>
 				<div class="pointer-events-none absolute inset-0 z-0 overflow-hidden">
 					<div
 						class="absolute right-0 left-0 h-px -translate-y-1/2 bg-[repeating-linear-gradient(to_right,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500 max-lg:top-[calc(50%+3rem)] lg:top-1/2"
 						:class="isActiveHovered ? 'opacity-100' : 'opacity-50'"
-					/>
+					></div>
 				</div>
 
 				<div
 					class="pointer-events-none absolute left-1/2 z-6 -translate-x-1/2 -translate-y-1/2 max-lg:top-[calc(50%+3rem)] lg:top-1/2"
 				>
 					<div class="relative w-[70vw] rounded-3xl p-2 md:w-[38vw] lg:w-[32vw]">
-						<div class="aspect-16/10 w-full rounded-2xl" />
-						<span
-							ref="cornerTL"
-							class="border-lime absolute -top-10 -left-10 h-8 w-8 border-t-2 border-l-2"
-						/>
-						<span
-							ref="cornerTR"
-							class="border-lime absolute -top-10 -right-10 h-8 w-8 border-t-2 border-r-2"
-						/>
-						<span
-							ref="cornerBL"
-							class="border-lime absolute -bottom-10 -left-10 h-8 w-8 border-b-2 border-l-2"
-						/>
-						<span
-							ref="cornerBR"
-							class="border-lime absolute -right-10 -bottom-10 h-8 w-8 border-r-2 border-b-2"
-						/>
+						<div class="aspect-16/10 w-full rounded-2xl">
+							<span
+								ref="cornerTL"
+								class="border-lime absolute -top-10 -left-10 h-8 w-8 border-t-2 border-l-2"
+							></span>
+							<span
+								ref="cornerTR"
+								class="border-lime absolute -top-10 -right-10 h-8 w-8 border-t-2 border-r-2"
+							></span>
+							<span
+								ref="cornerBL"
+								class="border-lime absolute -bottom-10 -left-10 h-8 w-8 border-b-2 border-l-2"
+							></span>
+							<span
+								ref="cornerBR"
+								class="border-lime absolute -right-10 -bottom-10 h-8 w-8 border-r-2 border-b-2"
+							></span>
+						</div>
 					</div>
 				</div>
 
@@ -491,11 +518,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 							<span
 								v-for="(p, i) in projects"
 								:key="p.id"
-								:ref="
-									(el) => {
-										if (el) yearRefs[i] = el as HTMLElement
-									}
-								"
+								ref="yearRefs"
 								class="font-vg5000 text-black-light col-start-1 row-start-1 block text-sm leading-none whitespace-nowrap transition-colors duration-300"
 								:class="isActiveHovered ? 'lg:text-white' : ''"
 							>
@@ -518,11 +541,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 							<span
 								v-for="(p, i) in projects"
 								:key="p.id"
-								:ref="
-									(el) => {
-										if (el) nameRefs[i] = el as HTMLElement
-									}
-								"
+								ref="nameRefs"
 								class="font-lineal text-black-light col-start-1 row-start-1 block text-left text-sm leading-none [font-weight:var(--lineal-weight-medium)] whitespace-nowrap transition-colors duration-300 lg:text-right"
 								:class="isActiveHovered ? 'lg:text-white' : ''"
 							>
@@ -535,9 +554,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 				<div
 					class="bottom-edge bg-gray-light font-vg5000 text-gray-dark absolute left-1/2 z-10 -translate-x-1/2 rounded-full px-3 py-1.5 text-xs whitespace-nowrap"
 				>
-					<span class="text-black-light font-lineal-bold">{{
-						pad(activeIndex + 1)
-					}}</span>
+					<span class="text-black-light font-lineal-bold">
+						{{ pad(activeIndex + 1) }}
+					</span>
 					<span class="text-gray-dark/50 mx-1">/</span>
 					<span>{{ pad(projects.length) }}</span>
 				</div>
@@ -552,11 +571,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 						<div
 							v-for="(p, i) in projects"
 							:key="p.id"
-							:ref="
-								(el) => {
-									if (el) cardsRef[i] = el as HTMLElement
-								}
-							"
+							ref="cardsRef"
 							class="shrink-0 cursor-pointer touch-pan-y rounded-lg bg-black p-2"
 							@pointerenter="hoveredIndex = i"
 							@pointerleave="handleCardLeave(i)"

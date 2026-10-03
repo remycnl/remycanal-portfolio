@@ -33,7 +33,6 @@ useHead({
 
 useSeoMeta({
 	ogSiteName: "Rémy Canal",
-	twitterCard: "summary_large_image",
 	themeColor: "#201e1e",
 	robots: "index, follow",
 })

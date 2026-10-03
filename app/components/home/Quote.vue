@@ -1,8 +1,9 @@
+<!-- HomeQuote.vue -->
 <script setup lang="ts">
-const sectionRef = ref<HTMLElement | null>(null)
-const quoteWrapRef = ref<HTMLElement | null>(null)
-const authorRef = ref<HTMLElement | null>(null)
-const portraitRef = ref<HTMLElement | null>(null)
+const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
+const quoteWrapRef = useTemplateRef<HTMLElement>("quoteWrapRef")
+const authorRef = useTemplateRef<HTMLElement>("authorRef")
+const portraitRef = useTemplateRef<HTMLElement>("portraitRef")
 
 const { useGsapContext } = useGsap()
 const { refreshImmediate } = useScrollRefresh()
@@ -22,8 +23,6 @@ const EDGE_BUFFER_RATIO = 0.08
 const TEXT_ROTATION_FACTOR = 1
 const IMAGE_ROTATION_FACTOR = 0.85
 
-// Below these container widths, the wave's amplitude/waviness are scaled
-// down so the motion stays legible and doesn't overwhelm the smaller text.
 const TABLET_BREAKPOINT = 1024
 const MOBILE_BREAKPOINT = 640
 const TABLET_AMPLITUDE_SCALE = 0.75
@@ -256,6 +255,10 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 		})
 
 		requestAnimationFrame(() => requestAnimationFrame(() => refreshImmediate()))
+		// Safety pass: if the blog section below finalizes its pin-spacer
+		// after this section's first refresh, its own start position would
+		// otherwise stay stale relative to this section's true height.
+		setTimeout(() => refreshImmediate(), 250)
 	}
 
 	const fontsReady = useFontsReady()
@@ -318,7 +321,7 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 
 			<span
 				ref="authorRef"
-				class="right-edge bottom-edge absolute group cursor-default text-base"
+				class="right-edge bottom-edge group absolute cursor-default text-base"
 				aria-hidden="true"
 				@click="toggleCrossRotation"
 			>
@@ -335,7 +338,7 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 				</div>
 				<span
 					ref="portraitRef"
-					class="pointer-events-none absolute bottom-0 -left-20 -mb-1 lg:-mb-2.5 w-[clamp(4rem,8vw,6rem)] lg:-left-30"
+					class="pointer-events-none absolute bottom-0 -left-20 -mb-1 w-[clamp(4rem,8vw,6rem)] lg:-left-30 lg:-mb-2.5"
 				>
 					<NuxtImg
 						src="/quote/leonardo-da-vinci.png"

@@ -43,7 +43,7 @@
 				v-text-reveal
 				ref="zoneChapter01"
 				:data-active="activeCards.has('chapter01')"
-				class="p-edge border-gray-dark/50 group bg-gray-light relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b md:bg-white lg:col-span-2 lg:cursor-default"
+				class="p-edge border-gray-dark/50 group bg-gray-light relative flex min-h-55 cursor-auto flex-col justify-between overflow-hidden border-r border-b md:bg-white lg:col-span-2 lg:cursor-auto"
 				@click="toggleCard('chapter01')"
 			>
 				<span
@@ -111,7 +111,7 @@
 				v-text-reveal
 				ref="zoneChapter02"
 				:data-active="activeCards.has('chapter02')"
-				class="p-edge border-gray-dark/50 group md:bg-gray-light relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-default lg:bg-white"
+				class="p-edge border-gray-dark/50 group md:bg-gray-light relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-auto lg:bg-white"
 				@click="toggleCard('chapter02')"
 			>
 				<span
@@ -167,7 +167,7 @@
 				v-text-reveal="{ theme: 'white' }"
 				ref="zoneDublin"
 				:data-active="activeCards.has('dublin')"
-				class="p-edge border-gray-dark/50 bg-lime group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b lg:col-span-2 lg:cursor-default"
+				class="p-edge border-gray-dark/50 bg-lime group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b lg:col-span-2 lg:cursor-auto"
 				@click="toggleCard('dublin')"
 			>
 				<span class="absolute top-3 left-3 z-20 h-2 w-2 bg-black" aria-hidden="true" />
@@ -219,7 +219,7 @@
 				v-text-reveal
 				ref="zoneFreelance"
 				:data-active="activeCards.has('freelance')"
-				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-default"
+				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-auto"
 				@click="toggleCard('freelance')"
 			>
 				<span

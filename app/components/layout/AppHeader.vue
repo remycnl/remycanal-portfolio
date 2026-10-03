@@ -187,6 +187,8 @@
 </template>
 
 <script setup lang="ts">
+import { readThemeColor } from "@/utils/theme/readThemeColor"
+
 let hasPlayedIntro = false
 
 const route = useRoute()
@@ -243,11 +245,6 @@ const stickers: MenuSticker[] = [
 
 function isActive(link: { to: string }) {
 	return route.path === link.to || route.path.startsWith(`${link.to}/`)
-}
-
-function themeColor(name: string) {
-	if (!name.startsWith("--")) return name
-	return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
 }
 
 const MOBILE_REVEAL_IN = 620
@@ -535,7 +532,7 @@ useGsapContext(({ gsap }) => {
 		})
 
 		engine.resize()
-		engine.fillInstant(themeColor("--color-black"))
+		engine.fillInstant(readThemeColor("--color-black", "oklch(0.2373 0.0031 17.37)"))
 
 		gsap.set(boxEl, { visibility: "visible" })
 
@@ -547,8 +544,8 @@ useGsapContext(({ gsap }) => {
 			mode: "out",
 			direction: "left",
 			colors: {
-				base: themeColor("--color-black"),
-				accent: themeColor("--color-lime"),
+				base: readThemeColor("--color-black", "oklch(0.2373 0.0031 17.37)"),
+				accent: readThemeColor("--color-lime", "oklch(0.928 0.2202 125)"),
 			},
 			duration: 700,
 		})

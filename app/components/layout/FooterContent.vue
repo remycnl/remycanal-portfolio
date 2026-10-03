@@ -9,15 +9,40 @@ type SocialLink = {
 	label: string
 }
 
-const { interactive = false, triggerEl = null } = defineProps<{
+type FooterTheme = "lime" | "violet"
+
+const {
+	interactive = false,
+	triggerEl = null,
+	theme = "violet",
+} = defineProps<{
 	interactive?: boolean
 	triggerEl?: HTMLElement | null
+	theme?: FooterTheme
 }>()
 
 const { gsap } = useGsap()
 
 const tabIndex = computed(() => (interactive ? undefined : -1))
 const prefetch = computed(() => (interactive ? undefined : false))
+
+const desktopThemeClasses = computed(() =>
+	theme === "lime"
+		? {
+				background: "lg:from-lime lg:to-lime lg:text-black",
+				muted: "lg:text-black/50",
+				hover: "hover:text-lime lg:hover:text-black",
+				legalMuted: "lg:text-black/60",
+				bubble: "lg:bg-black lg:text-lime lg:after:bg-black",
+			}
+		: {
+				background: "lg:from-violet lg:to-violet lg:text-white",
+				muted: "lg:text-white/50",
+				hover: "hover:text-violet lg:hover:text-white",
+				legalMuted: "lg:text-white/60",
+				bubble: "lg:bg-white lg:text-violet lg:after:bg-white",
+			}
+)
 
 const links: FooterLink[] = [
 	{ to: "/", label: "Home" },
@@ -39,6 +64,7 @@ const socialLinks: SocialLink[] = [
 	{ href: "https://www.linkedin.com/in/remy-canal", label: "LinkedIn" },
 	{ href: "https://www.pinterest.com/remycanal", label: "Pinterest" },
 	{ href: "https://dribbble.com/remycanal", label: "Dribbble" },
+	{ href: "https://www.behance.net/remycanal", label: "Behance" },
 	{ href: "https://github.com/remycnl", label: "GitHub" },
 	{ href: "https://www.awwwards.com/remy.cnl", label: "Awwwards" },
 ]
@@ -48,17 +74,17 @@ const year = new Date().getFullYear()
 const bubbleEl = ref<HTMLSpanElement | null>(null)
 let bubbleTween: gsap.core.Tween | gsap.core.Timeline | null = null
 
-const isDesktop = import.meta.client && window.matchMedia("(min-width: 1024px)").matches
-const prefersReducedMotion =
-	import.meta.client && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches
+const prefersReducedMotion = () =>
+	window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
 function showBubble() {
-	if (!bubbleEl.value || !isDesktop) return
+	if (!bubbleEl.value || !isDesktop()) return
 
 	bubbleTween?.kill()
 	bubbleEl.value.style.willChange = "transform, opacity"
 
-	if (prefersReducedMotion) {
+	if (prefersReducedMotion()) {
 		gsap.set(bubbleEl.value, { opacity: 1 })
 		return
 	}
@@ -78,11 +104,11 @@ function showBubble() {
 }
 
 function hideBubble() {
-	if (!bubbleEl.value || !isDesktop) return
+	if (!bubbleEl.value || !isDesktop()) return
 
 	bubbleTween?.kill()
 
-	if (prefersReducedMotion) {
+	if (prefersReducedMotion()) {
 		gsap.set(bubbleEl.value, { opacity: 0 })
 		return
 	}
@@ -101,7 +127,7 @@ function hideBubble() {
 }
 
 function pulseBubble() {
-	if (!bubbleEl.value || !isDesktop) return
+	if (!bubbleEl.value || !isDesktop()) return
 
 	bubbleTween?.kill()
 	bubbleTween = gsap
@@ -117,20 +143,22 @@ onUnmounted(() => {
 
 <template>
 	<footer
-		class="p-edge bg-grid-white from-violet to-violet relative isolate flex flex-col overflow-x-hidden bg-white via-white text-black lg:bg-linear-to-r lg:text-white"
+		class="p-edge bg-grid-white from-violet to-violet relative isolate flex flex-col overflow-x-hidden bg-white via-white text-black lg:bg-linear-to-r"
+		:class="[desktopThemeClasses.background]"
 	>
-		<UiGridBeams theme="violet" />
+		<UiGridBeams :theme="theme" />
 
 		<div
 			class="pointer-events-none absolute inset-0 z-0 flex items-center justify-center overflow-hidden 2xl:-mt-10"
 		>
 			<HomeLogoScene
 				v-if="interactive && triggerEl"
+				:key="theme"
 				class="pointer-events-auto"
 				skip-intro
 				scroll-reveal
-				body-color="var(--color-violet)"
-				face-color="var(--color-violet)"
+				:body-color="theme === 'lime' ? 'var(--color-lime)' : 'var(--color-violet)'"
+				:face-color="theme === 'lime' ? 'var(--color-lime)' : 'var(--color-violet)'"
 				:trigger-el="triggerEl"
 				style="--logo-scene-width: min(80vw, 62svh, 40rem)"
 			/>
@@ -140,7 +168,8 @@ onUnmounted(() => {
 			<div class="grid grid-cols-1 gap-12 sm:grid-cols-2 sm:items-start lg:grid-cols-3">
 				<div class="flex flex-col gap-3 sm:gap-6">
 					<p
-						class="font-vg5000 pointer-events-auto text-[0.65rem] tracking-[0.35em] text-black/50 uppercase sm:text-xs lg:text-white/50"
+						class="font-vg5000 pointer-events-auto text-[0.65rem] tracking-[0.35em] text-black/50 uppercase sm:text-xs"
+						:class="desktopThemeClasses.muted"
 					>
 						Available for work
 					</p>
@@ -150,7 +179,8 @@ onUnmounted(() => {
 							href="mailto:hello@remycanal.me"
 							:tabindex="tabIndex"
 							v-roll-hover
-							class="font-vg5000 hover:text-violet block text-2xl leading-[0.95] tracking-tight break-all whitespace-nowrap transition-colors duration-300 sm:text-3xl lg:text-4xl lg:hover:text-[#ffffff]"
+							class="font-vg5000 block text-2xl leading-[0.95] tracking-tight break-all whitespace-nowrap transition-colors duration-300 sm:text-3xl lg:text-4xl"
+							:class="desktopThemeClasses.hover"
 							@mouseenter="showBubble"
 							@mouseleave="hideBubble"
 							@focus="showBubble"
@@ -164,6 +194,7 @@ onUnmounted(() => {
 							ref="bubbleEl"
 							aria-hidden="true"
 							class="font-lineal-bold text-violet pointer-events-none absolute -top-12 -right-2 hidden origin-bottom-left translate-x-8 -translate-y-full rotate-6 rounded-2xl bg-white px-4 py-2 text-xs whitespace-nowrap opacity-0 shadow-[0_3px_12px_-6px_rgba(0,0,0,0.18)] after:absolute after:-bottom-1 after:left-4 after:h-3 after:w-3 after:rotate-45 after:bg-white lg:block"
+							:class="desktopThemeClasses.bubble"
 						>
 							Let's talk ✦
 						</span>
@@ -181,7 +212,8 @@ onUnmounted(() => {
 							rel="noopener noreferrer"
 							:tabindex="tabIndex"
 							v-roll-hover
-							class="font-lineal-bold hover:text-violet shrink-0 text-[10px] tracking-[0.08em] uppercase transition-colors duration-200 sm:text-xs sm:tracking-[0.15em] lg:hover:text-[#ffffff]"
+							class="font-lineal-bold shrink-0 text-[10px] tracking-[0.08em] uppercase transition-colors duration-200 sm:text-xs sm:tracking-[0.15em]"
+							:class="desktopThemeClasses.hover"
 						>
 							{{ social.label }}
 						</a>
@@ -199,7 +231,8 @@ onUnmounted(() => {
 						:tabindex="tabIndex"
 						:prefetch="prefetch"
 						v-roll-hover
-						class="font-lineal-bold hover:text-violet pointer-events-auto w-fit text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs lg:hover:text-[#ffffff]"
+						class="font-lineal-bold pointer-events-auto w-fit text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs"
+						:class="desktopThemeClasses.hover"
 					>
 						{{ link.label }}
 					</NuxtLink>
@@ -212,7 +245,8 @@ onUnmounted(() => {
 				class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
 			>
 				<p
-					class="font-vg5000 pointer-events-auto text-[0.65rem] tracking-[0.15em] text-black/60 lg:text-white/60"
+					class="font-vg5000 pointer-events-auto text-[0.65rem] tracking-[0.15em]"
+					:class="desktopThemeClasses.legalMuted"
 				>
 					© {{ year }} Rémy Canal — All rights reserved
 				</p>
@@ -226,7 +260,8 @@ onUnmounted(() => {
 							:tabindex="tabIndex"
 							:prefetch="prefetch"
 							v-roll-hover
-							class="hover:text-violet pointer-events-auto transition-colors duration-200 lg:hover:text-[#ffffff]"
+							class="pointer-events-auto transition-colors duration-200"
+							:class="desktopThemeClasses.hover"
 						>
 							{{ legal.label }}
 						</NuxtLink>

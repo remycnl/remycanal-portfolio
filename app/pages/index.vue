@@ -7,12 +7,9 @@ useSeoMeta({
 	ogDescription:
 		"Full-Stack Developer and UI/UX Designer, Awwwards Young Jury Member. Take a look at my portfolio ! :)",
 	ogImage: "https://www.remycanal.me/og-image.png",
+	ogImageWidth: 1200,
+	ogImageHeight: 630,
 	ogType: "website",
-	twitterCard: "summary_large_image",
-	twitterTitle: "Rémy Canal — Creative Developer & Designer",
-	twitterDescription:
-		"Full-Stack Developer and UI/UX Designer, Awwwards Young Jury Member.",
-	twitterImage: "https://www.remycanal.me/og-image.png",
 })
 
 useHead({
@@ -48,9 +45,7 @@ useHead({
 		<HomeResume />
 		<HomeBlog />
 		<HomeQuote />
-		<div class="bg-violet w-full h-1 lg:h-2">
-
-		</div>
+		<div class="bg-violet h-px w-full" />
 		<!-- <UiInfiniteHorizontalLoop
     class="mt-section"
     item-class="uppercase font-lineal-heavy text-[7vw] lg:text-[3.5vw] text-white pr-[3.5vw] pt-1 lg:pt-1.5 [word-spacing:0.1em]"
