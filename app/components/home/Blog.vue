@@ -430,6 +430,11 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		updateHover(e)
 	}
 
+	function onLostPointerCapture(e: PointerEvent) {
+		if (e.target !== track) return
+		endDrag(e)
+	}
+
 	function onPointerLeave() {
 		if (isPressed) return
 		isOverWheelRef.value = false
@@ -464,7 +469,11 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	track.addEventListener("pointermove", onPointerMove, passivePointerOptions)
 	track.addEventListener("pointerup", endDrag, passivePointerOptions)
 	track.addEventListener("pointercancel", endDrag, passivePointerOptions)
-	track.addEventListener("lostpointercapture", endDrag, passivePointerOptions)
+	track.addEventListener(
+		"lostpointercapture",
+		onLostPointerCapture,
+		passivePointerOptions
+	)
 	track.addEventListener("pointerleave", onPointerLeave, passivePointerOptions)
 	track.addEventListener("click", onClickCapture, true)
 	track.addEventListener("dragstart", onDragStart)
@@ -631,7 +640,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		track.removeEventListener("pointermove", onPointerMove)
 		track.removeEventListener("pointerup", endDrag)
 		track.removeEventListener("pointercancel", endDrag)
-		track.removeEventListener("lostpointercapture", endDrag)
+		track.removeEventListener("lostpointercapture", onLostPointerCapture)
 		track.removeEventListener("pointerleave", onPointerLeave)
 		track.removeEventListener("click", onClickCapture, true)
 		track.removeEventListener("dragstart", onDragStart)
