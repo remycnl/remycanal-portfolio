@@ -1720,7 +1720,7 @@ async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | nu
 
 	visibilityObserver = new IntersectionObserver(
 		(entries) => {
-			isVisible = entries[0]?.isIntersecting ?? true
+			isVisible = entries.at(-1)?.isIntersecting ?? true
 
 			evaluateLoopState()
 		},
