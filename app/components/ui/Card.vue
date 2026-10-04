@@ -187,12 +187,12 @@ onBeforeUnmount(onLeave)
 						: 'mt-4 flex flex-col gap-3 @xs:mt-6 @sm:flex-row @sm:items-start @sm:justify-between @sm:gap-10',
 				]"
 			>
-				<div :class="['max-w-md', compact ? 'p-1 sm:p-2' : '']">
+				<div :class="['max-w-md', compact ? 'min-w-0 p-1 sm:p-2' : '']">
 					<h3
 						:class="[
 							ui.title,
 							compact
-								? 'font-lineal text-sm sm:text-base'
+								? 'font-lineal truncate text-sm sm:text-base'
 								: 'font-lineal-medium text-base @xs:text-lg @md:text-xl',
 							'leading-tight',
 						]"

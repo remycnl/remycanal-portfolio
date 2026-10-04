@@ -527,7 +527,7 @@ useGsapContext(({ gsap }) => {
 			cellSize: () => {
 				const { width, height } = getBoxSize()
 				const shortSide = Math.min(width, height)
-				return Math.max(4, Math.min(14, Math.round(shortSide / 6)))
+				return Math.max(2, Math.min(5, Math.round(shortSide / 20)))
 			},
 		})
 

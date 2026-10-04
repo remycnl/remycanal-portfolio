@@ -381,6 +381,11 @@ function createSprite(options: UseSpriteOptions) {
 		canvas.style.pointerEvents = "none"
 	}
 
+	function parkSprite() {
+		hideSprite()
+		gsap.set([canvas, meow, growl], { x: 0, y: 0 })
+	}
+
 	function showSprite() {
 		canvas.style.opacity = "1"
 		canvas.style.pointerEvents = "auto"
@@ -711,7 +716,7 @@ function createSprite(options: UseSpriteOptions) {
 			placeInZone(fallback)
 		} else {
 			currentZone = null
-			hideSprite()
+			parkSprite()
 		}
 	}
 
@@ -1277,7 +1282,7 @@ function createSprite(options: UseSpriteOptions) {
 
 				if (currentZone === target) {
 					currentZone = null
-					hideSprite()
+					parkSprite()
 				}
 			},
 		}
