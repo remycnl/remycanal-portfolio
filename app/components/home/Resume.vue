@@ -3,7 +3,6 @@
 		<div
 			class="border-gray-dark/50 grid grid-cols-1 border-t border-l sm:grid-cols-2 lg:grid-cols-6 lg:grid-rows-[minmax(300px,auto)_minmax(300px,auto)_minmax(260px,auto)_minmax(200px,auto)]"
 		>
-			<!-- INTRO -->
 			<div
 				ref="zoneIntro"
 				class="p-edge bg-grid-black border-gray-dark/50 relative flex min-h-70 flex-col justify-end overflow-hidden border-r border-b bg-black sm:col-span-2 sm:min-h-80 lg:col-span-3 lg:row-span-2 lg:min-h-0"
@@ -38,9 +37,8 @@
 				</div>
 			</div>
 
-			<!-- Chapitre 01 -->
 			<div
-				v-text-reveal
+				v-text-reveal="cardReveal"
 				ref="zoneChapter01"
 				:data-active="activeCards.has('chapter01')"
 				class="p-edge border-gray-dark/50 group bg-gray-light relative flex min-h-55 cursor-auto flex-col justify-between overflow-hidden border-r border-b md:bg-white lg:col-span-2 lg:cursor-auto"
@@ -94,21 +92,18 @@
 				</div>
 			</div>
 
-			<!-- vide — chat — top-right (desktop uniquement) -->
 			<div
 				ref="zoneEmpty1"
 				class="border-gray-dark/50 bg-lime hidden items-center justify-center border-r border-b lg:flex"
 			/>
 
-			<!-- vide — chat (desktop uniquement) -->
 			<div
 				ref="zoneEmpty2"
 				class="border-gray-dark/50 bg-gray-light hidden items-center justify-center border-r border-b lg:flex"
 			/>
 
-			<!-- Chapitre 02 -->
 			<div
-				v-text-reveal
+				v-text-reveal="cardReveal"
 				ref="zoneChapter02"
 				:data-active="activeCards.has('chapter02')"
 				class="p-edge border-gray-dark/50 group md:bg-gray-light relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-auto lg:bg-white"
@@ -162,9 +157,8 @@
 				</div>
 			</div>
 
-			<!-- Dublin — 03 — lime -->
 			<div
-				v-text-reveal="{ theme: 'white' }"
+				v-text-reveal="cardRevealWhite"
 				ref="zoneDublin"
 				:data-active="activeCards.has('dublin')"
 				class="p-edge border-gray-dark/50 bg-lime group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b lg:col-span-2 lg:cursor-auto"
@@ -214,9 +208,8 @@
 				</div>
 			</div>
 
-			<!-- Freelance — 04 -->
 			<div
-				v-text-reveal
+				v-text-reveal="cardReveal"
 				ref="zoneFreelance"
 				:data-active="activeCards.has('freelance')"
 				class="p-edge border-gray-dark/50 group relative flex min-h-55 cursor-pointer flex-col justify-between overflow-hidden border-r border-b bg-white lg:col-span-2 lg:cursor-auto"
@@ -270,25 +263,21 @@
 				</div>
 			</div>
 
-			<!-- vide — chat (desktop uniquement) -->
 			<div
 				ref="zoneEmpty5"
 				class="border-gray-dark/50 bg-gray-light hidden items-center justify-center border-r border-b lg:col-span-2 lg:flex"
 			/>
 
-			<!-- vide — chat (desktop uniquement) -->
 			<div
 				ref="zoneEmpty3"
 				class="border-gray-dark/50 hidden items-center justify-center border-r border-b lg:col-span-2 lg:flex"
 			/>
 
-			<!-- vide — chat — lime (desktop uniquement) -->
 			<div
 				ref="zoneEmpty4"
 				class="border-gray-dark/50 bg-lime hidden items-center justify-center border-r border-b lg:col-span-2 lg:flex"
 			/>
 
-			<!-- Bouton — bottom-right -->
 			<div
 				ref="zoneCta"
 				class="p-edge bg-grid-black border-gray-dark/50 relative flex min-h-55 flex-col items-center justify-center overflow-hidden border-r border-b bg-black sm:col-span-2 lg:col-span-2 lg:items-end lg:justify-end"
@@ -311,6 +300,11 @@
 </template>
 
 <script lang="ts" setup>
+const CARD_CHILD_STAGGER = 0.3
+
+const cardReveal = { childStagger: CARD_CHILD_STAGGER }
+const cardRevealWhite = { ...cardReveal, theme: "white" }
+
 const zoneIntro = useTemplateRef<HTMLElement>("zoneIntro")
 const zoneChapter01 = useTemplateRef<HTMLElement>("zoneChapter01")
 const zoneChapter02 = useTemplateRef<HTMLElement>("zoneChapter02")
