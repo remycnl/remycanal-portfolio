@@ -16,6 +16,15 @@ interface Corner {
 	y: number
 }
 
+interface CardState {
+	focus: number
+	press: number
+	skew: number
+	shift: number
+	pointerX: number
+	pointerY: number
+}
+
 const projects: Project[] = [
 	{
 		id: "01",
@@ -57,7 +66,7 @@ const CORNERS: Corner[] = [
 const AXES = {
 	horizontal: {
 		prop: "x",
-		percentProp: "xPercent",
+		skewProp: "skewX",
 		padStart: "paddingLeft",
 		padEnd: "paddingRight",
 		gap: "columnGap",
@@ -66,7 +75,7 @@ const AXES = {
 	},
 	vertical: {
 		prop: "y",
-		percentProp: "yPercent",
+		skewProp: "skewY",
 		padStart: "paddingTop",
 		padEnd: "paddingBottom",
 		gap: "rowGap",
@@ -87,16 +96,22 @@ const MOBILE_TABLET_MEDIA_QUERY = `(max-width: ${MOBILE_TABLET_MAX_WIDTH}px)`
 const MIN_SCALE = 0.84
 const PRESS_SCALE = 0.96
 const SCALE_FALLOFF = 0.68
+const DIM_MIN = 0.5
 const IMAGE_SCALE = 1.15
-const PARALLAX_PERCENT = 5
+const PARALLAX_PERCENT = 4
+const POINTER_PERCENT = 2.5
+const MAX_TILT = 7
+const MAX_SKEW = 5
+const VELOCITY_REF = 2400
+const PERSPECTIVE = 1000
 const CORNER_TRAVEL = 16
 
 const TRACK_RATE = 16
 const SCALE_RATE = 10
 const PRESS_RATE = 24
 const PARALLAX_RATE = 9
-
-type Setter = (value: number) => void
+const SKEW_RATE = 10
+const POINTER_RATE = 10
 
 const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
 const viewportRef = useTemplateRef<HTMLElement>("viewportRef")
@@ -112,6 +127,7 @@ const pressedIndex = ref<number | null>(null)
 const isOpeningRef = ref(false)
 
 const cardEls: HTMLElement[] = []
+const pointer = { x: 0, y: 0 }
 
 const isActiveHovered = computed(
 	() => hoveredIndex.value !== null && hoveredIndex.value === activeIndex.value
@@ -153,6 +169,16 @@ function handleCardEnter(i: number) {
 	hoveredIndex.value = i
 }
 
+function handleCardMove(event: PointerEvent, i: number) {
+	if (event.pointerType !== "mouse" || hoveredIndex.value !== i) return
+	const el = event.currentTarget
+	if (!(el instanceof HTMLElement)) return
+	const rect = el.getBoundingClientRect()
+	if (rect.width === 0 || rect.height === 0) return
+	pointer.x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1))
+	pointer.y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1))
+}
+
 function handleCardClick(event: MouseEvent) {
 	if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
 		return
@@ -162,6 +188,8 @@ function handleCardClick(event: MouseEvent) {
 
 function handleCardLeave(i: number) {
 	hoveredIndex.value = null
+	pointer.x = 0
+	pointer.y = 0
 	onCardRelease(i)
 }
 
@@ -199,6 +227,13 @@ function driveScroll(
 function approach(current: number, target: number, factor: number) {
 	const next = current + (target - current) * factor
 	return Math.abs(target - next) < 0.0005 ? target : next
+}
+
+function settle(state: CardState, key: keyof CardState, target: number, factor: number) {
+	const next = approach(state[key], target, factor)
+	if (next === state[key]) return false
+	state[key] = next
+	return true
 }
 
 function animateCorners(active: boolean) {
@@ -271,7 +306,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	const viewportEl = viewportRef.value
 	const trackEl = trackRef.value
 	if (!sectionEl || !viewportEl || !trackEl) return
-	const trackElement = trackEl
+	const section = sectionEl
+	const viewport = viewportEl
+	const track = trackEl
 
 	const isMobile = isMobileLayout.value
 	const axis = isMobile ? AXES.horizontal : AXES.vertical
@@ -279,6 +316,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)"
 	).matches
+	const imageScale = prefersReducedMotion ? 1 : IMAGE_SCALE
 	const cards = cardEls
 	const images = imageRefs.value ?? []
 	const years = yearRefs.value ?? []
@@ -290,16 +328,20 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	if (firstYear) gsap.set(firstYear, { yPercent: 0 })
 	gsap.set(names, { yPercent: 100 })
 	if (firstName) gsap.set(firstName, { yPercent: 0 })
-	gsap.set(images, { scale: prefersReducedMotion ? 1 : IMAGE_SCALE })
 
 	const easeSine = gsap.parseEase("sine.inOut")
 	const clamp01 = gsap.utils.clamp(0, 1)
 	const clampUnit = gsap.utils.clamp(-1, 1)
 
-	const setTrack = gsap.quickSetter(trackElement, axis.prop, "px") as Setter
-	const setScales = cards.map((card) => gsap.quickSetter(card, "scale") as Setter)
-	const setShifts = images.map((img) => gsap.quickSetter(img, axis.percentProp) as Setter)
-	const states = cards.map(() => ({ scale: MIN_SCALE, shift: 0 }))
+	const setTrack = gsap.quickSetter(track, axis.prop, "px") as (value: number) => void
+	const states: CardState[] = cards.map(() => ({
+		focus: -1,
+		press: 0,
+		skew: 0,
+		shift: 0,
+		pointerX: 0,
+		pointerY: 0,
+	}))
 
 	let centers: number[] = [0]
 	let distance = 0
@@ -307,16 +349,21 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	let snapToClosest = gsap.utils.snap([0])
 	let trackPos = 0
 	let trackTarget = 0
+	let running = false
+
+	function factorFor(rate: number, delta: number, instant: boolean) {
+		return instant || prefersReducedMotion ? 1 : expSmoothingFactor(rate, delta)
+	}
 
 	function measure() {
 		const first = cards[0]
 		if (!first) return
 
-		extent = viewportEl![axis.extent]
+		extent = viewport[axis.extent]
 		const padding = Math.max((extent - first[axis.size]) / 2, 0)
-		gsap.set(trackElement, { [axis.padStart]: padding, [axis.padEnd]: padding })
+		gsap.set(track, { [axis.padStart]: padding, [axis.padEnd]: padding })
 
-		const gap = parseFloat(window.getComputedStyle(trackElement)[axis.gap]) || 0
+		const gap = parseFloat(window.getComputedStyle(track)[axis.gap]) || 0
 		let cursor = padding
 
 		centers = cards.map((card) => {
@@ -330,15 +377,37 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 		snapToClosest = gsap.utils.snap(
 			distance > 0 ? centers.map((c) => clamp01(c / distance)) : [0]
 		)
-		gsap.set(sectionEl, { height: viewportEl!.clientHeight + distance })
+		gsap.set(section, { height: viewport.clientHeight + distance })
+	}
+
+	function paint(i: number, state: CardState) {
+		const card = cards[i]
+		const image = images[i]
+		if (!card || !image) return
+
+		const scale =
+			(MIN_SCALE + (1 - MIN_SCALE) * state.focus) * (1 - (1 - PRESS_SCALE) * state.press)
+
+		card.style.transform = `perspective(${PERSPECTIVE}px) rotateX(${-state.pointerY * MAX_TILT}deg) rotateY(${state.pointerX * MAX_TILT}deg) ${axis.skewProp}(${state.skew}deg) scale(${scale})`
+
+		const pointerShiftX = -state.pointerX * POINTER_PERCENT
+		const pointerShiftY = -state.pointerY * POINTER_PERCENT
+		const x = isMobile ? state.shift + pointerShiftX : pointerShiftX
+		const y = isMobile ? pointerShiftY : state.shift + pointerShiftY
+
+		image.style.transform = `translate3d(${x}%, ${y}%, 0) scale(${imageScale})`
+		image.style.opacity = String(DIM_MIN + (1 - DIM_MIN) * state.focus)
 	}
 
 	function render(delta: number, instant: boolean) {
-		const smooth = (rate: number) =>
-			instant || prefersReducedMotion ? 1 : expSmoothingFactor(rate, delta)
-
-		trackPos = approach(trackPos, trackTarget, smooth(TRACK_RATE))
+		const previous = trackPos
+		trackPos = approach(trackPos, trackTarget, factorFor(TRACK_RATE, delta, instant))
 		setTrack(-trackPos)
+
+		const velocity = delta > 0 ? (trackPos - previous) / delta : 0
+		const skewTarget = prefersReducedMotion
+			? 0
+			: clampUnit(velocity / VELOCITY_REF) * MAX_SKEW
 
 		let closest = 0
 		let closestDist = Infinity
@@ -354,27 +423,41 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 			const state = states[i]
 			if (!state) continue
 
-			const eased = easeSine(1 - clamp01(dist / (extent * SCALE_FALLOFF)))
-			const base = MIN_SCALE + (1 - MIN_SCALE) * eased
+			const focusTarget = easeSine(1 - clamp01(dist / (extent * SCALE_FALLOFF)))
 			const pressed = pressedIndex.value === i
-			const nextScale = approach(
-				state.scale,
-				pressed ? base * PRESS_SCALE : base,
-				smooth(pressed ? PRESS_RATE : SCALE_RATE)
-			)
-			if (nextScale !== state.scale) {
-				state.scale = nextScale
-				setScales[i]?.(nextScale)
-			}
-
-			const targetShift = prefersReducedMotion
+			const hovered = hoveredIndex.value === i && !prefersReducedMotion
+			const shiftTarget = prefersReducedMotion
 				? 0
 				: -clampUnit(offset / extent) * PARALLAX_PERCENT
-			const nextShift = approach(state.shift, targetShift, smooth(PARALLAX_RATE))
-			if (nextShift !== state.shift) {
-				state.shift = nextShift
-				setShifts[i]?.(nextShift)
-			}
+
+			let changed = settle(state, "focus", focusTarget, factorFor(SCALE_RATE, delta, instant))
+			changed =
+				settle(
+					state,
+					"press",
+					pressed ? 1 : 0,
+					factorFor(pressed ? PRESS_RATE : SCALE_RATE, delta, instant)
+				) || changed
+			changed = settle(state, "skew", skewTarget, factorFor(SKEW_RATE, delta, instant)) || changed
+			changed =
+				settle(state, "shift", shiftTarget, factorFor(PARALLAX_RATE, delta, instant)) ||
+				changed
+			changed =
+				settle(
+					state,
+					"pointerX",
+					hovered ? pointer.x : 0,
+					factorFor(POINTER_RATE, delta, instant)
+				) || changed
+			changed =
+				settle(
+					state,
+					"pointerY",
+					hovered ? pointer.y : 0,
+					factorFor(POINTER_RATE, delta, instant)
+				) || changed
+
+			if (changed) paint(i, state)
 		}
 
 		if (closest !== activeIndex.value) activeIndex.value = closest
@@ -384,10 +467,24 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 		render(Math.min(deltaTime, 100) / 1000, false)
 	}
 
+	function start() {
+		if (running) return
+		running = true
+		trackPos = trackTarget
+		render(0, true)
+		gsap.ticker.add(tick)
+	}
+
+	function stop() {
+		if (!running) return
+		running = false
+		gsap.ticker.remove(tick)
+	}
+
 	measure()
 
 	const trigger = ScrollTrigger.create({
-		trigger: sectionEl,
+		trigger: section,
 		start: "top top",
 		end: () => `+=${distance}`,
 		onUpdate: (self) => {
@@ -410,7 +507,16 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	trackTarget = trigger.progress * distance
 	trackPos = trackTarget
 	render(0, true)
-	gsap.ticker.add(tick)
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			const entry = entries[entries.length - 1]
+			if (entry?.isIntersecting) start()
+			else stop()
+		},
+		{ rootMargin: "25% 0px" }
+	)
+	observer.observe(section)
 
 	let cardDraggable: ReturnType<typeof Draggable.create>[number] | undefined
 
@@ -428,7 +534,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 
 		const [instance] = Draggable.create(proxy, {
 			type: "x",
-			trigger: trackElement,
+			trigger: track,
 			allowNativeTouchScrolling: true,
 			inertia: true,
 			throwResistance: 3000,
@@ -452,8 +558,9 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	ScrollTrigger.addEventListener("refreshInit", measure)
 
 	return () => {
-		gsap.set(sectionEl, { clearProps: "height" })
-		gsap.ticker.remove(tick)
+		stop()
+		observer.disconnect()
+		gsap.set(section, { clearProps: "height" })
 		ScrollTrigger.removeEventListener("refreshInit", measure)
 		trigger.kill()
 		cardDraggable?.kill()
@@ -588,6 +695,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 							draggable="false"
 							class="block shrink-0 cursor-pointer touch-pan-y rounded-lg bg-black p-2 will-change-transform"
 							@pointerenter="handleCardEnter(i)"
+							@pointermove="handleCardMove($event, i)"
 							@pointerleave="handleCardLeave(i)"
 							@pointerdown="onCardPress(i)"
 							@pointerup="onCardRelease(i)"
@@ -595,7 +703,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 							@click="handleCardClick"
 						>
 							<div
-								class="bg-black-light aspect-16/10 w-[72vw] overflow-hidden rounded-xs md:w-[38vw] lg:w-[32vw]"
+								class="bg-black-light isolate aspect-16/10 w-[72vw] overflow-hidden rounded-xs md:w-[38vw] lg:w-[32vw]"
 							>
 								<img
 									ref="imageRefs"

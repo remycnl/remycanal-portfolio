@@ -1,0 +1,99 @@
+name: Rémy Canal
+headline: Creative Developer
+location: Lyon, France
+availability: Open to work
+cv: /resume.pdf
+email: hello@example.com
+links:
+  - label: LinkedIn
+    url: https://www.linkedin.com/in/ton-profil
+  - label: GitHub
+    url: https://github.com/ton-profil
+  - label: Awwwards
+    url: https://www.awwwards.com/ton-profil
+
+about:
+  - Développeur full-stack et designer UI/UX, je conçois des interfaces éditoriales où l'animation et la typographie servent le propos, avec une exigence de performance et de zéro artefact visuel.
+  - Je travaille principalement avec Nuxt, Vue, GSAP, Three.js et Tailwind côté front, et NestJS / PostgreSQL côté back.
+
+experience:
+  - role: Full-Stack Developer & UI/UX Designer
+    company: Indépendant
+    type: Freelance
+    location: France · À distance
+    period:
+      start: "2022-09"
+      end: null
+    description: Conception et développement de sites et d'applications sur mesure, du design à la mise en production.
+    highlights:
+      - Direction artistique et intégration d'interfaces animées de niveau Awwwards
+      - Architecture front Nuxt 4 et back NestJS, déploiements Docker
+    skills:
+      - Nuxt
+      - Vue 3
+      - GSAP
+      - Three.js
+      - NestJS
+      - PostgreSQL
+
+education:
+  - school: Nom de l'école
+    degree: Diplôme
+    field: Spécialité
+    period:
+      start: "2019-09"
+      end: "2022-06"
+
+projects:
+  - name: Portfolio
+    url: https://example.com
+    period:
+      start: "2026-01"
+      end: null
+    description: Site personnel avec hero 3D, animations GSAP orchestrées, scroll fluide Lenis et système de design propriétaire.
+    skills:
+      - Nuxt 4
+      - Tailwind CSS v4
+      - GSAP
+      - Three.js
+  - name: Animaux d'à côté
+    description: Plateforme sociale pour propriétaires d'animaux avec événements, carte, annonces d'animaux perdus et carnet de santé.
+    skills:
+      - Next.js
+      - NestJS
+      - PostgreSQL
+      - Framer Motion
+
+skills:
+  - label: Front-end
+    items:
+      - Nuxt
+      - Vue 3
+      - TypeScript
+      - Tailwind CSS
+      - GSAP
+      - Three.js
+  - label: Back-end
+    items:
+      - NestJS
+      - PostgreSQL
+      - Docker
+      - Node.js
+  - label: Design
+    items:
+      - UI/UX
+      - Design system
+      - Motion design
+      - Figma
+
+honors:
+  - title: Young Jury Member
+    issuer: Awwwards
+    date: "2025-01"
+    description: Évaluation de sites web sur le design, l'usabilité, la créativité et le contenu.
+
+languages:
+  - name: Français
+    level: Langue maternelle
+  - name: Anglais
+    level: Professionnel
