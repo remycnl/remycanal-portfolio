@@ -19,6 +19,8 @@ interface Props {
 	/** Libellés du viewfinder pour l'action de la carte. */
 	viewfinderLabel?: string
 	viewfinderLoadingLabel?: string
+	/** Animation d'apparition du texte au scroll. Par défaut désactivée en mode `compact`, activée sinon. Forcer avec `:reveal="true"` ou `:reveal="false"`. */
+	reveal?: boolean
 }
 
 const {
@@ -35,6 +37,7 @@ const {
 	compact = false,
 	viewfinderLabel = "Open",
 	viewfinderLoadingLabel = "Opening...",
+	reveal,
 } = defineProps<Props>()
 
 const tones: Record<ViewfinderBackground, { title: string; text: string; date: string }> =
@@ -43,13 +46,22 @@ const tones: Record<ViewfinderBackground, { title: string; text: string; date: s
 		black: { title: "text-white", text: "text-white/60", date: "text-white/40" },
 	}
 
-// Voile de la couleur du thème + badge en contraste inversé pour rester lisible dessus.
 const openingOverlay: Record<ViewfinderTheme, { tint: string; badge: string }> = {
 	lime: { tint: "bg-lime/60", badge: "bg-black text-lime" },
 	violet: { tint: "bg-violet/60", badge: "bg-white text-violet" },
 }
 
+const tagFrame =
+	"relative border border-transparent before:pointer-events-none before:absolute before:-inset-px before:rounded-[inherit] before:border before:border-current after:pointer-events-none after:absolute after:-inset-px after:rounded-[inherit] after:border after:border-(color:--tr-accent) after:opacity-0"
+
 const ui = computed(() => tones[theme])
+
+const isRevealed = computed(() => reveal ?? !compact)
+
+const revealOptions = computed(() => ({
+	theme: theme === "black" ? "lime" : "violet",
+	disabled: !isRevealed.value,
+}))
 
 const { lock, release } = useViewfinder()
 const isOpening = ref(false)
@@ -103,9 +115,6 @@ onBeforeUnmount(onLeave)
 	>
 		<div ref="content" class="will-change-transform">
 			<div class="relative aspect-video overflow-hidden rounded-xs">
-				<!--
-					Le parallax s'applique à ce wrapper (un vrai élément DOM), pas au composant NuxtImg.
-				-->
 				<div
 					ref="media"
 					class="absolute inset-x-0 top-[-15%] h-[130%] w-full will-change-transform"
@@ -149,10 +158,6 @@ onBeforeUnmount(onLeave)
 					</span>
 				</div>
 
-				<!--
-					État de clic pour mobile et tablette : le viewfinder n'existe que sur
-					desktop (hover + pointeur précis), donc ce voile y est masqué.
-				-->
 				<Transition
 					enter-active-class="transition-opacity duration-200 ease-out"
 					enter-from-class="opacity-0"
@@ -180,74 +185,78 @@ onBeforeUnmount(onLeave)
 				</Transition>
 			</div>
 
-			<div
-				:class="[
-					compact
-						? 'mt-2 flex items-start justify-between gap-2'
-						: 'mt-4 flex flex-col gap-3 @xs:mt-6 @sm:flex-row @sm:items-start @sm:justify-between @sm:gap-10',
-				]"
-			>
-				<div :class="['max-w-md', compact ? 'min-w-0 p-1 sm:p-2' : '']">
-					<h3
-						:class="[
-							ui.title,
-							compact
-								? 'font-lineal truncate text-sm sm:text-base'
-								: 'font-lineal-medium text-base @xs:text-lg @md:text-xl',
-							'leading-tight',
-						]"
-					>
-						{{ title }}
-					</h3>
-					<p
-						v-if="!compact"
-						:class="[ui.text, 'mt-2 text-xs leading-relaxed @sm:mt-3 @sm:text-sm']"
-					>
-						<slot />
-					</p>
-				</div>
-
+			<div v-text-reveal="revealOptions">
 				<div
 					:class="[
-						'flex shrink-0 flex-col gap-3',
-						compact ? 'items-end pt-1' : 'items-start @sm:items-end @sm:pt-1',
+						compact
+							? 'mt-2 flex items-start justify-between gap-2'
+							: 'mt-4 flex flex-col gap-3 @xs:mt-6 @sm:flex-row @sm:items-start @sm:justify-between @sm:gap-10',
 					]"
 				>
-					<time
-						v-if="date"
+					<div :class="['max-w-md', compact ? 'min-w-0 p-1 sm:p-2' : '']">
+						<h3
+							:class="[
+								ui.title,
+								compact
+									? 'font-lineal truncate text-sm sm:text-base'
+									: 'font-lineal-medium text-base @xs:text-lg @md:text-xl',
+								'leading-tight',
+							]"
+						>
+							{{ title }}
+						</h3>
+						<p
+							v-if="!compact"
+							:class="[ui.text, 'mt-2 text-xs leading-relaxed @sm:mt-3 @sm:text-sm']"
+						>
+							<slot />
+						</p>
+					</div>
+
+					<div
 						:class="[
-							ui.date,
-							compact
-								? 'text-[0.6rem] tracking-wider'
-								: 'text-[0.6rem] tracking-wider @sm:text-xs @sm:tracking-widest',
-							'font-vg5000 uppercase',
+							'flex shrink-0 flex-col gap-3',
+							compact ? 'items-end pt-1' : 'items-start @sm:items-end @sm:pt-1',
 						]"
 					>
-						{{ date }}
-					</time>
+						<time
+							v-if="date"
+							:class="[
+								ui.date,
+								compact
+									? 'text-[0.6rem] tracking-wider'
+									: 'text-[0.6rem] tracking-wider @sm:text-xs @sm:tracking-widest',
+								'font-vg5000 uppercase',
+							]"
+						>
+							{{ date }}
+						</time>
+						<span
+							v-else-if="price"
+							:class="[
+								ui.title,
+								'font-vg5000 text-xs tracking-wider uppercase @sm:text-sm',
+							]"
+						>
+							{{ price }}
+						</span>
+					</div>
+				</div>
+
+				<div v-if="tags.length" class="mt-3 flex flex-wrap gap-2 @sm:mt-4">
 					<span
-						v-else-if="price"
+						v-for="tag in tags"
+						:key="tag"
+						data-text-reveal-frame
 						:class="[
-							ui.title,
-							'font-vg5000 text-xs tracking-wider uppercase @sm:text-sm',
+							ui.text,
+							tagFrame,
+							'font-vg5000 rounded-xs px-2 py-1 text-[0.6rem] tracking-wider uppercase',
 						]"
 					>
-						{{ price }}
+						{{ tag }}
 					</span>
 				</div>
-			</div>
-
-			<div v-if="tags.length" class="mt-3 flex flex-wrap gap-2 @sm:mt-4">
-				<span
-					v-for="tag in tags"
-					:key="tag"
-					:class="[
-						ui.text,
-						'font-vg5000 rounded-xs border border-current px-2 py-1 text-[0.6rem] tracking-wider uppercase',
-					]"
-				>
-					{{ tag }}
-				</span>
 			</div>
 		</div>
 	</NuxtLink>

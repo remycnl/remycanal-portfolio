@@ -1,9 +1,19 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from "vue"
+
 interface Project {
 	id: string
 	year: string
 	name: string
 	image: string
+	to: string
+}
+
+interface Corner {
+	id: string
+	classes: string
+	x: number
+	y: number
 }
 
 const projects: Project[] = [
@@ -11,48 +21,115 @@ const projects: Project[] = [
 		id: "01",
 		year: "2024",
 		name: "Rémy Canal — Portfolio",
-		image: "https\://www.remycanal.me/img/metaImg.png",
+		to: "/work/remy-canal-portfolio",
+		image: "https://www.remycanal.me/img/metaImg.png",
 	},
 	{
 		id: "02",
 		year: "2022",
 		name: "Pascale Canal — Galery",
-		image: "https\://www.remycanal.me/img/mockup-pascale-canal-galery.webp",
+		to: "/work/pascale-canal-galery",
+		image: "https://www.remycanal.me/img/mockup-pascale-canal-galery.webp",
 	},
 	{
 		id: "03",
 		year: "2021",
 		name: "Vikl — Marketing Website",
-		image: "https\://www.remycanal.me/img/mockup-vikl.webp",
+		to: "/work/vikl",
+		image: "https://www.remycanal.me/img/mockup-vikl.webp",
 	},
 	{
 		id: "04",
 		year: "2020",
 		name: "Animaux d'à côté — Web App",
-		image: "https\://animauxdacote.fr/img/carrousel-home-1.png",
+		to: "/work/animaux-dacote",
+		image: "https://animauxdacote.fr/img/carrousel-home-1.png",
 	},
 ]
+
+const CORNERS: Corner[] = [
+	{ id: "tl", classes: "-top-10 -left-10 border-t-2 border-l-2", x: 1, y: 1 },
+	{ id: "tr", classes: "-top-10 -right-10 border-t-2 border-r-2", x: -1, y: 1 },
+	{ id: "bl", classes: "-bottom-10 -left-10 border-b-2 border-l-2", x: 1, y: -1 },
+	{ id: "br", classes: "-right-10 -bottom-10 border-r-2 border-b-2", x: -1, y: -1 },
+]
+
+const AXES = {
+	horizontal: {
+		prop: "x",
+		percentProp: "xPercent",
+		padStart: "paddingLeft",
+		padEnd: "paddingRight",
+		gap: "columnGap",
+		size: "offsetWidth",
+		extent: "clientWidth",
+	},
+	vertical: {
+		prop: "y",
+		percentProp: "yPercent",
+		padStart: "paddingTop",
+		padEnd: "paddingBottom",
+		gap: "rowGap",
+		size: "offsetHeight",
+		extent: "clientHeight",
+	},
+} as const
+
+const BADGE_LABELS = {
+	view: "View project",
+	press: "View project",
+	loading: "Opening...",
+}
+
+const MOBILE_TABLET_MAX_WIDTH = 1023
+const MOBILE_TABLET_MEDIA_QUERY = `(max-width: ${MOBILE_TABLET_MAX_WIDTH}px)`
+
+const MIN_SCALE = 0.84
+const PRESS_SCALE = 0.96
+const SCALE_FALLOFF = 0.68
+const IMAGE_SCALE = 1.15
+const PARALLAX_PERCENT = 5
+const CORNER_TRAVEL = 16
+
+const TRACK_RATE = 16
+const SCALE_RATE = 10
+const PRESS_RATE = 24
+const PARALLAX_RATE = 9
+
+type Setter = (value: number) => void
 
 const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
 const viewportRef = useTemplateRef<HTMLElement>("viewportRef")
 const trackRef = useTemplateRef<HTMLElement>("trackRef")
-const cardsRef = useTemplateRef<HTMLElement[]>("cardsRef")
 const yearRefs = useTemplateRef<HTMLElement[]>("yearRefs")
 const nameRefs = useTemplateRef<HTMLElement[]>("nameRefs")
-const cornerTL = useTemplateRef<HTMLElement>("cornerTL")
-const cornerTR = useTemplateRef<HTMLElement>("cornerTR")
-const cornerBL = useTemplateRef<HTMLElement>("cornerBL")
-const cornerBR = useTemplateRef<HTMLElement>("cornerBR")
+const imageRefs = useTemplateRef<HTMLElement[]>("imageRefs")
+const cornerRefs = useTemplateRef<HTMLElement[]>("cornerRefs")
 
 const activeIndex = ref(0)
 const hoveredIndex = ref<number | null>(null)
 const pressedIndex = ref<number | null>(null)
-const scrollDirection = ref(1)
-const cardBaseScale = ref<number[]>(projects.map(() => 0.84))
+const isOpeningRef = ref(false)
+
+const cardEls: HTMLElement[] = []
 
 const isActiveHovered = computed(
 	() => hoveredIndex.value !== null && hoveredIndex.value === activeIndex.value
 )
+
+const isBadgeActive = computed(() => hoveredIndex.value !== null || isOpeningRef.value)
+
+const badgeState = computed(() => {
+	if (isOpeningRef.value) return "loading"
+	const hovered = hoveredIndex.value
+	return hovered !== null && pressedIndex.value === hovered ? "press" : "view"
+})
+
+function setCardRef(el: Element | ComponentPublicInstance | null, index: number) {
+	if (!el) return
+	const domEl = "$el" in el ? el.$el : el
+	if (domEl instanceof HTMLElement) cardEls[index] = domEl
+}
 
 function pad(n: number) {
 	return String(n).padStart(2, "0")
@@ -60,9 +137,6 @@ function pad(n: number) {
 
 const { useGsapContext, gsap } = useGsap()
 const lenis = useLenis()
-
-const MOBILE_TABLET_MAX_WIDTH = 1023
-const MOBILE_TABLET_MEDIA_QUERY = `(max-width: ${MOBILE_TABLET_MAX_WIDTH}px)`
 
 const isMobileLayout = ref(false)
 
@@ -74,41 +148,30 @@ if (import.meta.client) {
 	})
 }
 
+function handleCardEnter(i: number) {
+	isOpeningRef.value = false
+	hoveredIndex.value = i
+}
+
+function handleCardClick(event: MouseEvent) {
+	if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+		return
+	}
+	isOpeningRef.value = true
+}
+
 function handleCardLeave(i: number) {
 	hoveredIndex.value = null
 	onCardRelease(i)
 }
 
-function applyCardScale(i: number, animate = false) {
-	const card = cardsRef.value?.[i]
-	if (!card) return
-
-	const base = cardBaseScale.value[i] ?? 0.84
-	const pressed = pressedIndex.value === i
-	const target = pressed ? base * 0.96 : base
-
-	if (animate) {
-		gsap.to(card, {
-			scale: target,
-			duration: pressed ? 0.22 : 0.45,
-			ease: pressed ? "power2.out" : "power3.out",
-			overwrite: "auto",
-		})
-	} else {
-		if (gsap.isTweening(card)) return
-		gsap.set(card, { scale: target })
-	}
-}
-
 function onCardPress(i: number) {
 	pressedIndex.value = i
-	applyCardScale(i, true)
 }
 
 function onCardRelease(i: number) {
 	if (pressedIndex.value !== i) return
 	pressedIndex.value = null
-	applyCardScale(i, true)
 }
 
 function getScrollY(): number {
@@ -133,33 +196,22 @@ function driveScroll(
 	})
 }
 
-const corners = [
-	{ el: cornerTL, edges: { top: true, left: true } },
-	{ el: cornerTR, edges: { top: true, right: true } },
-	{ el: cornerBL, edges: { bottom: true, left: true } },
-	{ el: cornerBR, edges: { bottom: true, right: true } },
-] as const
+function approach(current: number, target: number, factor: number) {
+	const next = current + (target - current) * factor
+	return Math.abs(target - next) < 0.0005 ? target : next
+}
 
 function animateCorners(active: boolean) {
-	const offset = active ? "-1.5rem" : "-2.5rem"
+	const targets = cornerRefs.value
+	if (!targets) return
 
-	corners.forEach(({ el, edges }) => {
-		const target = el.value
-		if (!target) return
-
-		const props: Partial<Record<"top" | "bottom" | "left" | "right", string>> = {}
-
-		if ("top" in edges) props.top = offset
-		if ("bottom" in edges) props.bottom = offset
-		if ("left" in edges) props.left = offset
-		if ("right" in edges) props.right = offset
-		gsap.killTweensOf(target)
-		gsap.to(target, {
-			...props,
-			duration: active ? 0.32 : 0.62,
-			ease: active ? "back.out(2.3)" : "power3.out",
-			overwrite: "auto",
-		})
+	gsap.to(targets, {
+		x: (i: number) => (active ? (CORNERS[i]?.x ?? 0) * CORNER_TRAVEL : 0),
+		y: (i: number) => (active ? (CORNERS[i]?.y ?? 0) * CORNER_TRAVEL : 0),
+		duration: active ? 0.45 : 0.7,
+		ease: active ? "back.out(2.3)" : "expo.out",
+		stagger: active ? 0.03 : 0.015,
+		overwrite: "auto",
 	})
 }
 
@@ -186,8 +238,8 @@ function swapTextStack(
 	if (oldEl) {
 		gsap.to(oldEl, {
 			yPercent: forward ? -100 : 100,
-			duration: 0.32,
-			ease: "power3.inOut",
+			duration: 0.45,
+			ease: "power3.out",
 			overwrite: "auto",
 		})
 	}
@@ -197,8 +249,8 @@ function swapTextStack(
 			{ yPercent: forward ? 100 : -100 },
 			{
 				yPercent: 0,
-				duration: 0.32,
-				ease: "power3.inOut",
+				duration: 0.55,
+				ease: "expo.out",
 				overwrite: "auto",
 			}
 		)
@@ -209,7 +261,7 @@ watch(activeIndex, (newVal, oldVal) => {
 	const years = yearRefs.value
 	const names = nameRefs.value
 	if (!years || !names) return
-	const forward = scrollDirection.value === 1
+	const forward = newVal > oldVal
 	swapTextStack(years, oldVal, newVal, forward)
 	swapTextStack(names, oldVal, newVal, forward)
 })
@@ -221,177 +273,148 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 	if (!sectionEl || !viewportEl || !trackEl) return
 	const trackElement = trackEl
 
-	const isMobileMediaQuery = isMobileLayout.value
-	const axisProp = isMobileMediaQuery ? "x" : "y"
+	const isMobile = isMobileLayout.value
+	const axis = isMobile ? AXES.horizontal : AXES.vertical
 
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)"
 	).matches
-	const cards = cardsRef.value ?? []
+	const cards = cardEls
+	const images = imageRefs.value ?? []
 	const years = yearRefs.value ?? []
 	const names = nameRefs.value ?? []
 	const firstYear = years[0]
 	const firstName = names[0]
+
 	gsap.set(years, { yPercent: 100 })
-	if (firstYear) {
-		gsap.set(firstYear, { yPercent: 0 })
-	}
+	if (firstYear) gsap.set(firstYear, { yPercent: 0 })
 	gsap.set(names, { yPercent: 100 })
-	if (firstName) {
-		gsap.set(firstName, { yPercent: 0 })
-	}
-	function setTrackPadding() {
+	if (firstName) gsap.set(firstName, { yPercent: 0 })
+	gsap.set(images, { scale: prefersReducedMotion ? 1 : IMAGE_SCALE })
+
+	const easeSine = gsap.parseEase("sine.inOut")
+	const clamp01 = gsap.utils.clamp(0, 1)
+	const clampUnit = gsap.utils.clamp(-1, 1)
+
+	const setTrack = gsap.quickSetter(trackElement, axis.prop, "px") as Setter
+	const setScales = cards.map((card) => gsap.quickSetter(card, "scale") as Setter)
+	const setShifts = images.map((img) => gsap.quickSetter(img, axis.percentProp) as Setter)
+	const states = cards.map(() => ({ scale: MIN_SCALE, shift: 0 }))
+
+	let centers: number[] = [0]
+	let distance = 0
+	let extent = 0
+	let snapToClosest = gsap.utils.snap([0])
+	let trackPos = 0
+	let trackTarget = 0
+
+	function measure() {
 		const first = cards[0]
 		if (!first) return
 
-		if (isMobileMediaQuery) {
-			const cardWidth = first.getBoundingClientRect().width
-			const value = Math.max((window.innerWidth - cardWidth) / 2, 0)
-			gsap.set(trackElement, {
-				paddingLeft: value,
-				paddingRight: value,
-			})
-		} else {
-			const cardHeight = first.getBoundingClientRect().height
-			const value = Math.max((window.innerHeight - cardHeight) / 2, 0)
-			gsap.set(trackElement, {
-				paddingTop: value,
-				paddingBottom: value,
-			})
-		}
+		extent = viewportEl![axis.extent]
+		const padding = Math.max((extent - first[axis.size]) / 2, 0)
+		gsap.set(trackElement, { [axis.padStart]: padding, [axis.padEnd]: padding })
+
+		const gap = parseFloat(window.getComputedStyle(trackElement)[axis.gap]) || 0
+		let cursor = padding
+
+		centers = cards.map((card) => {
+			const size = card[axis.size]
+			const center = cursor + size / 2 - extent / 2
+			cursor += size + gap
+			return center
+		})
+
+		distance = Math.max(centers[centers.length - 1] ?? 0, 0)
+		snapToClosest = gsap.utils.snap(
+			distance > 0 ? centers.map((c) => clamp01(c / distance)) : [0]
+		)
+		gsap.set(sectionEl, { height: viewportEl!.clientHeight + distance })
 	}
 
-	function setSectionHeight() {
-		const value = Math.max(window.innerHeight + getDistance(), window.innerHeight)
-		gsap.set(sectionEl, { height: value })
-	}
+	function render(delta: number, instant: boolean) {
+		const smooth = (rate: number) =>
+			instant || prefersReducedMotion ? 1 : expSmoothingFactor(rate, delta)
 
-	let snapPoints: number[] = []
-	let distance = 0
+		trackPos = approach(trackPos, trackTarget, smooth(TRACK_RATE))
+		setTrack(-trackPos)
 
-	function getDistance() {
-		return distance
-	}
-
-	function computeSnapPoints() {
-		if (cards.length === 0) {
-			distance = 0
-			snapPoints = [0]
-			return
-		}
-
-		const styles = window.getComputedStyle(trackElement)
-
-		if (isMobileMediaQuery) {
-			const gap = parseFloat(styles.columnGap || styles.gap || "0") || 0
-			const paddingLeft = parseFloat(styles.paddingLeft || "0") || 0
-
-			let cumulative = paddingLeft
-			const centers = cards.map((card, i) => {
-				const width = card.offsetWidth
-				const center = cumulative + width / 2
-				if (i < cards.length - 1) {
-					cumulative += width + gap
-				}
-				return center - window.innerWidth / 2
-			})
-
-			distance = Math.max(centers[centers.length - 1] ?? 0, 0)
-			snapPoints =
-				distance > 0
-					? centers.map((c) => gsap.utils.clamp(0, 1, c / distance))
-					: centers.map(() => 0)
-		} else {
-			const gap = parseFloat(styles.rowGap || styles.gap || "0") || 0
-			const paddingTop = parseFloat(styles.paddingTop || "0") || 0
-
-			let cumulative = paddingTop
-			const centers = cards.map((card, i) => {
-				const height = card.offsetHeight
-				const center = cumulative + height / 2
-				if (i < cards.length - 1) {
-					cumulative += height + gap
-				}
-				return center - window.innerHeight / 2
-			})
-
-			distance = Math.max(centers[centers.length - 1] ?? 0, 0)
-			snapPoints =
-				distance > 0
-					? centers.map((c) => gsap.utils.clamp(0, 1, c / distance))
-					: centers.map(() => 0)
-		}
-	}
-
-	function updateActiveIndex() {
-		const viewportExtent = isMobileMediaQuery ? window.innerWidth : window.innerHeight
-		const center = viewportExtent / 2
 		let closest = 0
 		let closestDist = Infinity
 
-		cards.forEach((card, i) => {
-			const rect = card.getBoundingClientRect()
-			const cardCenter = isMobileMediaQuery
-				? rect.left + rect.width / 2
-				: rect.top + rect.height / 2
-			const dist = Math.abs(cardCenter - center)
-
-			const norm = gsap.utils.clamp(0, 1, dist / (viewportExtent * 0.68))
-			const eased = gsap.parseEase("sine.inOut")(1 - norm)
-			cardBaseScale.value[i] = gsap.utils.interpolate(0.84, 1, eased)
-			applyCardScale(i)
-
+		for (let i = 0; i < cards.length; i++) {
+			const offset = (centers[i] ?? 0) - trackPos
+			const dist = Math.abs(offset)
 			if (dist < closestDist) {
 				closestDist = dist
 				closest = i
 			}
-		})
-		if (closest !== activeIndex.value) {
-			activeIndex.value = closest
+
+			const state = states[i]
+			if (!state) continue
+
+			const eased = easeSine(1 - clamp01(dist / (extent * SCALE_FALLOFF)))
+			const base = MIN_SCALE + (1 - MIN_SCALE) * eased
+			const pressed = pressedIndex.value === i
+			const nextScale = approach(
+				state.scale,
+				pressed ? base * PRESS_SCALE : base,
+				smooth(pressed ? PRESS_RATE : SCALE_RATE)
+			)
+			if (nextScale !== state.scale) {
+				state.scale = nextScale
+				setScales[i]?.(nextScale)
+			}
+
+			const targetShift = prefersReducedMotion
+				? 0
+				: -clampUnit(offset / extent) * PARALLAX_PERCENT
+			const nextShift = approach(state.shift, targetShift, smooth(PARALLAX_RATE))
+			if (nextShift !== state.shift) {
+				state.shift = nextShift
+				setShifts[i]?.(nextShift)
+			}
 		}
+
+		if (closest !== activeIndex.value) activeIndex.value = closest
 	}
 
-	setTrackPadding()
-	computeSnapPoints()
-	setSectionHeight()
-
-	if (prefersReducedMotion) {
-		updateActiveIndex()
-		return
+	function tick(_time: number, deltaTime: number) {
+		render(Math.min(deltaTime, 100) / 1000, false)
 	}
 
-	const tween = gsap.to(trackEl, {
-		[axisProp]: () => -getDistance(),
-		ease: "none",
-		scrollTrigger: {
-			trigger: sectionEl,
-			start: "top top",
-			end: () => `+=${getDistance()}`,
-			scrub: 0.3,
-			invalidateOnRefresh: true,
-			onUpdate: (self) => {
-				scrollDirection.value = self.direction
-			},
-			snap: {
-				snapTo: (progress: number) => {
-					if (!snapPoints.length) return progress
-					return snapPoints.reduce((closest, p) =>
-						Math.abs(p - progress) < Math.abs(closest - progress) ? p : closest
-					)
-				},
-				inertia: false,
-				duration: { min: 0.18, max: 0.34 },
-				delay: 0,
-			},
+	measure()
+
+	const trigger = ScrollTrigger.create({
+		trigger: sectionEl,
+		start: "top top",
+		end: () => `+=${distance}`,
+		onUpdate: (self) => {
+			trackTarget = self.progress * distance
+		},
+		onRefresh: (self) => {
+			trackTarget = self.progress * distance
+			trackPos = trackTarget
+			render(0, true)
+		},
+		snap: {
+			snapTo: (progress: number) => snapToClosest(progress),
+			inertia: false,
+			duration: { min: 0.25, max: 0.5 },
+			ease: "power3.out",
+			delay: 0,
 		},
 	})
 
-	updateActiveIndex()
-	gsap.ticker.add(updateActiveIndex)
+	trackTarget = trigger.progress * distance
+	trackPos = trackTarget
+	render(0, true)
+	gsap.ticker.add(tick)
 
 	let cardDraggable: ReturnType<typeof Draggable.create>[number] | undefined
 
-	if (isMobileMediaQuery) {
+	if (isMobile) {
 		const proxy = document.createElement("div")
 		let lastProxyX = 0
 
@@ -426,17 +449,13 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 		cardDraggable = instance
 	}
 
-	ScrollTrigger.addEventListener("refreshInit", () => {
-		setTrackPadding()
-		computeSnapPoints()
-		setSectionHeight()
-	})
+	ScrollTrigger.addEventListener("refreshInit", measure)
 
 	return () => {
 		gsap.set(sectionEl, { clearProps: "height" })
-		gsap.ticker.remove(updateActiveIndex)
-		tween.scrollTrigger?.kill()
-		tween.kill()
+		gsap.ticker.remove(tick)
+		ScrollTrigger.removeEventListener("refreshInit", measure)
+		trigger.kill()
 		cardDraggable?.kill()
 	}
 }, sectionRef)
@@ -464,23 +483,16 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 				<div
 					class="pointer-events-none absolute left-1/2 z-6 -translate-x-1/2 -translate-y-1/2 max-lg:top-[calc(50%+3rem)] lg:top-1/2"
 				>
-					<div class="relative w-[70vw] rounded-3xl p-2 md:w-[38vw] lg:w-[32vw]">
+					<div
+						class="relative box-content w-[72vw] rounded-3xl p-2 md:w-[38vw] lg:w-[32vw]"
+					>
 						<div class="aspect-16/10 w-full rounded-2xl">
 							<span
-								ref="cornerTL"
-								class="border-lime absolute -top-10 -left-10 h-8 w-8 border-t-2 border-l-2"
-							></span>
-							<span
-								ref="cornerTR"
-								class="border-lime absolute -top-10 -right-10 h-8 w-8 border-t-2 border-r-2"
-							></span>
-							<span
-								ref="cornerBL"
-								class="border-lime absolute -bottom-10 -left-10 h-8 w-8 border-b-2 border-l-2"
-							></span>
-							<span
-								ref="cornerBR"
-								class="border-lime absolute -right-10 -bottom-10 h-8 w-8 border-r-2 border-b-2"
+								v-for="corner in CORNERS"
+								:key="corner.id"
+								ref="cornerRefs"
+								class="border-lime absolute h-8 w-8 will-change-transform"
+								:class="corner.classes"
 							></span>
 						</div>
 					</div>
@@ -516,7 +528,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 					>
 						<div class="inline-grid h-[1em] overflow-hidden leading-none">
 							<span
-								v-for="(p, i) in projects"
+								v-for="p in projects"
 								:key="p.id"
 								ref="yearRefs"
 								class="font-vg5000 text-black-light col-start-1 row-start-1 block text-sm leading-none whitespace-nowrap transition-colors duration-300"
@@ -539,7 +551,7 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 							class="inline-grid h-[1em] overflow-hidden text-left leading-none lg:text-right"
 						>
 							<span
-								v-for="(p, i) in projects"
+								v-for="p in projects"
 								:key="p.id"
 								ref="nameRefs"
 								class="font-lineal text-black-light col-start-1 row-start-1 block text-left text-sm leading-none [font-weight:var(--lineal-weight-medium)] whitespace-nowrap transition-colors duration-300 lg:text-right"
@@ -568,30 +580,41 @@ useGsapContext(({ gsap, ScrollTrigger, Draggable }) => {
 						ref="trackRef"
 						class="flex flex-row items-center gap-10 will-change-transform max-lg:translate-y-12 lg:flex-col lg:gap-14"
 					>
-						<div
+						<NuxtLink
 							v-for="(p, i) in projects"
 							:key="p.id"
-							ref="cardsRef"
-							class="shrink-0 cursor-pointer touch-pan-y rounded-lg bg-black p-2"
-							@pointerenter="hoveredIndex = i"
+							:ref="(el) => setCardRef(el as Element | ComponentPublicInstance | null, i)"
+							:to="p.to"
+							draggable="false"
+							class="block shrink-0 cursor-pointer touch-pan-y rounded-lg bg-black p-2 will-change-transform"
+							@pointerenter="handleCardEnter(i)"
 							@pointerleave="handleCardLeave(i)"
 							@pointerdown="onCardPress(i)"
 							@pointerup="onCardRelease(i)"
 							@pointercancel="onCardRelease(i)"
+							@click="handleCardClick"
 						>
 							<div
 								class="bg-black-light aspect-16/10 w-[72vw] overflow-hidden rounded-xs md:w-[38vw] lg:w-[32vw]"
 							>
 								<img
+									ref="imageRefs"
 									:src="p.image"
 									:alt="p.name"
-									class="h-full w-full object-cover"
+									draggable="false"
+									class="h-full w-full object-cover will-change-transform"
 									loading="lazy"
 								/>
 							</div>
-						</div>
+						</NuxtLink>
 					</div>
 				</div>
+
+				<UiBadgeCursor
+					:active="isBadgeActive"
+					:state="badgeState"
+					:labels="BADGE_LABELS"
+				/>
 			</div>
 		</section>
 	</div>

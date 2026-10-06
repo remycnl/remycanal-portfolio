@@ -44,8 +44,12 @@ const TABLET_WHEEL_TOP_OFFSET_PX = 48
 const DESKTOP_WHEEL_TOP_OFFSET_PX = 80
 const FOLLOW_SCROLL_DIRECTION = true
 
-const BUBBLE_OFFSET_PX = 18
-const BUBBLE_HIDE_DELAY_S = 0.12
+const BADGE_LABELS = {
+	idle: "Drag",
+	press: "Drag",
+	drag: "Dragging",
+	loading: "Opening...",
+}
 
 const RESIZE_DEBOUNCE_MS = 150
 
@@ -60,10 +64,6 @@ interface WheelCard {
 	z: number
 	/** Last transform string written to the element. */
 	transform: string
-}
-
-function expSmoothingFactor(rate: number, delta: number) {
-	return 1 - Math.exp(-rate * delta)
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -110,17 +110,21 @@ function buildGuideTicks(cx: number, cy: number, r: number, halfArcDeg: number) 
 
 const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
 const trackRef = useTemplateRef<HTMLElement>("trackRef")
-const bubbleRef = useTemplateRef<HTMLElement>("bubbleRef")
-const bubbleMotionRef = useTemplateRef<HTMLElement>("bubbleMotionRef")
 
 let cardEls: HTMLElement[] = []
 
 const isDraggingRef = ref(false)
 const isOverWheelRef = ref(false)
-const bubbleLabel = ref("Drag")
 const isOpeningRef = ref(false)
 const guidePath = ref("")
 const guideViewBox = ref("0 0 100 100")
+
+const isBadgeActive = computed(
+	() => isOverWheelRef.value || isDraggingRef.value || isOpeningRef.value
+)
+const badgeState = computed(() =>
+	isOpeningRef.value ? "loading" : isDraggingRef.value ? "drag" : "idle"
+)
 
 const slotCount = ref(16)
 
@@ -255,54 +259,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		return angle <= visibleHalfArc && Math.abs(distance - radius) <= cardH / 2 + padding
 	}
 
-	const bubble = bubbleRef.value
-	const bubbleMotion = bubbleMotionRef.value
-	let bubbleVisible = false
-	let bubbleTween: ReturnType<typeof gsap.to> | null = null
-
-	if (bubble && bubbleMotion) {
-		gsap.set(bubbleMotion, {
-			opacity: 0,
-			scale: 0.35,
-			rotation: -8,
-			transformOrigin: "center center",
-		})
-	}
-
-	function setBubblePosition(x: number, y: number) {
-		if (!bubble) return
-		bubble.style.left = `${x}px`
-		bubble.style.top = `${y}px`
-	}
-
-	function showBubble() {
-		if (!bubbleMotion || bubbleVisible) return
-		bubbleVisible = true
-		bubbleTween?.kill()
-		gsap.set(bubbleMotion, { opacity: 0, scale: 0.35, rotation: -8 })
-		bubbleTween = gsap.to(bubbleMotion, {
-			opacity: 1,
-			scale: 1,
-			rotation: 0,
-			duration: 0.65,
-			ease: "elastic.out(1, 0.55)",
-		})
-	}
-
-	function hideBubble(immediate = false) {
-		if (!bubbleMotion || !bubbleVisible || isOpeningRef.value) return
-		bubbleVisible = false
-		bubbleTween?.kill()
-		bubbleTween = gsap.to(bubbleMotion, {
-			opacity: 0,
-			scale: 0.25,
-			rotation: 8,
-			duration: 0.32,
-			ease: "power2.in",
-			delay: immediate ? 0 : BUBBLE_HIDE_DELAY_S,
-		})
-	}
-
 	function capturePointer(pointerId: number) {
 		if (track.hasPointerCapture(pointerId)) return
 		try {
@@ -326,20 +282,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	function updateHover(e: PointerEvent) {
 		if (e.pointerType !== "mouse") return
 		const rect = track.getBoundingClientRect()
-		const px = e.clientX - rect.left
-		const py = e.clientY - rect.top
-		const over = isOverWheel(px, py)
-		setBubblePosition(px + BUBBLE_OFFSET_PX, py + BUBBLE_OFFSET_PX)
-
-		if (over) {
-			isOverWheelRef.value = true
-			if (!bubbleVisible) {
-				showBubble()
-			}
-		} else {
-			isOverWheelRef.value = false
-			hideBubble()
-		}
+		isOverWheelRef.value = isOverWheel(e.clientX - rect.left, e.clientY - rect.top)
 	}
 
 	function onPointerDown(e: PointerEvent) {
@@ -362,8 +305,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		velocity = 0
 
 		isOpeningRef.value = false
-		bubbleLabel.value = "Drag"
-		hideBubble(true)
 
 		if (isMouse) engageDrag(e, false)
 	}
@@ -438,7 +379,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	function onPointerLeave() {
 		if (isPressed) return
 		isOverWheelRef.value = false
-		hideBubble(true)
 	}
 
 	function onClickCapture(e: MouseEvent) {
@@ -451,8 +391,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		const target = e.target
 		if (target instanceof Element && target.closest("[data-blog-card] a")) {
 			isOpeningRef.value = true
-			bubbleLabel.value = "Opening article..."
-			showBubble()
 		}
 	}
 
@@ -635,7 +573,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		clearTimeout(resizeTimeout)
 		resizeObserver.disconnect()
 		teardownCards()
-		bubbleTween?.kill()
 		track.removeEventListener("pointerdown", onPointerDown)
 		track.removeEventListener("pointermove", onPointerMove)
 		track.removeEventListener("pointerup", endDrag)
@@ -672,7 +609,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 						</span>
 					</span>
 				</div>
-				<div class="flex max-w-3xl flex-col items-center text-black">
+				<div v-text-reveal="{ singlePhrase: true }" class="flex max-w-3xl flex-col items-center text-black">
 					<h2
 						class="font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
 					>
@@ -721,22 +658,16 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 						:href="item.post.path"
 						theme="black"
 						viewfinder-label="Open article"
-						viewfinder-loading-label="Opening article..."
+						viewfinder-loading-label="Opening..."
 						compact
 					/>
 				</div>
 
-				<div
-					ref="bubbleRef"
-					class="pointer-events-none absolute top-0 left-0 z-500 hidden lg:block"
-				>
-					<span
-						ref="bubbleMotionRef"
-						class="font-vg5000 bg-lime block rounded-xs px-3 py-1.5 text-[0.65rem] tracking-widest text-black uppercase"
-					>
-						{{ bubbleLabel }}
-					</span>
-				</div>
+				<UiBadgeCursor
+					:active="isBadgeActive"
+					:state="badgeState"
+					:labels="BADGE_LABELS"
+				/>
 
 				<div
 					class="mt-80 flex flex-col items-center gap-4 text-center md:mt-120 lg:mt-125 2xl:mt-150"

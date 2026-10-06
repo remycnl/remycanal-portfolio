@@ -45,7 +45,3 @@ export function directionNorm(
 		? cornerNorm(col, row, cols, rows)
 		: axisNorm(direction, col, row, cols, rows)
 }
-
-export function expSmoothingFactor(rate: number, delta: number) {
-	return 1 - Math.exp(-rate * delta)
-}

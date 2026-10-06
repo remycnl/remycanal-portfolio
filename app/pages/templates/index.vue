@@ -37,7 +37,7 @@ useSeoMeta({
 				</h2>
 
 				<h3
-					v-text-reveal="{ theme: 'lime' }"
+					v-text-reveal
 					class="md:text-right text-sm text-white/60"
 				>
 					A collection of ready-made creative starting points.
@@ -71,7 +71,8 @@ useSeoMeta({
 						:href="cell.item.path"
 						theme="black"
 						viewfinder-label="Open template"
-						viewfinder-loading-label="Opening template..."
+						viewfinder-loading-label="Opening..."
+						:reveal="true"
 						:class="cell.class"
 					>
 						{{ cell.item.description }}

@@ -33,10 +33,6 @@ const MOBILE_WAVINESS_SCALE = 0.55
 const VELOCITY_DECAY_RATE = -Math.log(DECAY) * 60
 const WAVINESS_SMOOTH_RATE = -Math.log(1 - SMOOTH) * 60
 
-function expSmoothingFactor(rate: number, delta: number): number {
-	return 1 - Math.exp(-rate * delta)
-}
-
 function getResponsiveScale(containerW: number) {
 	if (containerW < MOBILE_BREAKPOINT) {
 		return { amplitude: MOBILE_AMPLITUDE_SCALE, waviness: MOBILE_WAVINESS_SCALE }

@@ -19,10 +19,6 @@ const DEFAULT_MEDIA_SHIFT_PERCENT = 11
 const BASE_RATE = 9
 const RATE_SPREAD = 6
 
-function expSmoothingFactor(rate: number, delta: number): number {
-	return 1 - Math.exp(-rate * delta)
-}
-
 function clamp(value: number, min: number, max: number): number {
 	return Math.max(min, Math.min(max, value))
 }

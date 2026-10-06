@@ -18,19 +18,19 @@ export function useGsap() {
 			Draggable: DraggableInstance
 			SplitText: SplitTextInstance
 		}) => void | (() => void),
-		scope?: Element | string | import("vue").Ref<Element | null>
+		scope?: MaybeRef<Element | string | null>
 	) {
 		let ctx: ReturnType<GsapInstance["context"]> | undefined
 		let cleanup: (() => void) | void
 
 		onMounted(() => {
-			const target = unref(scope as any)
+			const target = unref(scope)
 			ctx = $gsap.context(() => {
 				cleanup = callback({
 					gsap: $gsap,
 					ScrollTrigger: $ScrollTrigger,
-					Draggable: $Draggable as DraggableInstance,
-					SplitText: $SplitText as SplitTextInstance,
+					Draggable: $Draggable,
+					SplitText: $SplitText,
 				})
 			}, target ?? undefined)
 		})

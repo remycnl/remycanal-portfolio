@@ -26,8 +26,8 @@ useSeoMeta({
 
 			<div class="flex flex-col md:flex-row h-fit md:items-end justify-between gap-3 pt-14 lg:pt-0">
 				<h2
-					v-text-reveal
-					class="font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
+					v-text-reveal="{ theme: 'violet' }"
+					class="font-lineal-bold text-3xl text-black lg:text-4xl"
 				>
 					Welcome to my blog.
 				</h2>
@@ -64,8 +64,9 @@ useSeoMeta({
 						:href="cell.item.path"
 						theme="white"
 						viewfinder-label="Open article"
-						viewfinder-loading-label="Opening article..."
+						viewfinder-loading-label="Opening..."
 						teaser-tint="violet"
+						:reveal="true"
 						:class="cell.class"
 					>
 						{{ cell.item.description }}

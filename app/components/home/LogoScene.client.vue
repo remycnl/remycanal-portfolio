@@ -305,10 +305,6 @@ function clamp(value: number, min: number, max: number) {
 	return Math.min(max, Math.max(min, value))
 }
 
-function expSmoothingFactor(rate: number, delta: number) {
-	return 1 - Math.exp(-rate * delta)
-}
-
 function easeOutCubic(t: number) {
 	return 1 - Math.pow(1 - t, 3)
 }

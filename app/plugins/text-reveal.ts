@@ -1,124 +1,154 @@
-import type { Directive } from "vue"
+import type { Directive, Ref } from "vue"
 import type { GsapInstance, ScrollTriggerInstance } from "@/composables/useGsap"
+import { readThemeColor } from "@/utils/theme/readThemeColor"
 
-interface TypewriterOptions {
-	/** Vitesse de frappe en caractères/seconde. Plus haut = plus rapide. */
+interface TextRevealOptions {
+	/** Vitesse de propagation en caractères/seconde (plafonnée par MAX_TOTAL sur les longs textes). */
 	speed?: number
-	/** Variation aléatoire du timing entre chaque caractère (0 = régulier, 1 = très irrégulier). Simule une frappe humaine. */
+	/** Irrégularité du rythme entre caractères (0 = régulier, 1 = très organique). */
 	jitter?: number
-	/**
-	 * Point de déclenchement ScrollTrigger. Si omis, calculé automatiquement selon la
-	 * taille d'écran au moment du montage (voir getResponsiveTrigger). Ne le fixe que
-	 * si tu veux forcer un comportement précis indépendant de l'appareil.
-	 */
+	/** Point de déclenchement ScrollTrigger. Si omis, calculé selon la taille d'écran (voir getStart). */
 	start?: string
-	/** Point de fin ScrollTrigger. Même logique que `start` : calculé automatiquement si omis. */
-	end?: string
-	/** Si true, l'animation ne joue qu'une fois (au premier passage). Si false, rejoue à chaque entrée/sortie du viewport. */
-	once?: boolean
-	/** Thème de couleur du curseur clignotant. Doit correspondre à un token défini dans CURSOR_THEME_COLORS. */
-	theme?: "lime" | "violet" | "white" | "black"
-	/** Couleur custom du curseur, prioritaire sur `theme` si fournie. */
-	cursorColor?: string
-	/** Largeur du curseur en pixels. */
-	cursorWidth?: number
-	/** Délai en secondes entre le démarrage de chaque bloc de texte quand il y en a plusieurs (effet de cascade). */
+	/** Couleur d'accent : nom du token `--color-*` du @theme (`"lime"`, `"violet"`…), `--color-x`, `var(--color-x)` ou couleur CSS. Par défaut `"lime"`. */
+	theme?: string
+	/** Délai (s) entre le démarrage de chaque bloc enfant (effet cascade). */
 	childStagger?: number
-	/** Si true, traite tout l'élément comme un seul bloc de texte au lieu de découper par enfants. */
+	/** Si true, traite tout l'élément comme un seul bloc au lieu de découper par enfants. */
 	singlePhrase?: boolean
+	/** Si true, la directive ne fait rien : le texte reste affiché normalement (SSR inclus). */
+	disabled?: boolean
 }
 
-const CURSOR_THEME_COLORS: Record<"lime" | "violet" | "white" | "black", string> = {
-	lime: "var(--color-lime, #c6ff33)",
-	violet: "var(--color-violet, #6840ff)",
-	white: "var(--color-white, #f4f4f4)",
-	black: "var(--color-black, #201e1e)",
+type Phase = "idle" | "playing" | "done"
+
+const MAX_TOTAL = 1.5
+const WORD_GAP = 0.8
+const COLOR_DURATION = 0.55
+const SLIDE_DURATION = 0.5
+const RISE = 10
+const START_DELAY = 0.05
+const FAST_SCROLL = 900
+const FAST_LEAD = 140
+const FONTS_TIMEOUT = 3000
+
+const SLIDE_EASE = "cubic-bezier(.16,1,.3,1)"
+const COLOR_EASE = "cubic-bezier(.33,1,.68,1)"
+const FRAME_SELECTOR = "[data-text-reveal-frame]"
+const FRAME_DELAY = "var(--tr-frame-delay,0s)"
+
+const REVEAL_CSS = `
+.text-reveal-word{display:inline-block}
+.text-reveal-char{opacity:0}
+[data-text-reveal="done"] .text-reveal-char{opacity:1}
+[data-text-reveal="playing"] .text-reveal-word{
+	animation:text-reveal-slide ${SLIDE_DURATION}s ${SLIDE_EASE};
+}
+[data-text-reveal="playing"] .text-reveal-char{
+	animation:text-reveal-char ${COLOR_DURATION}s ${COLOR_EASE} forwards;
+}
+[data-text-reveal="idle"] ${FRAME_SELECTOR}::before{opacity:0}
+[data-text-reveal="playing"] ${FRAME_SELECTOR}::before{
+	opacity:0;
+	animation:text-reveal-slide ${SLIDE_DURATION}s ${SLIDE_EASE} ${FRAME_DELAY},text-reveal-frame-pop ${COLOR_DURATION}s linear ${FRAME_DELAY} forwards;
+}
+[data-text-reveal="playing"] ${FRAME_SELECTOR}::after{
+	animation:text-reveal-slide ${SLIDE_DURATION}s ${SLIDE_EASE} ${FRAME_DELAY},text-reveal-frame-accent ${COLOR_DURATION}s ${COLOR_EASE} ${FRAME_DELAY} forwards;
+}
+@keyframes text-reveal-slide{from{transform:translate3d(0,${RISE}%,0)}to{transform:translate3d(0,0,0)}}
+@keyframes text-reveal-char{from{opacity:1;color:var(--tr-accent)}to{opacity:1}}
+@keyframes text-reveal-frame-pop{from{opacity:1}to{opacity:1}}
+@keyframes text-reveal-frame-accent{from{opacity:1}to{opacity:0}}
+`
+
+function getStartOffset(): number {
+	const { innerWidth: w, innerHeight: h } = window
+	const ratio = w < 640 ? 0.12 : w < 1024 ? 0.16 : 0.2
+	return Math.round(Math.min(Math.max(h * ratio, 100), 320))
 }
 
-const RESPONSIVE_TRIGGERS = {
-	mobile: { start: "top 88%", end: "bottom 15%" },
-	tablet: { start: "top 84%", end: "bottom 18%" },
-	desktop: { start: "top 80%", end: "bottom 20%" },
-} as const
+function waitForFonts(ready: Ref<boolean>): Promise<void> {
+	if (ready.value) return Promise.resolve()
 
-function getResponsiveTrigger(): { start: string; end: string } {
-	const width = window.innerWidth
-	if (width < 640) return RESPONSIVE_TRIGGERS.mobile
-	if (width < 1024) return RESPONSIVE_TRIGGERS.tablet
-	return RESPONSIVE_TRIGGERS.desktop
+	return new Promise((resolve) => {
+		const timer = setTimeout(done, FONTS_TIMEOUT)
+		const stop = watch(ready, (value) => {
+			if (value) done()
+		})
+
+		function done() {
+			clearTimeout(timer)
+			stop()
+			resolve()
+		}
+	})
+}
+
+function resolveAccent(theme = "lime"): string {
+	const value = theme.trim()
+	const token = /^[a-z][\w-]*$/i.test(value) ? `--color-${value}` : value
+	return readThemeColor(token, "currentColor")
+}
+
+function syncFrames(el: HTMLElement) {
+	for (const frame of el.querySelectorAll<HTMLElement>(FRAME_SELECTOR)) {
+		const first = frame.querySelector<HTMLElement>(".text-reveal-char")
+		if (first) frame.style.setProperty("--tr-frame-delay", first.style.animationDelay)
+	}
+}
+
+function clearFrames(el: HTMLElement) {
+	for (const frame of el.querySelectorAll<HTMLElement>(FRAME_SELECTOR))
+		frame.style.removeProperty("--tr-frame-delay")
 }
 
 interface RevealState {
 	ctx?: ReturnType<GsapInstance["context"]>
-	stForward?: ReturnType<ScrollTriggerInstance["create"]>
-	stBackward?: ReturnType<ScrollTriggerInstance["create"]>
-	cursors: HTMLElement[]
-	timelines: (ReturnType<GsapInstance["timeline"]> | undefined)[]
-	responsive: boolean
+	trigger?: ReturnType<ScrollTriggerInstance["create"]>
+	earlyTrigger?: ReturnType<ScrollTriggerInstance["create"]>
+	cleanup?: () => void
 }
 
 const STATE = new WeakMap<HTMLElement, RevealState>()
-const RESPONSIVE_STATES = new Set<RevealState>()
-
-let responsiveResizeSubscribed = false
-
-function ensureResponsiveResizeSubscription(ScrollTrigger: ScrollTriggerInstance) {
-	if (responsiveResizeSubscribed) return
-	responsiveResizeSubscribed = true
-
-	useViewportResize(() => {
-		const next = getResponsiveTrigger()
-		let changed = false
-
-		RESPONSIVE_STATES.forEach((state) => {
-			if (state.stForward?.vars && state.stForward.vars.start !== next.start) {
-				state.stForward.vars.start = next.start
-				changed = true
-			}
-			if (state.stBackward?.vars && state.stBackward.vars.end !== next.end) {
-				state.stBackward.vars.end = next.end
-				changed = true
-			}
-		})
-
-		if (changed) ScrollTrigger.refresh()
-	})
-}
 
 export default defineNuxtPlugin({
 	name: "text-reveal",
 	setup(nuxtApp) {
-		const textReveal: Directive<HTMLElement, TypewriterOptions> = {
-			getSSRProps() {
-				return { style: { opacity: 0 } }
+		const fontsReady = useFontsReady()
+
+		useHead({ style: [{ key: "text-reveal", textContent: REVEAL_CSS }] })
+
+		const textReveal: Directive<HTMLElement, TextRevealOptions> = {
+			getSSRProps(binding) {
+				return binding.value?.disabled ? {} : { style: { opacity: 0 } }
 			},
 
 			...(import.meta.client
 				? {
+						beforeMount(el, binding) {
+							if (binding.value?.disabled) return
+							el.style.opacity = "0"
+						},
+
 						mounted(el, binding) {
-							if (STATE.has(el)) return
-							initTypewriter(el, binding.value ?? {})
+							if (binding.value?.disabled || STATE.has(el)) return
+							initReveal(el, binding.value ?? {})
 						},
 
 						unmounted(el) {
 							const state = STATE.get(el)
-							state?.stForward?.kill()
-							state?.stBackward?.kill()
+							state?.trigger?.kill()
+							state?.earlyTrigger?.kill()
+							state?.cleanup?.()
 							state?.ctx?.revert()
-							state?.cursors?.forEach((c) => c.remove())
-							if (state) RESPONSIVE_STATES.delete(state)
 							STATE.delete(el)
 						},
 					}
 				: {}),
 		}
 
-		async function initTypewriter(el: HTMLElement, options: TypewriterOptions) {
-			const responsive = !options.start && !options.end
-			const state: RevealState = { cursors: [], timelines: [], responsive }
+		async function initReveal(el: HTMLElement, options: TextRevealOptions) {
+			const state: RevealState = {}
 			STATE.set(el, state)
-
-			el.style.opacity = "0"
 
 			if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 				el.style.opacity = "1"
@@ -130,101 +160,96 @@ export default defineNuxtPlugin({
 
 			if (!STATE.has(el)) return
 
-			if (document.fonts?.ready) await document.fonts.ready
+			await waitForFonts(fontsReady)
+
+			if (!STATE.has(el)) return
 
 			const { gsap, ScrollTrigger, SplitText } = useGsap()
 
-			const responsiveTrigger = getResponsiveTrigger()
-
 			const {
-				speed = 38,
-				jitter = 0.55,
-				start = responsiveTrigger.start,
-				end = responsiveTrigger.end,
-				once = true,
-				theme = "lime",
-				cursorColor,
-				cursorWidth = 8,
+				speed = 70,
+				jitter = 0.25,
+				start,
+				theme,
 				childStagger = 0.08,
 				singlePhrase = false,
 			} = options
 
-			const resolvedCursorColor = cursorColor ?? CURSOR_THEME_COLORS[theme]
-			const blocks = singlePhrase ? [el] : getTextBlocks(el)
+			let finish: { time: number; char?: HTMLElement } = { time: 0 }
 
-			const ctx = gsap.context(() => {
-				const readyBlocks = new Set<number>()
+			state.ctx = gsap.context(() => {
+				const blocks = singlePhrase ? [el] : getTextBlocks(el)
 
 				blocks.forEach((block, i) => {
-					if (getComputedStyle(block).position === "static") {
-						block.style.position = "relative"
-					}
-
-					SplitText.create(block, {
+					const split = SplitText.create(block, {
 						type: "words, chars",
 						wordsClass: "text-reveal-word",
 						charsClass: "text-reveal-char",
-						autoSplit: true,
-
-						onSplit(self: any) {
-							const wasAlreadyTriggered =
-								state.stForward?.isActive || (state.stForward?.progress ?? 0) > 0
-
-							state.timelines[i]?.kill()
-							state.cursors[i]?.remove()
-							const cursor = createCursor(block, resolvedCursorColor, cursorWidth)
-							state.cursors[i] = cursor
-
-							const childTl = buildTypingTimeline(gsap, self.chars, cursor, block, {
-								speed,
-								jitter,
-								delay: i * childStagger,
-							})
-
-							state.timelines[i] = childTl
-							readyBlocks.add(i)
-
-							if (readyBlocks.size === blocks.length && !state.stForward) {
-								el.style.opacity = "1"
-
-								const playAll = () => state.timelines.forEach((tl) => tl?.play(0))
-								const resetAll = () => state.timelines.forEach((tl) => tl?.pause(0))
-
-								state.stForward = ScrollTrigger.create({
-									trigger: el,
-									start,
-									end: "bottom top",
-									once,
-									onEnter: playAll,
-									onLeave: once ? undefined : resetAll,
-								})
-
-								if (!once) {
-									state.stBackward = ScrollTrigger.create({
-										trigger: el,
-										start: "top bottom",
-										end,
-										onEnterBack: playAll,
-										onLeaveBack: resetAll,
-									})
-								}
-
-								if (state.responsive) {
-									RESPONSIVE_STATES.add(state)
-									ensureResponsiveResizeSubscription(ScrollTrigger)
-								}
-							} else if (wasAlreadyTriggered) {
-								el.style.opacity = "1"
-								childTl.play(0)
-							}
-
-							return childTl
-						},
 					})
+
+					const end = applyDelays(
+						split.chars as HTMLElement[],
+						split.words.length,
+						speed,
+						jitter,
+						START_DELAY + i * childStagger
+					)
+					if (end.time >= finish.time) finish = end
 				})
 			}, el)
 
-			state.ctx = ctx
+			syncFrames(el)
+
+			const setPhase = (phase: Phase) => {
+				el.dataset.textReveal = phase
+			}
+
+			el.style.setProperty("--tr-accent", resolveAccent(theme))
+			setPhase("idle")
+
+			const onEnd = (e: AnimationEvent) => {
+				if (e.target === finish.char && e.animationName === "text-reveal-char")
+					setPhase("done")
+			}
+			el.addEventListener("animationend", onEnd)
+
+			state.cleanup = () => {
+				el.removeEventListener("animationend", onEnd)
+				el.style.removeProperty("--tr-accent")
+				clearFrames(el)
+				delete el.dataset.textReveal
+			}
+
+			if (!finish.char) {
+				setPhase("done")
+				el.style.opacity = "1"
+				return
+			}
+
+			const play = () => {
+				if (el.dataset.textReveal === "idle") setPhase("playing")
+			}
+
+			el.style.opacity = "1"
+
+			state.trigger = ScrollTrigger.create({
+				trigger: el,
+				start: () => start ?? `top bottom-=${getStartOffset()}`,
+				once: true,
+				onEnter: play,
+				onLeave: play,
+			})
+
+			if (!start) {
+				state.earlyTrigger = ScrollTrigger.create({
+					trigger: el,
+					start: () => `top bottom-=${Math.max(getStartOffset() - FAST_LEAD, 40)}`,
+					once: true,
+					onEnter: (self) => {
+						if (Math.abs(self.getVelocity()) > FAST_SCROLL) play()
+					},
+				})
+			}
 		}
 
 		nuxtApp.vueApp.directive("text-reveal", textReveal)
@@ -239,94 +264,36 @@ function getTextBlocks(el: HTMLElement): HTMLElement[] {
 	return children.length > 1 ? children : [el]
 }
 
-function createCursor(el: HTMLElement, color: string, width: number) {
-	const cursor = document.createElement("span")
-	cursor.className = "text-reveal-cursor"
-	cursor.setAttribute("aria-hidden", "true")
-
-	Object.assign(cursor.style, {
-		position: "absolute",
-		top: "0",
-		left: "0",
-		width: `${width}px`,
-		display: "block",
-		background: color,
-		opacity: "0",
-		pointerEvents: "none",
-		willChange: "transform, opacity",
-		borderRadius: "1px",
-	})
-
-	el.appendChild(cursor)
-	return cursor
-}
-
-function buildTypingTimeline(
-	gsap: GsapInstance,
+function applyDelays(
 	chars: HTMLElement[],
-	cursor: HTMLElement,
-	container: HTMLElement,
-	options: { speed: number; jitter: number; delay: number }
-) {
-	const { speed, jitter, delay } = options
-	const baseDuration = 1 / speed
+	wordCount: number,
+	speed: number,
+	jitter: number,
+	offset: number
+): { time: number; char?: HTMLElement } {
+	if (!chars.length) return { time: offset }
 
-	const containerRect = container.getBoundingClientRect()
+	const step = Math.min(1 / speed, MAX_TOTAL / (chars.length + wordCount * WORD_GAP))
 
-	const positions = chars.map((char) => {
-		const rect = char.getBoundingClientRect()
-		return {
-			x: rect.left - containerRect.left,
-			y: rect.top - containerRect.top,
-			width: rect.width,
-			height: rect.height,
+	let t = offset
+	let noise = 0
+	let lastStart = offset
+	let currentWord: HTMLElement | null = null
+
+	for (const char of chars) {
+		const word = char.parentElement
+		if (word !== currentWord) {
+			currentWord = word
+			if (t > offset) t += step * WORD_GAP
+			if (word) word.style.animationDelay = `${t.toFixed(3)}s`
 		}
-	})
 
-	gsap.set(chars, { autoAlpha: 0 })
-	gsap.set(cursor, { autoAlpha: 0 })
+		lastStart = t
+		char.style.animationDelay = `${t.toFixed(3)}s`
 
-	const tl = gsap.timeline({
-		paused: true,
-		delay,
-		onComplete() {
-			cursor.style.willChange = "auto"
-		},
-	})
-
-	tl.set(cursor, { autoAlpha: 1 }, 0)
-
-	let cursorTime = 0
-	const lastPosition = positions[positions.length - 1]
-
-	chars.forEach((char, i) => {
-		const pos = positions[i]
-		if (!pos) return
-
-		const randomFactor = 1 + (Math.random() * 2 - 1) * jitter
-		let charTime = Math.max(baseDuration * randomFactor, 0.008)
-		if (char.textContent === " ") charTime += baseDuration * 1.4
-
-		tl.set(cursor, { x: pos.x, y: pos.y, height: pos.height }, cursorTime)
-
-		const revealDuration = Math.min(0.02, charTime * 0.3)
-		const revealStart =
-			cursorTime + Math.max(charTime - revealDuration - 0.002, charTime * 0.55)
-
-		tl.to(char, { autoAlpha: 1, duration: revealDuration, ease: "none" }, revealStart)
-
-		cursorTime += charTime
-	})
-
-	if (lastPosition) {
-		tl.set(
-			cursor,
-			{ x: lastPosition.x + lastPosition.width, y: lastPosition.y },
-			cursorTime
-		)
+		noise = noise * 0.65 + (Math.random() * 2 - 1) * 0.35
+		t += step * Math.max(0.25, 1 + noise * jitter * 2)
 	}
 
-	tl.to(cursor, { autoAlpha: 0, duration: 0.25 }, cursorTime + 0.15)
-
-	return tl
+	return { time: lastStart, char: chars[chars.length - 1] }
 }
