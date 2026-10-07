@@ -302,7 +302,7 @@
 <script lang="ts" setup>
 const CARD_CHILD_STAGGER = 0.3
 
-const cardReveal = { childStagger: CARD_CHILD_STAGGER }
+const cardReveal = { childStagger: CARD_CHILD_STAGGER, speed: 50 }
 const cardRevealWhite = { ...cardReveal, theme: "white" }
 
 const zoneIntro = useTemplateRef<HTMLElement>("zoneIntro")
