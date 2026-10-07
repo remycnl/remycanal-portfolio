@@ -60,6 +60,11 @@ interface Engine {
 	destroy: () => void
 }
 
+interface DragSample {
+	x: number
+	time: number
+}
+
 interface DragState {
 	pointerId: number
 	/** True once the gesture passed the slop threshold and locked onto the carousel axis */
@@ -68,11 +73,11 @@ interface DragState {
 	catching: boolean
 	startX: number
 	startY: number
-	startPosition: number
-	lastX: number
-	lastTime: number
-	/** Filtered finger velocity in px/s, positive when moving toward the next card */
-	velocity: number
+	/** Track position when the gesture engaged, the reference for the drag displacement */
+	origin: number
+	/** Unresisted track position implied by the finger, before the edge rubber band */
+	raw: number
+	samples: DragSample[]
 }
 
 interface Slot extends SpringRecord {
@@ -120,12 +125,15 @@ const TRACK_RATE = 16
 const PRESS_IN_RATE = 24
 const MAX_FRAME_MS = 100
 
-const DRAG_SLOP = 8
+const DRAG_SLOP = 6
+const VERTICAL_BIAS = 1.2
 const DRAG_FOLLOW_RATE = 55
-const VELOCITY_RATE = 30
-const VELOCITY_STALE_MS = 90
-const THROW_TIME = 0.2
-const MAX_THROW_CARDS = 1.5
+const VELOCITY_WINDOW_MS = 100
+const MAX_SAMPLES = 8
+const FLICK_VELOCITY = 250
+const COMMIT_RATIO = 0.12
+const THROW_TIME = 0.15
+const MAX_STEPS = 2
 const SPRING_OMEGA = 11
 const RUBBER_LIMIT = 0.25
 const CATCH_VELOCITY = 20
@@ -153,17 +161,20 @@ const easeInOutSine = (t: number) => 0.5 - 0.5 * Math.cos(Math.PI * t)
 
 const preventDefault = (event: Event) => event.preventDefault()
 
-function snapToNearest(values: readonly number[], value: number) {
-	let best = values[0] ?? 0
-	let bestDistance = Math.abs(best - value)
-	for (const candidate of values) {
+function nearestIndex(values: readonly number[], value: number) {
+	let best = 0
+	let bestDistance = Infinity
+	for (const [index, candidate] of values.entries()) {
 		const candidateDistance = Math.abs(candidate - value)
 		if (candidateDistance >= bestDistance) continue
-		best = candidate
+		best = index
 		bestDistance = candidateDistance
 	}
 	return best
 }
+
+const snapToNearest = (values: readonly number[], value: number) =>
+	values[nearestIndex(values, value)] ?? 0
 
 function createSpringRecord(): SpringRecord {
 	return { focus: 0, press: 0, skew: 0, shift: 0, pointerX: 0, pointerY: 0 }
@@ -176,10 +187,9 @@ function createDragState(): DragState {
 		catching: false,
 		startX: 0,
 		startY: 0,
-		startPosition: 0,
-		lastX: 0,
-		lastTime: 0,
-		velocity: 0,
+		origin: 0,
+		raw: 0,
+		samples: [],
 	}
 }
 
@@ -371,7 +381,7 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			stepTrack(smooth, delta)
 		}
 
-		if (phase !== "scroll") syncScroll()
+		if (phase === "spring") syncScroll()
 
 		if (trackState.position !== writtenPosition) {
 			writtenPosition = trackState.position
@@ -403,14 +413,14 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		let animating =
 			phase !== "scroll" || trackState.position !== trackTarget || trackState.velocity !== 0
 		let nearest = Infinity
-		let nearestIndex = 0
+		let nearestSlot = 0
 
 		for (const [index, slot] of slots.entries()) {
 			const offset = slot.center - trackState.position
 			const offsetAbs = Math.abs(offset)
 			if (offsetAbs < nearest) {
 				nearest = offsetAbs
-				nearestIndex = index
+				nearestSlot = index
 			}
 
 			const pressed = pressedIndex === index
@@ -429,9 +439,9 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			animating = true
 		}
 
-		if (nearestIndex !== lastActive) {
-			lastActive = nearestIndex
-			bridge.onActiveChange(nearestIndex)
+		if (nearestSlot !== lastActive) {
+			lastActive = nearestSlot
+			bridge.onActiveChange(nearestSlot)
 		}
 
 		return animating
@@ -507,6 +517,19 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			Math.abs(trackState.velocity) > CATCH_VELOCITY ||
 			Math.abs(trackTarget - trackState.position) > CATCH_DISTANCE
 
+		function measureVelocity(now: number) {
+			const last = drag.samples.at(-1)
+			if (!last || now - last.time > VELOCITY_WINDOW_MS) return 0
+			const first = drag.samples.find((sample) => last.time - sample.time <= VELOCITY_WINDOW_MS)
+			if (!first || first === last) return 0
+			return ((first.x - last.x) / (last.time - first.time)) * 1000
+		}
+
+		function pushSample(x: number, time: number) {
+			drag.samples.push({ x, time })
+			if (drag.samples.length > MAX_SAMPLES) drag.samples.shift()
+		}
+
 		function resumeScroll() {
 			phase = "scroll"
 			writtenScroll = Number.NaN
@@ -515,11 +538,19 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		}
 
 		function release(now: number, flick: boolean) {
-			const fresh = flick && now - drag.lastTime <= VELOCITY_STALE_MS
-			const reach = pitch * MAX_THROW_CARDS
-			const projected = fresh ? clamp(drag.velocity * THROW_TIME, -reach, reach) : 0
+			const velocity = flick ? measureVelocity(now) : 0
+			const displacement = drag.raw - drag.origin
+			const flicked = Math.abs(velocity) > FLICK_VELOCITY
+			const committed = flicked || Math.abs(displacement) > pitch * COMMIT_RATIO
+			const direction = Math.sign(flicked ? velocity : displacement)
+			const startIndex = nearestIndex(centers, drag.origin)
 
-			trackTarget = snapToNearest(centers, trackTarget + projected)
+			let index = nearestIndex(centers, drag.raw + velocity * THROW_TIME)
+			if (committed && index === startIndex) index += direction
+			index = clamp(index, startIndex - MAX_STEPS, startIndex + MAX_STEPS)
+			index = clamp(index, 0, centers.length - 1)
+
+			trackTarget = centers[index] ?? trackTarget
 			phase = "spring"
 			wake()
 		}
@@ -533,9 +564,8 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			drag.catching = isMoving()
 			drag.startX = event.clientX
 			drag.startY = event.clientY
-			drag.lastX = event.clientX
-			drag.lastTime = event.timeStamp
-			drag.velocity = 0
+			drag.samples.length = 0
+			pushSample(event.clientX, event.timeStamp)
 
 			if (drag.catching) {
 				trackTarget = trackState.position
@@ -543,7 +573,8 @@ function createEngine(config: EngineConfig): Engine | undefined {
 				phase = "drag"
 			}
 
-			drag.startPosition = trackState.position
+			drag.origin = trackState.position
+			drag.raw = trackState.position
 			wake()
 		}
 
@@ -556,30 +587,21 @@ function createEngine(config: EngineConfig): Engine | undefined {
 				const dy = event.clientY - drag.startY
 				if (Math.hypot(dx, dy) < DRAG_SLOP) return
 
-				if (Math.abs(dy) > Math.abs(dx)) {
+				if (Math.abs(dy) > Math.abs(dx) * VERTICAL_BIAS) {
 					drag.pointerId = -1
 					if (drag.catching) resumeScroll()
 					return
 				}
 
 				drag.active = true
-				drag.startPosition = trackState.position + dx
+				drag.origin = trackState.position
 				phase = "drag"
 				bridge.onDragStart()
 			}
 
-			const dt = (event.timeStamp - drag.lastTime) / 1000
-			if (dt > 0) {
-				drag.velocity = approach(
-					drag.velocity,
-					(drag.lastX - event.clientX) / dt,
-					expSmoothingFactor(VELOCITY_RATE, dt)
-				)
-				drag.lastTime = event.timeStamp
-				drag.lastX = event.clientX
-			}
-
-			trackTarget = rubberBand(drag.startPosition - dx, 0, distance, extent * RUBBER_LIMIT)
+			pushSample(event.clientX, event.timeStamp)
+			drag.raw = drag.origin - dx
+			trackTarget = rubberBand(drag.raw, 0, distance, extent * RUBBER_LIMIT)
 			wake()
 		}
 

@@ -26,7 +26,7 @@ useStackSection(heroRef, {
 		</div>
 
 		<h1 class="sr-only">
-			Rémy Canal — Full-Stack Developer &amp; UI/UX Designer — Awwwards Young Jury Member
+			Rémy Canal — Awwwards Young Jury Member — Creative Developer &amp; UI/UX Designer — Crafting Cool Websites.
 		</h1>
 
 		<div
