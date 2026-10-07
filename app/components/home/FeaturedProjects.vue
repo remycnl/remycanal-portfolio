@@ -69,8 +69,11 @@ const CORNERS: Corner[] = [
 	},
 ]
 
+const STACK_WINDOW =
+	"box-fit text-black-light inline-grid overflow-hidden rounded-full text-sm transition-colors duration-300 [--stack-gap:1.2em]"
+
 const STACK_ITEM =
-	"col-start-1 row-start-1 block leading-none whitespace-nowrap translate-y-[calc((var(--i)_-_var(--active))_*_100%)] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+	"text-fit col-start-1 row-start-1 block whitespace-nowrap will-change-[translate] translate-y-[calc(var(--i)_*_(100%_+_var(--stack-gap)))]"
 
 const BADGE_LABELS = {
 	view: "View project",
@@ -146,61 +149,69 @@ const pad = (n: number) => String(n).padStart(2, "0")
 
 					<div
 						aria-hidden="true"
-						class="lg:left-edge absolute bottom-[calc(50%_-_var(--card-offset-y)_+_var(--card-half-h)_+_3.7rem)] left-0 z-10 w-(--card-w) lg:top-1/2 lg:bottom-auto lg:w-auto lg:-translate-y-1/2"
+						class="lg:left-edge absolute bottom-[calc(50%_-_var(--card-offset-y)_+_var(--card-half-h)_+_3.7rem)] left-0 z-10 flex w-(--card-w) lg:top-1/2 lg:bottom-auto lg:w-auto lg:-translate-y-1/2"
 					>
 						<div
-							class="text-black-light inline-flex items-center rounded-full px-4 py-2 transition-colors duration-300"
-							:class="isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light'"
+							data-stack
+							:class="[
+								STACK_WINDOW,
+								'font-vg5000',
+								isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light',
+							]"
 						>
-							<div
-								class="font-vg5000 inline-grid h-[1em] overflow-hidden text-sm leading-none"
-								:style="{ '--active': activeIndex }"
+							<span
+								v-for="(p, i) in projects"
+								:key="p.id"
+								:style="{ '--i': i }"
+								:class="STACK_ITEM"
 							>
-								<span
-									v-for="(p, i) in projects"
-									:key="p.id"
-									:style="{ '--i': i }"
-									:class="STACK_ITEM"
-								>
-									{{ p.year }}
-								</span>
-							</div>
+								{{ p.year }}
+							</span>
 						</div>
 					</div>
 
 					<div
 						aria-hidden="true"
-						class="lg:right-edge absolute bottom-[calc(50%_-_var(--card-offset-y)_+_var(--card-half-h)_+_2.5rem)] left-0 z-10 w-(--card-w) lg:top-1/2 lg:bottom-auto lg:left-auto lg:w-auto lg:-translate-y-1/2"
+						class="lg:right-edge absolute bottom-[calc(50%_-_var(--card-offset-y)_+_var(--card-half-h)_+_2.5rem)] left-0 z-10 flex w-(--card-w) lg:top-1/2 lg:bottom-auto lg:left-auto lg:w-auto lg:-translate-y-1/2"
 					>
 						<div
-							class="text-black-light inline-flex items-center justify-start rounded-full px-4 py-2 transition-colors duration-300 lg:justify-end"
-							:class="isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light'"
+							data-stack
+							:class="[
+								STACK_WINDOW,
+								'font-lineal text-left [font-weight:var(--lineal-weight-medium)] lg:text-right',
+								isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light',
+							]"
 						>
-							<div
-								class="font-lineal inline-grid h-[1em] overflow-hidden text-left text-sm leading-none [font-weight:var(--lineal-weight-medium)] lg:text-right"
-								:style="{ '--active': activeIndex }"
+							<span
+								v-for="(p, i) in projects"
+								:key="p.id"
+								:style="{ '--i': i }"
+								:class="STACK_ITEM"
 							>
-								<span
-									v-for="(p, i) in projects"
-									:key="p.id"
-									:style="{ '--i': i }"
-									:class="STACK_ITEM"
-								>
-									{{ p.name }}
-								</span>
-							</div>
+								{{ p.name }}
+							</span>
 						</div>
 					</div>
 
 					<div
 						aria-hidden="true"
-						class="bottom-edge bg-gray-light font-vg5000 text-gray-dark absolute left-1/2 z-10 -translate-x-1/2 rounded-full px-3 py-1.5 text-xs whitespace-nowrap"
+						class="bottom-edge bg-gray-light font-vg5000 text-gray-dark box-fit absolute left-1/2 z-10 inline-flex -translate-x-1/2 items-center rounded-full text-xs whitespace-nowrap"
 					>
-						<span class="text-black-light font-lineal-bold">
-							{{ pad(activeIndex + 1) }}
+						<span
+							data-stack
+							class="text-black-light font-lineal-bold inline-grid overflow-hidden [--stack-gap:1.2em]"
+						>
+							<span
+								v-for="(p, i) in projects"
+								:key="p.id"
+								:style="{ '--i': i }"
+								:class="STACK_ITEM"
+							>
+								{{ pad(i + 1) }}
+							</span>
 						</span>
-						<span class="text-gray-dark/50 mx-1">/</span>
-						<span>{{ pad(projects.length) }}</span>
+						<span class="text-fit text-gray-dark/50 mx-1 block">/</span>
+						<span class="text-fit block">{{ pad(projects.length) }}</span>
 					</div>
 
 					<div
@@ -247,7 +258,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 				<div class="inset-x-edge top-section absolute z-20 pt-15 lg:pt-6">
 					<h2
 						v-text-reveal
-						class="font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
+						class="text-fit font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
 					>
 						Featured projects
 					</h2>

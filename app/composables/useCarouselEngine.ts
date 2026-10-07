@@ -1,12 +1,14 @@
 import type { ShallowRef } from "vue"
 import type { gsap as GsapStatic } from "gsap"
 import type { ScrollTrigger as ScrollTriggerStatic } from "gsap/ScrollTrigger"
+import type { SpringState } from "~/utils/smoothing"
+import { approach, expSmoothingFactor, rubberBand, stepSpring } from "~/utils/smoothing"
 
 type ElementRef = Readonly<ShallowRef<HTMLElement | null>>
 type SpringKey = "focus" | "press" | "skew" | "shift" | "pointerX" | "pointerY"
 type SpringRecord = Record<SpringKey, number>
 type Smooth = (rate: number) => number
-type Mode = "scroll" | "drag" | "settle"
+type Phase = "scroll" | "drag" | "spring"
 
 export interface CarouselPointer {
 	x: number
@@ -103,14 +105,7 @@ const AXES = {
 	},
 } as const
 
-const SPRING_KEYS: SpringKey[] = [
-	"focus",
-	"press",
-	"skew",
-	"shift",
-	"pointerX",
-	"pointerY",
-]
+const SPRING_KEYS: SpringKey[] = ["focus", "press", "skew", "shift", "pointerX", "pointerY"]
 
 const RATES: SpringRecord = {
 	focus: 10,
@@ -137,7 +132,6 @@ const CATCH_VELOCITY = 20
 const CATCH_DISTANCE = 4
 const REST_DISTANCE = 0.05
 const REST_VELOCITY = 1
-const SETTLE_TOLERANCE = 2
 const CLICK_GUARD_MS = 80
 
 const MIN_SCALE = 0.84
@@ -153,8 +147,7 @@ const VELOCITY_REF = 2400
 const PERSPECTIVE = 1000
 const VISIBILITY_MARGIN = 0.25
 
-const clamp = (value: number, min: number, max: number) =>
-	Math.min(Math.max(value, min), max)
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
 
 const easeInOutSine = (t: number) => 0.5 - 0.5 * Math.cos(Math.PI * t)
 
@@ -232,6 +225,9 @@ function createEngine(config: EngineConfig): Engine | undefined {
 	const slots = config.cards.map(createSlot)
 	if (slots.length === 0) return undefined
 
+	const stacks = Array.from(viewport.querySelectorAll<HTMLElement>("[data-stack]"), (stack) =>
+		Array.from(stack.children).filter((child): child is HTMLElement => child instanceof HTMLElement)
+	)
 	const axis = isMobile ? AXES.horizontal : AXES.vertical
 	const imageScale = reduceMotion ? 1 : IMAGE_SCALE
 	const targets = createSpringRecord()
@@ -247,10 +243,11 @@ function createEngine(config: EngineConfig): Engine | undefined {
 	let extent = 1
 	let pitch = 1
 	let trackTarget = 0
-	let settleTarget = 0
 	let writtenPosition = Number.NaN
+	let writtenIndex = Number.NaN
+	let writtenScroll = Number.NaN
 	let lastActive = -1
-	let mode: Mode = "scroll"
+	let phase: Phase = "scroll"
 	let trigger: ScrollTriggerStatic | undefined
 	let visible = false
 	let awake = false
@@ -277,8 +274,7 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		centers = slots.map(({ center }) => center)
 		distance = Math.max(centers.at(-1) ?? 0, 0)
 		pitch = centers.length > 1 ? distance / (centers.length - 1) : extent
-		snapProgress =
-			distance > 0 ? centers.map((center) => clamp(center / distance, 0, 1)) : [0]
+		snapProgress = distance > 0 ? centers.map((center) => clamp(center / distance, 0, 1)) : [0]
 		section.style.height = `${viewport.clientHeight + distance}px`
 	}
 
@@ -286,6 +282,19 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		if (!trigger) return window.scrollY
 		const span = trigger.end - trigger.start
 		return trigger.start + (distance > 0 ? (center / distance) * span : 0)
+	}
+
+	function syncScroll() {
+		const y = scrollPositionFor(clamp(trackState.position, 0, distance))
+		if (Math.abs(y - writtenScroll) < 0.5) return
+		writtenScroll = y
+		scrollTo(y)
+	}
+
+	function endSpring() {
+		syncScroll()
+		phase = "scroll"
+		writtenScroll = Number.NaN
 	}
 
 	function paint(slot: Slot) {
@@ -303,6 +312,18 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		slot.image.style.opacity = String(DIM_MIN + (1 - DIM_MIN) * slot.focus)
 	}
 
+	function writeStacks() {
+		const index = clamp(trackState.position / pitch, 0, slots.length - 1)
+		if (index === writtenIndex) return
+		writtenIndex = index
+
+		for (const stack of stacks) {
+			for (const [position, item] of stack.entries()) {
+				item.style.translate = `0 calc(${position - index} * (100% + var(--stack-gap)))`
+			}
+		}
+	}
+
 	function follow(factor: number, delta: number) {
 		const previous = trackState.position
 		trackState.position = approach(previous, trackTarget, factor)
@@ -310,33 +331,28 @@ function createEngine(config: EngineConfig): Engine | undefined {
 	}
 
 	function stepTrack(smooth: Smooth, delta: number) {
-		if (mode === "drag") {
+		if (phase === "drag") {
 			follow(smooth(DRAG_FOLLOW_RATE), delta)
 			return
 		}
 
-		if (mode === "scroll") {
+		if (phase === "scroll") {
 			follow(smooth(TRACK_RATE), delta)
 			return
 		}
 
-		if (reduceMotion) {
-			trackState.position = trackTarget
-			trackState.velocity = 0
-			mode = "scroll"
-			return
+		if (!reduceMotion) {
+			stepSpring(trackState, trackTarget, SPRING_OMEGA, delta)
+
+			const resting =
+				Math.abs(trackTarget - trackState.position) < REST_DISTANCE &&
+				Math.abs(trackState.velocity) < REST_VELOCITY
+			if (!resting) return
 		}
-
-		stepSpring(trackState, trackTarget, SPRING_OMEGA, delta)
-
-		const resting =
-			Math.abs(trackTarget - trackState.position) < REST_DISTANCE &&
-			Math.abs(trackState.velocity) < REST_VELOCITY
-		if (!resting) return
 
 		trackState.position = trackTarget
 		trackState.velocity = 0
-		mode = "scroll"
+		endSpring()
 	}
 
 	function render(delta: number, instant: boolean) {
@@ -350,15 +366,19 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		if (instant) {
 			trackState.position = trackTarget
 			trackState.velocity = 0
-			if (mode === "settle") mode = "scroll"
+			if (phase === "spring") endSpring()
 		} else {
 			stepTrack(smooth, delta)
 		}
+
+		if (phase !== "scroll") syncScroll()
 
 		if (trackState.position !== writtenPosition) {
 			writtenPosition = trackState.position
 			track.style.transform = axis.translate(-trackState.position)
 		}
+
+		writeStacks()
 
 		const skewTarget = reduceMotion
 			? 0
@@ -381,9 +401,7 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		}
 
 		let animating =
-			mode !== "scroll" ||
-			trackState.position !== trackTarget ||
-			trackState.velocity !== 0
+			phase !== "scroll" || trackState.position !== trackTarget || trackState.velocity !== 0
 		let nearest = Infinity
 		let nearestIndex = 0
 
@@ -453,26 +471,17 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			start: "top top",
 			end: () => `+=${distance}`,
 			onUpdate: (self) => {
-				if (mode === "drag") return
-
-				const next = self.progress * distance
-				if (mode === "settle") {
-					if (Math.abs(next - settleTarget) <= SETTLE_TOLERANCE) return
-					mode = "scroll"
-				}
-
-				trackTarget = next
+				if (phase !== "scroll") return
+				trackTarget = self.progress * distance
 				wake()
 			},
 			onRefresh: (self) => {
-				if (mode !== "drag") {
-					mode = "scroll"
-					trackTarget = self.progress * distance
-				}
+				if (phase === "scroll") trackTarget = self.progress * distance
 				render(0, true)
 			},
 			snap: {
-				snapTo: (progress: number) => snapToNearest(snapProgress, progress),
+				snapTo: (progress: number) =>
+					phase === "scroll" ? snapToNearest(snapProgress, progress) : progress,
 				inertia: false,
 				duration: { min: 0.25, max: 0.5 },
 				ease: "power3.out",
@@ -499,8 +508,9 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			Math.abs(trackTarget - trackState.position) > CATCH_DISTANCE
 
 		function resumeScroll() {
-			mode = "scroll"
-			if (trigger) trackTarget = trigger.progress * distance
+			phase = "scroll"
+			writtenScroll = Number.NaN
+			trackTarget = trigger ? trigger.progress * distance : trackState.position
 			wake()
 		}
 
@@ -509,10 +519,8 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			const reach = pitch * MAX_THROW_CARDS
 			const projected = fresh ? clamp(drag.velocity * THROW_TIME, -reach, reach) : 0
 
-			settleTarget = snapToNearest(centers, trackTarget + projected)
-			trackTarget = settleTarget
-			mode = "settle"
-			scrollTo(scrollPositionFor(settleTarget))
+			trackTarget = snapToNearest(centers, trackTarget + projected)
+			phase = "spring"
 			wake()
 		}
 
@@ -532,7 +540,7 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			if (drag.catching) {
 				trackTarget = trackState.position
 				trackState.velocity = 0
-				mode = "drag"
+				phase = "drag"
 			}
 
 			drag.startPosition = trackState.position
@@ -554,17 +562,9 @@ function createEngine(config: EngineConfig): Engine | undefined {
 					return
 				}
 
-				try {
-					surface.setPointerCapture(event.pointerId)
-				} catch {
-					drag.pointerId = -1
-					if (drag.catching) resumeScroll()
-					return
-				}
-
 				drag.active = true
 				drag.startPosition = trackState.position + dx
-				mode = "drag"
+				phase = "drag"
 				bridge.onDragStart()
 			}
 
@@ -579,12 +579,7 @@ function createEngine(config: EngineConfig): Engine | undefined {
 				drag.lastX = event.clientX
 			}
 
-			trackTarget = rubberBand(
-				drag.startPosition - dx,
-				0,
-				distance,
-				extent * RUBBER_LIMIT
-			)
+			trackTarget = rubberBand(drag.startPosition - dx, 0, distance, extent * RUBBER_LIMIT)
 			wake()
 		}
 
@@ -592,10 +587,17 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			if (event.pointerId !== drag.pointerId) return
 
 			const wasActive = drag.active
+			const wasCatching = drag.catching
 			drag.pointerId = -1
 			drag.active = false
 
-			if (!wasActive && !drag.catching) return
+			if (!wasActive) {
+				if (!wasCatching) return
+				if (event.type === "pointercancel") {
+					resumeScroll()
+					return
+				}
+			}
 
 			suppressClick = true
 			window.clearTimeout(clickTimer)
@@ -608,15 +610,21 @@ function createEngine(config: EngineConfig): Engine | undefined {
 
 		function onClick(event: MouseEvent) {
 			if (!suppressClick) return
+			if (!(event.target instanceof Node) || !surface.contains(event.target)) return
 			event.preventDefault()
 			event.stopPropagation()
 		}
 
+		function onWheel() {
+			if (phase === "spring") resumeScroll()
+		}
+
 		surface.addEventListener("pointerdown", onPointerDown, { passive: true, signal })
-		surface.addEventListener("pointermove", onPointerMove, { passive: true, signal })
-		surface.addEventListener("pointerup", onPointerEnd, { passive: true, signal })
-		surface.addEventListener("pointercancel", onPointerEnd, { passive: true, signal })
-		surface.addEventListener("click", onClick, { capture: true, signal })
+		window.addEventListener("pointermove", onPointerMove, { passive: true, signal })
+		window.addEventListener("pointerup", onPointerEnd, { passive: true, signal })
+		window.addEventListener("pointercancel", onPointerEnd, { passive: true, signal })
+		window.addEventListener("click", onClick, { capture: true, signal })
+		window.addEventListener("wheel", onWheel, { passive: true, signal })
 
 		return () => {
 			window.clearTimeout(clickTimer)
@@ -707,7 +715,7 @@ export function useCarouselEngine({
 
 	function scrollTo(y: number) {
 		if (lenis) lenis.scrollTo(y, { immediate: true })
-		else window.scrollTo({ top: y, behavior: "auto" })
+		else window.scrollTo({ top: y, behavior: "instant" })
 	}
 
 	useGsapContext(({ gsap, ScrollTrigger }) => {

@@ -61,7 +61,7 @@ const SIZES: Record<Size, SizeConfig> = {
 			"h-[clamp(1.75rem,1.662rem_+_0.352vw,2rem)] w-[clamp(1.75rem,1.662rem_+_0.352vw,2rem)]",
 		prClass: "pr-[clamp(1.75rem,1.662rem_+_0.352vw,2rem)]",
 		iconClass: "w-[clamp(0.6875rem,0.6435rem_+_0.176vw,0.8125rem)]",
-		text: "text-xs",
+		text: "text-xs text-fit-x",
 	},
 	small: {
 		pillClass:
@@ -70,7 +70,7 @@ const SIZES: Record<Size, SizeConfig> = {
 			"h-[clamp(2.125rem,1.993rem_+_0.528vw,2.5rem)] w-[clamp(2.125rem,1.993rem_+_0.528vw,2.5rem)]",
 		prClass: "pr-[clamp(2.125rem,1.993rem_+_0.528vw,2.5rem)]",
 		iconClass: "w-[clamp(0.8125rem,0.7575rem_+_0.22vw,0.96875rem)]",
-		text: "text-sm",
+		text: "text-sm text-fit-x",
 	},
 	normal: {
 		pillClass:
@@ -79,7 +79,7 @@ const SIZES: Record<Size, SizeConfig> = {
 			"h-[clamp(2.5625rem,2.408rem_+_0.616vw,3rem)] w-[clamp(2.5625rem,2.408rem_+_0.616vw,3rem)]",
 		prClass: "pr-[clamp(2.5625rem,2.408rem_+_0.616vw,3rem)]",
 		iconClass: "w-[clamp(0.9375rem,0.8714rem_+_0.264vw,1.125rem)]",
-		text: "text-base",
+		text: "text-base text-fit-x",
 	},
 	medium: {
 		pillClass:
@@ -88,7 +88,7 @@ const SIZES: Record<Size, SizeConfig> = {
 			"h-[clamp(3rem,2.824rem_+_0.704vw,3.5rem)] w-[clamp(3rem,2.824rem_+_0.704vw,3.5rem)]",
 		prClass: "pr-[clamp(3rem,2.824rem_+_0.704vw,3.5rem)]",
 		iconClass: "w-[clamp(1.09375rem,1.0168rem_+_0.308vw,1.3125rem)]",
-		text: "text-lg",
+		text: "text-lg text-fit-x",
 	},
 	large: {
 		pillClass:
@@ -97,7 +97,7 @@ const SIZES: Record<Size, SizeConfig> = {
 			"h-[clamp(3.625rem,3.405rem_+_0.88vw,4.25rem)] w-[clamp(3.625rem,3.405rem_+_0.88vw,4.25rem)]",
 		prClass: "pr-[clamp(3.625rem,3.405rem_+_0.88vw,4.25rem)]",
 		iconClass: "w-[clamp(1.3125rem,1.2245rem_+_0.352vw,1.5625rem)]",
-		text: "text-xl",
+		text: "text-xl text-fit-x",
 	},
 }
 

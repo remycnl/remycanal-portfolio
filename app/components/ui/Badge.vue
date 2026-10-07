@@ -436,12 +436,12 @@ useGsapContext(() => {
 						class="absolute inset-0 flex items-center justify-center opacity-0"
 					>
 						<span
-							class="flex w-max items-center gap-[0.7em] px-[1.5em] whitespace-nowrap"
+							class="box-fit inline-block w-max items-center gap-[0.7em] px-[1.5em] whitespace-nowrap"
 						>
 							<span
 								v-if="item === 'loading'"
 								data-spinner
-								class="size-[1em] shrink-0 rounded-full border-[0.14em] border-current border-t-transparent"
+								class="shrink-0 rounded-full"
 							/>
 							{{ labelMap[item] }}
 						</span>

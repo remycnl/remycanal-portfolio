@@ -1,10 +1,40 @@
-/* Poids variables - une seule utility fonctionnelle au lieu de 7 blocs */
+@theme {
+	--leading-fit: 1.25;
+}
+
 @utility font-lineal-* {
 	font-family: var(--font-lineal);
 	font-variation-settings: "wght" --value(--lineal-weight-*);
 }
 
-/* Font Features - Lineal */
+@utility text-fit {
+	--tw-leading: var(--leading-fit);
+	line-height: var(--leading-fit);
+	text-box: trim-both cap alphabetic;
+}
+
+@utility text-fit-x {
+	--tw-leading: var(--leading-fit);
+	line-height: var(--leading-fit);
+	text-box: trim-both ex alphabetic;
+}
+
+@utility text-fit-none {
+	text-box: normal;
+}
+
+@utility box-fit {
+	--tw-leading: var(--leading-fit);
+	padding-block: var(--fit-y, 0.5em);
+	padding-inline: var(--fit-x, 0.9em);
+	line-height: var(--leading-fit);
+	text-box: trim-both cap alphabetic;
+}
+
+@utility size-cap {
+	width: 1cap;
+	height: 1cap;
+}
 
 @utility lineal-din {
 	font-feature-settings: "ss01";
@@ -29,8 +59,6 @@
 @utility lineal-dlig {
 	font-feature-settings: "dlig";
 }
-
-/* Font Features - VG5000 */
 
 @utility vg-alt {
 	font-feature-settings: "aalt";
