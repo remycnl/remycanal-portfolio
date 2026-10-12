@@ -12,3 +12,4 @@ minimumReleaseAgeExclude:
   - nuxt@4.5.2
   - "@vue/language-core@3.3.12"
   - vue-tsc@3.3.12
+  - vue-router@5.4.0

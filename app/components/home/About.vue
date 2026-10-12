@@ -11,7 +11,7 @@
 				v-text-reveal="{ theme: 'violet' }"
 				class="font-vg5000 text-gray-dark text-end text-sm md:text-lg"
 			>
-				Based in France
+				Based in France / Remote worldwide.
 			</h3>
 			<UiShapeStripes class="text-violet mb-1.5 h-3 w-3 md:h-5 md:w-5" />
 		</div>
@@ -19,12 +19,16 @@
 			class="py-section text-gray-dark relative max-w-6xl text-center text-2xl lg:text-5xl"
 		>
 			<div class="py-section max-w-xl lg:max-w-6xl">
-				<h2 v-text-reveal="{ theme:'violet', singlePhrase: true, speed: 50 }">
-					I craft
-					<span class="text-white">distinctive digital experiences</span> through
-					thoughtful <span class="text-white">design</span>, creative
-					<span class="text-white">development</span>, and refined
-					<span class="text-white">interactions</span>.
+				<h2 v-text-reveal="{ theme: 'violet', singlePhrase: true, speed: 50 }">
+					Bonjour, I'm <span class="text-white">Rémy Canal</span>. I make websites that
+					look good, feel good, and care about the little things.<br />
+
+					<span class="mt-6 inline-block">
+						I bring together <span class="text-white">design</span>,
+						<span class="text-white">code</span>, and
+						<span class="text-white">motion</span> to create digital experiences that feel
+						truly yours.
+					</span>
 				</h2>
 			</div>
 			<UiPopImage

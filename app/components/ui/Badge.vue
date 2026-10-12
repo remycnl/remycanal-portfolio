@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { GsapInstance } from "@/composables/useGsap"
-
 export type BadgeState = "idle" | "press" | "drag" | "loading" | "view"
 
 export interface BadgeProps {
@@ -10,7 +8,7 @@ export interface BadgeProps {
 	textColor?: string
 	/** Externally controlled state. When defined it overrides the pointer-derived states (idle, press, drag). */
 	state?: BadgeState
-	/** Label per state. Missing states fall back to the built-in default label. States sharing the same label share the same text layer, so switching between them only animates the pill. */
+	/** Label per state. Missing states fall back to the built-in default label. The text animates whenever the resolved label changes, whether the state or the label itself changed. States that resolve to the same label only animate the pill scale. */
 	labels?: Partial<Record<BadgeState, string>>
 	/** Controlled visibility. When defined, the badge is shown only while `true`. When undefined, it shows whenever the pointer is inside the boundary. */
 	active?: boolean
@@ -32,6 +30,13 @@ interface Setters {
 	rotation: Setter
 	scaleX: Setter
 	scaleY: Setter
+}
+
+/** One text layer of the pill. A new layer is created each time the resolved face changes. */
+interface Layer {
+	id: number
+	label: string
+	loading: boolean
 }
 
 const STATES: readonly BadgeState[] = ["idle", "press", "drag", "loading", "view"]
@@ -62,6 +67,8 @@ const MAX_STRETCH = 0.22
 const SETTLE_DISTANCE = 0.05
 const SETTLE_SPEED = 2
 const HIDDEN_SCALE = 0.4
+/** Below this opacity the pill counts as hidden: changes are applied instantly instead of animated. */
+const SHOWN_OPACITY = 0.02
 
 const props = withDefaults(defineProps<BadgeProps>(), {
 	bgColor: "var(--color-lime)",
@@ -92,23 +99,26 @@ const labelMap = computed<Record<BadgeState, string>>(
 		) as Record<BadgeState, string>
 )
 
-function resolveItem(state: BadgeState): BadgeState {
-	if (state === "loading") return state
-	return (
-		STATES.find((s) => s !== "loading" && labelMap.value[s] === labelMap.value[state]) ??
-		state
-	)
+/** What the pill must currently display. */
+const face = computed(() => ({
+	label: labelMap.value[activeState.value],
+	loading: activeState.value === "loading",
+}))
+
+/** Primitive key: a new `labels` object with identical content never triggers a transition. */
+const faceKey = computed(() => `${face.value.loading ? "l" : "t"}|${face.value.label}`)
+
+let layerSeq = 0
+function createLayer(): Layer {
+	return { id: ++layerSeq, ...face.value }
 }
 
-const itemStates = computed(() => STATES.filter((state) => resolveItem(state) === state))
-
-const itemRefs = new Map<BadgeState, HTMLElement>()
-const widths = new Map<BadgeState, number>()
+const layers = shallowRef<Layer[]>([createLayer()])
+const layerEls = new Map<number, HTMLElement>()
 
 let setters: Setters | null = null
-let spinnerTween: ReturnType<GsapInstance["to"]> | null = null
+let currentLayerId = layers.value[0]!.id
 let displayed: BadgeState = activeState.value
-let shownItem: BadgeState = resolveItem(displayed)
 let ready = false
 let reducedMotion = false
 let visible = false
@@ -125,28 +135,95 @@ let targetY = 0
 let velocityX = 0
 let velocityY = 0
 
-function registerItem(state: BadgeState, el: unknown) {
-	if (el instanceof HTMLElement) itemRefs.set(state, el)
-	else itemRefs.delete(state)
+function duration(value: number) {
+	return reducedMotion ? 0 : value
 }
 
-function measureWidths() {
-	for (const [state, item] of itemRefs) {
-		const inner = item.firstElementChild
-		if (inner instanceof HTMLElement) widths.set(state, inner.offsetWidth)
-	}
+function isShown() {
+	const presence = presenceRef.value
+	return !!presence && Number(gsap.getProperty(presence, "opacity")) > SHOWN_OPACITY
 }
 
-function refreshLayout() {
+function registerLayer(id: number, el: unknown) {
+	if (el instanceof HTMLElement) layerEls.set(id, el)
+	else layerEls.delete(id)
+}
+
+function measureLayer(id: number) {
+	const inner = layerEls.get(id)?.firstElementChild
+	return inner instanceof HTMLElement ? inner.offsetWidth : 0
+}
+
+function dropLayer(id: number) {
+	const el = layerEls.get(id)
+	if (el) gsap.killTweensOf(el)
+	layers.value = layers.value.filter((layer) => layer.id !== id)
+}
+
+function syncCurrentWidth() {
 	const pill = pillRef.value
 	if (!ready || !pill) return
-	measureWidths()
-	shownItem = resolveItem(displayed)
-	for (const [state, item] of itemRefs) {
-		gsap.set(item, { opacity: state === shownItem ? 1 : 0, yPercent: 0 })
-	}
-	const width = widths.get(shownItem)
+	const width = measureLayer(currentLayerId)
 	if (width) gsap.set(pill, { width })
+}
+
+/** Animated transition: the new layer enters from below, the old ones leave through the top. */
+function swapTo(layer: Layer) {
+	const pill = pillRef.value
+	const el = layerEls.get(layer.id)
+	if (!ready || !pill || !el) return
+
+	currentLayerId = layer.id
+
+	for (const [id, item] of layerEls) {
+		if (id === layer.id) continue
+		if (Number(gsap.getProperty(item, "opacity")) > 0.01) {
+			gsap.to(item, {
+				opacity: 0,
+				yPercent: -80,
+				duration: duration(0.2),
+				ease: "power2.in",
+				overwrite: true,
+				onComplete: () => {
+					if (id !== currentLayerId) dropLayer(id)
+				},
+			})
+		} else {
+			dropLayer(id)
+		}
+	}
+
+	gsap.set(el, { opacity: 0, yPercent: 80 })
+	gsap.to(el, {
+		opacity: 1,
+		yPercent: 0,
+		duration: duration(0.35),
+		delay: reducedMotion ? 0 : 0.08,
+		ease: "power3.out",
+		overwrite: true,
+	})
+
+	const width = measureLayer(layer.id)
+	if (width) {
+		gsap.to(pill, {
+			width,
+			duration: duration(0.5),
+			ease: "expo.out",
+			overwrite: "auto",
+		})
+	}
+}
+
+/** Instant transition, used while the pill is hidden. */
+function snapTo(layer: Layer) {
+	const el = layerEls.get(layer.id)
+	if (!ready || !el) return
+	currentLayerId = layer.id
+	for (const id of [...layerEls.keys()]) {
+		if (id !== layer.id) dropLayer(id)
+	}
+	gsap.set(el, { opacity: 1, yPercent: 0 })
+	syncCurrentWidth()
 }
 
 function writeFrame() {
@@ -217,7 +294,7 @@ function reveal() {
 	gsap.to(presence, {
 		opacity: 1,
 		scale: 1,
-		duration: 0.5,
+		duration: duration(0.5),
 		ease: "back.out(1.8)",
 		overwrite: true,
 	})
@@ -231,7 +308,7 @@ function conceal() {
 	gsap.to(presence, {
 		opacity: 0,
 		scale: HIDDEN_SCALE,
-		duration: 0.3,
+		duration: duration(0.3),
 		ease: "power3.in",
 		overwrite: true,
 		onComplete: () => {
@@ -243,52 +320,20 @@ function conceal() {
 	})
 }
 
-function pauseSpinner() {
-	if (shownItem !== "loading") spinnerTween?.pause()
-}
-
-function transitionTo(next: BadgeState) {
+function scalePill(next: BadgeState) {
 	const pill = pillRef.value
 	if (!ready || !pill || next === displayed) return
 	displayed = next
-	const nextItem = resolveItem(next)
 
-	if (nextItem !== shownItem) {
-		shownItem = nextItem
-		for (const [state, item] of itemRefs) {
-			const opacity = Number(gsap.getProperty(item, "opacity"))
-			if (state === nextItem) {
-				if (opacity < 0.05) gsap.set(item, { yPercent: 80 })
-				gsap.to(item, {
-					opacity: 1,
-					yPercent: 0,
-					duration: 0.35,
-					delay: 0.08,
-					ease: "power3.out",
-					overwrite: true,
-				})
-			} else if (opacity > 0) {
-				gsap.to(item, {
-					opacity: 0,
-					yPercent: -80,
-					duration: 0.2,
-					ease: "power2.in",
-					overwrite: true,
-					onComplete: state === "loading" ? pauseSpinner : undefined,
-				})
-			}
-		}
+	if (!isShown()) {
+		gsap.killTweensOf(pill, "scale")
+		gsap.set(pill, { scale: STATE_SCALE[next] })
+		return
 	}
 
-	if (nextItem === "loading") spinnerTween?.play()
-
-	const width = widths.get(nextItem)
-	if (width) {
-		gsap.to(pill, { width, duration: 0.5, ease: "expo.out", overwrite: "auto" })
-	}
 	gsap.to(pill, {
 		scale: STATE_SCALE[next],
-		duration: next === "press" ? 0.2 : 0.7,
+		duration: duration(next === "press" ? 0.2 : 0.7),
 		ease: next === "press" ? "power3.out" : "elastic.out(1, 0.55)",
 		overwrite: "auto",
 	})
@@ -329,7 +374,23 @@ function release() {
 	interactionState.value = "idle"
 }
 
-watch(activeState, (next) => transitionTo(next))
+watch(activeState, scalePill)
+
+// Text transition: fires for state changes AND for label changes within the same state.
+watch(faceKey, async () => {
+	const layer = createLayer()
+	if (!ready) {
+		layers.value = [layer]
+		currentLayerId = layer.id
+		return
+	}
+	const animate = isShown()
+	layers.value = [...layers.value, layer]
+	await nextTick()
+	if (!ready) return
+	if (animate) swapTo(layer)
+	else snapTo(layer)
+})
 
 watch(
 	() => props.active,
@@ -339,11 +400,6 @@ watch(
 		else if (hasPointer) reveal()
 	}
 )
-
-watch(labelMap, async () => {
-	await nextTick()
-	refreshLayout()
-})
 
 useGsapContext(() => {
 	const root = rootRef.value
@@ -368,26 +424,15 @@ useGsapContext(() => {
 	gsap.set(root, { xPercent: -50, yPercent: -50 })
 	gsap.set(presence, { opacity: 0, scale: HIDDEN_SCALE })
 	displayed = activeState.value
-	measureWidths()
-	shownItem = resolveItem(displayed)
-	const initialItem = itemRefs.get(shownItem)
-	if (initialItem) gsap.set(initialItem, { opacity: 1 })
-	const initialWidth = widths.get(shownItem)
-	if (initialWidth) gsap.set(pill, { width: initialWidth })
+
+	// Initial layer: shown immediately, no transition.
+	currentLayerId = layers.value.at(-1)!.id
+	const initial = layerEls.get(currentLayerId)
+	if (initial) gsap.set(initial, { opacity: 1, yPercent: 0 })
+	syncCurrentWidth()
 	gsap.set(pill, { scale: STATE_SCALE[displayed] })
 
-	const spinner = itemRefs.get("loading")?.querySelector("[data-spinner]")
-	if (spinner) {
-		spinnerTween = gsap.to(spinner, {
-			rotation: 360,
-			duration: 0.8,
-			ease: "none",
-			repeat: -1,
-			paused: shownItem !== "loading",
-		})
-	}
-
-	document.fonts?.ready.then(refreshLayout)
+	document.fonts?.ready.then(syncCurrentWidth)
 
 	target.addEventListener("pointermove", onPointerMove, { passive: true, capture: true })
 	target.addEventListener("pointerleave", onPointerLeave, { passive: true })
@@ -408,10 +453,8 @@ useGsapContext(() => {
 		window.removeEventListener("blur", release)
 		gsap.ticker.remove(tick)
 		tickerActive = false
-		spinnerTween?.kill()
-		spinnerTween = null
 		setters = null
-		gsap.killTweensOf([root, motion, presence, pill, ...itemRefs.values()])
+		gsap.killTweensOf([root, motion, presence, pill, ...layerEls.values()])
 	}
 }, rootRef)
 </script>
@@ -430,20 +473,19 @@ useGsapContext(() => {
 					:style="{ backgroundColor: bgColor, color: textColor }"
 				>
 					<span
-						v-for="item in itemStates"
-						:key="item"
-						:ref="(el) => registerItem(item, el)"
-						class="absolute inset-0 flex items-center justify-center opacity-0"
+						v-for="layer in layers"
+						:key="layer.id"
+						:ref="(el) => registerLayer(layer.id, el)"
+						class="absolute inset-0 flex items-center justify-center opacity-0 will-change-[transform,opacity]"
 					>
 						<span
-							class="box-fit inline-block w-max items-center gap-[0.7em] px-[1.5em] whitespace-nowrap"
+							class="box-fit inline-flex w-max items-center gap-[0.7em] px-[1.5em] whitespace-nowrap"
 						>
 							<span
-								v-if="item === 'loading'"
-								data-spinner
-								class="shrink-0 rounded-full"
+								v-if="layer.loading"
+								class="size-[0.9em] shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-[spin_1.6s_linear_infinite]"
 							/>
-							{{ labelMap[item] }}
+							{{ layer.label }}
 						</span>
 					</span>
 				</div>

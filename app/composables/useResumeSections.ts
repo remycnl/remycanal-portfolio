@@ -22,7 +22,9 @@ export const resumeSectionLabels: Record<ResumeSectionId, string> = {
 	languages: "Langues",
 }
 
-export function useResumeSections(resume: MaybeRefOrGetter<ResumeCollectionItem | null | undefined>) {
+export function useResumeSections(
+	resume: MaybeRefOrGetter<ResumeCollectionItem | null | undefined>
+) {
 	return computed(() => {
 		const value = toValue(resume)
 		if (!value) return []

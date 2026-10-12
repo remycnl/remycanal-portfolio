@@ -61,7 +61,7 @@ export default defineContentConfig({
 							description: z.string().optional(),
 							highlights: z.array(z.string().min(1)).default([]),
 							skills: z.array(z.string().min(1)).default([]),
-						}),
+						})
 					)
 					.default([]),
 				education: z
@@ -72,7 +72,7 @@ export default defineContentConfig({
 							field: z.string().optional(),
 							period: periodSchema,
 							description: z.string().optional(),
-						}),
+						})
 					)
 					.default([]),
 				projects: z
@@ -83,7 +83,7 @@ export default defineContentConfig({
 							period: periodSchema.optional(),
 							description: z.string().min(1),
 							skills: z.array(z.string().min(1)).default([]),
-						}),
+						})
 					)
 					.default([]),
 				skills: z
@@ -91,7 +91,7 @@ export default defineContentConfig({
 						z.object({
 							label: z.string().min(1),
 							items: z.array(z.string().min(1)).min(1),
-						}),
+						})
 					)
 					.default([]),
 				honors: z
@@ -101,7 +101,7 @@ export default defineContentConfig({
 							issuer: z.string().min(1),
 							date: monthSchema,
 							description: z.string().optional(),
-						}),
+						})
 					)
 					.default([]),
 				languages: z
@@ -109,7 +109,7 @@ export default defineContentConfig({
 						z.object({
 							name: z.string().min(1),
 							level: z.string().min(1),
-						}),
+						})
 					)
 					.default([]),
 			}),

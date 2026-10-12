@@ -105,7 +105,14 @@ const AXES = {
 	},
 } as const
 
-const SPRING_KEYS: SpringKey[] = ["focus", "press", "skew", "shift", "pointerX", "pointerY"]
+const SPRING_KEYS: SpringKey[] = [
+	"focus",
+	"press",
+	"skew",
+	"shift",
+	"pointerX",
+	"pointerY",
+]
 
 const RATES: SpringRecord = {
 	focus: 10,
@@ -147,7 +154,8 @@ const VELOCITY_REF = 2400
 const PERSPECTIVE = 1000
 const VISIBILITY_MARGIN = 0.25
 
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
+const clamp = (value: number, min: number, max: number) =>
+	Math.min(Math.max(value, min), max)
 
 const easeInOutSine = (t: number) => 0.5 - 0.5 * Math.cos(Math.PI * t)
 
@@ -225,8 +233,12 @@ function createEngine(config: EngineConfig): Engine | undefined {
 	const slots = config.cards.map(createSlot)
 	if (slots.length === 0) return undefined
 
-	const stacks = Array.from(viewport.querySelectorAll<HTMLElement>("[data-stack]"), (stack) =>
-		Array.from(stack.children).filter((child): child is HTMLElement => child instanceof HTMLElement)
+	const stacks = Array.from(
+		viewport.querySelectorAll<HTMLElement>("[data-stack]"),
+		(stack) =>
+			Array.from(stack.children).filter(
+				(child): child is HTMLElement => child instanceof HTMLElement
+			)
 	)
 	const axis = isMobile ? AXES.horizontal : AXES.vertical
 	const imageScale = reduceMotion ? 1 : IMAGE_SCALE
@@ -274,7 +286,8 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		centers = slots.map(({ center }) => center)
 		distance = Math.max(centers.at(-1) ?? 0, 0)
 		pitch = centers.length > 1 ? distance / (centers.length - 1) : extent
-		snapProgress = distance > 0 ? centers.map((center) => clamp(center / distance, 0, 1)) : [0]
+		snapProgress =
+			distance > 0 ? centers.map((center) => clamp(center / distance, 0, 1)) : [0]
 		section.style.height = `${viewport.clientHeight + distance}px`
 	}
 
@@ -401,7 +414,9 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		}
 
 		let animating =
-			phase !== "scroll" || trackState.position !== trackTarget || trackState.velocity !== 0
+			phase !== "scroll" ||
+			trackState.position !== trackTarget ||
+			trackState.velocity !== 0
 		let nearest = Infinity
 		let nearestIndex = 0
 
@@ -579,7 +594,12 @@ function createEngine(config: EngineConfig): Engine | undefined {
 				drag.lastX = event.clientX
 			}
 
-			trackTarget = rubberBand(drag.startPosition - dx, 0, distance, extent * RUBBER_LIMIT)
+			trackTarget = rubberBand(
+				drag.startPosition - dx,
+				0,
+				distance,
+				extent * RUBBER_LIMIT
+			)
 			wake()
 		}
 

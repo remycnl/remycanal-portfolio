@@ -16,12 +16,16 @@ const parseMonth = (value: string) => {
 	return new Date(Date.UTC(Number(year), Number(month) - 1, 1))
 }
 
-const toMonthIndex = (date: Date) => date.getUTCFullYear() * MONTHS_PER_YEAR + date.getUTCMonth()
+const toMonthIndex = (date: Date) =>
+	date.getUTCFullYear() * MONTHS_PER_YEAR + date.getUTCMonth()
 
 const formatDuration = (months: number) => {
 	const years = Math.floor(months / MONTHS_PER_YEAR)
 	const rest = months % MONTHS_PER_YEAR
-	return [years > 0 ? `${years} ${years > 1 ? "ans" : "an"}` : "", rest > 0 ? `${rest} mois` : ""]
+	return [
+		years > 0 ? `${years} ${years > 1 ? "ans" : "an"}` : "",
+		rest > 0 ? `${rest} mois` : "",
+	]
 		.filter(Boolean)
 		.join(" ")
 }

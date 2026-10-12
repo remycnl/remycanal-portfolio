@@ -5,10 +5,10 @@
 			<span v-if="location">{{ location }}</span>
 		</template>
 
-		<div class="text-black flex flex-col gap-4">
+		<div class="flex flex-col gap-4 text-black">
 			<div class="flex flex-col gap-1">
 				<h3
-					class="text-2xl leading-tight tracking-tight [font-weight:var(--lineal-weight-bold)] md:text-3xl"
+					class="text-2xl leading-tight [font-weight:var(--lineal-weight-bold)] tracking-tight md:text-3xl"
 				>
 					<component
 						:is="href ? 'a' : 'span'"

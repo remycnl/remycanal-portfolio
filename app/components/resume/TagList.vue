@@ -3,7 +3,7 @@
 		<li
 			v-for="tag in tags"
 			:key="tag"
-			class="border-black text-black rounded-full border px-3 py-1 text-sm"
+			class="rounded-full border border-black px-3 py-1 text-sm text-black"
 		>
 			{{ tag }}
 		</li>

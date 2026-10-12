@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-if="resume"
-		class="bg-white min-h-screen section-p-xy selection:bg-lime selection:text-black"
+		class="section-p-xy selection:bg-lime min-h-screen bg-white selection:text-black"
 	>
 		<ResumeProfile
 			:name="resume.name"
@@ -15,12 +15,16 @@
 		/>
 		<ResumeNav :items="items" :active-id="activeId" />
 
-		<ResumeSection v-if="resume.about.length" id="about" :title="resumeSectionLabels.about">
+		<ResumeSection
+			v-if="resume.about.length"
+			id="about"
+			:title="resumeSectionLabels.about"
+		>
 			<div class="flex flex-col gap-8">
 				<p
 					v-for="paragraph in resume.about"
 					:key="paragraph"
-					class="text-black text-[clamp(1.5rem,3vw,3rem)] leading-[1.15] tracking-tight"
+					class="text-[clamp(1.5rem,3vw,3rem)] leading-[1.15] tracking-tight text-black"
 				>
 					{{ paragraph }}
 				</p>
@@ -85,7 +89,11 @@
 			</ol>
 		</ResumeSection>
 
-		<ResumeSection v-if="resume.skills.length" id="skills" :title="resumeSectionLabels.skills">
+		<ResumeSection
+			v-if="resume.skills.length"
+			id="skills"
+			:title="resumeSectionLabels.skills"
+		>
 			<ul>
 				<ResumeRow v-for="group in resume.skills" :key="group.label">
 					<template #aside>{{ group.label }}</template>
@@ -120,7 +128,9 @@
 			<ul>
 				<ResumeRow v-for="language in resume.languages" :key="language.name">
 					<template #aside>{{ language.level }}</template>
-					<p class="text-black text-2xl tracking-tight [font-weight:var(--lineal-weight-bold)] md:text-3xl">
+					<p
+						class="text-2xl [font-weight:var(--lineal-weight-bold)] tracking-tight text-black md:text-3xl"
+					>
 						{{ language.name }}
 					</p>
 				</ResumeRow>
@@ -130,7 +140,9 @@
 </template>
 
 <script lang="ts" setup>
-const { data: resume } = await useAsyncData("resume", () => queryCollection("resume").first())
+const { data: resume } = await useAsyncData("resume", () =>
+	queryCollection("resume").first()
+)
 
 if (!resume.value) {
 	throw createError({ statusCode: 404, statusMessage: "Resume not found", fatal: true })

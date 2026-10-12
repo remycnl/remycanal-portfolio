@@ -1,22 +1,46 @@
 import type { Directive, Ref } from "vue"
-import type { GsapInstance, ScrollTriggerInstance } from "@/composables/useGsap"
+import type { GsapInstance } from "@/composables/useGsap"
+import { createRevealTrigger } from "@/utils/revealTrigger"
 import { readThemeColor } from "@/utils/theme/readThemeColor"
+
+/** Result of `sequence`. */
+interface RevealSequence {
+	/** Résolue quand le reveal peut jouer. Le texte reste masqué (phase `idle`) tant qu'elle ne l'est pas. */
+	opened: Promise<void>
+}
 
 interface TextRevealOptions {
 	/** Vitesse de propagation en caractères/seconde (plafonnée par MAX_TOTAL sur les longs textes). */
 	speed?: number
 	/** Irrégularité du rythme entre caractères (0 = régulier, 1 = très organique). */
 	jitter?: number
-	/** Point de déclenchement ScrollTrigger. Si omis, calculé selon la taille d'écran (voir getStart). */
+	/** Point de déclenchement ScrollTrigger. Si omis, calculé selon la taille d'écran (voir createRevealTrigger). */
 	start?: string
 	/** Couleur d'accent : nom du token `--color-*` du @theme (`"lime"`, `"violet"`…), `--color-x`, `var(--color-x)` ou couleur CSS. Par défaut `"lime"`. */
 	theme?: string
-	/** Délai (s) entre le démarrage de chaque bloc enfant (effet cascade). */
+	/**
+	 * Délai (s) entre le démarrage de chaque bloc enfant (effet cascade).
+	 * Par défaut, les blocs sont les enfants directs de l'élément. On peut les désigner avec
+	 * `data-text-reveal-block` : la valeur `words` révèle le bloc mot par mot (bien plus léger pour un
+	 * long texte).
+	 */
 	childStagger?: number
 	/** Si true, traite tout l'élément comme un seul bloc au lieu de découper par enfants. */
 	singlePhrase?: boolean
 	/** Si true, la directive ne fait rien : le texte reste affiché normalement (SSR inclus). */
 	disabled?: boolean
+	/** Si true, ignore `start` et joue le reveal dès que tous les waits sont terminés, sans attendre le scroll. */
+	immediate?: boolean
+	/** Décalage (s) entre éléments `immediate` démarrant dans la même vague, dans l'ordre du DOM. Par défaut 0.12. */
+	immediateStagger?: number
+	/** Décalage fixe (s) ajouté avant le démarrage du reveal. Par défaut 0. */
+	delay?: number
+	/**
+	 * Délègue le déclenchement à l'appelant (ex. une grille qui révèle ligne par ligne). Évaluée une fois
+	 * la mise en page stable, avant le découpage du texte. Quand elle est fournie, ni le ScrollTrigger
+	 * de la directive ni `immediate` ne sont utilisés : le reveal joue quand `opened` se résout.
+	 */
+	sequence?: (el: HTMLElement) => RevealSequence
 }
 
 type Phase = "idle" | "playing" | "done"
@@ -27,43 +51,59 @@ const COLOR_DURATION = 0.55
 const SLIDE_DURATION = 0.5
 const RISE = 10
 const START_DELAY = 0.05
-const FAST_SCROLL = 900
-const FAST_LEAD = 140
 const FONTS_TIMEOUT = 3000
+/** Nombre moyen de caractères par mot : ramène la vitesse (car/s) d'un bloc `words` en mots/s. */
+const WORD_LENGTH = 5
+const IMMEDIATE_STAGGER = 0.12
 
 const SLIDE_EASE = "cubic-bezier(.16,1,.3,1)"
 const COLOR_EASE = "cubic-bezier(.33,1,.68,1)"
-const FRAME_SELECTOR = "[data-text-reveal-frame]"
-const FRAME_DELAY = "var(--tr-frame-delay,0s)"
 
 const REVEAL_CSS = `
 .text-reveal-word{display:inline-block}
-.text-reveal-char{opacity:0}
-[data-text-reveal="done"] .text-reveal-char{opacity:1}
+.text-reveal-char,.text-reveal-unit{opacity:0}
+[data-text-reveal="done"] .text-reveal-char,[data-text-reveal="done"] .text-reveal-unit{opacity:1}
 [data-text-reveal="playing"] .text-reveal-word{
 	animation:text-reveal-slide ${SLIDE_DURATION}s ${SLIDE_EASE};
 }
-[data-text-reveal="playing"] .text-reveal-char{
+[data-text-reveal="playing"] .text-reveal-char,[data-text-reveal="playing"] .text-reveal-unit{
 	animation:text-reveal-char ${COLOR_DURATION}s ${COLOR_EASE} forwards;
-}
-[data-text-reveal="idle"] ${FRAME_SELECTOR}::before{opacity:0}
-[data-text-reveal="playing"] ${FRAME_SELECTOR}::before{
-	opacity:0;
-	animation:text-reveal-slide ${SLIDE_DURATION}s ${SLIDE_EASE} ${FRAME_DELAY},text-reveal-frame-pop ${COLOR_DURATION}s linear ${FRAME_DELAY} forwards;
-}
-[data-text-reveal="playing"] ${FRAME_SELECTOR}::after{
-	animation:text-reveal-slide ${SLIDE_DURATION}s ${SLIDE_EASE} ${FRAME_DELAY},text-reveal-frame-accent ${COLOR_DURATION}s ${COLOR_EASE} ${FRAME_DELAY} forwards;
 }
 @keyframes text-reveal-slide{from{transform:translate3d(0,${RISE}%,0)}to{transform:translate3d(0,0,0)}}
 @keyframes text-reveal-char{from{opacity:1;color:var(--tr-accent)}to{opacity:1}}
-@keyframes text-reveal-frame-pop{from{opacity:1}to{opacity:1}}
-@keyframes text-reveal-frame-accent{from{opacity:1}to{opacity:0}}
 `
 
-function getStartOffset(): number {
-	const { innerWidth: w, innerHeight: h } = window
-	const ratio = w < 640 ? 0.12 : w < 1024 ? 0.16 : 0.2
-	return Math.round(Math.min(Math.max(h * ratio, 100), 320))
+interface ImmediateEntry {
+	el: HTMLElement
+	resolve: (slot: number) => void
+}
+
+let immediateQueue: ImmediateEntry[] = []
+let immediateFrame = 0
+
+/**
+ * Regroupe les reveals `immediate` qui deviennent prêts sur le même frame et leur attribue
+ * un rang selon l'ordre du DOM. Le rang sert à calculer le décalage de chaque élément.
+ */
+function claimImmediateSlot(el: HTMLElement): Promise<number> {
+	return new Promise((resolve) => {
+		immediateQueue.push({ el, resolve })
+		if (immediateFrame) return
+
+		immediateFrame = requestAnimationFrame(() => {
+			immediateFrame = 0
+			const queue = immediateQueue
+			immediateQueue = []
+
+			const live = queue.filter((entry) => entry.el.isConnected)
+			live.sort((a, b) =>
+				a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+			)
+
+			live.forEach((entry, slot) => entry.resolve(slot))
+			for (const entry of queue) if (!entry.el.isConnected) entry.resolve(0)
+		})
+	})
 }
 
 function waitForFonts(ready: Ref<boolean>): Promise<void> {
@@ -89,22 +129,9 @@ function resolveAccent(theme = "lime"): string {
 	return readThemeColor(token, "currentColor")
 }
 
-function syncFrames(el: HTMLElement) {
-	for (const frame of el.querySelectorAll<HTMLElement>(FRAME_SELECTOR)) {
-		const first = frame.querySelector<HTMLElement>(".text-reveal-char")
-		if (first) frame.style.setProperty("--tr-frame-delay", first.style.animationDelay)
-	}
-}
-
-function clearFrames(el: HTMLElement) {
-	for (const frame of el.querySelectorAll<HTMLElement>(FRAME_SELECTOR))
-		frame.style.removeProperty("--tr-frame-delay")
-}
-
 interface RevealState {
 	ctx?: ReturnType<GsapInstance["context"]>
-	trigger?: ReturnType<ScrollTriggerInstance["create"]>
-	earlyTrigger?: ReturnType<ScrollTriggerInstance["create"]>
+	killTrigger?: () => void
 	cleanup?: () => void
 }
 
@@ -136,8 +163,7 @@ export default defineNuxtPlugin({
 
 						unmounted(el) {
 							const state = STATE.get(el)
-							state?.trigger?.kill()
-							state?.earlyTrigger?.kill()
+							state?.killTrigger?.()
 							state?.cleanup?.()
 							state?.ctx?.revert()
 							STATE.delete(el)
@@ -155,6 +181,19 @@ export default defineNuxtPlugin({
 				return
 			}
 
+			const {
+				speed = 70,
+				jitter = 0.25,
+				start,
+				theme,
+				childStagger = 0.08,
+				singlePhrase = false,
+				immediate = false,
+				immediateStagger = IMMEDIATE_STAGGER,
+				delay = 0,
+				sequence,
+			} = options
+
 			await waitForAppReady()
 			await waitForPageTransition()
 
@@ -164,16 +203,17 @@ export default defineNuxtPlugin({
 
 			if (!STATE.has(el)) return
 
-			const { gsap, ScrollTrigger, SplitText } = useGsap()
+			// Évalué après tous les waits : la mise en page (fonts comprises) est alors stable.
+			const sequenced = sequence?.(el)
+			const isImmediate = immediate && !sequenced
 
-			const {
-				speed = 70,
-				jitter = 0.25,
-				start,
-				theme,
-				childStagger = 0.08,
-				singlePhrase = false,
-			} = options
+			// Rang dans la vague de reveals immédiats.
+			const slot = isImmediate ? await claimImmediateSlot(el) : 0
+
+			if (!STATE.has(el)) return
+
+			const baseDelay = START_DELAY + delay + slot * immediateStagger
+			const { gsap, ScrollTrigger, SplitText } = useGsap()
 
 			let finish: { time: number; char?: HTMLElement } = { time: 0 }
 
@@ -181,24 +221,30 @@ export default defineNuxtPlugin({
 				const blocks = singlePhrase ? [el] : getTextBlocks(el)
 
 				blocks.forEach((block, i) => {
-					const split = SplitText.create(block, {
-						type: "words, chars",
-						wordsClass: "text-reveal-word",
-						charsClass: "text-reveal-char",
-					})
-
-					const end = applyDelays(
-						split.chars as HTMLElement[],
-						split.words.length,
-						speed,
-						jitter,
-						START_DELAY + i * childStagger
+					const byWords = block.dataset.textRevealBlock === "words"
+					const offset = baseDelay + i * childStagger
+					const split = SplitText.create(
+						block,
+						byWords
+							? { type: "words", wordsClass: "text-reveal-unit" }
+							: {
+									type: "words, chars",
+									wordsClass: "text-reveal-word",
+									charsClass: "text-reveal-char",
+								}
 					)
+					const end = byWords
+						? applyDelays(split.words as HTMLElement[], 0, speed / WORD_LENGTH, jitter, offset)
+						: applyDelays(
+								split.chars as HTMLElement[],
+								split.words.length,
+								speed,
+								jitter,
+								offset
+							)
 					if (end.time >= finish.time) finish = end
 				})
 			}, el)
-
-			syncFrames(el)
 
 			const setPhase = (phase: Phase) => {
 				el.dataset.textReveal = phase
@@ -216,7 +262,6 @@ export default defineNuxtPlugin({
 			state.cleanup = () => {
 				el.removeEventListener("animationend", onEnd)
 				el.style.removeProperty("--tr-accent")
-				clearFrames(el)
 				delete el.dataset.textReveal
 			}
 
@@ -232,24 +277,19 @@ export default defineNuxtPlugin({
 
 			el.style.opacity = "1"
 
-			state.trigger = ScrollTrigger.create({
-				trigger: el,
-				start: () => start ?? `top bottom-=${getStartOffset()}`,
-				once: true,
-				onEnter: play,
-				onLeave: play,
-			})
-
-			if (!start) {
-				state.earlyTrigger = ScrollTrigger.create({
-					trigger: el,
-					start: () => `top bottom-=${Math.max(getStartOffset() - FAST_LEAD, 40)}`,
-					once: true,
-					onEnter: (self) => {
-						if (Math.abs(self.getVelocity()) > FAST_SCROLL) play()
-					},
+			if (sequenced) {
+				void sequenced.opened.then(() => {
+					if (STATE.has(el)) play()
 				})
+				return
 			}
+
+			if (isImmediate) {
+				play()
+				return
+			}
+
+			state.killTrigger = createRevealTrigger(ScrollTrigger, el, play, start)
 		}
 
 		nuxtApp.vueApp.directive("text-reveal", textReveal)
@@ -257,6 +297,9 @@ export default defineNuxtPlugin({
 })
 
 function getTextBlocks(el: HTMLElement): HTMLElement[] {
+	const marked = Array.from(el.querySelectorAll<HTMLElement>("[data-text-reveal-block]"))
+	if (marked.length) return marked
+
 	const children = Array.from(el.children).filter(
 		(c): c is HTMLElement =>
 			c instanceof HTMLElement && (c.textContent ?? "").trim().length > 0
@@ -285,7 +328,8 @@ function applyDelays(
 		if (word !== currentWord) {
 			currentWord = word
 			if (t > offset) t += step * WORD_GAP
-			if (word) word.style.animationDelay = `${t.toFixed(3)}s`
+			if (word?.classList.contains("text-reveal-word"))
+				word.style.animationDelay = `${t.toFixed(3)}s`
 		}
 
 		lastStart = t

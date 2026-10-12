@@ -5,13 +5,13 @@ const { data: posts, error } = await useAsyncData(
 	"blog-posts",
 	() =>
 		queryCollection("blog")
-			.select("path", "title", "description", "date", "image")
+			.select("path", "title", "date", "image")
 			.order("date", "DESC")
 			.all(),
 	{ default: () => [] }
 )
 
-const rows = computed(() => buildCardRows(posts.value ?? [], "blog"))
+const { loopRef, loopStyle } = useLoopHeight()
 
 useSeoMeta({
 	title: "Blog",
@@ -20,62 +20,42 @@ useSeoMeta({
 </script>
 
 <template>
-	<div class="relative flow-root min-h-svh w-full bg-white">
-		<div class="section-p-xy mt-edge relative isolate">
-			<LazyUiViewfinder theme="violet" background="white" />
+	<div class="relative flex min-h-svh w-full flex-col bg-white" :style="loopStyle">
+		<UiPageHeader tint="violet">
+			<template #title>Welcome to my blog.</template>
+			<template #description>
+				I also have thoughts...<br />Occasionally, I write them down.
+			</template>
+		</UiPageHeader>
 
-			<div class="flex flex-col md:flex-row h-fit md:items-end justify-between gap-3 pt-14 lg:pt-0">
-				<h2
-					v-text-reveal="{ theme: 'violet' }"
-					class="font-lineal-bold text-3xl text-black lg:text-4xl"
-				>
-					Welcome to my blog.
-				</h2>
-
-				<h3
-					v-text-reveal="{ theme: 'violet' }"
-					class="md:text-right text-sm text-black/60"
-				>
-					I also have thoughts...<br />Occasionally, I write them down.
-				</h3>
-			</div>
-
-			<div v-if="error" class="mt-32 max-w-lg text-black/60 lg:mt-48">
-				<p class="font-lineal-medium text-xl">The articles could not be loaded.</p>
-				<p class="mt-3 text-sm">Please try again in a moment.</p>
-			</div>
-
-			<div
-				v-else-if="rows.length"
-				class="mt-32 flex flex-col gap-y-32 lg:mt-48 lg:gap-y-64"
+		<div class="relative z-10 flex flex-1 flex-col bg-white">
+			<UiInfiniteHorizontalLoop
+				:ref="loopRef"
+				text="Some little ideas"
+				class="text-gray-light relative z-10 pt-4 [word-spacing:1em]"
+			/>
+			<UiCardGrid
+				v-slot="{ item, cellClass }"
+				:items="posts"
+				:error="Boolean(error)"
+				theme="white"
+				tint="violet"
+				label="Read article"
+				press-label="Open article"
+				error-title="The articles could not be loaded."
+				empty-text="No articles published yet."
+				reveal-first-row
 			>
-				<div
-					v-for="row in rows"
-					:key="row[0]!.item.path"
-					class="grid grid-cols-12 gap-y-32 lg:gap-y-0"
-				>
-					<UiCard
-						v-for="cell in row"
-						:key="cell.item.path"
-						:title="cell.item.title"
-						:image="cell.item.image"
-						:date="formatPostDate(cell.item.date)"
-						:depth="cell.depth"
-						:href="cell.item.path"
-						theme="white"
-						viewfinder-label="Open article"
-						viewfinder-loading-label="Opening..."
-						teaser-tint="violet"
-						:reveal="true"
-						:class="cell.class"
-					>
-						{{ cell.item.description }}
-					</UiCard>
-				</div>
-			</div>
+				<UiCard
+					:title="item.title"
+					:image="item.image"
+					:date="formatPostDate(item.date)"
+					:href="item.path"
+					:class="cellClass"
+				/>
+			</UiCardGrid>
 
-			<p v-else class="mt-32 text-black/60 lg:mt-48">No articles published yet.</p>
+			<div class="bg-violet mt-auto h-px w-full shrink-0" />
 		</div>
-		<div class="bg-violet h-px w-full" />
 	</div>
 </template>

@@ -27,7 +27,6 @@ useSeoMeta({
 <template>
 	<article v-if="template" class="relative flow-root min-h-svh w-full bg-black">
 		<div class="section-p-xy mt-edge mx-auto max-w-3xl">
-			<LazyUiViewfinder theme="lime" background="black" />
 			<div
 				class="font-vg5000 flex flex-wrap items-center gap-3 text-xs tracking-widest text-white/40 uppercase"
 			>
@@ -54,7 +53,7 @@ useSeoMeta({
 						class="bg-lime/45 absolute inset-0 z-10 flex items-center justify-center text-center mix-blend-normal backdrop-blur-sm transition-[backdrop-filter,background-color] duration-500"
 					>
 						<span
-							class="border-lime/70 font-vg5000 text-lime rounded-xs border bg-black/35 px-4 py-2 text-sm tracking-[0.2em] uppercase shadow-[0_0_24px_rgba(205,255,0,0.18)] sm:px-5 sm:py-2.5 sm:text-base"
+							class="font-lineal-heavy bg-black-light rounded-xs px-4 py-2 text-sm tracking-[0.2em] text-white uppercase sm:px-5 sm:py-2.5 sm:text-base"
 						>
 							COMING SOON
 						</span>

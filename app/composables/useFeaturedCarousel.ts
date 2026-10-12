@@ -13,7 +13,7 @@ export function useFeaturedCarousel({
 	const activeIndex = ref(0)
 	const hoveredIndex = ref<number | null>(null)
 	const pressedIndex = ref<number | null>(null)
-	const isOpening = ref(false)
+	const isOpening = useOpening()
 
 	const cardEls: HTMLElement[] = []
 	const pointer: CarouselPointer = { x: 0, y: 0, live: false }

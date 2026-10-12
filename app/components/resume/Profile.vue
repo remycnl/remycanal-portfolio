@@ -1,5 +1,5 @@
 <template>
-	<header class="text-black flex min-h-[85svh] flex-col justify-between gap-16 pb-12">
+	<header class="flex min-h-[85svh] flex-col justify-between gap-16 pb-12 text-black">
 		<div class="font-vg5000 flex items-center justify-between gap-4 text-xs uppercase">
 			<div class="flex items-center gap-4">
 				<img
@@ -20,11 +20,13 @@
 
 		<div class="flex flex-col gap-8">
 			<h1
-				class="-ml-[0.05em] text-[clamp(4rem,17vw,20rem)] leading-[0.82] tracking-tighter [font-weight:var(--lineal-weight-black)]"
+				class="-ml-[0.05em] text-[clamp(4rem,17vw,20rem)] leading-[0.82] [font-weight:var(--lineal-weight-black)] tracking-tighter"
 			>
 				{{ name }}
 			</h1>
-			<p class="max-w-4xl text-[clamp(1.25rem,2.4vw,2.5rem)] leading-tight tracking-tight">
+			<p
+				class="max-w-4xl text-[clamp(1.25rem,2.4vw,2.5rem)] leading-tight tracking-tight"
+			>
 				{{ headline }}
 			</p>
 		</div>

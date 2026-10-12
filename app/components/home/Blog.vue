@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from "vue"
+import type { BadgeState } from "@/components/ui/Badge.vue"
 
 const { data: posts } = await useAsyncData(
 	"blog-posts",
@@ -46,7 +47,7 @@ const FOLLOW_SCROLL_DIRECTION = true
 
 const BADGE_LABELS = {
 	idle: "Drag",
-	press: "Drag",
+	press: "Hold",
 	drag: "Dragging",
 	loading: "Opening...",
 }
@@ -114,17 +115,23 @@ const trackRef = useTemplateRef<HTMLElement>("trackRef")
 let cardEls: HTMLElement[] = []
 
 const isDraggingRef = ref(false)
+const isPressedRef = ref(false)
+const hasMovedRef = ref(false)
 const isOverWheelRef = ref(false)
-const isOpeningRef = ref(false)
+const isOpeningRef = useOpening()
 const guidePath = ref("")
 const guideViewBox = ref("0 0 100 100")
 
 const isBadgeActive = computed(
 	() => isOverWheelRef.value || isDraggingRef.value || isOpeningRef.value
 )
-const badgeState = computed(() =>
-	isOpeningRef.value ? "loading" : isDraggingRef.value ? "drag" : "idle"
-)
+
+const badgeState = computed<BadgeState>(() => {
+	if (isOpeningRef.value) return "loading"
+	if (isDraggingRef.value && hasMovedRef.value) return "drag"
+	if (isPressedRef.value) return "press"
+	return "idle"
+})
 
 const slotCount = ref(16)
 
@@ -275,6 +282,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		lastPointerTime = e.timeStamp
 		if (immediateClickGuard) {
 			didDrag = true
+			hasMovedRef.value = true
 			capturePointer(e.pointerId)
 		}
 	}
@@ -297,6 +305,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		isPressed = true
 		activePointerId = e.pointerId
 		didDrag = false
+		hasMovedRef.value = false
+		isPressedRef.value = isMouse
 		dragDistance = 0
 		startPointerX = e.clientX
 		startPointerY = e.clientY
@@ -323,6 +333,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 			if (Math.abs(totalX) <= Math.abs(totalY) * TOUCH_AXIS_LOCK_RATIO) {
 				isPressed = false
+				isPressedRef.value = false
 				activePointerId = -1
 				return
 			}
@@ -336,6 +347,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		dragDistance += Math.abs(deltaX)
 		if (!didDrag && dragDistance > DRAG_CLICK_THRESHOLD_PX) {
 			didDrag = true
+			hasMovedRef.value = true
 			capturePointer(e.pointerId)
 		}
 
@@ -356,6 +368,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		isPressed = false
 		isDragging = false
 		isDraggingRef.value = false
+		isPressedRef.value = false
+		hasMovedRef.value = false
 		activePointerId = -1
 
 		if (track.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId)
@@ -609,7 +623,10 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 						</span>
 					</span>
 				</div>
-				<div v-text-reveal="{ singlePhrase: true }" class="flex max-w-3xl flex-col items-center text-black">
+				<div
+					v-text-reveal="{ singlePhrase: true }"
+					class="flex max-w-3xl flex-col items-center text-black"
+				>
 					<h2
 						class="font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
 					>
@@ -657,8 +674,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 						:image="item.post.image"
 						:href="item.post.path"
 						theme="black"
-						viewfinder-label="Open article"
-						viewfinder-loading-label="Opening..."
 						compact
 					/>
 				</div>

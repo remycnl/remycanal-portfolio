@@ -10,7 +10,8 @@ export function useScrollSpy(ids: MaybeRefOrGetter<readonly string[]>) {
 		const list = toValue(ids)
 		const threshold = window.innerHeight * ACTIVATION_RATIO
 		const atBottom =
-			window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - BOTTOM_TOLERANCE
+			window.innerHeight + window.scrollY >=
+			document.documentElement.scrollHeight - BOTTOM_TOLERANCE
 		let current = list[0] ?? null
 
 		for (const id of list) {

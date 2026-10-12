@@ -77,7 +77,7 @@ const STACK_ITEM =
 
 const BADGE_LABELS = {
 	view: "View project",
-	press: "View project",
+	press: "Open project",
 	loading: "Opening...",
 }
 
@@ -113,7 +113,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 		<section ref="section" class="relative w-full">
 			<div ref="viewport" class="section-p-xy sticky top-0 h-svh w-full">
 				<div
-					class="absolute inset-0 z-0 @container [--card-half-h:calc(var(--card-w)_*_0.3125_+_0.5rem)] [--card-offset-y:3rem] [--card-w:min(calc(100cqw_-_2_*_var(--spacing-edge)_-_1rem_-_2_*_var(--frame-gap)),83svh)] [--corner-pull:calc(var(--frame-gap)_/_2)] [--frame-gap:1rem] [--frame-h:calc(var(--card-w)_*_0.625_+_1rem_+_2_*_var(--frame-gap))] [--frame-w:calc(var(--card-w)_+_1rem_+_2_*_var(--frame-gap))] lg:[--card-offset-y:0rem] lg:[--card-w:32vw] lg:[--frame-gap:2.75rem]"
+					class="@container absolute inset-0 z-0 [--card-half-h:calc(var(--card-w)_*_0.3125_+_0.5rem)] [--card-offset-y:3rem] [--card-w:min(calc(100cqw_-_2_*_var(--spacing-edge)_-_1rem_-_2_*_var(--frame-gap)),83svh)] [--corner-pull:calc(var(--frame-gap)_/_2)] [--frame-gap:1rem] [--frame-h:calc(var(--card-w)_*_0.625_+_1rem_+_2_*_var(--frame-gap))] [--frame-w:calc(var(--card-w)_+_1rem_+_2_*_var(--frame-gap))] lg:[--card-offset-y:0rem] lg:[--card-w:32vw] lg:[--frame-gap:2.75rem]"
 				>
 					<div
 						aria-hidden="true"
@@ -229,7 +229,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 								:to="p.to"
 								:aria-label="`${p.name}, ${p.year}`"
 								draggable="false"
-								class="block shrink-0 cursor-pointer rounded-lg bg-black p-2 [-webkit-tap-highlight-color:transparent] will-change-transform"
+								class="block shrink-0 cursor-pointer rounded-lg bg-black p-2 will-change-transform [-webkit-tap-highlight-color:transparent]"
 								@pointerenter="onCardEnter(i, $event)"
 								@pointermove="onCardMove"
 								@pointerleave="onCardLeave(i)"
@@ -260,7 +260,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 						v-text-reveal
 						class="text-fit font-lineal-bold text-shadow-lime text-3xl text-black text-shadow-sm lg:text-4xl"
 					>
-						Featured projects
+						Some projects...
 					</h2>
 				</div>
 
