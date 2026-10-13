@@ -4,6 +4,7 @@
 
 <script setup lang="ts">
 import type { PixelWipeColors, ResolvedPixelWipeDirection } from "@/types/pixel-wipe"
+import { readThemeColor } from "@/utils/theme/readThemeColor"
 
 interface Props {
 	active: boolean
@@ -32,15 +33,10 @@ let engine: ReturnType<typeof createPixelWipeEngine> | null = null
 let resizeFrame: number | null = null
 let stopWatch: (() => void) | null = null
 
-function themeColor(name: string) {
-	if (!name.startsWith("--")) return name
-	return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
-}
-
 function resolveColors(): PixelWipeColors {
 	return {
-		base: themeColor(props.baseColor),
-		accent: themeColor(props.accentColor),
+		base: readThemeColor(props.baseColor, "oklch(0.5 0.2 290)"),
+		accent: readThemeColor(props.accentColor, "oklch(0.8 0 0)"),
 	}
 }
 

@@ -133,7 +133,6 @@
 				</NuxtLink>
 
 				<nav
-					ref="navRef"
 					class="font-lineal-bold hidden shrink-0 items-center gap-7 tracking-wide text-white uppercase md:flex"
 				>
 					<NuxtLink
@@ -143,6 +142,10 @@
 						v-roll-hover
 						class="hover:text-lime lg:hover:text-gray-light focus-visible:text-lime relative block transition-colors duration-300"
 						:class="{ 'text-lime lg:hover:text-lime!': isActive(link) }"
+						@pointerdown="onLinkPress"
+						@pointerup="onLinkRelease"
+						@pointerleave="onLinkRelease"
+						@pointercancel="onLinkRelease"
 					>
 						{{ link.label }}
 					</NuxtLink>
@@ -174,23 +177,11 @@
 					</svg>
 				</button>
 			</div>
-
-			<canvas
-				v-if="showRevealCanvas"
-				ref="revealCanvasRef"
-				style="visibility: visible"
-				class="pointer-events-none absolute inset-0 z-20 block"
-				aria-hidden="true"
-			/>
 		</div>
 	</header>
 </template>
 
 <script setup lang="ts">
-import { readThemeColor } from "@/utils/theme/readThemeColor"
-
-let hasPlayedIntro = false
-
 const route = useRoute()
 
 const links = [
@@ -251,7 +242,6 @@ const MOBILE_REVEAL_IN = 620
 const MOBILE_REVEAL_OUT = 420
 
 const boxRef = useTemplateRef<HTMLElement>("boxRef")
-const revealCanvasRef = useTemplateRef<HTMLCanvasElement>("revealCanvasRef")
 const menuBtnRef = useTemplateRef<HTMLElement>("menuBtnRef")
 const menuIconRef = useTemplateRef<HTMLElement>("menuIconRef")
 const logoFlipRef = useTemplateRef<HTMLElement>("logoFlipRef")
@@ -259,10 +249,9 @@ const mobileOverlayRef = useTemplateRef<HTMLElement>("mobileOverlayRef")
 const stickersLayerRef = useTemplateRef<HTMLElement>("stickersLayerRef")
 
 const open = ref(false)
+const fontsReady = useFontsReady()
 
 const overlayActive = ref(false)
-const showRevealCanvas = ref(!hasPlayedIntro)
-
 const overlayShown = ref(false)
 const overlayInteractive = ref(false)
 const mobileOverlayStyle = computed(() => ({
@@ -271,18 +260,10 @@ const mobileOverlayStyle = computed(() => ({
 }))
 
 const {
-	onWiggleEnter: onLogoEnterBase,
+	onWiggleEnter: onLogoEnter,
 	onWiggleLeave: onLogoLeave,
 	onWigglePress: onLogoPress,
-	wiggle: playLogoWiggle,
 } = useWiggle(logoFlipRef)
-
-let introInProgress = false
-
-function onLogoEnter() {
-	if (introInProgress) return
-	onLogoEnterBase()
-}
 
 const mobileLinkEls: (HTMLElement | null)[] = []
 const stickerRefs: (HTMLElement | null)[] = []
@@ -300,6 +281,8 @@ const visibleStickers = ref<MenuSticker[]>([])
 let onMobileLinkClick: (index: number) => void = () => {}
 let onMenuIconPress: () => void = () => {}
 let onMenuIconRelease: () => void = () => {}
+let onLinkPress: (e: PointerEvent) => void = () => {}
+let onLinkRelease: (e: PointerEvent) => void = () => {}
 let toggleMenu: () => void = () => {}
 let closeMenu: () => void = () => {}
 let onOverlayOpened: () => void = () => {}
@@ -386,14 +369,69 @@ useGsapContext(({ gsap }) => {
 
 	const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches
 
-	async function waitForFonts() {
-		if (!("fonts" in document)) return
-		try {
-			await document.fonts.ready
-		} catch {
-			// noop
+	// --- Intro de la barre -----------------------------------------------
+
+	async function playIntro() {
+		const box = boxRef.value
+		if (!box) return
+
+		if (prefersReducedMotion) {
+			gsap.set(box, { visibility: "visible" })
+			return
 		}
+
+		// On attend AVANT d'afficher : largeur de la barre stable, polices chargées
+		await Promise.all([waitForFontsReady(fontsReady), waitForAppReady()])
+
+		gsap.set(box, {
+			visibility: "visible",
+			y: -140,
+			force3D: true,
+			willChange: "transform",
+		})
+
+		gsap
+			.timeline({
+				onComplete: () => gsap.set(box, { clearProps: "transform,willChange" }),
+			})
+			.to(box, { y: 12, duration: 0.55, ease: "power3.out" })
+			.to(box, { y: -6, duration: 0.2, ease: "sine.inOut" })
+			.to(box, { y: 0, duration: 1, ease: "elastic.out(1, 0.38)" })
 	}
+
+	playIntro()
+
+	// --- Effet de clic des liens de la nav -------------------------------
+
+	const pressedLinks = new WeakSet<HTMLElement>()
+
+	onLinkPress = (e) => {
+		const el = e.currentTarget as HTMLElement | null
+		if (!el || prefersReducedMotion) return
+		pressedLinks.add(el)
+		gsap.to(el, {
+			scale: 0.94,
+			duration: 0.12,
+			ease: "power2.out",
+			force3D: true,
+			overwrite: "auto",
+		})
+	}
+
+	onLinkRelease = (e) => {
+		const el = e.currentTarget as HTMLElement | null
+		if (!el || !pressedLinks.has(el)) return
+		pressedLinks.delete(el)
+		gsap.to(el, {
+			scale: 1,
+			duration: 0.45,
+			ease: "elastic.out(1, 0.5)",
+			overwrite: "auto",
+			clearProps: "transform",
+		})
+	}
+
+	// --- Overlay mobile : bounce des liens -------------------------------
 
 	function bounceLink(el: HTMLElement | null) {
 		if (!el || prefersReducedMotion || !isTouchDevice) return
@@ -425,6 +463,8 @@ useGsapContext(({ gsap }) => {
 			if (open.value) closeMenu()
 		}, 110)
 	}
+
+	// --- Icône du menu ---------------------------------------------------
 
 	const cornerDots = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-c"))
@@ -501,70 +541,7 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
-	async function revealHeader() {
-		const boxEl = boxRef.value
-		const canvasEl = revealCanvasRef.value
-
-		if (!boxEl) return
-
-		if (!canvasEl || prefersReducedMotion) {
-			gsap.set(boxEl, { visibility: "visible" })
-			hasPlayedIntro = true
-			return
-		}
-
-		introInProgress = true
-
-		const getBoxSize = () => {
-			const rect = boxEl.getBoundingClientRect()
-			return { width: rect.width, height: rect.height }
-		}
-
-		const engine = createPixelWipeEngine({
-			gsap,
-			getCanvas: () => canvasEl,
-			getSize: getBoxSize,
-			cellSize: () => {
-				const { width, height } = getBoxSize()
-				const shortSide = Math.min(width, height)
-				return Math.max(2, Math.min(5, Math.round(shortSide / 20)))
-			},
-		})
-
-		engine.resize()
-		engine.fillInstant(readThemeColor("--color-black", "oklch(0.2373 0.0031 17.37)"))
-
-		gsap.set(boxEl, { visibility: "visible" })
-
-		await Promise.all([waitForFonts(), waitForAppReady()])
-
-		engine.resize()
-
-		await engine.run({
-			mode: "out",
-			direction: "left",
-			colors: {
-				base: readThemeColor("--color-black", "oklch(0.2373 0.0031 17.37)"),
-				accent: readThemeColor("--color-lime", "oklch(0.928 0.2202 125)"),
-			},
-			duration: 700,
-		})
-
-		engine.destroy()
-		showRevealCanvas.value = false
-		hasPlayedIntro = true
-		introInProgress = false
-
-		playLogoWiggle()
-	}
-
-	if (hasPlayedIntro) {
-		gsap.set(boxRef.value, { visibility: "visible" })
-	} else {
-		revealHeader()
-	}
-
-	// --- Liens de l'overlay mobile --------------------------------------
+	// --- Liens de l'overlay mobile ---------------------------------------
 
 	const d = prefersReducedMotion ? 0.01 : 1
 
@@ -637,7 +614,7 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
-	// --- Stickers ---------------------------------------------------------
+	// --- Stickers --------------------------------------------------------
 
 	const STICKER_POP_BEAT = 0.04
 	const STICKER_STAGGER = 0.08
@@ -765,6 +742,8 @@ useGsapContext(({ gsap }) => {
 			})
 		}
 	}
+
+	// --- Ouverture / fermeture de l'overlay ------------------------------
 
 	function openOverlayMenu() {
 		open.value = true

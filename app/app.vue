@@ -1,20 +1,10 @@
 <script setup lang="ts">
 import { APP_FONT_PRELOAD_LINKS } from "@/constants/fonts"
 
-const isLoading = useState("app-loading", () => true)
-const { isComplete } = useLoadingProgress()
+const { isRevealing, isRevealed } = useLoadingState()
 
-const isScrollLocked = computed(() => isLoading.value)
-
-const hideLoader = async () => {
-	await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
-	await new Promise<void>((resolve) => setTimeout(resolve, 200))
-	isLoading.value = false
-}
-
-watch(isComplete, (complete) => {
-	if (complete) hideLoader()
-})
+// Le scroll reste bloqué jusqu'à ce que le rideau commence à se lever
+const isScrollLocked = computed(() => !isRevealing.value)
 
 useHead({
 	titleTemplate: (title) =>
@@ -57,14 +47,7 @@ const route = useRoute()
 </script>
 
 <template>
-	<Transition
-		enter-active-class="transition-opacity duration-400"
-		leave-active-class="transition-opacity duration-400"
-		enter-from-class="opacity-0"
-		leave-to-class="opacity-0"
-	>
-		<LayoutAppLoader v-if="isLoading" />
-	</Transition>
+	<LayoutAppLoader v-if="!isRevealed" />
 
 	<NuxtRouteAnnouncer />
 	<NuxtLayout>

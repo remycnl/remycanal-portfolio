@@ -559,7 +559,7 @@ function createSprite(options: UseSpriteOptions) {
 		return { left, top, maxX, rect }
 	}
 
-	function zoneRect(zone: Zone) {
+	function computeZoneRect(zone: Zone) {
 		const rect = zone.el.getBoundingClientRect()
 		const left = rect.left + window.scrollX
 		const top = rect.top + window.scrollY
@@ -571,6 +571,16 @@ function createSprite(options: UseSpriteOptions) {
 			centerX: left + rect.width / 2,
 			centerY: top + rect.height / 2,
 		}
+	}
+
+	let rectCache: Map<Zone, ReturnType<typeof computeZoneRect>> | null = null
+
+	function zoneRect(zone: Zone) {
+		const cached = rectCache?.get(zone)
+		if (cached) return cached
+		const value = computeZoneRect(zone)
+		rectCache?.set(zone, value)
+		return value
 	}
 
 	function isColumnAligned(a: Zone, b: Zone) {
@@ -1027,7 +1037,27 @@ function createSprite(options: UseSpriteOptions) {
 	let lastScrollY = 0
 	let lastScrollDirectionDown = true
 
+	const LANDING_SEARCH_COOLDOWN_MS = 250
+	let nextLandingSearchAt = 0
+
+	function searchLanding(forward: boolean) {
+		const now = performance.now()
+		if (now < nextLandingSearchAt) return null
+		const landing = findNearestLanding(forward)
+		if (!landing) nextLandingSearchAt = now + LANDING_SEARCH_COOLDOWN_MS
+		return landing
+	}
+
 	function findNearestLanding(forward: boolean) {
+		rectCache = new Map()
+		try {
+			return findNearestLandingUncached(forward)
+		} finally {
+			rectCache = null
+		}
+	}
+
+	function findNearestLandingUncached(forward: boolean) {
 		if (!currentZone) return null
 
 		const viewportH = window.innerHeight
@@ -1088,7 +1118,7 @@ function createSprite(options: UseSpriteOptions) {
 			if (isJumping) {
 				if (activeJumpForward === null || scrollingDown !== activeJumpForward) return
 
-				const landing = findNearestLanding(activeJumpForward)
+				const landing = searchLanding(activeJumpForward)
 				if (landing && landing.zone !== activeJumpTarget) {
 					jumpToZone(landing.zone, landing.x)
 				}
@@ -1100,12 +1130,12 @@ function createSprite(options: UseSpriteOptions) {
 			if (scrollingDown) {
 				if (catY > viewportH * scrollTriggerRatio) return
 
-				const landing = findNearestLanding(true)
+				const landing = searchLanding(true)
 				if (landing) jumpToZone(landing.zone, landing.x)
 			} else {
 				if (catY < viewportH * (1 - scrollTriggerRatio)) return
 
-				const landing = findNearestLanding(false)
+				const landing = searchLanding(false)
 				if (landing) jumpToZone(landing.zone, landing.x)
 			}
 		})

@@ -358,6 +358,35 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 	let renderLoopActive = false
 	let intersectionObserver: IntersectionObserver | null = null
 
+	const SETTLE_FRAMES = 24
+	let settledFrames = 0
+	const prevCardPos = new THREE.Vector3()
+	const prevCardQuat = new THREE.Quaternion()
+	const prevLinkPos = Array.from({ length: STRAP_LINKS }, () => new THREE.Vector3())
+
+	function isSceneSettled(): boolean {
+		if (dragging || !physicsReady) return false
+		if (Math.abs(flipTarget - flipAngle) > 1e-3 || Math.abs(flipVelocity) > 1e-2)
+			return false
+
+		let moved = cardPos.distanceToSquared(prevCardPos)
+		for (let i = 0; i < STRAP_LINKS; i++) {
+			moved = Math.max(moved, linkPos[i]!.distanceToSquared(prevLinkPos[i]!))
+		}
+		const rotated = 1 - Math.abs(cardQuaternion.dot(prevCardQuat))
+
+		prevCardPos.copy(cardPos)
+		prevCardQuat.copy(cardQuaternion)
+		for (let i = 0; i < STRAP_LINKS; i++) prevLinkPos[i]!.copy(linkPos[i]!)
+
+		return moved < 1e-9 && rotated < 1e-10
+	}
+
+	function wakeRenderLoop() {
+		settledFrames = 0
+		startRenderLoop()
+	}
+
 	function isRenderingAllowed(): boolean {
 		return isTabVisible && isInViewport && !destroyed
 	}
@@ -1026,6 +1055,15 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		syncBand()
 		syncCard()
 		renderer.render(scene, camera)
+
+		if (isSceneSettled()) {
+			if (++settledFrames >= SETTLE_FRAMES) {
+				renderLoopActive = false // veille : le dernier frame reste affiché
+				return
+			}
+		} else {
+			settledFrames = 0
+		}
 		rafId = requestAnimationFrame(tick)
 	}
 
@@ -1106,6 +1144,7 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		raycaster.setFromCamera(ndc, camera)
 		const hits = raycaster.intersectObjects([flipGroup, topGroup], true)
 		if (hits.length === 0) return
+		wakeRenderLoop()
 
 		;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
 		dragging = true
@@ -1222,6 +1261,7 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		camera.aspect = width / height
 		updateCameraFraming(camera.aspect)
 		camera.updateProjectionMatrix()
+		wakeRenderLoop()
 	}
 
 	function observeResize() {
@@ -1393,6 +1433,8 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 			buildFrontTexture(badgeData, brandMarkImage)
 			// La face arrière n'est redessinée que si elle existe déjà
 			if (backBuilt) await buildBackFace()
+
+			wakeRenderLoop()
 		},
 		{ deep: true }
 	)

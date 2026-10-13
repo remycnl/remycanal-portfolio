@@ -11,38 +11,41 @@ interface RollHoverInstance {
 	onLeave: () => void
 }
 
+const BLEED_EM = 0.4
+
 const instances = new WeakMap<HTMLElement, RollHoverInstance>()
+
+function createRow(text: string, hidden: boolean) {
+	const row = document.createElement("span")
+
+	row.textContent = text
+	row.style.display = "block"
+	row.style.gridArea = "1 / 1"
+	row.style.paddingBlock = `${BLEED_EM}em`
+	row.style.marginBlock = `-${BLEED_EM}em`
+	row.style.setProperty("text-box", "inherit")
+
+	if (hidden) row.setAttribute("aria-hidden", "true")
+
+	return row
+}
 
 function buildRoll(el: HTMLElement) {
 	const text = el.textContent?.trim() ?? ""
 
 	el.textContent = ""
 	el.style.position = "relative"
-	el.style.display = "inline-block"
-	el.style.overflow = "hidden"
+	el.style.display = "inline-grid"
 	el.style.verticalAlign = "top"
 	el.style.whiteSpace = "nowrap"
+	el.style.clipPath = `inset(-${BLEED_EM}em -0.05em)`
 
-	const track = document.createElement("span")
-	track.style.display = "flex"
-	track.style.flexDirection = "column"
+	const duplicate = createRow(text, true)
+	const original = createRow(text, false)
 
-	const duplicate = document.createElement("span")
-	duplicate.textContent = text
-	duplicate.style.display = "block"
-	duplicate.setAttribute("aria-hidden", "true")
+	el.append(duplicate, original)
 
-	const original = document.createElement("span")
-	original.textContent = text
-	original.style.display = "block"
-
-	track.append(duplicate, original)
-	el.append(track)
-
-	const lineHeight = original.getBoundingClientRect().height
-	el.style.height = `${lineHeight}px`
-
-	return { track, lineHeight }
+	return { original, duplicate }
 }
 
 export default defineNuxtPlugin({
@@ -62,24 +65,29 @@ export default defineNuxtPlugin({
 				const duration = reduceMotion ? 0 : (binding.value?.duration ?? 0.55)
 				const ease = reduceMotion ? "none" : (binding.value?.ease ?? "back.out(1.2)")
 
-				const { track, lineHeight } = buildRoll(el)
+				const { original, duplicate } = buildRoll(el)
 
-				gsap.set(track, { y: -lineHeight, force3D: true })
+				gsap.set(original, { yPercent: 0, force3D: true })
+				gsap.set(duplicate, { yPercent: -100, force3D: true })
 
 				let isHovering = false
 
 				const timeline = gsap.timeline({
 					paused: true,
 					onStart: () => {
-						track.style.willChange = "transform"
+						original.style.willChange = "transform"
+						duplicate.style.willChange = "transform"
 					},
 					onComplete: () => {
-						track.style.willChange = "auto"
+						original.style.willChange = "auto"
+						duplicate.style.willChange = "auto"
 						if (!isHovering) timeline.pause(0)
 					},
 				})
 
-				timeline.to(track, { y: 0, duration, ease })
+				timeline
+					.to(original, { yPercent: 100, duration, ease }, 0)
+					.to(duplicate, { yPercent: 0, duration, ease }, 0)
 
 				const onEnter = () => {
 					isHovering = true

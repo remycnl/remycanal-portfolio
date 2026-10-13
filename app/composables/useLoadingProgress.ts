@@ -1,5 +1,4 @@
 interface LoadingProgressController {
-	isComplete: Ref<boolean>
 	bind: (trackEl: HTMLElement, counterEl: HTMLElement) => () => void
 }
 
@@ -15,7 +14,7 @@ const LIVELINESS_FREQUENCY = 1.8
 const HARD_TIMEOUT_MS = 9000
 
 export function useLoadingProgress(): LoadingProgressController {
-	const isComplete = useState("app-loading-complete", () => false)
+	const { isComplete } = useLoadingState()
 
 	const isPageReady = usePageReadiness()
 	const isFontsReady = useFontsReady()
@@ -146,5 +145,5 @@ export function useLoadingProgress(): LoadingProgressController {
 		}
 	}
 
-	return { isComplete, bind }
+	return { bind }
 }

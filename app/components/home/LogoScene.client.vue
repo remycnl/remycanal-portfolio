@@ -146,8 +146,8 @@ const FACE_MATERIAL_NAME = "Metal_Face_Fonce"
 
 const IDLE_EPSILON = 0.0005
 
-const MAX_PIXEL_RATIO = 2
-const MAX_PIXEL_RATIO_UNDER_LOAD = 1.5
+const MAX_PIXEL_RATIO = 1.5
+const MAX_PIXEL_RATIO_UNDER_LOAD = 1.25
 const PIXEL_RATIO_BUDGET_THRESHOLD = 2
 
 const DISPOSABLE_TEXTURE_KEYS = [
@@ -797,67 +797,34 @@ function applyMetalCutoutShader(
 			.replace(
 				"vec4 diffuseColor = vec4( diffuse, opacity );",
 				`
-                        vec4 diffuseColor =
-                            vec4(
-                                diffuse,
-                                opacity
-                            );
+	vec4 diffuseColor = vec4( diffuse, opacity );
 
-                        float rcStrength =
-                            rc_maskStrength(
-                                vObjectPosition
-                            );
+	if ( uMaskRadius > 0.0001 ) {
+		vec2 rcDE = rc_maskDistEdge( vObjectPosition );
 
-                        float rcGlow =
-                            rc_edgeGlow(
-                                vObjectPosition
-                            );
+		float rcStrength = clamp(
+			1.0 - smoothstep( rcDE.y - uEdgeSoftness, rcDE.y + uEdgeSoftness, rcDE.x ),
+			0.0, 1.0
+		);
 
-                        float rcDepth =
-                            rc_maskDepth(
-                                vObjectPosition
-                            );
+		float rcD = abs( rcDE.x - rcDE.y );
+		float rcWidth = max( uEdgeGlowWidth, 0.0001 );
+		float rcGlow = exp( -( rcD * rcD ) / ( 2.0 * rcWidth * rcWidth ) );
 
-                        vec3 rcXrayColor =
-                            mix(
-                                diffuseColor.rgb,
-                                uXrayTint,
-                                uXrayTintMix
-                            );
+		float rcDepth = clamp( 1.0 - rcDE.x / max( rcDE.y, 0.0001 ), 0.0, 1.0 );
 
-                        rcXrayColor *=
-                            mix(
-                                1.0,
-                                1.0 -
-                                    uXrayDepthDarken,
-                                rcDepth
-                            );
+		vec3 rcXrayColor = mix( diffuseColor.rgb, uXrayTint, uXrayTintMix );
+		rcXrayColor *= mix( 1.0, 1.0 - uXrayDepthDarken, rcDepth );
 
-                        diffuseColor.rgb =
-                            mix(
-                                diffuseColor.rgb,
-                                rcXrayColor,
-                                rcStrength
-                            );
-
-                        diffuseColor.a =
-                            mix(
-                                diffuseColor.a,
-                                uXrayOpacity,
-                                rcStrength
-                            );
-
-                        diffuseColor.rgb +=
-                            uEdgeGlowColor *
-                            (
-                                rcGlow *
-                                uEdgeGlowIntensity
-                            );
-                    `
+		diffuseColor.rgb = mix( diffuseColor.rgb, rcXrayColor, rcStrength );
+		diffuseColor.a = mix( diffuseColor.a, uXrayOpacity, rcStrength );
+		diffuseColor.rgb += uEdgeGlowColor * ( rcGlow * uEdgeGlowIntensity );
+	}
+	`
 			)
 	}
 
-	material.customProgramCacheKey = () => "metal-xray-v1"
+	material.customProgramCacheKey = () => "metal-xray-v2"
 }
 
 function captureColorGroupMaterials(
@@ -1188,13 +1155,15 @@ function revealCanvas() {
 }
 
 function raycastFromPointer(clientX: number, clientY: number) {
-	if (!logo || !raycaster || !camera || !cachedSceneRect || !metalMeshes.length) {
+	if (!logo || !raycaster || !camera || !metalMeshes.length) {
 		return false
 	}
 
+	if (sceneRectDirty || !cachedSceneRect) refreshSceneRect()
+
 	const rect = cachedSceneRect
 
-	if (rect.width <= 0 || rect.height <= 0) {
+	if (!rect || rect.width <= 0 || rect.height <= 0) {
 		return false
 	}
 
@@ -1469,9 +1438,15 @@ function animate(_time: number, deltaTime: number) {
 	}
 }
 
+let sceneRectDirty = true
+function markSceneRectDirty() {
+	sceneRectDirty = true
+}
+
 function refreshSceneRect() {
 	if (sceneEl) {
 		cachedSceneRect = sceneEl.getBoundingClientRect()
+		sceneRectDirty = false
 	}
 }
 
@@ -1524,7 +1499,7 @@ function handleContainerResize(element: HTMLDivElement) {
 
 	renderer.setSize(width, height, false)
 
-	refreshSceneRect()
+	markSceneRectDirty()
 }
 
 function watchDevicePixelRatio() {
@@ -1693,9 +1668,9 @@ async function tryInit(element: HTMLDivElement | null, wrap: HTMLDivElement | nu
 	}
 
 	if (lenis) {
-		lenis.on("scroll", refreshSceneRect)
+		lenis.on("scroll", markSceneRectDirty)
 	} else {
-		window.addEventListener("scroll", refreshSceneRect, { passive: true })
+		markSceneRectDirty
 	}
 
 	containerResizeObserver = new ResizeObserver(() => {
@@ -1792,9 +1767,9 @@ function teardownInteractionListeners() {
 	document.removeEventListener("visibilitychange", handleVisibilityChange)
 
 	if (lenis) {
-		lenis.off("scroll", refreshSceneRect)
+		markSceneRectDirty
 	} else {
-		window.removeEventListener("scroll", refreshSceneRect)
+		markSceneRectDirty
 	}
 
 	if (sceneEl) {

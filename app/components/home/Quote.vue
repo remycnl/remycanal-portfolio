@@ -5,6 +5,8 @@ const quoteWrapRef = useTemplateRef<HTMLElement>("quoteWrapRef")
 const authorRef = useTemplateRef<HTMLElement>("authorRef")
 const portraitRef = useTemplateRef<HTMLElement>("portraitRef")
 
+const fontsReady = useFontsReady()
+
 const { useGsapContext } = useGsap()
 const { refreshImmediate } = useScrollRefresh()
 
@@ -239,7 +241,7 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 			start: "top top",
 			end: () => `+=${window.innerHeight * SCROLL_DISTANCE_RATIO}`,
 			pin: true,
-			scrub: 1,
+			scrub: true,
 			invalidateOnRefresh: true,
 			refreshPriority: 1,
 			onRefresh: remeasure,
@@ -257,21 +259,18 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 		setTimeout(() => refreshImmediate(), 250)
 	}
 
-	const fontsReady = useFontsReady()
-	let stopFontsWatch: (() => void) | undefined
+	let cancelled = false
 
 	if (fontsReady.value) {
 		init()
 	} else {
-		stopFontsWatch = watch(fontsReady, (ready) => {
-			if (!ready) return
-			init()
-			stopFontsWatch?.()
+		waitForFontsReady(fontsReady).then(() => {
+			if (!cancelled) init()
 		})
 	}
 
 	return () => {
-		stopFontsWatch?.()
+		cancelled = true
 		if (rafId !== null) cancelAnimationFrame(rafId)
 		gsap.ticker.remove(tick)
 		trigger?.kill()

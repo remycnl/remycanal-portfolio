@@ -89,6 +89,8 @@ const motionRef = useTemplateRef<HTMLDivElement>("motion")
 const presenceRef = useTemplateRef<HTMLDivElement>("presence")
 const pillRef = useTemplateRef<HTMLDivElement>("pill")
 
+const fontsReady = useFontsReady()
+
 const interactionState = shallowRef<BadgeState>("idle")
 const activeState = computed<BadgeState>(() => props.state ?? interactionState.value)
 
@@ -432,7 +434,9 @@ useGsapContext(() => {
 	syncCurrentWidth()
 	gsap.set(pill, { scale: STATE_SCALE[displayed] })
 
-	document.fonts?.ready.then(syncCurrentWidth)
+	waitForFontsReady(fontsReady).then(() => {
+		if (ready) syncCurrentWidth()
+	})
 
 	target.addEventListener("pointermove", onPointerMove, { passive: true, capture: true })
 	target.addEventListener("pointerleave", onPointerLeave, { passive: true })
@@ -479,13 +483,13 @@ useGsapContext(() => {
 						class="absolute inset-0 flex items-center justify-center opacity-0 will-change-[transform,opacity]"
 					>
 						<span
-							class="box-fit inline-flex w-max items-center gap-[0.7em] px-[1.5em] whitespace-nowrap"
+							class="inline-flex w-max items-center gap-[0.7em] px-[1.5em] whitespace-nowrap"
 						>
 							<span
 								v-if="layer.loading"
-								class="size-[0.9em] shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-[spin_1.6s_linear_infinite]"
+								class="size-cap shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-[spin_1.6s_linear_infinite]"
 							/>
-							{{ layer.label }}
+							<span class="text-fit block">{{ layer.label }}</span>
 						</span>
 					</span>
 				</div>

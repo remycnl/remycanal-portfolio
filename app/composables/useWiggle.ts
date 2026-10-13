@@ -76,6 +76,5 @@ export function useWiggle(
 		onWiggleEnter: () => handleEnter(),
 		onWiggleLeave: () => handleLeave(),
 		onWigglePress: () => handlePress(),
-		wiggle: () => handleEnter(),
 	}
 }

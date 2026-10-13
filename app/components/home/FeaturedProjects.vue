@@ -70,7 +70,7 @@ const CORNERS: Corner[] = [
 ]
 
 const STACK_WINDOW =
-	"box-fit text-black-light inline-grid overflow-hidden rounded-full text-sm transition-colors duration-300 [--stack-gap:1.2em]"
+	"box-fit text-black-light inline-grid overflow-hidden rounded-full text-sm transition-colors duration-300 [--stack-gap:calc(2_*_var(--fit-y,0.5em)_+_1em)]"
 
 const STACK_ITEM =
 	"text-fit col-start-1 row-start-1 block whitespace-nowrap will-change-[translate] translate-y-[calc(var(--i)_*_(100%_+_var(--stack-gap)))]"
@@ -149,47 +149,50 @@ const pad = (n: number) => String(n).padStart(2, "0")
 
 					<div
 						aria-hidden="true"
-						class="lg:left-edge absolute bottom-[calc(50%_-_var(--card-offset-y)_+_var(--card-half-h)_+_3.7rem)] left-0 z-10 flex w-(--card-w) lg:top-1/2 lg:bottom-auto lg:w-auto lg:-translate-y-1/2"
+						class="absolute bottom-[calc(50%_-_var(--card-offset-y)_+_var(--card-half-h)_+_2.5rem)] left-0 z-10 flex w-(--card-w) flex-col items-start gap-2 lg:contents"
 					>
 						<div
-							data-stack
-							:class="[
-								STACK_WINDOW,
-								'font-vg5000',
-								isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light',
-							]"
+							class="z-10 flex lg:absolute lg:top-1/2 lg:left-edge lg:-translate-y-1/2"
 						>
-							<span
-								v-for="(p, i) in projects"
-								:key="p.id"
-								:style="{ '--i': i }"
-								:class="STACK_ITEM"
+							<div
+								data-stack
+								:class="[
+									STACK_WINDOW,
+									'font-vg5000',
+									isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light',
+								]"
 							>
-								{{ p.year }}
-							</span>
+								<span
+									v-for="(p, i) in projects"
+									:key="p.id"
+									:style="{ '--i': i }"
+									:class="STACK_ITEM"
+								>
+									{{ p.year }}
+								</span>
+							</div>
 						</div>
-					</div>
 
-					<div
-						aria-hidden="true"
-						class="lg:right-edge absolute bottom-[calc(50%_-_var(--card-offset-y)_+_var(--card-half-h)_+_2.5rem)] left-0 z-10 flex w-(--card-w) lg:top-1/2 lg:bottom-auto lg:left-auto lg:w-auto lg:-translate-y-1/2"
-					>
 						<div
-							data-stack
-							:class="[
-								STACK_WINDOW,
-								'font-lineal text-left [font-weight:var(--lineal-weight-medium)] lg:text-right',
-								isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light',
-							]"
+							class="z-10 flex lg:absolute lg:top-1/2 lg:right-edge lg:-translate-y-1/2"
 						>
-							<span
-								v-for="(p, i) in projects"
-								:key="p.id"
-								:style="{ '--i': i }"
-								:class="STACK_ITEM"
+							<div
+								data-stack
+								:class="[
+									STACK_WINDOW,
+									'font-lineal text-left [font-weight:var(--lineal-weight-medium)] lg:text-right',
+									isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light',
+								]"
 							>
-								{{ p.name }}
-							</span>
+								<span
+									v-for="(p, i) in projects"
+									:key="p.id"
+									:style="{ '--i': i }"
+									:class="STACK_ITEM"
+								>
+									{{ p.name }}
+								</span>
+							</div>
 						</div>
 					</div>
 

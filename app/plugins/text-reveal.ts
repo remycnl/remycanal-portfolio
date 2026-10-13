@@ -1,4 +1,4 @@
-import type { Directive, Ref } from "vue"
+import type { Directive } from "vue"
 import type { GsapInstance } from "@/composables/useGsap"
 import { createRevealTrigger } from "@/utils/revealTrigger"
 import { readThemeColor } from "@/utils/theme/readThemeColor"
@@ -22,7 +22,7 @@ interface TextRevealOptions {
 	 * Délai (s) entre le démarrage de chaque bloc enfant (effet cascade).
 	 * Par défaut, les blocs sont les enfants directs de l'élément. On peut les désigner avec
 	 * `data-text-reveal-block` : la valeur `words` révèle le bloc mot par mot (bien plus léger pour un
-	 * long texte).
+	 * long texte). Au-delà de MAX_CHAR_UNITS caractères, le mot par mot est appliqué automatiquement.
 	 */
 	childStagger?: number
 	/** Si true, traite tout l'élément comme un seul bloc au lieu de découper par enfants. */
@@ -45,32 +45,49 @@ interface TextRevealOptions {
 
 type Phase = "idle" | "playing" | "done"
 
-const MAX_TOTAL = 1.5
-const WORD_GAP = 0.8
-const COLOR_DURATION = 0.55
-const SLIDE_DURATION = 0.5
-const RISE = 10
+/** Durée totale max (s) de la propagation, quelle que soit la longueur du texte. */
+const MAX_TOTAL = 1.8
+/** Pause entre deux mots, en fraction d'un pas : faible pour que l'onde ne s'interrompe pas. */
+const WORD_GAP = 0.35
+/** Micro-pause (en pas) après une ponctuation : donne un rythme de lecture naturel. */
+const PUNCT_GAP = 4
+const PUNCT_END = /[.,;:!?…]$/
+/** Durée de vie d'un caractère : apparition franche, puis retour lent à sa couleur d'origine. */
+const REVEAL_DURATION = 1.2
+/** Part de la durée (%) pendant laquelle le caractère passe de invisible à opaque, déjà en accent. */
+const APPEAR_PERCENT = 18
+/** Au-delà de ce nombre de caractères, le reveal passe automatiquement en mot par mot (moins d'animations). */
+const MAX_CHAR_UNITS = 220
+/** Remet le texte à son état d'origine une fois le reveal fini : supprime les centaines de <span>. */
+const REVERT_SPLIT_WHEN_DONE = true
 const START_DELAY = 0.05
-const FONTS_TIMEOUT = 3000
 /** Nombre moyen de caractères par mot : ramène la vitesse (car/s) d'un bloc `words` en mots/s. */
 const WORD_LENGTH = 5
 const IMMEDIATE_STAGGER = 0.12
 
-const SLIDE_EASE = "cubic-bezier(.16,1,.3,1)"
-const COLOR_EASE = "cubic-bezier(.33,1,.68,1)"
+const APPEAR_EASE = "cubic-bezier(.2,.8,.2,1)"
+const COLOR_EASE = "cubic-bezier(.25,1,.5,1)"
 
+/**
+ * Seuls `opacity` et `color` sont animés (pas de filter ni de transform) : rendu léger même sur
+ * beaucoup d'unités. Pas de `will-change` : promouvoir des centaines de calques coûterait plus cher
+ * que le gain. Le keyframe final ne définit pas `color` : le navigateur retombe sur la couleur réelle
+ * du texte, donc la couleur d'origine est toujours respectée.
+ */
 const REVEAL_CSS = `
-.text-reveal-word{display:inline-block}
 .text-reveal-char,.text-reveal-unit{opacity:0}
-[data-text-reveal="done"] .text-reveal-char,[data-text-reveal="done"] .text-reveal-unit{opacity:1}
-[data-text-reveal="playing"] .text-reveal-word{
-	animation:text-reveal-slide ${SLIDE_DURATION}s ${SLIDE_EASE};
+[data-text-reveal="done"] .text-reveal-char,[data-text-reveal="done"] .text-reveal-unit{
+	opacity:1;
+	animation:none;
 }
 [data-text-reveal="playing"] .text-reveal-char,[data-text-reveal="playing"] .text-reveal-unit{
-	animation:text-reveal-char ${COLOR_DURATION}s ${COLOR_EASE} forwards;
+	animation:text-reveal-in ${REVEAL_DURATION}s linear forwards;
 }
-@keyframes text-reveal-slide{from{transform:translate3d(0,${RISE}%,0)}to{transform:translate3d(0,0,0)}}
-@keyframes text-reveal-char{from{opacity:1;color:var(--tr-accent)}to{opacity:1}}
+@keyframes text-reveal-in{
+	0%{opacity:0;color:var(--tr-accent);animation-timing-function:${APPEAR_EASE}}
+	${APPEAR_PERCENT}%{opacity:1;color:var(--tr-accent);animation-timing-function:${COLOR_EASE}}
+	100%{opacity:1}
+}
 `
 
 interface ImmediateEntry {
@@ -103,23 +120,6 @@ function claimImmediateSlot(el: HTMLElement): Promise<number> {
 			live.forEach((entry, slot) => entry.resolve(slot))
 			for (const entry of queue) if (!entry.el.isConnected) entry.resolve(0)
 		})
-	})
-}
-
-function waitForFonts(ready: Ref<boolean>): Promise<void> {
-	if (ready.value) return Promise.resolve()
-
-	return new Promise((resolve) => {
-		const timer = setTimeout(done, FONTS_TIMEOUT)
-		const stop = watch(ready, (value) => {
-			if (value) done()
-		})
-
-		function done() {
-			clearTimeout(timer)
-			stop()
-			resolve()
-		}
 	})
 }
 
@@ -182,8 +182,8 @@ export default defineNuxtPlugin({
 			}
 
 			const {
-				speed = 70,
-				jitter = 0.25,
+				speed = 90,
+				jitter = 0.2,
 				start,
 				theme,
 				childStagger = 0.08,
@@ -199,7 +199,7 @@ export default defineNuxtPlugin({
 
 			if (!STATE.has(el)) return
 
-			await waitForFonts(fontsReady)
+			await waitForFontsReady(fontsReady)
 
 			if (!STATE.has(el)) return
 
@@ -213,28 +213,35 @@ export default defineNuxtPlugin({
 			if (!STATE.has(el)) return
 
 			const baseDelay = START_DELAY + delay + slot * immediateStagger
-			const { gsap, ScrollTrigger, SplitText } = useGsap()
+			const { gsap, SplitText, ScrollTrigger } = useGsap()
 
+			// Budget d'animations : trop de caractères => mot par mot, automatiquement.
+			const forceWords = (el.textContent ?? "").length > MAX_CHAR_UNITS
+
+			const splits: { revert: () => void }[] = []
 			let finish: { time: number; char?: HTMLElement } = { time: 0 }
 
 			state.ctx = gsap.context(() => {
 				const blocks = singlePhrase ? [el] : getTextBlocks(el)
 
 				blocks.forEach((block, i) => {
-					const byWords = block.dataset.textRevealBlock === "words"
+					const byWords = forceWords || block.dataset.textRevealBlock === "words"
 					const offset = baseDelay + i * childStagger
 					const split = SplitText.create(
 						block,
 						byWords
 							? { type: "words", wordsClass: "text-reveal-unit" }
-							: {
-									type: "words, chars",
-									wordsClass: "text-reveal-word",
-									charsClass: "text-reveal-char",
-								}
+							: { type: "words, chars", charsClass: "text-reveal-char" }
 					)
+					splits.push(split)
 					const end = byWords
-						? applyDelays(split.words as HTMLElement[], 0, speed / WORD_LENGTH, jitter, offset)
+						? applyDelays(
+								split.words as HTMLElement[],
+								0,
+								speed / WORD_LENGTH,
+								jitter,
+								offset
+							)
 						: applyDelays(
 								split.chars as HTMLElement[],
 								split.words.length,
@@ -254,8 +261,13 @@ export default defineNuxtPlugin({
 			setPhase("idle")
 
 			const onEnd = (e: AnimationEvent) => {
-				if (e.target === finish.char && e.animationName === "text-reveal-char")
-					setPhase("done")
+				if (e.target !== finish.char || e.animationName !== "text-reveal-in") return
+
+				setPhase("done")
+				el.removeEventListener("animationend", onEnd)
+
+				// Libère les centaines de <span> : DOM et mémoire allégés, accessibilité rétablie.
+				if (REVERT_SPLIT_WHEN_DONE) for (const split of splits) split.revert()
 			}
 			el.addEventListener("animationend", onEnd)
 
@@ -307,6 +319,11 @@ function getTextBlocks(el: HTMLElement): HTMLElement[] {
 	return children.length > 1 ? children : [el]
 }
 
+/**
+ * Pose le `animation-delay` de chaque unité (caractère ou mot) : onde continue, rythme légèrement
+ * organique (bruit lissé), pause entre les mots et micro-pause après la ponctuation.
+ * `wordCount === 0` signifie que les unités sont déjà des mots.
+ */
 function applyDelays(
 	chars: HTMLElement[],
 	wordCount: number,
@@ -316,27 +333,37 @@ function applyDelays(
 ): { time: number; char?: HTMLElement } {
 	if (!chars.length) return { time: offset }
 
-	const step = Math.min(1 / speed, MAX_TOTAL / (chars.length + wordCount * WORD_GAP))
+	const wordMode = wordCount === 0
+
+	let pauses = 0
+	for (const char of chars) if (PUNCT_END.test(char.textContent ?? "")) pauses++
+
+	const step = Math.min(
+		1 / speed,
+		MAX_TOTAL / (chars.length + wordCount * WORD_GAP + pauses * PUNCT_GAP)
+	)
 
 	let t = offset
 	let noise = 0
 	let lastStart = offset
-	let currentWord: HTMLElement | null = null
 
-	for (const char of chars) {
-		const word = char.parentElement
-		if (word !== currentWord) {
-			currentWord = word
-			if (t > offset) t += step * WORD_GAP
-			if (word?.classList.contains("text-reveal-word"))
-				word.style.animationDelay = `${t.toFixed(3)}s`
-		}
+	for (let i = 0; i < chars.length; i++) {
+		const char = chars[i]
+		if (!char) break
 
 		lastStart = t
 		char.style.animationDelay = `${t.toFixed(3)}s`
 
 		noise = noise * 0.65 + (Math.random() * 2 - 1) * 0.35
 		t += step * Math.max(0.25, 1 + noise * jitter * 2)
+
+		const next = chars[i + 1]
+		if (!next) break
+
+		if (wordMode || next.parentElement !== char.parentElement) {
+			if (!wordMode) t += step * WORD_GAP
+			if (PUNCT_END.test(char.textContent ?? "")) t += step * PUNCT_GAP
+		}
 	}
 
 	return { time: lastStart, char: chars[chars.length - 1] }

@@ -29,8 +29,6 @@ interface PixelWipeRunOptions {
 	direction: ResolvedPixelWipeDirection
 	colors: PixelWipeColors
 	duration: number
-	finish?: "solid" | "textured"
-	textureCoverage?: number
 }
 
 export function createPixelWipeEngine(options: PixelWipeEngineOptions) {
@@ -47,7 +45,7 @@ export function createPixelWipeEngine(options: PixelWipeEngineOptions) {
 
 	let ctx: CanvasRenderingContext2D | null = null
 	let cells: PixelCell[] = []
-	let ease = gsap.parseEase(easeName)
+	const ease = gsap.parseEase(easeName)
 	let tickerCb: ((time: number) => void) | null = null
 	let lastW = 0
 	let lastH = 0
@@ -120,50 +118,6 @@ export function createPixelWipeEngine(options: PixelWipeEngineOptions) {
 		}
 	}
 
-	function fillInstant(color: string) {
-		resize()
-		if (!ctx) return
-		const { width, height } = getSize()
-		ctx.clearRect(0, 0, width, height)
-		ctx.fillStyle = color
-		ctx.fillRect(0, 0, width, height)
-		filled = true
-		lastBase = color
-	}
-
-	function drawTexture(colors: PixelWipeColors, coverage: number) {
-		const c2d = ctx
-		if (!c2d) return
-
-		const threshold = 1 - Math.min(Math.max(coverage, 0), 1)
-		const residual = cells.filter((cell) => cell.t >= threshold)
-		if (!residual.length) return
-
-		c2d.beginPath()
-		residual.forEach((cell) => c2d.rect(cell.x, cell.y, cell.w, cell.h))
-		c2d.save()
-		c2d.globalAlpha = 0.16
-		c2d.fillStyle = colors.accent
-		c2d.fill()
-		c2d.restore()
-
-		c2d.beginPath()
-		residual.forEach((cell) => {
-			c2d.rect(
-				cell.x + strokeInset,
-				cell.y + strokeInset,
-				cell.w - strokeInset * 2,
-				cell.h - strokeInset * 2
-			)
-		})
-		c2d.save()
-		c2d.globalAlpha = 0.5
-		c2d.lineWidth = 1.5
-		c2d.strokeStyle = colors.accent
-		c2d.stroke()
-		c2d.restore()
-	}
-
 	function run(runOptions: PixelWipeRunOptions): Promise<void> {
 		return new Promise((resolve) => {
 			const c2d = ctx
@@ -174,14 +128,7 @@ export function createPixelWipeEngine(options: PixelWipeEngineOptions) {
 
 			stop()
 
-			const {
-				mode,
-				direction,
-				colors,
-				duration,
-				finish: finishMode = "solid",
-				textureCoverage = 0.4,
-			} = runOptions
+			const { mode, direction, colors, duration } = runOptions
 			const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 			lastBase = colors.base
 
@@ -190,9 +137,6 @@ export function createPixelWipeEngine(options: PixelWipeEngineOptions) {
 
 			const complete = () => {
 				fillAll(mode, colors.base)
-				if (mode === "in" && finishMode === "textured") {
-					drawTexture(colors, textureCoverage)
-				}
 				filled = mode === "in"
 				stop()
 				resolve()
@@ -280,5 +224,5 @@ export function createPixelWipeEngine(options: PixelWipeEngineOptions) {
 		stop()
 	}
 
-	return { resize, run, destroy, fillInstant, isFilled: () => filled }
+	return { resize, run, destroy }
 }

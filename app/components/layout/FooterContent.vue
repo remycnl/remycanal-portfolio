@@ -55,18 +55,19 @@ const links: FooterLink[] = [
 ]
 
 const legalLinks: FooterLink[] = [
+	{ to: "/", label: "Credits" },
 	{ to: "/", label: "Legal notice" },
 	{ to: "/", label: "Privacy policy" },
 	{ to: "/", label: "Terms" },
 ]
 
 const socialLinks: SocialLink[] = [
-	{ href: "https://www.linkedin.com/in/remy-canal", label: "LinkedIn" },
-	{ href: "https://www.pinterest.com/remycanal", label: "Pinterest" },
-	{ href: "https://dribbble.com/remycanal", label: "Dribbble" },
-	{ href: "https://www.behance.net/remycanal", label: "Behance" },
-	{ href: "https://github.com/remycnl", label: "GitHub" },
 	{ href: "https://www.awwwards.com/remy.cnl", label: "Awwwards" },
+	// { href: "https://www.pinterest.com/remycanal", label: "Pinterest" },
+	{ href: "https://dribbble.com/remycanal", label: "Dribbble" },
+	// { href: "https://www.behance.net/remycanal", label: "Behance" },
+	{ href: "https://github.com/remycnl", label: "GitHub" },
+	{ href: "https://www.linkedin.com/in/remy-canal", label: "LinkedIn" },
 ]
 
 const year = new Date().getFullYear()
@@ -166,20 +167,20 @@ onUnmounted(() => {
 
 		<div class="pointer-events-none relative z-10 flex flex-col">
 			<div class="grid grid-cols-1 gap-12 sm:grid-cols-2 sm:items-start lg:grid-cols-3">
-				<div class="flex flex-col gap-3 sm:gap-6">
+				<div class="flex flex-col gap-5 sm:gap-9">
 					<p
-						class="font-vg5000 pointer-events-auto text-[0.65rem] tracking-[0.35em] text-black/50 uppercase sm:text-xs"
+						class="font-vg5000 text-fit pointer-events-auto text-[0.65rem] tracking-[0.35em] text-black/50 uppercase sm:text-xs"
 						:class="desktopThemeClasses.muted"
 					>
 						Available for work
 					</p>
 
-					<div class="pointer-events-auto relative w-fit">
+					<div class="pointer-events-auto relative flex w-fit">
 						<a
 							href="mailto:hello@remycanal.me"
 							:tabindex="tabIndex"
 							v-roll-hover
-							class="font-vg5000 block text-2xl leading-[0.95] tracking-tight break-all whitespace-nowrap transition-colors duration-300 sm:text-3xl lg:text-4xl"
+							class="font-vg5000 text-fit-x text-2xl tracking-tight break-all whitespace-nowrap transition-colors duration-300 sm:text-3xl lg:text-4xl"
 							:class="desktopThemeClasses.hover"
 							@mouseenter="showBubble"
 							@mouseleave="hideBubble"
@@ -193,7 +194,7 @@ onUnmounted(() => {
 						<span
 							ref="bubbleEl"
 							aria-hidden="true"
-							class="font-lineal-bold text-violet pointer-events-none absolute -top-12 -right-2 hidden origin-bottom-left translate-x-8 -translate-y-full rotate-6 rounded-2xl bg-white px-4 py-2 text-xs whitespace-nowrap opacity-0 shadow-[0_3px_12px_-6px_rgba(0,0,0,0.18)] after:absolute after:-bottom-1 after:left-4 after:h-3 after:w-3 after:rotate-45 after:bg-white lg:block"
+							class="font-lineal-bold box-fit text-violet pointer-events-none absolute -top-12 -right-2 hidden origin-bottom-left translate-x-8 -translate-y-full rotate-6 rounded-2xl bg-white text-xs whitespace-nowrap opacity-0 shadow-[0_3px_12px_-6px_rgba(0,0,0,0.18)] [--fit-x:1.333em] [--fit-y:0.667em] after:absolute after:-bottom-1 after:left-4 after:h-3 after:w-3 after:rotate-45 after:bg-white lg:block"
 							:class="desktopThemeClasses.bubble"
 						>
 							Let's talk ✦
@@ -202,7 +203,7 @@ onUnmounted(() => {
 
 					<nav
 						aria-label="Social links"
-						class="pointer-events-auto flex flex-nowrap gap-x-5 sm:flex-wrap sm:gap-x-6 sm:gap-y-2"
+						class="pointer-events-auto flex flex-nowrap gap-x-5 sm:flex-wrap sm:gap-x-6 sm:gap-y-4"
 					>
 						<a
 							v-for="social in socialLinks"
@@ -212,7 +213,7 @@ onUnmounted(() => {
 							rel="noopener noreferrer"
 							:tabindex="tabIndex"
 							v-roll-hover
-							class="font-lineal-bold shrink-0 text-[10px] tracking-[0.08em] uppercase transition-colors duration-200 sm:text-xs sm:tracking-[0.15em]"
+							class="font-lineal-bold text-fit pointer-events-auto w-fit shrink-0 text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs"
 							:class="desktopThemeClasses.hover"
 						>
 							{{ social.label }}
@@ -222,7 +223,7 @@ onUnmounted(() => {
 
 				<nav
 					aria-label="Footer navigation"
-					class="flex flex-col gap-3 sm:items-end lg:col-start-3"
+					class="flex flex-col gap-4 sm:items-end sm:gap-5 lg:col-start-3"
 				>
 					<NuxtLink
 						v-for="link in links"
@@ -231,7 +232,7 @@ onUnmounted(() => {
 						:tabindex="tabIndex"
 						:prefetch="prefetch"
 						v-roll-hover
-						class="font-lineal-bold pointer-events-auto w-fit text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs"
+						class="font-lineal-bold text-fit pointer-events-auto w-fit text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs"
 						:class="desktopThemeClasses.hover"
 					>
 						{{ link.label }}
@@ -245,22 +246,22 @@ onUnmounted(() => {
 				class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
 			>
 				<p
-					class="font-vg5000 pointer-events-auto text-[0.65rem] tracking-[0.15em]"
+					class="font-vg5000 text-fit pointer-events-auto text-[0.65rem] tracking-[0.15em]"
 					:class="desktopThemeClasses.legalMuted"
 				>
 					© {{ year }} Rémy Canal — All rights reserved
 				</p>
 
 				<ul
-					class="font-vg5000 flex flex-wrap items-center gap-x-6 gap-y-2 text-[10px] tracking-[0.08em] uppercase sm:text-[0.65rem] sm:tracking-[0.15em]"
+					class="font-vg5000 flex flex-wrap items-center gap-x-6 gap-y-3 text-[10px] tracking-[0.08em] uppercase sm:text-[0.65rem] sm:tracking-[0.15em]"
 				>
-					<li v-for="legal in legalLinks" :key="legal.to">
+					<li v-for="legal in legalLinks" :key="legal.label" class="flex">
 						<NuxtLink
 							:to="legal.to"
 							:tabindex="tabIndex"
 							:prefetch="prefetch"
 							v-roll-hover
-							class="pointer-events-auto transition-colors duration-200"
+							class="text-fit pointer-events-auto transition-colors duration-200"
 							:class="desktopThemeClasses.hover"
 						>
 							{{ legal.label }}
