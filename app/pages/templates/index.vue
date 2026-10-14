@@ -30,7 +30,7 @@ useSeoMeta({
 
 <template>
 	<div
-		class="relative flex min-h-svh w-full flex-col bg-black text-white"
+		class="relative flex min-h-svh w-full flex-col border-b-2 border-black-light bg-black text-white"
 		:style="loopStyle"
 	>
 		<UiPageHeader tint="lime" :stickers="['/stickers/sticker-computer.png', '/stickers/sticker-raven.png', '/stickers/sticker-robot.png']">
@@ -44,7 +44,7 @@ useSeoMeta({
 			<!-- Banderole -->
 			<UiInfiniteHorizontalLoop
 				:ref="loopRef"
-				text="Make it yours"
+				text="Templates"
 				class="text-black-light relative z-10 pt-4 [word-spacing:1em]"
 			/>
 			<UiCardGrid
@@ -69,7 +69,6 @@ useSeoMeta({
 					:class="cellClass"
 				/>
 			</UiCardGrid>
-			<div class="bg-lime mt-auto h-px w-full shrink-0" />
 		</div>
 	</div>
 </template>

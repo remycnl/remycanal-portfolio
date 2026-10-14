@@ -73,7 +73,7 @@ const STACK_WINDOW =
 	"box-fit text-black-light inline-grid overflow-hidden rounded-full text-sm transition-colors duration-300 [--stack-gap:calc(2_*_var(--fit-y,0.5em)_+_1em)]"
 
 const STACK_ITEM =
-	"text-fit col-start-1 row-start-1 block whitespace-nowrap will-change-[translate] translate-y-[calc(var(--i)_*_(100%_+_var(--stack-gap)))]"
+	"text-fit col-start-1 row-start-1 block whitespace-nowrap will-change-[translate] translate-y-[calc((var(--idx)_-_var(--stack-pos,0))_*_(100%_+_var(--stack-gap)))]"
 
 const BADGE_LABELS = {
 	view: "View project",
@@ -85,6 +85,7 @@ const sectionRef = useTemplateRef<HTMLElement>("section")
 const viewportRef = useTemplateRef<HTMLElement>("viewport")
 const surfaceRef = useTemplateRef<HTMLElement>("surface")
 const trackRef = useTemplateRef<HTMLElement>("track")
+const stageRef = useTemplateRef<HTMLElement>("stage")
 
 const {
 	activeIndex,
@@ -105,6 +106,8 @@ const {
 	track: trackRef,
 })
 
+useStackRoll({ scope: stageRef, index: activeIndex })
+
 const pad = (n: number) => String(n).padStart(2, "0")
 </script>
 
@@ -113,7 +116,8 @@ const pad = (n: number) => String(n).padStart(2, "0")
 		<section ref="section" class="relative w-full">
 			<div ref="viewport" class="section-p-xy sticky top-0 h-svh w-full">
 				<div
-					class="@container absolute inset-0 z-0 [--card-half-h:calc(var(--card-w)_*_0.3125_+_0.5rem)] [--card-offset-y:3rem] [--card-w:min(calc(100cqw_-_2_*_var(--spacing-edge)_-_1rem_-_2_*_var(--frame-gap)),83svh)] [--corner-pull:calc(var(--frame-gap)_/_2)] [--frame-gap:1rem] [--frame-h:calc(var(--card-w)_*_0.625_+_1rem_+_2_*_var(--frame-gap))] [--frame-w:calc(var(--card-w)_+_1rem_+_2_*_var(--frame-gap))] lg:[--card-offset-y:0rem] lg:[--card-w:32vw] lg:[--frame-gap:2.75rem]"
+					ref="stage"
+					class="@container absolute inset-0 z-0 [--card-half-h:calc(var(--card-w)*0.3125+0.5rem)] [--card-offset-y:3rem] [--card-w:min(calc(100cqw-2*var(--spacing-edge)-1rem-2*var(--frame-gap)),83svh)] [--corner-pull:calc(var(--frame-gap)/2)] [--frame-gap:1rem] [--frame-h:calc(var(--card-w)*0.625+1rem+2*var(--frame-gap))] [--frame-w:calc(var(--card-w)+1rem+2*var(--frame-gap))] lg:[--card-offset-y:0rem] lg:[--card-w:32vw] lg:[--frame-gap:2.75rem]"
 				>
 					<div
 						aria-hidden="true"
@@ -130,14 +134,14 @@ const pad = (n: number) => String(n).padStart(2, "0")
 						class="pointer-events-none absolute inset-0 z-0 overflow-hidden"
 					>
 						<div
-							class="absolute top-[calc(50%_+_var(--card-offset-y))] right-0 left-0 h-px -translate-y-1/2 bg-[repeating-linear-gradient(to_right,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500"
+							class="absolute top-[calc(50%+var(--card-offset-y))] right-0 left-0 h-px -translate-y-1/2 bg-[repeating-linear-gradient(to_right,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500"
 							:class="isActiveHovered ? 'opacity-100' : 'opacity-50'"
 						></div>
 					</div>
 
 					<div
 						aria-hidden="true"
-						class="group pointer-events-none absolute top-[calc(50%_+_var(--card-offset-y))] left-1/2 z-6 h-(--frame-h) w-(--frame-w) -translate-x-1/2 -translate-y-1/2"
+						class="group pointer-events-none absolute top-[calc(50%+var(--card-offset-y))] left-1/2 z-6 h-(--frame-h) w-(--frame-w) -translate-x-1/2 -translate-y-1/2"
 						:data-active="isActiveHovered || undefined"
 					>
 						<span
@@ -149,10 +153,10 @@ const pad = (n: number) => String(n).padStart(2, "0")
 
 					<div
 						aria-hidden="true"
-						class="absolute bottom-[calc(50%_-_var(--card-offset-y)_+_var(--card-half-h)_+_2.5rem)] left-0 z-10 flex w-(--card-w) flex-col items-start gap-2 lg:contents"
+						class="absolute bottom-[calc(50%-var(--card-offset-y)+var(--card-half-h)+2.5rem)] left-0 z-10 flex w-(--card-w) flex-col items-start gap-2 lg:contents"
 					>
 						<div
-							class="z-10 flex lg:absolute lg:top-1/2 lg:left-edge lg:-translate-y-1/2"
+							class="lg:left-edge z-10 flex lg:absolute lg:top-1/2 lg:-translate-y-1/2"
 						>
 							<div
 								data-stack
@@ -165,7 +169,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 								<span
 									v-for="(p, i) in projects"
 									:key="p.id"
-									:style="{ '--i': i }"
+									:style="{ '--idx': i }"
 									:class="STACK_ITEM"
 								>
 									{{ p.year }}
@@ -174,7 +178,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 						</div>
 
 						<div
-							class="z-10 flex lg:absolute lg:top-1/2 lg:right-edge lg:-translate-y-1/2"
+							class="lg:right-edge z-10 flex lg:absolute lg:top-1/2 lg:-translate-y-1/2"
 						>
 							<div
 								data-stack
@@ -187,7 +191,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 								<span
 									v-for="(p, i) in projects"
 									:key="p.id"
-									:style="{ '--i': i }"
+									:style="{ '--idx': i }"
 									:class="STACK_ITEM"
 								>
 									{{ p.name }}
@@ -207,7 +211,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 							<span
 								v-for="(p, i) in projects"
 								:key="p.id"
-								:style="{ '--i': i }"
+								:style="{ '--idx': i }"
 								:class="STACK_ITEM"
 							>
 								{{ pad(i + 1) }}

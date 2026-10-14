@@ -15,7 +15,7 @@ const SEGMENT_2 = "is the ultimate"
 const SEGMENT_3 = 'sophistication."'
 
 const WAVE_FREQUENCY = 0.95
-const MAX_AMPLITUDE_RATIO = 0.14
+const MAX_AMPLITUDE_RATIO = 0.2
 const MAX_WAVINESS = 0.85
 const MAX_VELOCITY = 2600
 const DECAY = 0.9

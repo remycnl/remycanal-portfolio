@@ -388,7 +388,7 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 	}
 
 	function isRenderingAllowed(): boolean {
-		return isTabVisible && isInViewport && !destroyed
+		return isTabVisible && isInViewport && physicsReady && !destroyed
 	}
 
 	function startRenderLoop() {

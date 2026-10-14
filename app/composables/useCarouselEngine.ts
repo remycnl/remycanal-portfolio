@@ -233,13 +233,6 @@ function createEngine(config: EngineConfig): Engine | undefined {
 	const slots = config.cards.map(createSlot)
 	if (slots.length === 0) return undefined
 
-	const stacks = Array.from(
-		viewport.querySelectorAll<HTMLElement>("[data-stack]"),
-		(stack) =>
-			Array.from(stack.children).filter(
-				(child): child is HTMLElement => child instanceof HTMLElement
-			)
-	)
 	const axis = isMobile ? AXES.horizontal : AXES.vertical
 	const imageScale = reduceMotion ? 1 : IMAGE_SCALE
 	const targets = createSpringRecord()
@@ -256,7 +249,6 @@ function createEngine(config: EngineConfig): Engine | undefined {
 	let pitch = 1
 	let trackTarget = 0
 	let writtenPosition = Number.NaN
-	let writtenIndex = Number.NaN
 	let writtenScroll = Number.NaN
 	let lastActive = -1
 	let phase: Phase = "scroll"
@@ -325,18 +317,6 @@ function createEngine(config: EngineConfig): Engine | undefined {
 		slot.image.style.opacity = String(DIM_MIN + (1 - DIM_MIN) * slot.focus)
 	}
 
-	function writeStacks() {
-		const index = clamp(trackState.position / pitch, 0, slots.length - 1)
-		if (index === writtenIndex) return
-		writtenIndex = index
-
-		for (const stack of stacks) {
-			for (const [position, item] of stack.entries()) {
-				item.style.translate = `0 calc(${position - index} * (100% + var(--stack-gap)))`
-			}
-		}
-	}
-
 	function follow(factor: number, delta: number) {
 		const previous = trackState.position
 		trackState.position = approach(previous, trackTarget, factor)
@@ -390,8 +370,6 @@ function createEngine(config: EngineConfig): Engine | undefined {
 			writtenPosition = trackState.position
 			track.style.transform = axis.translate(-trackState.position)
 		}
-
-		writeStacks()
 
 		const skewTarget = reduceMotion
 			? 0

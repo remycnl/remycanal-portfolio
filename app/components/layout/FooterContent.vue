@@ -29,18 +29,18 @@ const prefetch = computed(() => (interactive ? undefined : false))
 const desktopThemeClasses = computed(() =>
 	theme === "lime"
 		? {
-				background: "lg:from-lime lg:to-lime lg:text-black",
-				muted: "lg:text-black/50",
-				hover: "hover:text-lime lg:hover:text-black",
-				legalMuted: "lg:text-black/60",
-				bubble: "lg:bg-black lg:text-lime lg:after:bg-black",
+				background: "bg-black text-white bg-grid-black",
+				muted: "text-white/50",
+				hover: "hover:text-lime",
+				legalMuted: "text-white/60",
+				bubble: "bg-white text-black after:bg-white",
 			}
 		: {
-				background: "lg:from-violet lg:to-violet lg:text-white",
-				muted: "lg:text-white/50",
-				hover: "hover:text-violet lg:hover:text-white",
-				legalMuted: "lg:text-white/60",
-				bubble: "lg:bg-white lg:text-violet lg:after:bg-white",
+				background: "bg-white text-black bg-grid-white",
+				muted: "text-black/50",
+				hover: "hover:text-violet",
+				legalMuted: "text-black/60",
+				bubble: "bg-black text-white after:bg-black",
 			}
 )
 
@@ -144,7 +144,7 @@ onUnmounted(() => {
 
 <template>
 	<footer
-		class="p-edge bg-grid-white from-violet to-violet relative isolate flex flex-col overflow-x-hidden bg-white via-white text-black lg:bg-linear-to-r"
+		class="p-edge relative isolate flex flex-col overflow-x-hidden"
 		:class="[desktopThemeClasses.background]"
 	>
 		<UiGridBeams :theme="theme" />
@@ -169,7 +169,7 @@ onUnmounted(() => {
 			<div class="grid grid-cols-1 gap-12 sm:grid-cols-2 sm:items-start lg:grid-cols-3">
 				<div class="flex flex-col gap-5 sm:gap-9">
 					<p
-						class="font-vg5000 text-fit pointer-events-auto text-[0.65rem] tracking-[0.35em] text-black/50 uppercase sm:text-xs"
+						class="font-vg5000 text-fit pointer-events-auto text-[0.65rem] tracking-[0.35em] uppercase sm:text-xs"
 						:class="desktopThemeClasses.muted"
 					>
 						Available for work
@@ -194,7 +194,7 @@ onUnmounted(() => {
 						<span
 							ref="bubbleEl"
 							aria-hidden="true"
-							class="font-lineal-bold box-fit text-violet pointer-events-none absolute -top-12 -right-2 hidden origin-bottom-left translate-x-8 -translate-y-full rotate-6 rounded-2xl bg-white text-xs whitespace-nowrap opacity-0 shadow-[0_3px_12px_-6px_rgba(0,0,0,0.18)] [--fit-x:1.333em] [--fit-y:0.667em] after:absolute after:-bottom-1 after:left-4 after:h-3 after:w-3 after:rotate-45 after:bg-white lg:block"
+							class="font-lineal-bold box-fit pointer-events-none absolute -top-12 -right-2 hidden origin-bottom-left translate-x-8 -translate-y-full rotate-6 rounded-2xl text-xs whitespace-nowrap opacity-0 shadow-[0_3px_12px_-6px_rgba(0,0,0,0.18)] [--fit-x:1.333em] [--fit-y:0.667em] after:absolute after:-bottom-1 after:left-4 after:h-3 after:w-3 after:rotate-45 lg:block"
 							:class="desktopThemeClasses.bubble"
 						>
 							Let's talk ✦

@@ -73,8 +73,12 @@ const COLOR_EASE = "cubic-bezier(.25,1,.5,1)"
  * beaucoup d'unités. Pas de `will-change` : promouvoir des centaines de calques coûterait plus cher
  * que le gain. Le keyframe final ne définit pas `color` : le navigateur retombe sur la couleur réelle
  * du texte, donc la couleur d'origine est toujours respectée.
+ *
+ * Les unités sont forcées en `inline` : pas de boîte isolée par caractère, `letter-spacing` et
+ * `word-spacing` restent ceux du CSS (d'origine ou modifiés).
  */
 const REVEAL_CSS = `
+.text-reveal-char,.text-reveal-unit,.text-reveal-word{display:inline !important}
 .text-reveal-char,.text-reveal-unit{opacity:0}
 [data-text-reveal="done"] .text-reveal-char,[data-text-reveal="done"] .text-reveal-unit{
 	opacity:1;
@@ -227,13 +231,30 @@ export default defineNuxtPlugin({
 				blocks.forEach((block, i) => {
 					const byWords = forceWords || block.dataset.textRevealBlock === "words"
 					const offset = baseDelay + i * childStagger
+
+					// Position réelle de chaque unité dans le texte d'origine (kerning, ligatures, espacements).
+					const before = measureOriginal(block, byWords)
+
 					const split = SplitText.create(
 						block,
 						byWords
-							? { type: "words", wordsClass: "text-reveal-unit" }
-							: { type: "words, chars", charsClass: "text-reveal-char" }
+							? {
+									type: "words",
+									wordsClass: "text-reveal-unit",
+									reduceWhiteSpace: false,
+								}
+							: {
+									type: "words, chars",
+									wordsClass: "text-reveal-word",
+									charsClass: "text-reveal-char",
+									reduceWhiteSpace: false,
+								}
 					)
 					splits.push(split)
+
+					// Recale visuellement chaque unité sur sa position d'origine : pas de saut au revert().
+					compensate((byWords ? split.words : split.chars) as HTMLElement[], before)
+
 					const end = byWords
 						? applyDelays(
 								split.words as HTMLElement[],
@@ -317,6 +338,57 @@ function getTextBlocks(el: HTMLElement): HTMLElement[] {
 			c instanceof HTMLElement && (c.textContent ?? "").trim().length > 0
 	)
 	return children.length > 1 ? children : [el]
+}
+
+interface Point {
+	x: number
+	y: number
+}
+
+/** Position de chaque caractère (ou début de mot) dans le texte d'origine, avant découpage. */
+function measureOriginal(root: HTMLElement, wordsOnly: boolean): Point[] {
+	const out: Point[] = []
+	const range = document.createRange()
+	const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+	let atWordStart = true
+
+	for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+		const text = node.textContent ?? ""
+		let index = 0
+		for (const ch of text) {
+			if (/\s/.test(ch)) {
+				atWordStart = true
+			} else {
+				if (!wordsOnly || atWordStart) {
+					range.setStart(node, index)
+					range.setEnd(node, index + ch.length)
+					const r = range.getBoundingClientRect()
+					out.push({ x: r.left, y: r.top })
+				}
+				atWordStart = false
+			}
+			index += ch.length
+		}
+	}
+	return out
+}
+
+/** Recale visuellement chaque unité sur sa position d'origine (sans toucher au layout). */
+function compensate(units: HTMLElement[], before: Point[]) {
+	if (units.length !== before.length) return // découpage différent : on ne risque rien
+
+	const rects = units.map((u) => u.getBoundingClientRect()) // une seule lecture groupée
+
+	units.forEach((u, i) => {
+		const from = before[i]
+		const to = rects[i]
+		if (!from || !to) return
+		if (Math.abs(from.y - to.top) > 2) return // ligne différente : on ignore
+		const dx = from.x - to.left
+		if (Math.abs(dx) < 0.01) return
+		u.style.position = "relative"
+		u.style.left = `${dx.toFixed(3)}px`
+	})
 }
 
 /**

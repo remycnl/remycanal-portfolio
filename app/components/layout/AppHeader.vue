@@ -371,6 +371,8 @@ useGsapContext(({ gsap }) => {
 
 	// --- Intro de la barre -----------------------------------------------
 
+		// --- Intro de la barre -----------------------------------------------
+
 	async function playIntro() {
 		const box = boxRef.value
 		if (!box) return
@@ -380,23 +382,24 @@ useGsapContext(({ gsap }) => {
 			return
 		}
 
-		// On attend AVANT d'afficher : largeur de la barre stable, polices chargées
-		await Promise.all([waitForFontsReady(fontsReady), waitForAppReady()])
+		// On attend AVANTd'afficher : largeur de la barre stable, polices cha rgées
+		await Promise.all([waitForFontsReady(fontsReady), waitForAppReady(), waitForPageTransition()])
+
+		// Distance exacte pour être entièrement hors écran (position fixe + hauteur de la barre).
+		const offscreen = box.getBoundingClientRect().bottom + 4
 
 		gsap.set(box, {
 			visibility: "visible",
-			y: -140,
+			y: -offscreen,
 			force3D: true,
-			willChange: "transform",
 		})
 
-		gsap
-			.timeline({
-				onComplete: () => gsap.set(box, { clearProps: "transform,willChange" }),
-			})
-			.to(box, { y: 12, duration: 0.55, ease: "power3.out" })
-			.to(box, { y: -6, duration: 0.2, ease: "sine.inOut" })
-			.to(box, { y: 0, duration: 1, ease: "elastic.out(1, 0.38)" })
+		gsap.to(box, {
+			y: 0,
+			duration: 1.2,
+			ease: "power4.out",
+			onComplete: () => gsap.set(box, { clearProps: "transform" }),
+		})
 	}
 
 	playIntro()
