@@ -33,7 +33,7 @@ useSeoMeta({
 		class="relative flex min-h-svh w-full flex-col border-b-2 border-black-light bg-black text-white"
 		:style="loopStyle"
 	>
-		<UiPageHeader tint="lime" :stickers="['/stickers/sticker-computer.png', '/stickers/sticker-raven.png', '/stickers/sticker-robot.png']">
+		<UiPageHeader tint="lime" shape="ovals" :stickers="['/stickers/sticker-computer.png', '/stickers/sticker-raven.png', '/stickers/sticker-robot.png']">
 			<template #title>Not just templates...<br />Make it yours.</template>
 			<template #description>
 				A collection of ready-made creative starting points.
