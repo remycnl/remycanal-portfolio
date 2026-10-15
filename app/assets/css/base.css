@@ -1,12 +1,37 @@
 @layer base {
+	:root {
+		--page-bg: var(--color-lime);
+		--scrollbar-thumb: var(--color-lime);
+		--scrollbar-track: var(--color-black);
+	}
+
+	:root[data-theme="violet"] {
+		--page-bg: var(--color-violet);
+		--scrollbar-thumb: var(--color-violet);
+		--scrollbar-track: var(--color-white);
+	}
+
 	html,
 	body {
-		background-color: var(--color-lime);
+		background-color: var(--page-bg);
 		color: var(--color-black);
 		font-family: var(--font-lineal);
 		font-variation-settings: "wght" var(--lineal-weight-regular);
 		overflow-x: clip;
 		height: 100%;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		html,
+		body {
+			transition: background-color 0.5s ease;
+		}
+
+		html {
+			transition:
+				background-color 0.5s ease,
+				scrollbar-color 0.5s ease;
+		}
 	}
 
 	*::selection {

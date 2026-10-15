@@ -7,7 +7,6 @@ type ResponsiveValue<T> = T | Partial<Record<Tier, T>>
 const TIER_ORDER: Tier[] = ["mobile", "tablet", "desktop"]
 const TABLET_MIN = 768
 const DESKTOP_MIN = 1024
-const ITEM_RESIZE_DEBOUNCE_MS = 100
 
 function isResponsiveObject<T>(value: unknown): value is Partial<Record<Tier, T>> {
 	return (
@@ -75,6 +74,7 @@ const wrapperEl = shallowRef<HTMLElement | null>(null)
 const railEl = shallowRef<HTMLElement | null>(null)
 
 const tier = shallowRef<Tier>("mobile")
+const fontsReady = useFontsReady()
 
 onMounted(() => {
 	const tabletMql = window.matchMedia(`(min-width: ${TABLET_MIN}px)`)
@@ -167,9 +167,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	let items: HTMLElement[] = []
 	let scrollTrigger: ReturnType<typeof ScrollTrigger.create> | null = null
 	let intersectionObserver: IntersectionObserver | null = null
-	let itemObserver: ResizeObserver | null = null
-	let itemResizeTimeout: ReturnType<typeof setTimeout> | undefined
-	let observedItemWidth = 0
+	let generation = 0
 	let rawVelocity = 0
 	let currentTimeScale = 1
 	let scrollDir = 1
@@ -198,10 +196,9 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	}
 
 	function teardown() {
-		clearTimeout(itemResizeTimeout)
+		generation++
 		document.removeEventListener("visibilitychange", handleVisibilityChange)
 		intersectionObserver?.disconnect()
-		itemObserver?.disconnect()
 		scrollTrigger?.kill()
 		gsap.ticker.remove(tick)
 		loop?.kill()
@@ -210,7 +207,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		items = []
 		scrollTrigger = null
 		intersectionObserver = null
-		itemObserver = null
 	}
 
 	function rebuild() {
@@ -218,22 +214,16 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		nextTick(init)
 	}
 
-	function observeItemWidth(item: HTMLElement) {
-		observedItemWidth = item.offsetWidth
-		itemObserver = new ResizeObserver(() => {
-			if (Math.abs(item.offsetWidth - observedItemWidth) < 0.5) return
-			clearTimeout(itemResizeTimeout)
-			itemResizeTimeout = setTimeout(rebuild, ITEM_RESIZE_DEBOUNCE_MS)
-		})
-		itemObserver.observe(item)
-	}
+	async function init() {
+		const id = generation
 
-	function init() {
-		if (!railEl.value || !wrapperEl.value) return
+		await waitForFontsReady(fontsReady)
+
+		if (id !== generation || !railEl.value || !wrapperEl.value) return
+
 		items = Array.from(railEl.value.children) as HTMLElement[]
-		const firstItem = items[0]
 		const lastItem = items.at(-1)
-		if (!firstItem || !lastItem) return
+		if (!lastItem) return
 
 		gsap.set(items, { clearProps: "transform" })
 
@@ -251,7 +241,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		loop.pause()
 
 		document.addEventListener("visibilitychange", handleVisibilityChange)
-		observeItemWidth(firstItem)
 
 		if (reducedMotion) {
 			loop.timeScale(baseDir)

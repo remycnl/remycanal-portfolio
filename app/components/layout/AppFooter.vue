@@ -7,7 +7,7 @@
 		<UiInfiniteHorizontalLoop
 			:ref="loopRef"
 			class="z-50"
-			text="REMY CANAL"
+			text="Creative Developer"
 			:item-class="loopTheme.item"
 			:bg="loopTheme.bg"
 			:repeat-count="4"
@@ -47,6 +47,10 @@ function getFooterTheme(path: string): FooterTheme {
 
 const footerTheme = ref<FooterTheme>(getFooterTheme(route.path))
 const loopTheme = computed(() => LOOP_THEMES[footerTheme.value])
+
+useHead({
+	htmlAttrs: { "data-theme": footerTheme },
+})
 
 let themeTimeout: ReturnType<typeof setTimeout> | undefined
 
