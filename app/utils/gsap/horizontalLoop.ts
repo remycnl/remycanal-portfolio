@@ -35,6 +35,7 @@ export function horizontalLoop(
 
 	const length = items.length
 	if (length === 0) return tl
+	if (items.some((el) => el.offsetWidth === 0)) return tl
 	const startX = (items[0] as HTMLElement).offsetLeft
 	const times: number[] = []
 	const widths: number[] = []

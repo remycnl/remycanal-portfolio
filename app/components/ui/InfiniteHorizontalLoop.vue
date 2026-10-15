@@ -26,6 +26,17 @@ function resolveResponsive<T>(value: ResponsiveValue<T>, tier: Tier): T {
 	return undefined as unknown as T
 }
 
+function nextFrames(count = 2) {
+	return new Promise<void>((resolve) => {
+		const step = () => (count-- <= 0 ? resolve() : requestAnimationFrame(step))
+		step()
+	})
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number) {
+	return Promise.race([promise, new Promise<void>((resolve) => setTimeout(resolve, ms))])
+}
+
 interface Props {
 	text: string
 	itemClass?: string
@@ -75,6 +86,7 @@ const railEl = shallowRef<HTMLElement | null>(null)
 
 const tier = shallowRef<Tier>("mobile")
 const fontsReady = useFontsReady()
+const nuxtApp = useNuxtApp()
 
 onMounted(() => {
 	const tabletMql = window.matchMedia(`(min-width: ${TABLET_MIN}px)`)
@@ -162,11 +174,14 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	const VELOCITY_DIVISOR = 160
 	const MAX_RAW_VELOCITY = 6000
 	const MAX_DELTA_RATIO = 3
+	const FONTS_TIMEOUT = 1500
 
 	let loop: ReturnType<typeof horizontalLoop> | null = null
 	let items: HTMLElement[] = []
 	let scrollTrigger: ReturnType<typeof ScrollTrigger.create> | null = null
 	let intersectionObserver: IntersectionObserver | null = null
+	let sizeObserver: ResizeObserver | null = null
+	let lastWidth = 0
 	let generation = 0
 	let rawVelocity = 0
 	let currentTimeScale = 1
@@ -195,10 +210,26 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		if (!document.hidden) rawVelocity = 0
 	}
 
+	// Reconstruit la boucle dès que la largeur d'un item change
+	// (largeur 0 pendant une transition, swap de font tardif, etc.)
+	function watchSize(el: HTMLElement) {
+		sizeObserver?.disconnect()
+		lastWidth = el.offsetWidth
+		sizeObserver = new ResizeObserver(() => {
+			const w = el.offsetWidth
+			if (w && w !== lastWidth) {
+				lastWidth = w
+				rebuild()
+			}
+		})
+		sizeObserver.observe(el)
+	}
+
 	function teardown() {
 		generation++
 		document.removeEventListener("visibilitychange", handleVisibilityChange)
 		intersectionObserver?.disconnect()
+		sizeObserver?.disconnect()
 		scrollTrigger?.kill()
 		gsap.ticker.remove(tick)
 		loop?.kill()
@@ -207,6 +238,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		items = []
 		scrollTrigger = null
 		intersectionObserver = null
+		sizeObserver = null
 	}
 
 	function rebuild() {
@@ -217,13 +249,22 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	async function init() {
 		const id = generation
 
-		await waitForFontsReady(fontsReady)
+		// Fonts, avec un timeout pour ne jamais rester bloqué
+		await withTimeout(waitForFontsReady(fontsReady), FONTS_TIMEOUT)
+		// Laisse le layout et la transition de page se stabiliser
+		await nextFrames(2)
 
 		if (id !== generation || !railEl.value || !wrapperEl.value) return
 
 		items = Array.from(railEl.value.children) as HTMLElement[]
+		const firstItem = items[0]
 		const lastItem = items.at(-1)
-		if (!lastItem) return
+		if (!firstItem || !lastItem) return
+
+		// Toujours observer : si la largeur est 0 ou change plus tard, on reconstruit
+		watchSize(firstItem)
+
+		if (!wrapperEl.value.offsetWidth || !firstItem.offsetWidth) return
 
 		gsap.set(items, { clearProps: "transform" })
 
@@ -239,6 +280,15 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 			paddingRight: gap,
 		})
 		loop.pause()
+
+		// Timeline invalide (NaN ou 0) : on la jette, l'observer retentera
+		const duration = loop.duration()
+		if (!Number.isFinite(duration) || duration <= 0) {
+			loop.kill()
+			loop = null
+			gsap.set(items, { clearProps: "transform" })
+			return
+		}
 
 		document.addEventListener("visibilitychange", handleVisibilityChange)
 
@@ -288,7 +338,11 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 	const stopViewportResize = useViewportResize(rebuild, 200)
 
+	// Relance quand la transition de page Nuxt se termine
+	const unhookTransition = nuxtApp.hook("page:transition:finish", rebuild)
+
 	return () => {
+		unhookTransition()
 		stopPropsWatch()
 		stopViewportResize()
 		teardown()
