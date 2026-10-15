@@ -22,7 +22,7 @@ useSeoMeta({
 <template>
 	<div class="relative flex min-h-svh w-full flex-col bg-white" :style="loopStyle">
 		<UiPageHeader tint="violet">
-			<template #title>Welcome to my blog.</template>
+			<template #title>Welcome to my blog.<br />Side quests included.</template>
 			<template #description>
 				I also have thoughts...<br />Occasionally, I write them down.
 			</template>

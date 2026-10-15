@@ -14,7 +14,7 @@
 	"dependencies": {
 		"@nuxt/content": "3.16.2",
 		"@nuxt/image": "2.1.0",
-		"@nuxtjs/seo": "5.3.16",
+		"@nuxtjs/seo": "^6.0.1",
 		"@tailwindcss/vite": "^4.3.3",
 		"@takumi-rs/core": "^2.16.2",
 		"better-sqlite3": "^13.0.3",
@@ -32,6 +32,7 @@
 		"@nuxtjs/mdc": "0.23.2",
 		"@types/qrcode": "^1.5.6",
 		"@types/three": "^0.186.0",
+		"nuxtseo-devtools-host": "^1.0.2",
 		"prettier": "^3.9.10",
 		"prettier-plugin-tailwindcss": "^0.8.1",
 		"vue-tsc": "^3.3.13"
