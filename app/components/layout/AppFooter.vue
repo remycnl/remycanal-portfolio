@@ -8,6 +8,7 @@
 			:ref="loopRef"
 			class="z-50"
 			text="REMY CANAL"
+			default-direction="right"
 			:item-class="loopTheme.item"
 			:bg="loopTheme.bg"
 			:repeat-count="4"

@@ -52,7 +52,6 @@ useSeoMeta({
 			<!-- Banderole -->
 			<UiInfiniteHorizontalLoop
 				:ref="loopRef"
-				default-direction="right"
 				text="Templates"
 				class="text-black-light relative z-10 pt-4 [word-spacing:1em]"
 			/>

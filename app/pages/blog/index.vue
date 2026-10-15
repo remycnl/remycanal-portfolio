@@ -31,7 +31,6 @@ useSeoMeta({
 		<div class="relative z-10 flex flex-1 flex-col bg-white">
 			<UiInfiniteHorizontalLoop
 				:ref="loopRef"
-				default-direction="right"
 				text="Blog"
 				class="text-gray-light relative z-10 pt-4 [word-spacing:1em]"
 			/>
