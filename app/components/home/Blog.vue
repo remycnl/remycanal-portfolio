@@ -623,17 +623,14 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				>
 					<span
 						data-reveal-follow
-						class="absolute inset-0 rounded-xs bg-gray-light"
+						class="bg-gray-light absolute inset-0 rounded-xs"
 						aria-hidden="true"
 					/>
 					<span
 						v-text-reveal="{ singlePhrase: true, theme: 'violet' }"
 						class="font-vg5000 relative text-xs tracking-[0.15em] text-black uppercase"
 					>
-						<span class="text-violet">(</span>blog<span
-							class="text-violet"
-							>)
-						</span>
+						<span class="text-violet">(</span>blog<span class="text-violet">) </span>
 					</span>
 				</div>
 				<div

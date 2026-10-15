@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BadgeState } from "@/components/ui/Badge.vue"
+
 type FooterLink = {
 	to: string
 	label: string
@@ -16,9 +18,16 @@ const { triggerEl = null, theme = "violet" } = defineProps<{
 	theme?: FooterTheme
 }>()
 
-const { gsap } = useGsap()
-
 const EMAIL = "hello@remycanal.me"
+
+const BADGE_LABELS = {
+	idle: "Copy email",
+	press: "Copy email",
+	drag: "Copy email",
+	view: "Say hello",
+}
+
+const BADGE_OFFSET = { x: 84, y: 64 }
 
 const themeClasses = computed(() =>
 	theme === "lime"
@@ -28,7 +37,9 @@ const themeClasses = computed(() =>
 				muted: "text-white/50",
 				hover: "hover:text-lime",
 				legalMuted: "text-white/60",
-				bubble: "bg-white text-black after:bg-white",
+				tag: "bg-black-light text-white",
+				badgeBg: "var(--color-violet)",
+				badgeText: "var(--color-white)",
 			}
 		: {
 				surface: "bg-violet",
@@ -36,7 +47,9 @@ const themeClasses = computed(() =>
 				muted: "text-black/50",
 				hover: "hover:text-violet",
 				legalMuted: "text-black/60",
-				bubble: "bg-black text-white after:bg-black",
+				tag: "bg-gray-light text-black",
+				badgeBg: "var(--color-lime)",
+				badgeText: "var(--color-black)",
 			}
 )
 
@@ -67,74 +80,27 @@ const socialLinks: SocialLink[] = [
 
 const year = new Date().getFullYear()
 
-const bubbleEl = ref<HTMLSpanElement | null>(null)
-let bubbleTween: gsap.core.Tween | gsap.core.Timeline | null = null
+const isDesktopPointer = useDesktopPointer()
+const { copied, copy } = useCopyToClipboard()
 
-const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches
-const prefersReducedMotion = () =>
-	window.matchMedia("(prefers-reduced-motion: reduce)").matches
+const isHoveringEmail = shallowRef(false)
+const badgeState = computed<BadgeState | undefined>(() =>
+	copied.value ? "view" : undefined
+)
+const tagLabel = computed(() =>
+	isDesktopPointer.value ? "Copied, see you soon!" : "Email copied"
+)
 
-function showBubble() {
-	if (!bubbleEl.value || !isDesktop()) return
+async function copyEmail() {
+	const success = await copy(EMAIL)
 
-	bubbleTween?.kill()
-	bubbleEl.value.style.willChange = "transform, opacity"
-
-	if (prefersReducedMotion()) {
-		gsap.set(bubbleEl.value, { opacity: 1 })
+	if (!success) {
+		window.location.href = `mailto:${EMAIL}`
 		return
 	}
 
-	bubbleTween = gsap.fromTo(
-		bubbleEl.value,
-		{ opacity: 0, scale: 0.82, rotate: -14, y: 5 },
-		{
-			opacity: 1,
-			scale: 1,
-			rotate: 6,
-			y: 0,
-			duration: 0.45,
-			ease: "back.out(1.9)",
-		}
-	)
+	if (!isDesktopPointer.value) navigator.vibrate?.(12)
 }
-
-function hideBubble() {
-	if (!bubbleEl.value || !isDesktop()) return
-
-	bubbleTween?.kill()
-
-	if (prefersReducedMotion()) {
-		gsap.set(bubbleEl.value, { opacity: 0 })
-		return
-	}
-
-	bubbleTween = gsap.to(bubbleEl.value, {
-		opacity: 0,
-		scale: 0.82,
-		rotate: 14,
-		y: 5,
-		duration: 0.3,
-		ease: "power2.inOut",
-		onComplete: () => {
-			if (bubbleEl.value) bubbleEl.value.style.willChange = "auto"
-		},
-	})
-}
-
-function pulseBubble() {
-	if (!bubbleEl.value || !isDesktop()) return
-
-	bubbleTween?.kill()
-	bubbleTween = gsap
-		.timeline()
-		.to(bubbleEl.value, { scale: 0.92, duration: 0.12, ease: "power2.out" })
-		.to(bubbleEl.value, { scale: 1, duration: 0.3, ease: "power2.out" })
-}
-
-onUnmounted(() => {
-	bubbleTween?.kill()
-})
 </script>
 
 <template>
@@ -161,6 +127,15 @@ onUnmounted(() => {
 				/>
 			</div>
 
+			<UiBadgeCursor
+				:active="isHoveringEmail"
+				:state="badgeState"
+				:labels="BADGE_LABELS"
+				:offset="BADGE_OFFSET"
+				:bg-color="themeClasses.badgeBg"
+				:text-color="themeClasses.badgeText"
+			/>
+
 			<div
 				class="pointer-events-none relative z-10 grid flex-1 grid-cols-2 grid-rows-[auto_auto_minmax(2.5rem,1fr)_auto_auto] gap-x-10 gap-y-6 [grid-template-areas:'intro_intro'_'nav_social'_'spacer_spacer'_'copy_copy'_'legal_legal'] sm:grid-cols-[1fr_auto] sm:grid-rows-[auto_auto_minmax(2.5rem,1fr)_auto] sm:[grid-template-areas:'intro_nav'_'social_nav'_'spacer_spacer'_'copy_legal'] lg:grid-cols-3 lg:grid-rows-[auto_minmax(2.5rem,1fr)_auto] lg:[grid-template-areas:'intro_intro_nav'_'spacer_spacer_spacer'_'social_copy_legal']"
 			>
@@ -172,28 +147,42 @@ onUnmounted(() => {
 						Available for work
 					</p>
 
-					<div class="pointer-events-auto relative flex w-fit">
-						<a
-							:href="`mailto:${EMAIL}`"
+					<div
+						class="pointer-events-none relative mx-[-0.25em] my-[-0.5em] flex w-fit overflow-clip px-[0.25em] py-[0.5em] text-2xl sm:text-3xl xl:text-4xl 2xl:text-5xl"
+					>
+						<button
+							type="button"
 							v-roll-hover
-							class="font-vg5000 text-fit-x text-2xl tracking-tight break-all whitespace-nowrap transition-colors duration-300 sm:text-3xl xl:text-4xl 2xl:text-5xl"
-							:class="themeClasses.hover"
-							@mouseenter="showBubble"
-							@mouseleave="hideBubble"
-							@focus="showBubble"
-							@blur="hideBubble"
-							@click="pulseBubble"
+							:aria-label="`Copy ${EMAIL} to clipboard`"
+							class="font-vg5000 text-fit-x pointer-events-auto cursor-pointer touch-manipulation tracking-tight break-all whitespace-nowrap transition-[color,translate] duration-500 ease-[cubic-bezier(.34,1.3,.64,1)] select-none [-webkit-tap-highlight-color:transparent] motion-reduce:transition-none"
+							:class="[
+								themeClasses.hover,
+								copied ? '-translate-y-[calc(100%+1em)]' : 'translate-y-0',
+							]"
+							@mouseenter="isHoveringEmail = true"
+							@mouseleave="isHoveringEmail = false"
+							@click="copyEmail"
 						>
 							{{ EMAIL }}
-						</a>
+						</button>
+
+						<span class="sr-only" role="status" aria-live="polite">
+							{{ copied ? "Email copied to clipboard" : "" }}
+						</span>
 
 						<span
-							ref="bubbleEl"
 							aria-hidden="true"
-							class="font-lineal-bold box-fit pointer-events-none absolute -top-12 -right-2 hidden origin-bottom-left translate-x-8 -translate-y-full rotate-6 rounded-2xl text-xs whitespace-nowrap opacity-0 shadow-[0_3px_12px_-6px_rgba(0,0,0,0.18)] [--fit-x:1.333em] [--fit-y:0.667em] after:absolute after:-bottom-1 after:left-4 after:h-3 after:w-3 after:rotate-45 lg:block"
-							:class="themeClasses.bubble"
+							class="font-vg5000 pointer-events-none absolute inset-x-0 inset-y-[0.3em] flex items-center justify-center rounded-md transition-[translate] duration-500 ease-[cubic-bezier(.34,1.3,.64,1)] motion-reduce:transition-none"
+							:class="[
+								themeClasses.tag,
+								copied ? 'translate-y-0' : 'translate-y-[calc(100%+0.5em)]',
+							]"
 						>
-							Let's talk ✦
+							<span
+								class="text-fit text-[0.65rem] tracking-[0.14em] whitespace-nowrap uppercase lg:text-xs 2xl:text-lg"
+							>
+								{{ tagLabel }}
+							</span>
 						</span>
 					</div>
 				</div>
