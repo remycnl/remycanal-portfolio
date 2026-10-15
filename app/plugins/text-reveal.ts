@@ -41,6 +41,8 @@ interface TextRevealOptions {
 	 * de la directive ni `immediate` ne sont utilisés : le reveal joue quand `opened` se résout.
 	 */
 	sequence?: (el: HTMLElement) => RevealSequence
+	/** Si true, fige la largeur des éléments de flux du bloc pendant le split (évite les reflows). */
+	lockLayout?: boolean
 }
 
 type Phase = "idle" | "playing" | "done"
@@ -194,6 +196,7 @@ export default defineNuxtPlugin({
 				immediateStagger = IMMEDIATE_STAGGER,
 				delay = 0,
 				sequence,
+				lockLayout = false,
 			} = options
 
 			await waitForAppReady()
@@ -220,6 +223,10 @@ export default defineNuxtPlugin({
 
 			const splits: { revert: () => void }[] = []
 			let finish: { time: number; char?: HTMLElement } = { time: 0 }
+
+			// Opt-in : fige la largeur des éléments de flux avant le split
+			// pour que le découpage ne déclenche pas de reflow pendant le reveal.
+			const releaseLayout = lockLayout ? freezeLayout(el) : () => {}
 
 			state.ctx = gsap.context(() => {
 				const blocks = singlePhrase ? [el] : getTextBlocks(el)
@@ -282,6 +289,7 @@ export default defineNuxtPlugin({
 				el.removeEventListener("animationend", onEnd)
 
 				if (revertWhenDone) for (const split of splits) split.revert()
+				releaseLayout()
 			}
 			el.addEventListener("animationend", onEnd)
 
@@ -289,11 +297,13 @@ export default defineNuxtPlugin({
 				el.removeEventListener("animationend", onEnd)
 				el.style.removeProperty("--tr-accent")
 				delete el.dataset.textReveal
+				releaseLayout()
 			}
 
 			if (!finish.char) {
 				setPhase("done")
 				el.style.opacity = "1"
+				releaseLayout()
 				return
 			}
 
@@ -380,6 +390,45 @@ function compensate(units: HTMLElement[], before: Point[]) {
 		u.style.position = "relative"
 		u.style.left = `${dx.toFixed(3)}px`
 	})
+}
+
+/**
+ * Fige la largeur (border-box) des descendants de flux du bloc
+ * (ni inline, ni absolute/fixed) pour que le split ne déclenche pas de reflow.
+ * Retourne une fonction qui restaure les styles d'origine (idempotente).
+ */
+function freezeLayout(root: HTMLElement): () => void {
+	const nodes = Array.from(root.querySelectorAll<HTMLElement>("*")).filter((n) => {
+		const s = getComputedStyle(n)
+		return s.display !== "inline" && s.position !== "absolute" && s.position !== "fixed"
+	})
+
+	// Lectures d'abord, écritures ensuite
+	const widths = nodes.map((n) => n.getBoundingClientRect().width)
+	const previous = nodes.map((n) => ({
+		width: n.style.width,
+		boxSizing: n.style.boxSizing,
+		flex: n.style.flex,
+	}))
+
+	nodes.forEach((n, i) => {
+		n.style.boxSizing = "border-box"
+		n.style.width = `${widths[i]}px`
+		n.style.flex = "none"
+	})
+
+	let released = false
+	return () => {
+		if (released) return
+		released = true
+		nodes.forEach((n, i) => {
+			const p = previous[i]
+			if (!p) return
+			n.style.width = p.width
+			n.style.boxSizing = p.boxSizing
+			n.style.flex = p.flex
+		})
+	}
 }
 
 function applyDelays(
