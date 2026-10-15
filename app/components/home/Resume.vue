@@ -24,7 +24,7 @@
 				<div class="absolute inset-0 z-10 flex items-center justify-center">
 					<h2
 						v-text-reveal="{ singlePhrase: true }"
-						class="font-lineal-bold shrink-0 flex w-fit flex-col gap-[0.3em] text-[17cqw] tracking-tighter text-white md:text-[10cqw] lg:text-[17cqw]"
+						class="font-lineal-bold flex w-fit flex-col gap-[0.3em] text-[17cqw] tracking-tighter text-white md:text-[10cqw] lg:text-[17cqw]"
 					>
 						<!-- Ligne 1 : « Previously » donne la largeur de tout le bloc -->
 						<span class="text-fit block">Previously</span>
@@ -46,7 +46,7 @@
 							<span
 								class="font-vg5000 text-fit text-gray-light block flex-1 px-[5cqw] text-center text-[9px] font-normal tracking-[0.15em] sm:text-[10px]"
 							>
-								Here&apos;s what happened.
+								Here&apos;s what <br>happened.
 							</span>
 						</span>
 					</h2>
