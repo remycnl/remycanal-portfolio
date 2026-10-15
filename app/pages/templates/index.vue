@@ -30,13 +30,21 @@ useSeoMeta({
 
 <template>
 	<div
-		class="relative flex min-h-svh w-full flex-col border-b-2 border-black-light bg-black text-white"
+		class="relative flex min-h-svh w-full flex-col bg-black text-white"
 		:style="loopStyle"
 	>
-		<UiPageHeader tint="lime" shape="ovals" :stickers="['/stickers/sticker-computer.png', '/stickers/sticker-raven.png', '/stickers/sticker-robot.png']">
+		<UiPageHeader
+			tint="lime"
+			shape="ovals"
+			:stickers="[
+				'/stickers/sticker-computer.png',
+				'/stickers/sticker-raven.png',
+				'/stickers/sticker-robot.png',
+			]"
+		>
 			<template #title>Not just templates...<br />Make it yours.</template>
 			<template #description>
-				A collection of ready-made creative starting points.
+				A collection of ready-made <br />creative starting points.
 			</template>
 		</UiPageHeader>
 
@@ -44,6 +52,7 @@ useSeoMeta({
 			<!-- Banderole -->
 			<UiInfiniteHorizontalLoop
 				:ref="loopRef"
+				default-direction="right"
 				text="Templates"
 				class="text-black-light relative z-10 pt-4 [word-spacing:1em]"
 			/>

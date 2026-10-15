@@ -21,7 +21,7 @@
 				<UiGridBeams theme="black" />
 
 				<div
-					class="relative z-10 ml-auto max-w-[85%] space-y-7 text-right sm:max-w-[65%]"
+					class="relative z-10 ml-auto max-w-[85%] space-y-5 lg:space-y-6 text-right sm:max-w-[65%]"
 				>
 					<p class="font-vg5000 text-fit text-lime text-xs tracking-[0.25em] uppercase">
 						Previously on
@@ -302,7 +302,7 @@
 <script lang="ts" setup>
 const CARD_CHILD_STAGGER = 0.3
 
-const cardReveal = { childStagger: CARD_CHILD_STAGGER, speed: 50 }
+const cardReveal = { childStagger: CARD_CHILD_STAGGER }
 const cardRevealWhite = { ...cardReveal, theme: "white" }
 
 const zoneIntro = useTemplateRef<HTMLElement>("zoneIntro")

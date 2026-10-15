@@ -54,11 +54,15 @@ function resolveEase(
 }
 
 /**
+ * Le texte n'existe qu'une seule fois dans le DOM (SEO, lecteurs d'écran, copier-coller, textContent).
+ * La seconde ligne du roll est un pseudo-élément `::before` qui affiche `data-roll-text` : du contenu
+ * généré par CSS, qui n'est ni du texte du DOM ni sélectionnable, et dont l'alternative vide
+ * (`/ ""`) le cache aussi aux lecteurs d'écran.
+ *
  * Tout le style statique et l'animation sont en CSS :
  * - `transform` est animé par le compositeur (thread GPU), donc fluide même si le thread principal est chargé ;
  * - aucun `will-change` : le navigateur promeut déjà le calque pendant une animation de transform,
- *   et un `will-change` permanent coûterait un calque par lien ;
- * - la sélection est gérée par les mêmes sélecteurs : une seule ligne sélectionnable à la fois.
+ *   et un `will-change` permanent coûterait un calque par lien.
  */
 const ROLL_CSS = `
 [data-roll-hover]{
@@ -71,27 +75,24 @@ const ROLL_CSS = `
 	white-space:nowrap;
 	clip-path:inset(calc(-1 * var(--roll-bleed)) -.05em);
 }
-[data-roll-row]{
+[data-roll-hover]>[data-roll-row],
+[data-roll-hover]::before{
 	display:block;
 	grid-area:1/1;
 	padding-block:var(--roll-bleed);
 	margin-block:calc(-1 * var(--roll-bleed));
 	text-box:inherit;
 }
-[data-roll-row="duplicate"]{
+[data-roll-hover]::before{
+	content:attr(data-roll-text);
+	content:attr(data-roll-text) / "";
 	transform:translateY(-100%);
-	-webkit-user-select:none;
-	user-select:none;
 }
-[data-roll-active]>[data-roll-row="original"]{
+[data-roll-active]>[data-roll-row]{
 	animation:roll-out var(--roll-duration) var(--roll-ease) forwards;
-	-webkit-user-select:none;
-	user-select:none;
 }
-[data-roll-active]>[data-roll-row="duplicate"]{
+[data-roll-active]::before{
 	animation:roll-in var(--roll-duration) var(--roll-ease) forwards;
-	-webkit-user-select:text;
-	user-select:text;
 }
 @keyframes roll-out{to{transform:translateY(100%)}}
 @keyframes roll-in{from{transform:translateY(-100%)}to{transform:translateY(0)}}
@@ -105,12 +106,23 @@ const ACTIVE_ATTR = "data-roll-active"
 
 const cleanups = new WeakMap<HTMLElement, () => void>()
 
-function createRow(text: string, kind: "original" | "duplicate") {
+const ROW_SELECTOR = ":scope > [data-roll-row]"
+
+/**
+ * Déplace (sans copier) le contenu existant dans une seule ligne : le texte et ses éventuels
+ * enfants restent les mêmes nœuds, donc rien n'est dupliqué et rien n'est recréé.
+ */
+function wrapContent(el: HTMLElement) {
 	const row = document.createElement("span")
-	row.textContent = text
-	row.dataset.rollRow = kind
-	if (kind === "duplicate") row.setAttribute("aria-hidden", "true")
+	row.dataset.rollRow = ""
+	row.append(...Array.from(el.childNodes))
+	el.append(row)
 	return row
+}
+
+/** Le pseudo-élément lit son texte dans cet attribut : il doit suivre le label. */
+function syncText(el: HTMLElement, row: HTMLElement) {
+	el.dataset.rollText = row.textContent?.trim() ?? ""
 }
 
 export default defineNuxtPlugin({
@@ -142,11 +154,9 @@ export default defineNuxtPlugin({
 					}
 				}
 
-				const duplicate = createRow(text, "duplicate")
-				const original = createRow(text, "original")
-
+				const row = wrapContent(el)
+				syncText(el, row)
 				el.dataset.rollHover = ""
-				el.replaceChildren(duplicate, original)
 
 				let hovering = false
 				let finished = false
@@ -168,14 +178,18 @@ export default defineNuxtPlugin({
 					if (finished || !el.hasAttribute(ACTIVE_ATTR)) deactivate()
 				}
 
+				// Seule l'animation de la ligne compte : celle du pseudo-élément a e.target === el.
+				const isRow = (e: AnimationEvent) =>
+					e.target instanceof HTMLElement && e.target.dataset.rollRow !== undefined
+
 				const onEnd = (e: AnimationEvent) => {
-					if (e.target !== original) return
+					if (!isRow(e)) return
 					finished = true
 					if (!hovering) deactivate()
 				}
 
 				const onCancel = (e: AnimationEvent) => {
-					if (e.target !== original) return
+					if (!isRow(e)) return
 					deactivate()
 				}
 
@@ -190,6 +204,13 @@ export default defineNuxtPlugin({
 					el.removeEventListener("animationend", onEnd)
 					el.removeEventListener("animationcancel", onCancel)
 				})
+			},
+
+			// Le label peut changer : on garde le pseudo-élément à jour (et on remet la ligne si Vue l'a écrasée).
+			updated(el) {
+				if (!import.meta.client || !el.hasAttribute("data-roll-hover")) return
+				const row = el.querySelector<HTMLElement>(ROW_SELECTOR) ?? wrapContent(el)
+				syncText(el, row)
 			},
 
 			unmounted(el) {

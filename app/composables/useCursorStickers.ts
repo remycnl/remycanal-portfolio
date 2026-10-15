@@ -28,8 +28,8 @@ export function useCursorStickers(
 		size = 200,
 		distance = 150,
 		interval = 100,
-		lifetime = 4,
-		max = 10,
+		lifetime = 2,
+		max = 5,
 	} = options
 
 	interface Live {

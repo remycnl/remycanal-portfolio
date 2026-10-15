@@ -7,6 +7,7 @@ type ResponsiveValue<T> = T | Partial<Record<Tier, T>>
 const TIER_ORDER: Tier[] = ["mobile", "tablet", "desktop"]
 const TABLET_MIN = 768
 const DESKTOP_MIN = 1024
+const ITEM_RESIZE_DEBOUNCE_MS = 100
 
 function isResponsiveObject<T>(value: unknown): value is Partial<Record<Tier, T>> {
 	return (
@@ -44,6 +45,10 @@ interface Props {
 	outlineWidth?: ResponsiveValue<string>
 	outlineOffset?: ResponsiveValue<string>
 	respectReducedMotion?: boolean
+	/** Trims each item to cap height and baseline so the spacing above and below the text is exactly `fitPadding`. */
+	fit?: boolean
+	/** Vertical padding applied on each side of a `fit` item. Use `em` so it scales with the font size. */
+	fitPadding?: ResponsiveValue<string>
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -62,6 +67,8 @@ const props = withDefaults(defineProps<Props>(), {
 	outlineWidth: "10px",
 	outlineOffset: "10px",
 	respectReducedMotion: true,
+	fit: false,
+	fitPadding: "0.2em",
 })
 
 const wrapperEl = shallowRef<HTMLElement | null>(null)
@@ -108,6 +115,7 @@ const rOutline = computed(() => resolveResponsive(props.outline, tier.value))
 const rOutlineColor = computed(() => resolveResponsive(props.outlineColor, tier.value))
 const rOutlineWidth = computed(() => resolveResponsive(props.outlineWidth, tier.value))
 const rOutlineOffset = computed(() => resolveResponsive(props.outlineOffset, tier.value))
+const rFitPadding = computed(() => resolveResponsive(props.fitPadding, tier.value))
 
 const outerStyle = computed(() => ({
 	height: rHeight.value,
@@ -124,6 +132,11 @@ const innerStyle = computed(() => ({
 			}
 		: { height: "100%" }),
 	contain: "style paint",
+}))
+
+const itemStyle = computed(() => ({
+	marginInlineEnd: "3vw",
+	paddingBlock: props.fit ? rFitPadding.value : undefined,
 }))
 
 function outlineLineStyle(side: "top" | "bottom") {
@@ -151,8 +164,12 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	const MAX_DELTA_RATIO = 3
 
 	let loop: ReturnType<typeof horizontalLoop> | null = null
+	let items: HTMLElement[] = []
 	let scrollTrigger: ReturnType<typeof ScrollTrigger.create> | null = null
 	let intersectionObserver: IntersectionObserver | null = null
+	let itemObserver: ResizeObserver | null = null
+	let itemResizeTimeout: ReturnType<typeof setTimeout> | undefined
+	let observedItemWidth = 0
 	let rawVelocity = 0
 	let currentTimeScale = 1
 	let scrollDir = 1
@@ -181,31 +198,60 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	}
 
 	function teardown() {
+		clearTimeout(itemResizeTimeout)
 		document.removeEventListener("visibilitychange", handleVisibilityChange)
 		intersectionObserver?.disconnect()
+		itemObserver?.disconnect()
 		scrollTrigger?.kill()
 		gsap.ticker.remove(tick)
 		loop?.kill()
+		if (items.length) gsap.set(items, { clearProps: "transform" })
 		loop = null
+		items = []
 		scrollTrigger = null
 		intersectionObserver = null
+		itemObserver = null
+	}
+
+	function rebuild() {
+		teardown()
+		nextTick(init)
+	}
+
+	function observeItemWidth(item: HTMLElement) {
+		observedItemWidth = item.offsetWidth
+		itemObserver = new ResizeObserver(() => {
+			if (Math.abs(item.offsetWidth - observedItemWidth) < 0.5) return
+			clearTimeout(itemResizeTimeout)
+			itemResizeTimeout = setTimeout(rebuild, ITEM_RESIZE_DEBOUNCE_MS)
+		})
+		itemObserver.observe(item)
 	}
 
 	function init() {
 		if (!railEl.value || !wrapperEl.value) return
-		const items = Array.from(railEl.value.children) as HTMLElement[]
-		if (!items.length) return
+		items = Array.from(railEl.value.children) as HTMLElement[]
+		const firstItem = items[0]
+		const lastItem = items.at(-1)
+		if (!firstItem || !lastItem) return
+
+		gsap.set(items, { clearProps: "transform" })
 
 		const baseDir = rDefaultDirection.value === "right" ? -1 : 1
 		currentTimeScale = baseDir
 		rawVelocity = 0
 
+		const gap = parseFloat(getComputedStyle(lastItem).marginRight) || 0
+
 		loop = horizontalLoop(gsap, items, {
 			repeat: -1,
 			speed: rBaseSpeed.value,
-			paddingRight: 0,
+			paddingRight: gap,
 		})
 		loop.pause()
+
+		document.addEventListener("visibilitychange", handleVisibilityChange)
+		observeItemWidth(firstItem)
 
 		if (reducedMotion) {
 			loop.timeScale(baseDir)
@@ -243,22 +289,15 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		})
 	}
 
-	document.addEventListener("visibilitychange", handleVisibilityChange)
 	init()
 
 	const stopPropsWatch = watch(
 		[rRepeatCount, rBaseSpeed, rEnableScrollBoost, rEnableDirection, rDefaultDirection],
-		() => {
-			teardown()
-			nextTick(init)
-		},
+		rebuild,
 		{ flush: "post" }
 	)
 
-	const stopViewportResize = useViewportResize(() => {
-		teardown()
-		nextTick(init)
-	}, 200)
+	const stopViewportResize = useViewportResize(rebuild, 200)
 
 	return () => {
 		stopPropsWatch()
@@ -288,9 +327,9 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				<span
 					v-for="n in rRepeatCount"
 					:key="n"
-					class="flex size-fit items-center whitespace-nowrap will-change-transform select-none"
-					:class="itemClass"
-					:style="{ marginInlineEnd: '3vw' }"
+					class="block size-fit whitespace-nowrap will-change-transform select-none"
+					:class="[fit ? 'text-fit' : '', itemClass]"
+					:style="itemStyle"
 				>
 					{{ text }}
 				</span>

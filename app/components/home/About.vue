@@ -5,21 +5,21 @@
 	>
 		<UiGridBeams theme="black" />
 		<div
-			class="top-edge left-edge absolute mt-2 ml-2 flex items-center justify-center gap-4"
+			class="top-edge left-edge absolute mt-2 ml-2 flex items-baseline-last justify-center gap-4"
 		>
 			<h3
 				v-text-reveal="{ theme: 'violet' }"
-				class="font-vg5000 text-gray-dark text-end text-sm md:text-lg"
+				class="font-vg5000 text-fit text-gray-dark text-end text-sm md:text-lg"
 			>
 				Based in France / Remote worldwide.
 			</h3>
-			<UiShapeStripes class="text-violet mb-1.5 h-3 w-3 md:h-5 md:w-5" />
+			<UiShapeStripes data-reveal-follow class="text-violet h-3 w-3 md:h-5 md:w-5" />
 		</div>
 		<div
 			class="py-section text-gray-dark relative max-w-6xl text-center text-2xl lg:text-5xl"
 		>
 			<div class="py-section max-w-xl lg:max-w-6xl">
-				<h2 v-text-reveal="{ theme: 'violet', singlePhrase: true, speed: 50 }">
+				<h2 v-text-reveal="{ theme: 'violet', singlePhrase: true }">
 					Bonjour, I'm <span class="text-white">Rémy Canal</span>. I make websites that
 					look good, feel good, and care about the little things.<br />
 

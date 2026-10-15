@@ -36,7 +36,7 @@ useHead({
 </script>
 
 <template>
-	<div class="min-h-svh border-b-2 border-gray-light bg-white">
+	<div class="min-h-svh bg-white">
 		<div class="bg-lime">
 			<HomeHero />
 			<HomeAbout />
@@ -45,15 +45,5 @@ useHead({
 		<HomeResume />
 		<HomeBlog />
 		<HomeQuote />
-		<!-- <UiInfiniteHorizontalLoop
-    class="mt-section"
-    item-class="uppercase font-lineal-heavy text-[7vw] lg:text-[3.5vw] text-white pr-[3.5vw] pt-1 lg:pt-1.5 [word-spacing:0.1em]"
-    text="Creative Developer"
-    bg="var(--color-violet)"
-    outline
-    :outline-width="{ mobile: '2px', tablet: '3px', desktop: '5px' }"
-    :outline-offset="{ mobile: '3px', tablet: '5px', desktop: '6px' }"
-    outline-color="var(--color-white)"
-/> -->
 	</div>
 </template>

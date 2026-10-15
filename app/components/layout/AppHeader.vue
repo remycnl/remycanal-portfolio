@@ -38,6 +38,7 @@
 			/>
 
 			<div
+				v-if="overlayShown"
 				class="pointer-events-none absolute inset-x-0 top-18.5 bottom-0 flex flex-col items-center justify-center gap-6"
 			>
 				<NuxtLink
@@ -45,6 +46,7 @@
 					:key="link.to"
 					:ref="(el) => setMobileLinkRef(el, index)"
 					:to="link.to"
+					style="opacity: 0; pointer-events: none"
 					class="pointer-events-auto relative z-10 inline-block uppercase"
 					@click="onMobileLinkClick(index)"
 				>
@@ -99,6 +101,7 @@
 					@contextmenu.prevent
 					@click="closeMenu"
 				>
+					<span class="sr-only">Rémy Canal</span>
 					<span
 						ref="logoFlipRef"
 						class="relative block h-8 w-8"
@@ -109,7 +112,8 @@
 					>
 						<img
 							src="/logos/R-lime.svg"
-							alt="Rémy Canal"
+							alt=""
+							aria-hidden="true"
 							width="32"
 							height="32"
 							class="absolute inset-0 h-8 w-8"
@@ -369,10 +373,6 @@ useGsapContext(({ gsap }) => {
 
 	const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches
 
-	// --- Intro de la barre -----------------------------------------------
-
-		// --- Intro de la barre -----------------------------------------------
-
 	async function playIntro() {
 		const box = boxRef.value
 		if (!box) return
@@ -382,10 +382,12 @@ useGsapContext(({ gsap }) => {
 			return
 		}
 
-		// On attend AVANTd'afficher : largeur de la barre stable, polices cha rgées
-		await Promise.all([waitForFontsReady(fontsReady), waitForAppReady(), waitForPageTransition()])
+		await Promise.all([
+			waitForFontsReady(fontsReady),
+			waitForAppReady(),
+			waitForPageTransition(),
+		])
 
-		// Distance exacte pour être entièrement hors écran (position fixe + hauteur de la barre).
 		const offscreen = box.getBoundingClientRect().bottom + 4
 
 		gsap.set(box, {
@@ -403,8 +405,6 @@ useGsapContext(({ gsap }) => {
 	}
 
 	playIntro()
-
-	// --- Effet de clic des liens de la nav -------------------------------
 
 	const pressedLinks = new WeakSet<HTMLElement>()
 
@@ -433,8 +433,6 @@ useGsapContext(({ gsap }) => {
 			clearProps: "transform",
 		})
 	}
-
-	// --- Overlay mobile : bounce des liens -------------------------------
 
 	function bounceLink(el: HTMLElement | null) {
 		if (!el || prefersReducedMotion || !isTouchDevice) return
@@ -466,8 +464,6 @@ useGsapContext(({ gsap }) => {
 			if (open.value) closeMenu()
 		}, 110)
 	}
-
-	// --- Icône du menu ---------------------------------------------------
 
 	const cornerDots = menuIconRef.value
 		? Array.from(menuIconRef.value.querySelectorAll(".dot-c"))
@@ -544,8 +540,6 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
-	// --- Liens de l'overlay mobile ---------------------------------------
-
 	const d = prefersReducedMotion ? 0.01 : 1
 
 	const LINK_POP_BEAT = 0.04
@@ -564,8 +558,6 @@ useGsapContext(({ gsap }) => {
 			transformOrigin: "50% 50%",
 		})
 	}
-
-	resetLinksHidden(mobileLinkEls.filter((el): el is HTMLElement => Boolean(el)))
 
 	function popLinks() {
 		linksTimeline?.kill()
@@ -616,8 +608,6 @@ useGsapContext(({ gsap }) => {
 				})
 		})
 	}
-
-	// --- Stickers --------------------------------------------------------
 
 	const STICKER_POP_BEAT = 0.04
 	const STICKER_STAGGER = 0.08
@@ -745,8 +735,6 @@ useGsapContext(({ gsap }) => {
 			})
 		}
 	}
-
-	// --- Ouverture / fermeture de l'overlay ------------------------------
 
 	function openOverlayMenu() {
 		open.value = true

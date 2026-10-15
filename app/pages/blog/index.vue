@@ -20,7 +20,7 @@ useSeoMeta({
 </script>
 
 <template>
-	<div class="relative flex min-h-svh w-full flex-col bg-white border-b-2 border-gray-light" :style="loopStyle">
+	<div class="relative flex min-h-svh w-full flex-col bg-white" :style="loopStyle">
 		<UiPageHeader tint="violet">
 			<template #title>Welcome to my blog.</template>
 			<template #description>
@@ -31,6 +31,7 @@ useSeoMeta({
 		<div class="relative z-10 flex flex-1 flex-col bg-white">
 			<UiInfiniteHorizontalLoop
 				:ref="loopRef"
+				default-direction="right"
 				text="Blog"
 				class="text-gray-light relative z-10 pt-4 [word-spacing:1em]"
 			/>

@@ -45,38 +45,25 @@ interface TextRevealOptions {
 
 type Phase = "idle" | "playing" | "done"
 
-/** Durée totale max (s) de la propagation, quelle que soit la longueur du texte. */
 const MAX_TOTAL = 1.8
-/** Pause entre deux mots, en fraction d'un pas : faible pour que l'onde ne s'interrompe pas. */
 const WORD_GAP = 0.35
-/** Micro-pause (en pas) après une ponctuation : donne un rythme de lecture naturel. */
 const PUNCT_GAP = 4
 const PUNCT_END = /[.,;:!?…]$/
-/** Durée de vie d'un caractère : apparition franche, puis retour lent à sa couleur d'origine. */
 const REVEAL_DURATION = 1.2
-/** Part de la durée (%) pendant laquelle le caractère passe de invisible à opaque, déjà en accent. */
 const APPEAR_PERCENT = 18
-/** Au-delà de ce nombre de caractères, le reveal passe automatiquement en mot par mot (moins d'animations). */
 const MAX_CHAR_UNITS = 220
-/** Remet le texte à son état d'origine une fois le reveal fini : supprime les centaines de <span>. */
 const REVERT_SPLIT_WHEN_DONE = true
 const START_DELAY = 0.05
-/** Nombre moyen de caractères par mot : ramène la vitesse (car/s) d'un bloc `words` en mots/s. */
 const WORD_LENGTH = 5
 const IMMEDIATE_STAGGER = 0.12
 
 const APPEAR_EASE = "cubic-bezier(.2,.8,.2,1)"
 const COLOR_EASE = "cubic-bezier(.25,1,.5,1)"
+const FOLLOW_EASE = "cubic-bezier(.34,1.56,.64,1)"
+const FOLLOW_FADE_DURATION = 0.4
+const FOLLOW_SCALE_DURATION = 0.6
+const FOLLOW_FROM_SCALE = 0.6
 
-/**
- * Seuls `opacity` et `color` sont animés (pas de filter ni de transform) : rendu léger même sur
- * beaucoup d'unités. Pas de `will-change` : promouvoir des centaines de calques coûterait plus cher
- * que le gain. Le keyframe final ne définit pas `color` : le navigateur retombe sur la couleur réelle
- * du texte, donc la couleur d'origine est toujours respectée.
- *
- * Les unités sont forcées en `inline` : pas de boîte isolée par caractère, `letter-spacing` et
- * `word-spacing` restent ceux du CSS (d'origine ou modifiés).
- */
 const REVEAL_CSS = `
 .text-reveal-char,.text-reveal-unit,.text-reveal-word{display:inline !important}
 .text-reveal-char,.text-reveal-unit{opacity:0}
@@ -92,6 +79,15 @@ const REVEAL_CSS = `
 	${APPEAR_PERCENT}%{opacity:1;color:var(--tr-accent);animation-timing-function:${COLOR_EASE}}
 	100%{opacity:1}
 }
+@media (prefers-reduced-motion:no-preference){
+	[data-reveal-follow]{
+		transition:opacity ${FOLLOW_FADE_DURATION}s ${COLOR_EASE},scale ${FOLLOW_SCALE_DURATION}s ${FOLLOW_EASE};
+	}
+	:not(:has(>[data-text-reveal="playing"],>[data-text-reveal="done"]))>[data-reveal-follow]{
+		opacity:0;
+		scale:${FOLLOW_FROM_SCALE};
+	}
+}
 `
 
 interface ImmediateEntry {
@@ -102,10 +98,6 @@ interface ImmediateEntry {
 let immediateQueue: ImmediateEntry[] = []
 let immediateFrame = 0
 
-/**
- * Regroupe les reveals `immediate` qui deviennent prêts sur le même frame et leur attribue
- * un rang selon l'ordre du DOM. Le rang sert à calculer le décalage de chaque élément.
- */
 function claimImmediateSlot(el: HTMLElement): Promise<number> {
 	return new Promise((resolve) => {
 		immediateQueue.push({ el, resolve })
@@ -131,6 +123,12 @@ function resolveAccent(theme = "lime"): string {
 	const value = theme.trim()
 	const token = /^[a-z][\w-]*$/i.test(value) ? `--color-${value}` : value
 	return readThemeColor(token, "currentColor")
+}
+
+function hasFollower(el: HTMLElement) {
+	return Array.from(el.parentElement?.children ?? []).some(
+		(sibling) => sibling !== el && sibling.hasAttribute("data-reveal-follow")
+	)
 }
 
 interface RevealState {
@@ -207,11 +205,9 @@ export default defineNuxtPlugin({
 
 			if (!STATE.has(el)) return
 
-			// Évalué après tous les waits : la mise en page (fonts comprises) est alors stable.
 			const sequenced = sequence?.(el)
 			const isImmediate = immediate && !sequenced
 
-			// Rang dans la vague de reveals immédiats.
 			const slot = isImmediate ? await claimImmediateSlot(el) : 0
 
 			if (!STATE.has(el)) return
@@ -219,8 +215,8 @@ export default defineNuxtPlugin({
 			const baseDelay = START_DELAY + delay + slot * immediateStagger
 			const { gsap, SplitText, ScrollTrigger } = useGsap()
 
-			// Budget d'animations : trop de caractères => mot par mot, automatiquement.
 			const forceWords = (el.textContent ?? "").length > MAX_CHAR_UNITS
+			const revertWhenDone = REVERT_SPLIT_WHEN_DONE && !hasFollower(el)
 
 			const splits: { revert: () => void }[] = []
 			let finish: { time: number; char?: HTMLElement } = { time: 0 }
@@ -232,7 +228,6 @@ export default defineNuxtPlugin({
 					const byWords = forceWords || block.dataset.textRevealBlock === "words"
 					const offset = baseDelay + i * childStagger
 
-					// Position réelle de chaque unité dans le texte d'origine (kerning, ligatures, espacements).
 					const before = measureOriginal(block, byWords)
 
 					const split = SplitText.create(
@@ -252,7 +247,6 @@ export default defineNuxtPlugin({
 					)
 					splits.push(split)
 
-					// Recale visuellement chaque unité sur sa position d'origine : pas de saut au revert().
 					compensate((byWords ? split.words : split.chars) as HTMLElement[], before)
 
 					const end = byWords
@@ -287,8 +281,7 @@ export default defineNuxtPlugin({
 				setPhase("done")
 				el.removeEventListener("animationend", onEnd)
 
-				// Libère les centaines de <span> : DOM et mémoire allégés, accessibilité rétablie.
-				if (REVERT_SPLIT_WHEN_DONE) for (const split of splits) split.revert()
+				if (revertWhenDone) for (const split of splits) split.revert()
 			}
 			el.addEventListener("animationend", onEnd)
 
@@ -345,7 +338,6 @@ interface Point {
 	y: number
 }
 
-/** Position de chaque caractère (ou début de mot) dans le texte d'origine, avant découpage. */
 function measureOriginal(root: HTMLElement, wordsOnly: boolean): Point[] {
 	const out: Point[] = []
 	const range = document.createRange()
@@ -373,17 +365,16 @@ function measureOriginal(root: HTMLElement, wordsOnly: boolean): Point[] {
 	return out
 }
 
-/** Recale visuellement chaque unité sur sa position d'origine (sans toucher au layout). */
 function compensate(units: HTMLElement[], before: Point[]) {
-	if (units.length !== before.length) return // découpage différent : on ne risque rien
+	if (units.length !== before.length) return
 
-	const rects = units.map((u) => u.getBoundingClientRect()) // une seule lecture groupée
+	const rects = units.map((u) => u.getBoundingClientRect())
 
 	units.forEach((u, i) => {
 		const from = before[i]
 		const to = rects[i]
 		if (!from || !to) return
-		if (Math.abs(from.y - to.top) > 2) return // ligne différente : on ignore
+		if (Math.abs(from.y - to.top) > 2) return
 		const dx = from.x - to.left
 		if (Math.abs(dx) < 0.01) return
 		u.style.position = "relative"
@@ -391,11 +382,6 @@ function compensate(units: HTMLElement[], before: Point[]) {
 	})
 }
 
-/**
- * Pose le `animation-delay` de chaque unité (caractère ou mot) : onde continue, rythme légèrement
- * organique (bruit lissé), pause entre les mots et micro-pause après la ponctuation.
- * `wordCount === 0` signifie que les unités sont déjà des mots.
- */
 function applyDelays(
 	chars: HTMLElement[],
 	wordCount: number,

@@ -85,6 +85,10 @@ function resolveCurvatureFactor(containerW: number) {
 	return MOBILE_CURVATURE_FACTOR
 }
 
+function isWheelIgnoredTarget(target: EventTarget | null) {
+	return target instanceof Element && Boolean(target.closest("[data-wheel-ignore]"))
+}
+
 function buildGuideTicks(cx: number, cy: number, r: number, halfArcDeg: number) {
 	const arcLength = 2 * halfArcDeg * DEG2RAD * r
 	const count = Math.max(2, Math.floor(arcLength / TICK_SPACING_PX) & ~1)
@@ -289,12 +293,17 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 	function updateHover(e: PointerEvent) {
 		if (e.pointerType !== "mouse") return
+		if (isWheelIgnoredTarget(e.target)) {
+			isOverWheelRef.value = false
+			return
+		}
 		const rect = track.getBoundingClientRect()
 		isOverWheelRef.value = isOverWheel(e.clientX - rect.left, e.clientY - rect.top)
 	}
 
 	function onPointerDown(e: PointerEvent) {
 		if (isPressed) return
+		if (isWheelIgnoredTarget(e.target)) return
 		const isMouse = e.pointerType === "mouse"
 		if (isMouse && e.button !== 0) return
 
@@ -610,16 +619,20 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				class="section-p-xy grid shrink-0 grid-cols-1 items-end pb-6 text-center lg:grid-cols-[1fr_auto_1fr] lg:gap-x-6 lg:pb-10"
 			>
 				<div
-					class="mb-3 hidden shrink-0 justify-self-start rounded-xs bg-black px-2.5 py-1 lg:block"
+					class="relative mb-3 hidden shrink-0 justify-self-start px-2.5 py-1 lg:block"
 				>
 					<span
-						v-text-reveal="{ singlePhrase: true }"
-						class="font-vg5000 text-xs tracking-[0.15em] text-white uppercase"
+						data-reveal-follow
+						class="absolute inset-0 rounded-xs bg-gray-light"
+						aria-hidden="true"
+					/>
+					<span
+						v-text-reveal="{ singlePhrase: true, theme: 'violet' }"
+						class="font-vg5000 relative text-xs tracking-[0.15em] text-black uppercase"
 					>
-						<span class="text-lime text-shadow-lime">(</span>blog<span
-							class="text-lime text-shadow-lime"
-						>
-							)
+						<span class="text-violet">(</span>blog<span
+							class="text-violet"
+							>)
 						</span>
 					</span>
 				</div>
@@ -685,15 +698,17 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				/>
 
 				<div
-					class="mt-80 flex flex-col items-center gap-4 text-center md:mt-120 lg:mt-125 2xl:mt-150"
+					class="pointer-events-none relative z-110 mt-80 flex flex-col items-center gap-4 text-center md:mt-120 lg:mt-125 2xl:mt-150"
 				>
-					<UiAnimatedButton
-						to="/blog"
-						label="Read the blog"
-						size="medium"
-						pill="black"
-						bubble="lime"
-					/>
+					<div class="pointer-events-auto" data-wheel-ignore>
+						<UiAnimatedButton
+							to="/blog"
+							label="Read the blog"
+							size="medium"
+							pill="black"
+							bubble="lime"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>

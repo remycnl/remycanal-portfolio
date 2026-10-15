@@ -1,13 +1,23 @@
 <template>
-	<div ref="wrapRef" class="relative z-50 w-full" :style="{ clipPath: wrapClipPath }">
-		<!-- Spacer : invisible, en flux normal, définit la hauteur réelle -->
-		<div inert aria-hidden="true" class="invisible">
-			<LayoutFooterContent :theme="footerTheme" />
-		</div>
+	<div
+		ref="wrapRef"
+		class="relative z-50 h-svh w-full"
+		:style="[loopStyle, { clipPath: wrapClipPath }]"
+	>
+		<UiInfiniteHorizontalLoop
+			:ref="loopRef"
+			class="z-50"
+			text="REMY CANAL"
+			:item-class="loopTheme.item"
+			:bg="loopTheme.bg"
+			:repeat-count="4"
+			:base-speed="1"
+			fit
+			fit-padding="0.2em"
+		/>
 
-		<!-- Copie visible, superposée, sans hauteur imposée -->
-		<div class="fixed inset-x-0 bottom-0 z-40 w-full">
-			<LayoutFooterContent interactive :trigger-el="wrapRef" :theme="footerTheme" />
+		<div class="fixed inset-x-0 bottom-0 z-40 h-[calc(100svh-var(--loop-height))] w-full">
+			<LayoutFooterContent :trigger-el="wrapRef" :theme="footerTheme" />
 		</div>
 	</div>
 </template>
@@ -15,8 +25,19 @@
 <script setup lang="ts">
 const route = useRoute()
 const wrapRef = useTemplateRef<HTMLElement>("wrapRef")
+const { loopRef, loopStyle } = useLoopHeight()
 
 type FooterTheme = "lime" | "violet"
+
+const THEME_SWITCH_DELAY_MS = 1000
+
+const LOOP_ITEM_BASE =
+	"uppercase font-lineal-heavy text-[16vw] pr-[3vw] [word-spacing:0.1em]"
+
+const LOOP_THEMES: Record<FooterTheme, { item: string; bg: string }> = {
+	lime: { item: `${LOOP_ITEM_BASE} text-lime-dark`, bg: "var(--color-lime)" },
+	violet: { item: `${LOOP_ITEM_BASE} text-violet-dark`, bg: "var(--color-violet)" },
+}
 
 function getFooterTheme(path: string): FooterTheme {
 	return path === "/contact" || path === "/templates" || path.startsWith("/templates/")
@@ -25,14 +46,17 @@ function getFooterTheme(path: string): FooterTheme {
 }
 
 const footerTheme = ref<FooterTheme>(getFooterTheme(route.path))
+const loopTheme = computed(() => LOOP_THEMES[footerTheme.value])
+
+let themeTimeout: ReturnType<typeof setTimeout> | undefined
 
 watch(
 	() => route.path,
-	async (path) => {
-		await nextTick()
-		await waitForPageTransition()
-
-		footerTheme.value = getFooterTheme(path)
+	(path) => {
+		clearTimeout(themeTimeout)
+		themeTimeout = setTimeout(() => {
+			footerTheme.value = getFooterTheme(path)
+		}, THEME_SWITCH_DELAY_MS)
 	}
 )
 
@@ -69,5 +93,6 @@ onMounted(() => {
 onUnmounted(() => {
 	resizeObserver?.disconnect()
 	clearTimeout(resizeTimeout)
+	clearTimeout(themeTimeout)
 })
 </script>

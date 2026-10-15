@@ -105,7 +105,7 @@ const OVAL_COUNT = 7
 const OVALS_COMPACT_COUNT = OVAL_COUNT - 2
 const OVAL_RX = 64
 /** Distance between centers: just under 2 * OVAL_RX, so neighbours overlap by a few pixels only. */
-const OVAL_STEP = 112
+const OVAL_STEP = 100
 const OVAL_RY_MAX = 170
 /** Height of the outermost ovals, as a share of the tallest one. */
 const OVAL_EDGE_RATIO = 0.5

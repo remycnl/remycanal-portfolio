@@ -34,7 +34,7 @@ useStackSection(heroRef, {
 			aria-hidden="true"
 			class="font-vg5000 section-p-x-reset text-shadow-lime relative z-10 flex h-full w-full flex-col justify-between pt-25 pb-15 text-xl whitespace-nowrap text-shadow-sm md:h-fit md:flex-row"
 		>
-			<div class="flex items-end gap-5 self-start md:self-auto">
+			<div class="flex items-baseline-last gap-5 self-start md:self-auto">
 				<div
 					v-text-reveal="{ singlePhrase: true, theme: 'white', immediate: true }"
 					class="flex flex-col"
@@ -42,10 +42,16 @@ useStackSection(heroRef, {
 					<span>Crafting cool websites. </span>
 					<span>Creative Developer & Designer</span>
 				</div>
-				<UiShapeStripes class="text-lime mb-2 h-4 w-4 md:h-6 md:w-6" />
+				<UiShapeStripes
+					data-reveal-follow
+					class="text-lime h-4 w-4 md:h-6 md:w-6"
+				/>
 			</div>
-			<div class="flex items-end gap-5 self-end md:self-auto">
-				<UiShapeCross class="text-lime mb-2 h-4 w-4 md:h-6 md:w-6" />
+			<div class="flex items-baseline-last gap-5 self-end md:self-auto">
+				<UiShapeCross
+					data-reveal-follow
+					class="text-lime h-4 w-4 md:h-6 md:w-6"
+				/>
 				<div
 					v-text-reveal="{ singlePhrase: true, theme: 'white', immediate: true }"
 					class="flex flex-col items-end"
