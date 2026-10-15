@@ -59,4 +59,5 @@ const route = useRoute()
 		:accent-color="route.meta.transitionAccent"
 		:direction="route.meta.transitionDirection"
 	/>
+	<AppOrientationGuard />
 </template>

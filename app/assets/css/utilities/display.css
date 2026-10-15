@@ -1,0 +1,5 @@
+@custom-variant mobile-landscape {
+	@media (orientation: landscape) and (max-height: 500px) and (pointer: coarse) {
+		@slot;
+	}
+}

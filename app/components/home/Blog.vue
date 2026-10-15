@@ -616,11 +616,9 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	>
 		<div class="relative flex h-svh flex-col">
 			<div
-				class="section-p-xy grid shrink-0 grid-cols-1 items-end pb-6 text-center lg:grid-cols-[1fr_auto_1fr] lg:gap-x-6 lg:pb-10"
+				class="section-p-xy grid shrink-0 grid-cols-1 items-end justify-items-center pb-6 text-center lg:grid-cols-[1fr_auto_1fr] lg:justify-items-stretch lg:gap-x-6 lg:pb-10"
 			>
-				<div
-					class="relative mb-3 hidden shrink-0 justify-self-start px-2.5 py-1 lg:block"
-				>
+				<div class="relative mb-4 shrink-0 sm:py-1 lg:mb-3 lg:justify-self-start">
 					<span
 						data-reveal-follow
 						class="bg-gray-light absolute inset-0 rounded-xs"
@@ -628,7 +626,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 					/>
 					<span
 						v-text-reveal="{ singlePhrase: true, theme: 'violet' }"
-						class="font-vg5000 relative text-xs tracking-[0.15em] text-black uppercase"
+						class="font-vg5000 relative text-[10px] sm:text-xs tracking-[0.15em] text-black uppercase box-fit inline-block"
 					>
 						<span class="text-violet">(</span>blog<span class="text-violet">) </span>
 					</span>
