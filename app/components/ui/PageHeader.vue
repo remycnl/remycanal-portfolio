@@ -434,7 +434,7 @@ function scrollToContent() {
 			:class="[
 				ui.arrow,
 				ui.arrowBg,
-				'font-vg5000 bottom-edge absolute left-1/2 z-10 flex size-12 -translate-x-1/2 cursor-pointer items-center justify-center rounded-xl text-xl',
+				'font-vg5000 bottom-edge absolute left-1/2 z-10 flex size-12 -translate-x-1/2 cursor-pointer items-center justify-center rounded-lg text-xl',
 				'transition-transform duration-200 ease-out',
 				'[-webkit-tap-highlight-color:transparent]',
 				'hover:scale-110 active:scale-95',

@@ -88,7 +88,7 @@ const badgeState = computed<BadgeState | undefined>(() =>
 	copied.value ? "view" : undefined
 )
 const tagLabel = computed(() =>
-	isDesktopPointer.value ? "Copied, see you soon!" : "Email copied"
+	isDesktopPointer.value ? "Copied, see you soon!" : "Email copied!"
 )
 
 async function copyEmail() {

@@ -7,7 +7,7 @@
 		<UiInfiniteHorizontalLoop
 			:ref="loopRef"
 			class="z-50"
-			text="Creative Developer"
+			text="REMY CANAL"
 			:item-class="loopTheme.item"
 			:bg="loopTheme.bg"
 			:repeat-count="4"
