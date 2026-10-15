@@ -24,7 +24,7 @@
 		<div
 			ref="mobileOverlayRef"
 			:style="mobileOverlayStyle"
-			class="pointer-events-auto fixed inset-x-0 top-0 z-0 h-svh overflow-hidden overscroll-contain md:hidden"
+			class="pointer-events-auto fixed inset-x-0 top-0 z-0 h-screen overflow-hidden overscroll-contain md:hidden"
 		>
 			<UiPixelReveal
 				:active="overlayActive"
