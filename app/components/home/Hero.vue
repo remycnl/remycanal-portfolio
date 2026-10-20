@@ -19,7 +19,7 @@ useStackSection(heroRef, {
 			aria-hidden="true"
 		>
 			<UiInfiniteHorizontalLoop
-				text="Human by design"
+				text="Looks Cool. Feels Good."
 				item-class="uppercase font-lineal-heavy text-[20vw] leading-none text-lime pr-[10vw] [word-spacing:0.15em]"
 				:base-speed="1"
 			/>

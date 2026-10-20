@@ -22,12 +22,8 @@
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
-		html,
-		body {
-			transition: background-color 0.5s ease;
-		}
-
-		html {
+		html.theme-ready,
+		html.theme-ready body {
 			transition:
 				background-color 0.5s ease,
 				scrollbar-color 0.5s ease;

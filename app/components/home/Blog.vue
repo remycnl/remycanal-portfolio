@@ -15,6 +15,8 @@ const { data: posts } = await useAsyncData(
 const DEG2RAD = Math.PI / 180
 const RAD2DEG = 180 / Math.PI
 
+const EXTRA_LARGE_DESKTOP_CURVATURE_FACTOR = 0.8
+const LARGE_DESKTOP_CURVATURE_FACTOR = 1
 const CURVATURE_FACTOR = 1.2
 const SMALL_DESKTOP_CURVATURE_FACTOR = 0.7
 const TABLET_CURVATURE_FACTOR = 0.2
@@ -79,6 +81,8 @@ function normalizeAngle(deg: number) {
 }
 
 function resolveCurvatureFactor(containerW: number) {
+	if (containerW >= 1920) return EXTRA_LARGE_DESKTOP_CURVATURE_FACTOR
+	if (containerW >= 1536) return LARGE_DESKTOP_CURVATURE_FACTOR
 	if (containerW >= 1280) return CURVATURE_FACTOR
 	if (containerW >= 1024) return SMALL_DESKTOP_CURVATURE_FACTOR
 	if (containerW >= 640) return TABLET_CURVATURE_FACTOR
@@ -693,7 +697,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 				/>
 
 				<div
-					class="pointer-events-none relative z-110 mt-80 flex flex-col items-center gap-4 text-center md:mt-120 lg:mt-125 2xl:mt-150"
+					class="pointer-events-none relative z-110 mt-80 flex flex-col items-center gap-4 text-center md:mt-120 lg:mt-125 2xl:mt-160"
 				>
 					<div class="pointer-events-auto" data-wheel-ignore>
 						<UiAnimatedButton

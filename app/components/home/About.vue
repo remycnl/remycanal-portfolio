@@ -21,7 +21,7 @@
 			<div class="py-section max-w-xl lg:max-w-6xl">
 				<h2 v-text-reveal="{ theme: 'violet', singlePhrase: true }">
 					Bonjour, I'm <span class="text-white">Rémy Canal</span>. I make websites that
-					look good, feel good, and care about the little things.<br />
+					look cool, feel good, and care about the little things.<br />
 
 					<span class="mt-6 inline-block">
 						I bring together <span class="text-white">design</span>,

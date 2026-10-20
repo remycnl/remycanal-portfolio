@@ -39,7 +39,7 @@ export function useStackSection(
 
 		onNuxtReady(() => {
 			const el = unref(target)
-			if (!el || !el.parentElement) return
+			if (!el || !el.parentElement || !el.isConnected) return
 
 			const prefersReducedMotion = window.matchMedia(
 				"(prefers-reduced-motion: reduce)"
@@ -49,6 +49,10 @@ export function useStackSection(
 			const mm = gsap.matchMedia()
 
 			mm.add(QUERIES, (context) => {
+				const parent = el.parentElement
+				// L'élément a été démonté ou détaché entre-temps : on ne fait rien
+				if (!parent || !el.isConnected) return
+
 				const bp = (["mobile", "tablet", "desktop"] as Breakpoint[]).find(
 					(key) => (context.conditions as Record<string, boolean>)[key]
 				)!
@@ -68,7 +72,7 @@ export function useStackSection(
 				wrapper.style.overflowX = "clip"
 				wrapper.style.overflowY = "visible"
 
-				el.parentElement!.insertBefore(wrapper, el)
+				parent.insertBefore(wrapper, el)
 				wrapper.appendChild(el)
 
 				const nextSection = wrapper.nextElementSibling as HTMLElement | null
@@ -171,7 +175,11 @@ export function useStackSection(
 						nextSection.style.isolation = ""
 					}
 
-					wrapper.parentElement?.insertBefore(el!, wrapper)
+					// Ne réinsère `el` que s'il est encore dans le wrapper :
+					// si Vue l'a déjà retiré au démontage, on évite un nœud orphelin.
+					if (el!.parentElement === wrapper) {
+						wrapper.parentElement?.insertBefore(el!, wrapper)
+					}
 					wrapper.remove()
 				}
 			})

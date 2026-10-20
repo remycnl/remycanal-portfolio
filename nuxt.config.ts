@@ -6,6 +6,19 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	css: ["@/assets/css/main.css"],
 
+	app: {
+		head: {
+			script: [
+				{
+					key: "theme-boot",
+					tagPosition: "head",
+					tagPriority: "critical",
+					innerHTML: `(function(){var p=location.pathname;var l=p==="/contact"||p==="/templates"||p.indexOf("/templates/")===0;document.documentElement.setAttribute("data-theme",l?"lime":"violet")})()`,
+				},
+			],
+		},
+	},
+
 	site: {
 		url: "https://www.remycanal.me",
 		name: "Rémy Canal",
