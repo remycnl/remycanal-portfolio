@@ -42,16 +42,10 @@ useStackSection(heroRef, {
 					<span>Crafting cool websites. </span>
 					<span>Creative Developer & Designer</span>
 				</div>
-				<UiShapeStripes
-					data-reveal-follow
-					class="text-lime h-4 w-4 md:h-6 md:w-6"
-				/>
+				<UiShapeStripes data-reveal-follow class="text-lime h-4 w-4 md:h-6 md:w-6" />
 			</div>
 			<div class="flex items-baseline-last gap-5 self-end md:self-auto">
-				<UiShapeCross
-					data-reveal-follow
-					class="text-lime h-4 w-4 md:h-6 md:w-6"
-				/>
+				<UiShapeCross data-reveal-follow class="text-lime h-4 w-4 md:h-6 md:w-6" />
 				<div
 					v-text-reveal="{ singlePhrase: true, theme: 'white', immediate: true }"
 					class="flex flex-col items-end"

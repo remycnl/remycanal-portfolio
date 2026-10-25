@@ -46,7 +46,7 @@
 							<span
 								class="font-vg5000 text-fit text-gray-light block flex-1 px-[5cqw] text-center text-[9px] font-normal tracking-[0.15em] sm:text-[10px]"
 							>
-								Here&apos;s what <br>happened.
+								Here&apos;s what <br />happened.
 							</span>
 						</span>
 					</h2>

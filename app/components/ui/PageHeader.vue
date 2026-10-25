@@ -24,6 +24,7 @@ const tones: Record<
 		arrow: string
 		arrowBg: string
 		reveal: CardTint
+		arrowBorder: string
 	}
 > = {
 	lime: {
@@ -33,6 +34,7 @@ const tones: Record<
 		text: "text-white/60",
 		arrow: "text-black",
 		arrowBg: "bg-lime",
+		arrowBorder: "border-black-light",
 		reveal: "lime",
 	},
 	violet: {
@@ -42,6 +44,7 @@ const tones: Record<
 		text: "text-black/70",
 		arrow: "text-white",
 		arrowBg: "bg-violet",
+		arrowBorder: "border-gray-light",
 		reveal: "violet",
 	},
 }
@@ -434,7 +437,8 @@ function scrollToContent() {
 			:class="[
 				ui.arrow,
 				ui.arrowBg,
-				'font-vg5000 bottom-edge absolute left-1/2 z-10 flex size-12 -translate-x-1/2 cursor-pointer items-center justify-center rounded-lg text-xl',
+				ui.arrowBorder,
+				'font-vg5000 bottom-edge absolute left-1/2 z-10 flex size-13 -translate-x-1/2 cursor-pointer items-center justify-center rounded-lg border-2 text-xl',
 				'transition-transform duration-200 ease-out',
 				'[-webkit-tap-highlight-color:transparent]',
 				'hover:scale-110 active:scale-95',

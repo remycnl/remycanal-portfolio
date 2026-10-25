@@ -27,7 +27,10 @@ export function decodeImage(
 
 		const decode = () => {
 			if (typeof img.decode !== "function") return finish()
-			img.decode().catch(() => {}).finally(finish)
+			img
+				.decode()
+				.catch(() => {})
+				.finally(finish)
 		}
 
 		const timer = setTimeout(finish, timeout)

@@ -13,7 +13,11 @@
 			preserveAspectRatio="none"
 			aria-hidden="true"
 		>
-			<path ref="curtainRef" d="M0 0 H100 V100 Q50 100 0 100 Z" fill="var(--color-black)" />
+			<path
+				ref="curtainRef"
+				d="M0 0 H100 V100 Q50 100 0 100 Z"
+				fill="var(--color-black)"
+			/>
 		</svg>
 
 		<div

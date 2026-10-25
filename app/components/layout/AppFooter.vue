@@ -24,46 +24,46 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
+import type { SiteTheme } from "@/types/theme"
+
 const wrapRef = useTemplateRef<HTMLElement>("wrapRef")
 const { loopRef, loopStyle } = useLoopHeight()
-
-type FooterTheme = "lime" | "violet"
 
 const THEME_SWITCH_DELAY_MS = 1000
 
 const LOOP_ITEM_BASE =
 	"uppercase font-lineal-heavy text-[16vw] pr-[3vw] [word-spacing:0.1em]"
 
-const LOOP_THEMES: Record<FooterTheme, { item: string; bg: string }> = {
+const LOOP_THEMES: Record<SiteTheme, { item: string; bg: string }> = {
 	lime: { item: `${LOOP_ITEM_BASE} text-lime-dark`, bg: "var(--color-lime)" },
 	violet: { item: `${LOOP_ITEM_BASE} text-violet-dark`, bg: "var(--color-violet)" },
 }
 
-function getFooterTheme(path: string): FooterTheme {
-	return path === "/contact" || path === "/templates" || path.startsWith("/templates/")
-		? "lime"
-		: "violet"
-}
+// Each page picks its theme with `definePageMeta({ footerTheme: "lime" })`. An overlay keeps the
+// theme of the page behind it, exactly as if the visitor had not left it.
+const visibleRoute = useVisibleRoute()
+const routeTheme = computed<SiteTheme>(
+	() => visibleRoute.value.meta.footerTheme ?? DEFAULT_SITE_THEME
+)
 
-const footerTheme = ref<FooterTheme>(getFooterTheme(route.path))
+// Shared with everything that follows the theme: the background, the footer and the scrollbar.
+const footerTheme = useSiteTheme()
 const loopTheme = computed(() => LOOP_THEMES[footerTheme.value])
 
+// `data-theme` on <html> drives the page background and every themed variable.
 useHead({
 	htmlAttrs: { "data-theme": footerTheme },
 })
 
 let themeTimeout: ReturnType<typeof setTimeout> | undefined
 
-watch(
-	() => route.path,
-	(path) => {
-		clearTimeout(themeTimeout)
-		themeTimeout = setTimeout(() => {
-			footerTheme.value = getFooterTheme(path)
-		}, THEME_SWITCH_DELAY_MS)
-	}
-)
+// Watches the theme, not the path: opening or closing an overlay changes nothing.
+watch(routeTheme, (theme) => {
+	clearTimeout(themeTimeout)
+	themeTimeout = setTimeout(() => {
+		footerTheme.value = theme
+	}, THEME_SWITCH_DELAY_MS)
+})
 
 const wrapClipPath = "polygon(0% 0, 100% 0%, 100% 100%, 0 100%)"
 

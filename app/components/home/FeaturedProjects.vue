@@ -124,7 +124,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 						class="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-px -translate-x-1/2 bg-[repeating-linear-gradient(to_bottom,var(--color-gray-dark)_0_4px,transparent_4px_9px)] transition-opacity duration-500"
 						:style="{
 							top: 'calc(var(--spacing-section) * -1)',
-							bottom: 'calc(var(--spacing-section) * -2)',
+							bottom: 'calc(var(--spacing-section) * -8)',
 						}"
 						:class="isActiveHovered ? 'opacity-100' : 'opacity-50'"
 					></div>

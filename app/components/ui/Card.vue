@@ -11,6 +11,14 @@ interface Props {
 	price?: string
 	tags?: string[]
 	teaser?: boolean
+	/** CSS ratio of the image ("16/9", "1/1", "4/5"). Without it, the card follows the original format of the image (`width` / `height`), then 16/9. */
+	aspect?: string
+	/** Intrinsic width of the image, in px. Used with `height` to keep the original format without layout shift. */
+	width?: number
+	/** Intrinsic height of the image, in px. */
+	height?: number
+	/** The link opens an overlay above the current page, which stays where it is behind. The navigation is instant, so there is no "opening" state. */
+	overlay?: boolean
 	/** Tint of the teaser overlay. Defaults to the tint of the surrounding card grid. */
 	teaserTint?: CardTint
 	/** Background the card sits on. `black` switches the texts to white. Defaults to the theme of the surrounding card grid. */
@@ -31,6 +39,10 @@ const {
 	price,
 	tags = [],
 	teaser = false,
+	aspect = undefined,
+	width = undefined,
+	height = undefined,
+	overlay = false,
 	teaserTint,
 	theme,
 	compact = false,
@@ -41,6 +53,7 @@ const {
 
 const grid = useCardGridContext()
 const isOpening = useOpening()
+const { arm } = useOverlay()
 
 const tones: Record<CardTheme, { title: string; text: string; date: string }> = {
 	white: { title: "text-black", text: "text-black/60", date: "text-black/40" },
@@ -73,6 +86,30 @@ const resolvedTint = computed(() => teaserTint ?? grid?.tint ?? "lime")
 
 const ui = computed(() => tones[resolvedTheme.value])
 const tagLine = computed(() => tags.join(" • "))
+
+/** Ratio used when neither `aspect` nor the size of the image is known. Keep in sync with `buildCardCells`. */
+const DEFAULT_RATIO = 16 / 9
+/** Width of the generated image. Its height follows the ratio of the card. */
+const IMAGE_BASE_WIDTH = 1280
+
+function parseRatio(value: string): number | null {
+	const [w, h = 1] = value.split("/").map((part) => Number.parseFloat(part))
+	const ratio = (w ?? Number.NaN) / h
+	return Number.isFinite(ratio) && ratio > 0 ? ratio : null
+}
+
+const ratio = computed(() => {
+	if (aspect) return parseRatio(aspect) ?? DEFAULT_RATIO
+	if (width && height) return width / height
+	return DEFAULT_RATIO
+})
+
+const imageHeight = computed(() => Math.round(IMAGE_BASE_WIDTH / ratio.value))
+
+const imageFrameStyle = computed(() => ({
+	aspectRatio: String(ratio.value),
+	"--card-ratio": String(ratio.value),
+}))
 
 const revealEnabled = computed(() => reveal ?? !compact)
 const hasImageReveal = computed(() => revealEnabled.value && revealImage)
@@ -130,6 +167,14 @@ function onClick(event: MouseEvent) {
 	) {
 		return
 	}
+
+	// An overlay opens above the current page: the navigation that follows is marked as such, and
+	// there is no pending-navigation state to show.
+	if (overlay) {
+		arm()
+		return
+	}
+
 	isOpening.value = true
 	grid?.onOpen()
 }
@@ -154,7 +199,7 @@ function onClick(event: MouseEvent) {
 		@pointercancel="grid?.onRelease()"
 		@click="onClick"
 	>
-		<div class="card-image relative aspect-video overflow-hidden rounded-xs">
+		<div class="card-image relative overflow-hidden rounded-xs" :style="imageFrameStyle">
 			<div
 				v-if="!compact"
 				aria-hidden="true"
@@ -173,8 +218,8 @@ function onClick(event: MouseEvent) {
 				<NuxtImg
 					:src="image"
 					:alt="title"
-					width="1280"
-					height="720"
+					:width="IMAGE_BASE_WIDTH"
+					:height="imageHeight"
 					format="webp"
 					:quality="70"
 					sizes="100vw md:60vw lg:50vw"
@@ -275,8 +320,9 @@ function onClick(event: MouseEvent) {
 .card-media {
 	--card-gap: 0px;
 	--card-spring: cubic-bezier(0.22, 1, 0.36, 1);
+	/* The height of the card is its width divided by its ratio (set on `.card-image`). */
 	scale: calc(1 - tan(atan2(var(--card-gap) * 2, 100cqw)))
-		calc(1 - tan(atan2(var(--card-gap) * 2, 56.25cqw)));
+		calc(1 - tan(atan2(var(--card-gap) * 2, 100cqw / var(--card-ratio, 1.7778))));
 	transition: scale 900ms var(--card-spring);
 }
 

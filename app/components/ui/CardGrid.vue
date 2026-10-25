@@ -13,7 +13,8 @@ interface Props {
 	pressLabel?: string
 	/** Cursor badge label once a card has been clicked and navigation is pending. */
 	loadingLabel?: string
-	/** Reveals the first row as soon as the page is ready, even if it exceeds the screen. The next rows reveal one at a time, as they are scrolled into view. Rows are read from the real layout, so they follow the breakpoints. */
+	/** Ratio (width / height) of an item. When provided, the card sizes of each row are arranged by format. The editorial rhythm is kept in all cases. */
+	getRatio?: (item: T) => number | undefined
 	error?: boolean
 	errorTitle?: string
 	emptyText?: string
@@ -26,6 +27,7 @@ const {
 	label = "Open",
 	pressLabel,
 	loadingLabel = "Opening...",
+	getRatio,
 	error = false,
 	errorTitle = "The content could not be loaded.",
 	emptyText = "Nothing published yet.",
@@ -40,7 +42,7 @@ const textTones: Record<CardTheme, string> = {
 	black: "text-white/60",
 }
 
-const cells = computed(() => buildCardCells(items))
+const cells = computed(() => buildCardCells(items, { getRatio }))
 
 const badge = provideCardGrid({
 	theme,

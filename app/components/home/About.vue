@@ -32,19 +32,17 @@
 				</h2>
 			</div>
 			<UiPopImage
-				src="/stickers/sticker-remy.png"
+				src="/stickers/character_violet.svg"
 				alt="Sticker Rémy"
 				:rotate="15"
-				grayscale
 				draggable
 				img-class="absolute top-0 -right-4 w-auto 2xl:-right-30 h-20 md:h-30 lg:h-42 2xl:h-50"
 			/>
 			<UiPopImage
-				src="/stickers/sticker-computer.png"
+				src="/stickers/computer_violet.svg"
 				alt="Sticker computer"
 				:rotate="-15"
 				:delay="0.12"
-				grayscale
 				draggable
 				img-class="absolute bottom-0 -left-2 w-auto 2xl:-left-40 h-20 md:h-30 lg:h-42 2xl:h-50"
 			/>

@@ -186,6 +186,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	let rawVelocity = 0
 	let currentTimeScale = 1
 	let scrollDir = 1
+	let disposed = false
+	let rebuildQueued = false
 
 	function tick() {
 		if (!loop) return
@@ -241,9 +243,28 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		sizeObserver = null
 	}
 
+	/**
+	 * Une reconstruction remet les transforms à zéro, relit le layout et recrée la timeline :
+	 * jamais pendant que la vague découvre la page (ça se verrait). On attend que ce soit
+	 * invisible (écran couvert ou transition terminée) ; plusieurs demandes = une seule.
+	 */
 	function rebuild() {
-		teardown()
-		nextTick(init)
+		if (disposed || rebuildQueued) return
+		rebuildQueued = true
+
+		waitUntilSafeToWork().then(() => {
+			rebuildQueued = false
+			if (disposed) return
+			teardown()
+			nextTick(init)
+		})
+	}
+
+	/** Après une transition : on ne reconstruit que si la largeur a réellement changé. */
+	function rebuildIfNeeded() {
+		const first = items[0]
+		if (loop && first && first.offsetWidth === lastWidth) return
+		rebuild()
 	}
 
 	async function init() {
@@ -253,6 +274,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		await withTimeout(waitForFontsReady(fontsReady), FONTS_TIMEOUT)
 		// Laisse le layout et la transition de page se stabiliser
 		await nextFrames(2)
+		// Pas de construction visible pendant la vague de découverte
+		await waitUntilSafeToWork()
 
 		if (id !== generation || !railEl.value || !wrapperEl.value) return
 
@@ -338,10 +361,11 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 	const stopViewportResize = useViewportResize(rebuild, 200)
 
-	// Relance quand la transition de page Nuxt se termine
-	const unhookTransition = nuxtApp.hook("page:transition:finish", rebuild)
+	// À la fin de la transition de page : reconstruction seulement si la largeur a changé
+	const unhookTransition = nuxtApp.hook("page:transition:finish", rebuildIfNeeded)
 
 	return () => {
+		disposed = true
 		unhookTransition()
 		stopPropsWatch()
 		stopViewportResize()

@@ -42,6 +42,7 @@ useHead({
 			<HomeAbout />
 		</div>
 		<HomeFeaturedProjects />
+		<HomePlaygroundCTA />
 		<HomeResume />
 		<HomeBlog />
 		<HomeQuote />

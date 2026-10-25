@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { formatPostDate } from "@/utils/content"
 
+// Opened from a card, it covers the page it comes from (see `overlay` on the cards). Reached
+// directly (shared link, reload, search engine), it is a regular page.
+definePageMeta({ overlay: { theme: "white", parent: "/blog" } })
+
 const route = useRoute()
 
 const { data: post, error } = await useAsyncData(`blog-${route.path}`, () =>
@@ -32,7 +36,10 @@ useSeoMeta({
 			<time class="font-vg5000 text-xs tracking-widest text-black/40 uppercase">
 				{{ formatPostDate(post.date) }} · {{ post.author }}
 			</time>
-			<h1 class="font-lineal-bold mt-4 text-4xl text-black lg:text-5xl">
+			<h1
+				id="overlay-title"
+				class="font-lineal-bold mt-4 text-4xl text-black lg:text-5xl"
+			>
 				{{ post.title }}
 			</h1>
 			<img
@@ -42,6 +49,8 @@ useSeoMeta({
 			/>
 			<ContentRenderer :value="post" class="article-content mt-10 text-black/80" />
 		</div>
+
+		<LayoutOverlayClose />
 	</article>
 </template>
 

@@ -25,7 +25,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	rotate: 0,
-	grayscale: true,
+	grayscale: false,
 	delay: 0,
 	duration: 0.6,
 	imgClass: "",

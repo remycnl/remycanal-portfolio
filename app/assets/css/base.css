@@ -1,14 +1,30 @@
 @layer base {
-	:root {
+	/*
+	 * Themes. Any element carrying `data-theme` re-scopes these variables, which is how the two
+	 * layers of the scrollbar (see LayoutScrollbar) can show two themes at the same time while one
+	 * is being revealed over the other.
+	 */
+	:root,
+	[data-theme="lime"] {
 		--page-bg: var(--color-lime);
 		--scrollbar-thumb: var(--color-lime);
 		--scrollbar-track: var(--color-black);
 	}
 
-	:root[data-theme="violet"] {
+	[data-theme="violet"] {
 		--page-bg: var(--color-violet);
 		--scrollbar-thumb: var(--color-violet);
 		--scrollbar-track: var(--color-white);
+	}
+
+	/*
+	 * While the loader is on screen (first load, reload), everything around it is black, then the
+	 * theme of the page takes over. Higher specificity than the themes above, on <html> only.
+	 */
+	:root[data-loading] {
+		--page-bg: var(--color-black);
+		--scrollbar-thumb: var(--color-black);
+		--scrollbar-track: var(--color-black);
 	}
 
 	html,
@@ -19,6 +35,11 @@
 		font-variation-settings: "wght" var(--lineal-weight-regular);
 		overflow-x: clip;
 		height: 100%;
+	}
+
+	/* Page frozen: behind the loader or an overlay (see app.vue). */
+	html[data-scroll-locked] {
+		overflow: hidden;
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
@@ -43,5 +64,38 @@
 		:where(input, textarea, select) {
 			font-size: 16px;
 		}
+	}
+}
+
+/*
+ * The scrollbar of the page and the one of the overlay sheet are drawn by LayoutScrollbar (a
+ * gauge), so the native ones are hidden everywhere. Outside of the layer on purpose: it must win
+ * over the `scrollbar-width: thin` of the scrollbar styles.
+ */
+html,
+.no-scrollbar {
+	scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Overlay sheet: comes up from the bottom and leaves downwards. */
+.sheet-enter-active,
+.sheet-leave-active {
+	transition: translate 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.sheet-enter-from,
+.sheet-leave-to {
+	translate: 0 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sheet-enter-active,
+	.sheet-leave-active {
+		transition-duration: 0.01ms;
 	}
 }

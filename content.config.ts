@@ -25,17 +25,17 @@ export default defineContentConfig({
 			}),
 			indexes: [{ columns: ["date"] }],
 		}),
-		templates: defineCollection({
+		playground: defineCollection({
 			type: "page",
-			source: "templates/*.md",
+			source: "playground/*.md",
 			schema: z.object({
-				author: z.string().min(1),
-				price: z.string().min(1),
-				tags: z.array(z.string().min(1)).min(1),
-				teaser: z.boolean().default(false),
+				date: z.date(),
 				image: z.string().min(1),
-				description: z.string().min(1),
+				width: z.number().int().positive().optional(),
+				height: z.number().int().positive().optional(),
+				description: z.string().optional(),
 			}),
+			indexes: [{ columns: ["date"] }],
 		}),
 		resume: defineCollection({
 			type: "data",

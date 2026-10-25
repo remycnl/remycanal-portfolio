@@ -21,7 +21,16 @@ useSeoMeta({
 
 <template>
 	<div class="relative flex min-h-svh w-full flex-col bg-white" :style="loopStyle">
-		<UiPageHeader tint="violet">
+		<UiPageHeader
+			tint="violet"
+			:stickers="[
+				'/stickers/character_violet.svg',
+				'/stickers/flower_violet.svg',
+				'/stickers/dog_violet.svg',
+				'/stickers/characterFull_violet.svg',
+				'/stickers/cursor_violet.svg',
+			]"
+		>
 			<template #title>Welcome to my blog.<br />Side quests included.</template>
 			<template #description>
 				I also have thoughts...<br />Occasionally, I write them down.
@@ -51,6 +60,7 @@ useSeoMeta({
 					:image="item.image"
 					:date="formatPostDate(item.date)"
 					:href="item.path"
+					overlay
 					:class="cellClass"
 				/>
 			</UiCardGrid>

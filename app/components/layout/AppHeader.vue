@@ -37,6 +37,8 @@
 				@closed="onOverlayClosed"
 			/>
 
+			<UiStickerPattern ref="stickerPatternRef" :srcs="stickerSrcs" />
+
 			<div
 				v-if="overlayShown"
 				class="pointer-events-none absolute inset-x-0 top-18.5 bottom-0 flex flex-col items-center justify-center gap-6"
@@ -46,9 +48,12 @@
 					:key="link.to"
 					:ref="(el) => setMobileLinkRef(el, index)"
 					:to="link.to"
-					style="opacity: 0; pointer-events: none"
-					class="pointer-events-auto relative z-10 inline-block uppercase"
-					@click="onMobileLinkClick(index)"
+					class="pointer-events-none relative z-10 inline-block uppercase opacity-0"
+					@pointerdown="onMobileLinkPress(index)"
+					@pointerup="onMobileLinkRelease(index, $event)"
+					@pointerleave="onMobileLinkRelease(index, $event)"
+					@pointercancel="onMobileLinkRelease(index, $event)"
+					@click="onMobileLinkClick"
 				>
 					<UiOutlineText
 						:text="link.label"
@@ -62,25 +67,6 @@
 						{{ String(index + 1).padStart(2, "0") }}
 					</span>
 				</NuxtLink>
-			</div>
-
-			<div
-				ref="stickersLayerRef"
-				data-drag-bounds
-				class="pointer-events-none fixed inset-0 z-20"
-			>
-				<UiPopImage
-					v-for="(sticker, index) in visibleStickers"
-					:key="sticker.id"
-					:ref="(el) => setStickerRef(el, index)"
-					:src="sticker.src"
-					alt=""
-					:rotate="sticker.rotate"
-					:animate="false"
-					draggable
-					:data-index="index"
-					:img-class="`pointer-events-auto absolute z-[999] ${sticker.class}`"
-				/>
 			</div>
 		</div>
 
@@ -186,56 +172,26 @@
 </template>
 
 <script setup lang="ts">
+import type UiStickerPattern from "@/components/ui/StickerPattern.vue"
+
 const route = useRoute()
 
 const links = [
 	{ to: "/", label: "Home" },
 	{ to: "/about", label: "About" },
 	{ to: "/work", label: "Work" },
+	{ to: "/playground", label: "Playground" },
 	{ to: "/resume", label: "Resume" },
 	{ to: "/blog", label: "Blog" },
-	{ to: "/templates", label: "Templates" },
 	{ to: "/contact", label: "Contact" },
 ]
 
-interface MenuSticker {
-	id: string
-	src: string
-	rotate: number
-	class: string
-}
-
-const stickers: MenuSticker[] = [
-	{
-		id: "remy",
-		src: "/stickers/sticker-remy.png",
-		rotate: -16,
-		class: "top-[22%] left-[10%] w-20 sm:top-[20%] sm:left-[15%] sm:w-20",
-	},
-	{
-		id: "wave",
-		src: "/stickers/sticker-wave.png",
-		rotate: 18,
-		class: "top-[27%] right-[10%] w-20 sm:top-[25%] sm:right-[15%] sm:w-20",
-	},
-	{
-		id: "raven",
-		src: "/stickers/sticker-raven.png",
-		rotate: -5,
-		class: "top-[47%] left-[7%] w-20 sm:top-[45%] sm:left-[13%] sm:w-20",
-	},
-	{
-		id: "computer",
-		src: "/stickers/sticker-computer.png",
-		rotate: 24,
-		class: "top-[55%] right-[7%] w-20 sm:top-[60%] sm:right-[13%] sm:w-20",
-	},
-	{
-		id: "robot",
-		src: "/stickers/sticker-robot.png",
-		rotate: -12,
-		class: "bottom-[15%] left-[7%] w-20 sm:bottom-[20%] sm:left-[10%] sm:w-20",
-	},
+const stickerSrcs = [
+	"/stickers/character_violet.svg",
+	"/stickers/flower_violet.svg",
+	"/stickers/dog_violet.svg",
+	"/stickers/characterFull_violet.svg",
+	"/stickers/cursor_violet.svg",
 ]
 
 function isActive(link: { to: string }) {
@@ -250,7 +206,8 @@ const menuBtnRef = useTemplateRef<HTMLElement>("menuBtnRef")
 const menuIconRef = useTemplateRef<HTMLElement>("menuIconRef")
 const logoFlipRef = useTemplateRef<HTMLElement>("logoFlipRef")
 const mobileOverlayRef = useTemplateRef<HTMLElement>("mobileOverlayRef")
-const stickersLayerRef = useTemplateRef<HTMLElement>("stickersLayerRef")
+const stickerPatternRef =
+	useTemplateRef<InstanceType<typeof UiStickerPattern>>("stickerPatternRef")
 
 const open = ref(false)
 const fontsReady = useFontsReady()
@@ -270,19 +227,14 @@ const {
 } = useWiggle(logoFlipRef)
 
 const mobileLinkEls: (HTMLElement | null)[] = []
-const stickerRefs: (HTMLElement | null)[] = []
 
 function setMobileLinkRef(el: any, index: number) {
 	mobileLinkEls[index] = (el?.$el ?? el) as HTMLElement | null
 }
 
-function setStickerRef(el: any, index: number) {
-	stickerRefs[index] = (el?.$el ?? el) as HTMLElement | null
-}
-
-const visibleStickers = ref<MenuSticker[]>([])
-
-let onMobileLinkClick: (index: number) => void = () => {}
+let onMobileLinkClick: () => void = () => {}
+let onMobileLinkPress: (index: number) => void = () => {}
+let onMobileLinkRelease: (index: number, e: PointerEvent) => void = () => {}
 let onMenuIconPress: () => void = () => {}
 let onMenuIconRelease: () => void = () => {}
 let onLinkPress: (e: PointerEvent) => void = () => {}
@@ -302,17 +254,11 @@ function isTouchLikeDevice() {
 	return window.matchMedia("(hover: none), (pointer: coarse)").matches
 }
 
-function isDragTarget(target: EventTarget | null) {
-	return target instanceof Element && Boolean(target.closest("[data-drag-bounds]"))
-}
-
 function onTouchMoveLock(e: TouchEvent) {
-	if (isDragTarget(e.target)) return
 	e.preventDefault()
 }
 
 function onWheelLock(e: WheelEvent) {
-	if (isDragTarget(e.target)) return
 	e.preventDefault()
 }
 
@@ -370,8 +316,6 @@ useGsapContext(({ gsap }) => {
 	const prefersReducedMotion = window.matchMedia(
 		"(prefers-reduced-motion: reduce)"
 	).matches
-
-	const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches
 
 	async function playIntro() {
 		const box = boxRef.value
@@ -432,37 +376,6 @@ useGsapContext(({ gsap }) => {
 			overwrite: "auto",
 			clearProps: "transform",
 		})
-	}
-
-	function bounceLink(el: HTMLElement | null) {
-		if (!el || prefersReducedMotion || !isTouchDevice) return
-
-		gsap.killTweensOf(el)
-
-		gsap
-			.timeline()
-			.set(el, { transformOrigin: "50% 50%", willChange: "transform" })
-			.to(el, { scale: 0.9, duration: 0.1, ease: "power2.out" })
-			.to(el, { scale: 1.08, duration: 0.2, ease: "back.out(2.8)" })
-			.to(el, {
-				scale: 1,
-				duration: 0.28,
-				ease: "elastic.out(1, 0.55)",
-				clearProps: "willChange",
-			})
-	}
-
-	onMobileLinkClick = (index) => {
-		bounceLink(mobileLinkEls[index] ?? null)
-
-		if (prefersReducedMotion) {
-			closeMenu()
-			return
-		}
-
-		window.setTimeout(() => {
-			if (open.value) closeMenu()
-		}, 110)
 	}
 
 	const cornerDots = menuIconRef.value
@@ -609,101 +522,83 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
-	const STICKER_POP_BEAT = 0.04
-	const STICKER_STAGGER = 0.08
-	const STICKER_CLOSE_STAGGER = 0.045
-	const STICKER_CLOSE_DURATION = 0.28
+	/**
+	 * État pressé des liens de l'overlay (mobile, tablette, souris sur fenêtre étroite).
+	 * Visible dès le pointerdown, conservé jusqu'à la fermeture du menu :
+	 * le depop repart de l'état pressé au lieu de le couper net.
+	 */
+	const MOBILE_PRESS_SCALE = 0.9
+	const MOBILE_PRESS_OPACITY = 0.5
+	const MOBILE_TAP_CLOSE_DELAY = 180
 
-	let stickersTimeline: ReturnType<typeof gsap.timeline> | null = null
+	const pressedMobileLinks = new Set<HTMLElement>()
+	// pointerup reçu : le click suit, on garde l'état pressé.
+	const committedMobileLinks = new Set<HTMLElement>()
 
-	function popStickers() {
-		stickersTimeline?.kill()
+	function releaseMobileLink(el: HTMLElement) {
+		pressedMobileLinks.delete(el)
+		committedMobileLinks.delete(el)
 
-		visibleStickers.value = [...stickers]
-
-		nextTick(() => {
-			const els = stickerRefs.filter((el): el is HTMLElement => Boolean(el))
-			if (!els.length) return
-
-			gsap.set(els, {
-				opacity: 0,
-				scale: 0.25,
-				y: 60,
-				rotation: (i: number) => stickers[i]!.rotate - 35,
-				transformOrigin: "50% 50%",
-				force3D: true,
-				pointerEvents: "none",
-			})
-
-			stickersTimeline = gsap
-				.timeline({
-					onStart: () => els.forEach((el) => (el.style.pointerEvents = "auto")),
-				})
-				.to(
-					els,
-					{
-						opacity: 1,
-						duration: 0.25 * d,
-						ease: "power1.out",
-						stagger: STICKER_STAGGER * d,
-					},
-					STICKER_POP_BEAT * d
-				)
-				.to(
-					els,
-					{
-						y: 0,
-						scale: 1,
-						duration: 0.6 * d,
-						ease: "elastic.out(1, 0.55)",
-						stagger: STICKER_STAGGER * d,
-					},
-					STICKER_POP_BEAT * d
-				)
-				.to(
-					els,
-					{
-						rotation: (i: number) => stickers[i]!.rotate + gsap.utils.random(-4, 4),
-						duration: 0.6 * d,
-						ease: "elastic.out(1, 0.65)",
-						stagger: STICKER_STAGGER * d,
-					},
-					STICKER_POP_BEAT * d
-				)
+		gsap.to(el, {
+			opacity: 1,
+			duration: 0.25 * d,
+			ease: "power2.out",
+			overwrite: "auto",
+		})
+		gsap.to(el, {
+			scale: 1,
+			duration: 0.45 * d,
+			ease: "elastic.out(1, 0.5)",
+			overwrite: "auto",
 		})
 	}
 
-	function depopStickers(): Promise<void> {
-		stickersTimeline?.kill()
+	onMobileLinkPress = (index) => {
+		const el = mobileLinkEls[index]
+		if (!el) return
 
-		const els = stickerRefs.filter((el): el is HTMLElement => Boolean(el))
+		pressedMobileLinks.add(el)
+		committedMobileLinks.delete(el)
 
-		if (!els.length) {
-			visibleStickers.value = []
-			stickerRefs.length = 0
-			return Promise.resolve()
+		gsap.to(el, {
+			// Avec prefers-reduced-motion : opacité seule, sans réduction d'échelle.
+			scale: prefersReducedMotion ? 1 : MOBILE_PRESS_SCALE,
+			opacity: MOBILE_PRESS_OPACITY,
+			duration: 0.1 * d,
+			ease: "power2.out",
+			force3D: true,
+			overwrite: "auto",
+		})
+	}
+
+	onMobileLinkRelease = (index, e) => {
+		const el = mobileLinkEls[index]
+		if (!el || !pressedMobileLinks.has(el)) return
+
+		if (e.type === "pointerup") {
+			committedMobileLinks.add(el)
+
+			// Filet de sécurité : tap annulé (doigt glissé hors du lien), aucun click ne vient.
+			window.setTimeout(() => {
+				if (open.value && committedMobileLinks.has(el)) releaseMobileLink(el)
+			}, MOBILE_TAP_CLOSE_DELAY * 2)
+
+			return
 		}
 
-		return new Promise((resolve) => {
-			stickersTimeline = gsap
-				.timeline({
-					onComplete: () => {
-						visibleStickers.value = []
-						stickerRefs.length = 0
-						resolve()
-					},
-				})
-				.to([...els].reverse(), {
-					opacity: 0,
-					scale: 0.25,
-					y: 60,
-					rotation: "-=35",
-					duration: STICKER_CLOSE_DURATION * d,
-					ease: "power2.in",
-					stagger: STICKER_CLOSE_STAGGER * d,
-					overwrite: "auto",
-				})
-		})
+		// Sur tactile, pointerleave arrive juste après pointerup : on l'ignore.
+		if (committedMobileLinks.has(el)) return
+
+		releaseMobileLink(el)
+	}
+
+	onMobileLinkClick = () => {
+		pressedMobileLinks.clear()
+		committedMobileLinks.clear()
+
+		window.setTimeout(() => {
+			if (open.value) closeMenu()
+		}, MOBILE_TAP_CLOSE_DELAY)
 	}
 
 	function animateMenuIcon(isOpen: boolean) {
@@ -757,7 +652,7 @@ useGsapContext(({ gsap }) => {
 		overlayInteractive.value = false
 		unlockScroll()
 
-		Promise.all([depopLinks(), depopStickers()]).then(() => {
+		Promise.all([depopLinks(), stickerPatternRef.value?.depop()]).then(() => {
 			overlayActive.value = false
 		})
 	}
@@ -771,7 +666,7 @@ useGsapContext(({ gsap }) => {
 	onOverlayOpened = () => {
 		if (!open.value) return
 		popLinks()
-		popStickers()
+		stickerPatternRef.value?.pop()
 	}
 
 	onOverlayClosed = () => {
@@ -781,6 +676,10 @@ useGsapContext(({ gsap }) => {
 	function onDocumentClick(e: MouseEvent) {
 		if (!open.value) return
 		const target = e.target as Node
+
+		// Les clics sur les liens de l'overlay sont gérés par onMobileLinkClick (fermeture différée).
+		if (mobileLinkEls.some((el) => el?.contains(target))) return
+
 		if (boxRef.value && !boxRef.value.contains(target)) closeMenu()
 	}
 
@@ -790,7 +689,6 @@ useGsapContext(({ gsap }) => {
 		document.removeEventListener("click", onDocumentClick)
 
 		linksTimeline?.kill()
-		stickersTimeline?.kill()
 
 		gsap.killTweensOf([
 			boxRef.value,
@@ -798,8 +696,6 @@ useGsapContext(({ gsap }) => {
 			menuIconRef.value,
 			logoFlipRef.value,
 			mobileOverlayRef.value,
-			stickersLayerRef.value,
-			...stickerRefs,
 			...mobileLinkEls,
 			...cornerDots,
 			...centerDot,

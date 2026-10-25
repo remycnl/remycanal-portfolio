@@ -130,6 +130,8 @@ const isOpeningRef = useOpening()
 const guidePath = ref("")
 const guideViewBox = ref("0 0 100 100")
 
+const { overlay } = useOverlay()
+
 const isBadgeActive = computed(
 	() => isOverWheelRef.value || isDraggingRef.value || isOpeningRef.value
 )
@@ -249,6 +251,9 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	}
 
 	function tick() {
+		// Frozen while an overlay covers the page: nothing moves behind it, nothing is rendered for nothing.
+		if (overlay.locked) return
+
 		const dt = Math.min(gsap.ticker.deltaRatio(60) / 60, MAX_FRAME_DT_S)
 
 		if (!isPressed) {
@@ -409,15 +414,10 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	}
 
 	function onClickCapture(e: MouseEvent) {
+		// A drag must never open a card.
 		if (didDrag) {
 			e.preventDefault()
 			e.stopPropagation()
-			return
-		}
-
-		const target = e.target
-		if (target instanceof Element && target.closest("[data-blog-card] a")) {
-			isOpeningRef.value = true
 		}
 	}
 
@@ -616,7 +616,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 <template>
 	<section
 		ref="sectionRef"
-		class="relative left-1/2 w-screen -translate-x-1/2 overflow-visible"
+		class="relative left-1/2 z-10 w-screen -translate-x-1/2 overflow-visible"
 	>
 		<div class="relative flex h-svh flex-col">
 			<div
@@ -630,7 +630,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 					/>
 					<span
 						v-text-reveal="{ singlePhrase: true, theme: 'violet' }"
-						class="font-vg5000 relative text-[10px] sm:text-xs tracking-[0.15em] text-black uppercase box-fit inline-block"
+						class="font-vg5000 box-fit relative inline-block text-[10px] tracking-[0.15em] text-black uppercase sm:text-xs"
 					>
 						<span class="text-violet">(</span>blog<span class="text-violet">) </span>
 					</span>
@@ -687,6 +687,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 						:href="item.post.path"
 						theme="black"
 						compact
+						overlay
 					/>
 				</div>
 

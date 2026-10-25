@@ -365,7 +365,11 @@ const rootAttrs = computed(() =>
 			:class="pillClasses"
 			class="font-vg5000 relative z-10 flex items-center justify-center rounded-full whitespace-nowrap"
 		>
-			<span ref="pillBgEl" :class="pillBgClasses" class="absolute inset-0 -z-10 rounded-full" />
+			<span
+				ref="pillBgEl"
+				:class="pillBgClasses"
+				class="absolute inset-0 -z-10 rounded-full"
+			/>
 			<span :class="size.text">
 				{{ label }}
 			</span>

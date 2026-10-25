@@ -322,13 +322,16 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 			>
 				<div class="flex items-center gap-4">
 					<UiShapeCross
-					data-reveal-follow
+						data-reveal-follow
 						:class="[
 							'text-lime -mt-0.5 h-4 w-4 transition-transform duration-400 md:h-5 md:w-5',
 							crossRotated ? '-rotate-180' : 'group-hover:-rotate-180',
 						]"
 					/>
-					<span v-text-reveal class="font-vg5000 inline-block text-fit w-max whitespace-nowrap">
+					<span
+						v-text-reveal
+						class="font-vg5000 text-fit inline-block w-max whitespace-nowrap"
+					>
 						Leonardo da Vinci
 					</span>
 				</div>

@@ -17,7 +17,10 @@ export function springEasing({
 	duration = 1.4,
 	points = 90,
 }: SpringOptions = {}): string {
-	if (typeof CSS === "undefined" || !CSS.supports("animation-timing-function", "linear(0, 1)")) {
+	if (
+		typeof CSS === "undefined" ||
+		!CSS.supports("animation-timing-function", "linear(0, 1)")
+	) {
 		return "cubic-bezier(0.34, 1.4, 0.64, 1)"
 	}
 
@@ -30,7 +33,9 @@ export function springEasing({
 	for (let i = 0; i < points; i++) {
 		const t = (i / (points - 1)) * duration
 		const x =
-			1 - Math.exp(-decay * t) * (Math.cos(omegaD * t) + (decay / omegaD) * Math.sin(omegaD * t))
+			1 -
+			Math.exp(-decay * t) *
+				(Math.cos(omegaD * t) + (decay / omegaD) * Math.sin(omegaD * t))
 		values.push(i === points - 1 ? 1 : Number(x.toFixed(4)))
 	}
 

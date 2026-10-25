@@ -57,9 +57,9 @@ const links: FooterLink[] = [
 	{ to: "/", label: "Home" },
 	{ to: "/about", label: "About" },
 	{ to: "/work", label: "Work" },
+	{ to: "/playground", label: "Playground" },
 	{ to: "/resume", label: "Resume" },
 	{ to: "/blog", label: "Blog" },
-	{ to: "/templates", label: "Templates" },
 	{ to: "/contact", label: "Contact" },
 ]
 

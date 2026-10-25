@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="bg-grid-black pointer-events-auto fixed inset-0 z-[9999] hidden h-dvh w-dvw touch-none flex-col items-center justify-center gap-5 overscroll-contain bg-black px-8 text-center mobile-landscape:flex"
+		class="bg-grid-black mobile-landscape:flex pointer-events-auto fixed inset-0 z-[9999] hidden h-dvh w-dvw touch-none flex-col items-center justify-center gap-5 overscroll-contain bg-black px-8 text-center"
 		role="alertdialog"
 		aria-modal="true"
 		aria-labelledby="orientation-guard-title"
@@ -29,7 +29,10 @@
 			(<span class="text-white">rotate</span>)
 		</p>
 
-		<p id="orientation-guard-desc" class="font-lineal-bold text-fit max-w-xs text-xl text-white">
+		<p
+			id="orientation-guard-desc"
+			class="font-lineal-bold text-fit max-w-xs text-xl text-white"
+		>
 			For a better experience, please rotate your device to portrait.
 		</p>
 	</div>

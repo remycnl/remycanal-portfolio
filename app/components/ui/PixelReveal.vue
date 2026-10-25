@@ -53,6 +53,9 @@ async function playIn() {
 		colors: resolveColors(),
 		duration: props.inDuration,
 	})
+	// Le pop des liens et des stickers (travail lourd) démarre sur `opened` :
+	// on laisse d'abord présenter la dernière frame de la vague.
+	await waitForPaint(1)
 	emit("opened")
 }
 
@@ -63,6 +66,7 @@ async function playOut() {
 		colors: resolveColors(),
 		duration: props.outDuration,
 	})
+	await waitForPaint(1)
 	emit("closed")
 }
 
@@ -78,7 +82,12 @@ onMounted(() => {
 	engine = createPixelWipeEngine({
 		gsap: $gsap,
 		getCanvas: () => canvasRef.value,
-		getSize: () => ({ width: window.innerWidth, height: window.innerHeight }),
+		// Taille réelle du canvas (100 % de son conteneur), pas celle de la fenêtre :
+		// le buffer reste ainsi aligné sur les pixels physiques réellement affichés.
+		getSize: () => {
+			const rect = canvasRef.value?.getBoundingClientRect()
+			return { width: rect?.width ?? 0, height: rect?.height ?? 0 }
+		},
 		cellSize: () => cellSizeFor(),
 	})
 	engine.resize()

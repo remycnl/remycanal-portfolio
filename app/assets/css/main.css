@@ -8,6 +8,6 @@
 @import "./utilities/typography.css";
 @import "./utilities/display.css";
 
-@import "./scrollbar.css";
+@import "./overlay.css";
 @import "lenis/dist/lenis.css";
 @import "./base.css";

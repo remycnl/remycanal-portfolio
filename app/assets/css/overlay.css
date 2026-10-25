@@ -1,0 +1,33 @@
+@layer base {
+	html {
+		/* Reserves the scrollbar column: nothing shifts when the page is frozen behind an overlay. */
+		scrollbar-gutter: stable;
+	}
+
+	/*
+	 * Page frozen behind an overlay (see LayoutOverlayHost). The reserved column takes the track
+	 * colour, which pairs with the surface of the sheet (black on lime pages, white on violet ones).
+	 */
+	html[data-scroll-locked] {
+		overflow: hidden;
+		background-color: var(--scrollbar-track);
+	}
+}
+
+/* Overlay sheet: comes up from the bottom and leaves downwards. */
+.sheet-enter-active,
+.sheet-leave-active {
+	transition: translate 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.sheet-enter-from,
+.sheet-leave-to {
+	translate: 0 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sheet-enter-active,
+	.sheet-leave-active {
+		transition-duration: 0.01ms;
+	}
+}
