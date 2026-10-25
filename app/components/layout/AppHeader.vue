@@ -264,9 +264,13 @@ function onWheelLock(e: WheelEvent) {
 
 let touchScrollLockActive = false
 
-function lockScroll() {
-	lockedScrollY = window.scrollY
-
+/**
+ * Fige la hauteur de l'overlay sur le viewport réellement visible.
+ * Appelée à l'ouverture. La hauteur reste figée pendant toute l'animation
+ * de fermeture : sinon l'overlay retombe sur `h-screen` (100vh) et les liens,
+ * centrés verticalement, se décalent vers le bas.
+ */
+function applyOverlayHeight() {
 	const viewportHeight = getStableViewportHeight()
 
 	if (mobileOverlayRef.value) {
@@ -274,6 +278,24 @@ function lockScroll() {
 	}
 
 	document.documentElement.style.setProperty("--app-vh", `${viewportHeight}px`)
+}
+
+/**
+ * Libère la hauteur figée. À appeler uniquement quand l'overlay est
+ * totalement fermé (onOverlayClosed) ou au démontage du composant.
+ */
+function releaseOverlayHeight() {
+	document.documentElement.style.removeProperty("--app-vh")
+
+	if (mobileOverlayRef.value) {
+		mobileOverlayRef.value.style.removeProperty("height")
+	}
+}
+
+function lockScroll() {
+	lockedScrollY = window.scrollY
+
+	applyOverlayHeight()
 
 	if (isTouchLikeDevice()) {
 		document.addEventListener("touchmove", onTouchMoveLock, { passive: false })
@@ -300,12 +322,6 @@ function unlockScroll() {
 
 	document.body.style.overflow = ""
 	document.body.style.paddingRight = ""
-
-	document.documentElement.style.removeProperty("--app-vh")
-
-	if (mobileOverlayRef.value) {
-		mobileOverlayRef.value.style.removeProperty("height")
-	}
 
 	window.scrollTo(0, lockedScrollY)
 }
@@ -670,7 +686,11 @@ useGsapContext(({ gsap }) => {
 	}
 
 	onOverlayClosed = () => {
-		if (!open.value) overlayShown.value = false
+		// Réouvert pendant la fermeture : la hauteur a été reposée par lockScroll(), on la garde.
+		if (open.value) return
+
+		overlayShown.value = false
+		releaseOverlayHeight()
 	}
 
 	function onDocumentClick(e: MouseEvent) {
@@ -703,6 +723,7 @@ useGsapContext(({ gsap }) => {
 		])
 
 		if (open.value) unlockScroll()
+		releaseOverlayHeight()
 
 		document.removeEventListener("touchmove", onTouchMoveLock)
 		document.removeEventListener("wheel", onWheelLock)
