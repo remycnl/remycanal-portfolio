@@ -53,9 +53,9 @@ interface Lattice {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	opacity: 0.4,
-	cellRatio: 0.15,
-	stickerRatio: 0.7,
+	opacity: 0.3,
+	cellRatio: 0.3,
+	stickerRatio: 0.8,
 })
 
 const ROTATIONS = [-12, 8, -6, 14] as const
