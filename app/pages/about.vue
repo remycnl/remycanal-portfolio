@@ -1,91 +1,82 @@
+<template>
+	<section class="relative min-h-svh overflow-hidden bg-black text-white">
+		<LazyAboutLanyardBadge
+			v-if="!pageTransitionActive"
+			class="z-1"
+			:data="myBadgeData"
+		/>
+		<div
+			class="p-edge pointer-events-none absolute inset-x-0 bottom-0 z-0 select-none"
+			aria-hidden="true"
+		>
+			<p
+				class="font-lineal-heavy text-black-light text-[clamp(4.5rem,14vw,15rem)] leading-[0.76] whitespace-nowrap uppercase"
+			>
+				CLICK TO
+				<br />
+				FLIP IT !
+			</p>
+		</div>
+		<div
+			class="pointer-events-none absolute inset-0 z-10 flex items-center pl-8 md:pl-16"
+		>
+			<h2 class="pointer-events-auto">
+				Let's make
+				<br />
+				something great.
+			</h2>
+		</div>
+	</section>
+</template>
+
 <script lang="ts" setup>
+import type { BadgeData } from "@/types/badge"
+import { readThemeColor, withAlpha } from "@/utils/theme/readThemeColor"
+
+const pageTransitionActive = usePageTransitionActive()
+
+if (import.meta.client) {
+	void preloadComponents("ContactLanyardBadge")
+}
+
 definePageMeta({
+	footerTheme: "lime",
 	transitionBase: "var(--color-black)",
 	transitionAccent: "var(--color-lime)",
 	transitionDirection: { desktop: "right", mobile: "bottom" },
 })
 
-interface StackCardData {
-	id: string
-	bg: string
-	text: string
-	eyebrow: string
-	title: string
-	body: string
+function formatEventCode(date: Date): string {
+	const day = String(date.getDate()).padStart(2, "0")
+	const month = String(date.getMonth() + 1).padStart(2, "0")
+	return `${day}-${month}-${date.getFullYear()}`
 }
 
-const cards: StackCardData[] = [
-	{
-		id: "hero",
-		bg: "bg-lime",
-		text: "text-black",
-		eyebrow: "Bonjour",
-		title: "Je suis Rémy,\ndéveloppeur & designer",
-		body: "Je conçois et développe des produits web sur mesure, du prototype à la mise en prod — frontend, backend, et le design qui va avec.",
+const themeWhite = readThemeColor("--color-white", "oklch(0.9672 0 0)")
+const themeLime = readThemeColor("--color-lime", "oklch(0.928 0.2202 125)")
+
+const myBadgeData: BadgeData = {
+	name: "Rémy",
+	roleType: "FULL-STACK DEV / UI-UX Designer",
+	eventCode: formatEventCode(new Date()),
+	barcodeCode: "REMY02062004",
+	date: "AVAILABLE NOW",
+	location: "LYON, FRANCE",
+	venue: "Open to work",
+	address: "Web · Product · Design · Dev · Branding",
+	website: "www.remycanal.me",
+	email: "hello@remycanal.me",
+	linkedin: "https://www.linkedin.com/in/remy-canal",
+	company: "Rémy Canal",
+	tagline: "Awwwards Young Jury Member",
+	colors: {
+		cardBg: "#000000",
+		footerBg: "#000000",
+		accentColor: themeLime,
+		nameColor: themeWhite,
+		roleColor: withAlpha(themeWhite, 0.78),
+		metaColor: withAlpha(themeWhite, 0.55),
+		footerText: withAlpha(themeWhite, 0.85),
 	},
-	{
-		id: "approche",
-		bg: "bg-gray-light",
-		text: "text-black",
-		eyebrow: "Approche",
-		title: "Minimalisme,\npas paresse",
-		body: "Chaque interface part d'une intention claire. Pas de composants gratuits, pas d'esthétique générique : juste ce qui sert le contenu.",
-	},
-	{
-		id: "stack",
-		bg: "bg-violet",
-		text: "text-white",
-		eyebrow: "Stack",
-		title: "Next.js, NestJS,\nTailwind",
-		body: "Next.js et NestJS côté code, PostgreSQL et Prisma côté données, Docker pour le déploiement — hébergé sur mon propre VPS.",
-	},
-	{
-		id: "clients",
-		bg: "bg-black",
-		text: "text-white",
-		eyebrow: "Clients",
-		title: "Musée des Confluences\net indépendants",
-		body: "Des institutions culturelles aux projets perso, j'adapte le niveau d'exigence technique au besoin réel du projet.",
-	},
-	{
-		id: "contact",
-		bg: "bg-white",
-		text: "text-black",
-		eyebrow: "Contact",
-		title: "Un projet\nen tête ?",
-		body: "Écris-moi, on en discute. Je réponds toujours, même si ce n'est pas pour dire oui.",
-	},
-]
+}
 </script>
-
-<template>
-	<main class="about-stack relative">
-		<AboutStackCard
-			v-for="(card, index) in cards"
-			:key="card.id"
-			:bg="card.bg"
-			:text="card.text"
-			:eyebrow="card.eyebrow"
-			:title="card.title"
-			:body="card.body"
-			:index="index"
-			:total="cards.length"
-			:stacked="index < cards.length - 1"
-		/>
-	</main>
-</template>
-
-<style>
-.about-stack > div:nth-child(1) {
-	background-color: var(--color-black);
-}
-.about-stack > div:nth-child(2) {
-	background-color: var(--color-lime);
-}
-.about-stack > div:nth-child(3) {
-	background-color: var(--color-gray-light);
-}
-.about-stack > div:nth-child(4) {
-	background-color: var(--color-violet);
-}
-</style>

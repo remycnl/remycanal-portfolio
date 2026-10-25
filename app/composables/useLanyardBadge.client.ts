@@ -104,6 +104,10 @@ const STRAP_VISIBLE_HEIGHT = 0.575 // hauteur de sangle visible au-dessus du poi
 const FRAME_BOTTOM_PADDING = 0.16 // petit padding sous la carte au repos
 const MIN_VISIBLE_WIDTH = CARD_WIDTH * 1.7 // garde de la place pour le balancement (mobile)
 const MAX_SHIFT_RATIO = 0.22 // décalage max du badge vers la droite (part de la largeur visible)
+// Remonte le badge à l'écran, en part de la hauteur visible (donc le même rendu proportionnel sur
+// desktop et mobile) : 0 = comme avant, 0.05 = un chouille plus haut, 0.1 = nettement plus haut.
+// Le cadre descend, la taille du badge à l'écran ne change pas.
+const BADGE_RAISE_RATIO = 0.05
 
 // ─── Arrivée sur la page : le badge tombe du haut une fois la transition de page terminée ──
 const DROP_CLEARANCE = 0.1 // marge au-dessus du bord haut du cadre : la carte démarre hors champ
@@ -115,6 +119,12 @@ const CLICK_MOVE_THRESHOLD = 6 // px
 const CLICK_MAX_DURATION = 350 // ms
 const FLIP_STIFFNESS = 90
 const FLIP_DAMPING = 14
+
+// ─── Tactile ─────────────────────────────────────────────────────────────────
+// Le canvas laisse le navigateur gérer le scroll vertical (touch-action: pan-y) : un geste vertical qui
+// démarre sur la carte fait défiler la page. Un geste horizontal, ou un appui long immobile suivi d'un
+// glissement dans n'importe quelle direction, "attrape" la carte (et bloque alors le scroll).
+const TOUCH_HOLD_DELAY = 180 // ms : doigt immobile au-delà = "attraper" la carte (drag libre, sans scroll)
 
 // ─── Chargement ──────────────────────────────────────────────────────────────
 const MAX_TEXTURE_SCALE = 2 // plafond du sur-échantillonnage des faces de la carte
@@ -211,7 +221,14 @@ function getFrameMetrics(aspect: number) {
 		frameHeight = minHeightForWidth
 		frameTop = frameBottom + frameHeight
 	}
-	return { frameTop, frameBottom, frameHeight }
+
+	// Remonte le badge à l'écran : on descend tout le cadre (la hauteur ne change pas, donc l'échelle non plus)
+	const raise = frameHeight * BADGE_RAISE_RATIO
+	return {
+		frameTop: frameTop - raise,
+		frameBottom: frameBottom - raise,
+		frameHeight,
+	}
 }
 
 interface StrapSegmentState {
@@ -282,6 +299,7 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 	const tmpTorque = new THREE.Vector3()
 	const tmpDeltaQuat = new THREE.Quaternion()
 	const tmpAxis = new THREE.Vector3()
+	const dropClipStart = new THREE.Vector3()
 
 	// État du solveur de sangle : les nœuds partagent directement les vecteurs d'état (aucune copie)
 	const nodePositions: THREE.Vector3[] = [ANCHOR, ...linkPos, clipWorld]
@@ -336,6 +354,12 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 	let pointerDownX = 0
 	let pointerDownY = 0
 	let pointerDownTime = 0
+
+	// Tactile
+	let pointerIsTouch = false // le geste en cours vient d'un doigt/stylet (pas d'une souris)
+	let grabbed = false // appui long validé : drag libre, scroll de la page bloqué
+	let holdTimer = 0
+	let boundCanvas: HTMLCanvasElement | null = null // canvas sur lequel les écouteurs sont posés
 
 	// Flip (ressort sur la rotation Y de la face visible)
 	let flipTarget = 0
@@ -742,14 +766,14 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 	// La sangle élastique le rattrape, il rebondit un peu et se stabilise à sa position de repos.
 	function placeForDrop() {
 		const clipY = frameTopY + DROP_CLEARANCE + CARD_HEIGHT / 2 + CARD_ATTACH_Y
-		const clipStart = new THREE.Vector3(ANCHOR.x, clipY, ANCHOR.z)
+		dropClipStart.set(ANCHOR.x, clipY, ANCHOR.z)
 		const tilt = (Math.random() - 0.5) * 2 * DROP_TILT
 		const spin = (Math.random() - 0.5) * 2 * DROP_SPIN
 
 		// Les maillons sont répartis entre l'ancre et le clip (jamais plus espacés que leur longueur
 		// de repos) : la sangle démarre détendue, sans à-coup.
 		for (let i = 0; i < STRAP_LINKS; i++) {
-			linkPos[i]!.copy(ANCHOR).lerp(clipStart, (i + 1) / STRAP_SEGMENTS)
+			linkPos[i]!.copy(ANCHOR).lerp(dropClipStart, (i + 1) / STRAP_SEGMENTS)
 			linkVel[i]!.set(0, 0, 0)
 		}
 
@@ -974,9 +998,20 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 	}
 
 	function toggleFlip() {
-		ensureBackFace()
-		// on avance toujours dans le même sens, la rotation reste fluide
-		flipTarget += Math.PI
+		const flip = () => {
+			flipTarget += Math.PI // on avance toujours dans le même sens, la rotation reste fluide
+			wakeRenderLoop() // le réveil de la boucle se fait ici, plus au simple toucher (voir engageDrag)
+		}
+		if (backBuilt) {
+			flip()
+			return
+		}
+		// Clic très tôt après le drop : on attend que le dos soit prêt, sinon la carte tournerait vers du noir.
+		buildBackFace()
+			.then(() => {
+				if (!destroyed && backBuilt) flip()
+			})
+			.catch((err) => console.error("[LanyardBadge] face arrière:", err))
 	}
 
 	function applyUprightCorrection() {
@@ -1088,25 +1123,24 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		return target
 	}
 
-	// Survol : le canvas reste pointer-events:none par défaut, pour que le reste de la page — texte,
-	// liens — se comporte normalement (sélection, clic...) partout où la carte n'est pas visuellement
-	// présente. On ne réactive le canvas, avec le curseur de préhension, que pile au-dessus de sa
-	// géométrie 3D, via un raycast au survol. Écouté sur `window` (et non le canvas) : un élément
-	// pointer-events:none ne reçoit jamais ses propres évènements, il faut donc les capter plus haut,
-	// où ils remontent toujours par bulles.
+	// ── Survol (desktop sans aucune capacité tactile) ──
+	// Le canvas reste pointer-events:none par défaut, pour que le reste de la page — texte, liens — se
+	// comporte normalement (sélection, clic...) partout où la carte n'est pas visuellement présente. On ne
+	// réactive le canvas, avec le curseur de préhension, que pile au-dessus de sa géométrie 3D, via un
+	// raycast au survol. Écouté sur `window` (et non le canvas) : un élément pointer-events:none ne reçoit
+	// jamais ses propres évènements, il faut donc les capter plus haut, où ils remontent toujours par bulles.
+	// Le raycast est limité à une fois par frame (rAF) : plus de calcul à chaque pointermove brut.
 	//
-	// Uniquement sur un appareil qui n'a AUCUNE capacité tactile détectée : le tactile n'a pas de
-	// survol, et touch-action (qui empêche le défilement de la page pendant le glisser) doit être
-	// posé par avance sur l'élément qui reçoit le tout premier contact — impossible à activer après
-	// coup, une fois le geste commencé. Sur un appareil tactile (y compris hybride, souris + tactile),
-	// le canvas reste donc pointer-events:auto en permanence, comme avant ce correctif : mieux vaut
-	// garder le glisser fonctionnel que restreindre le survol. Détection en JS plutôt qu'en CSS
-	// (`@media (pointer: fine)`) : cette media query reflète le pointeur "principal" du système et
-	// peut se tromper sur les machines hybrides (portable tactile utilisé à la souris), laissant le
-	// canvas tout capturer en permanence sans qu'on s'en rende compte.
-
+	// Uniquement sur un appareil qui n'a AUCUNE capacité tactile détectée : le tactile n'a pas de survol,
+	// et touch-action doit être posé par avance sur l'élément qui reçoit le tout premier contact. Sur un
+	// appareil tactile (y compris hybride, souris + tactile), le canvas reste donc pointer-events:auto en
+	// permanence. Détection en JS plutôt qu'en CSS (`@media (pointer: fine)`) : cette media query reflète
+	// le pointeur "principal" du système et peut se tromper sur les machines hybrides.
 	let isHoveringBadge = false
 	const hoverNDC = new THREE.Vector2()
+	let hoverRaf = 0
+	let hoverX = 0
+	let hoverY = 0
 
 	function setBadgeInteractive(interactive: boolean) {
 		isHoveringBadge = interactive
@@ -1116,49 +1150,103 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		canvasEl.style.cursor = interactive ? "grab" : ""
 	}
 
-	function updateHoverState(event: PointerEvent) {
+	function updateHoverState(clientX: number, clientY: number) {
 		if (dragging || !camera || !flipGroup || !topGroup) return
 		const canvasEl = options.canvas.value
 		if (!canvasEl) return
 		const rect = canvasEl.getBoundingClientRect()
 		if (
-			event.clientX < rect.left ||
-			event.clientX > rect.right ||
-			event.clientY < rect.top ||
-			event.clientY > rect.bottom
+			clientX < rect.left ||
+			clientX > rect.right ||
+			clientY < rect.top ||
+			clientY > rect.bottom
 		) {
 			if (isHoveringBadge) setBadgeInteractive(false)
 			return
 		}
-		hoverNDC.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-		hoverNDC.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+		hoverNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1
+		hoverNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1
 		raycaster.setFromCamera(hoverNDC, camera)
-		const hits = raycaster.intersectObjects([flipGroup, topGroup], true)
-		const hovering = hits.length > 0
+		const hovering = raycaster.intersectObjects([flipGroup, topGroup], true).length > 0
 		if (hovering !== isHoveringBadge) setBadgeInteractive(hovering)
 	}
 
+	function onWindowPointerMove(event: PointerEvent) {
+		hoverX = event.clientX
+		hoverY = event.clientY
+		if (hoverRaf) return
+		hoverRaf = requestAnimationFrame(() => {
+			hoverRaf = 0
+			updateHoverState(hoverX, hoverY)
+		})
+	}
+
+	// ── Drag / flip ──
+
+	function clearHoldTimer() {
+		if (!holdTimer) return
+		clearTimeout(holdTimer)
+		holdTimer = 0
+	}
+
+	// Tactile : le doigt est resté immobile → l'utilisateur veut attraper la carte, pas scroller
+	function onHoldElapsed() {
+		holdTimer = 0
+		if (!dragging || dragMoved) return
+		grabbed = true
+		ensureBackFace() // il va sans doute la manipuler : le dos doit être prêt
+		navigator.vibrate?.(8)
+	}
+
+	// Le drag démarre vraiment (mouvement validé). C'est seulement maintenant qu'on réveille la boucle de
+	// rendu : un scroll qui démarre sur la carte ne coûte donc rien.
+	function engageDrag() {
+		dragMoved = true
+		clearHoldTimer()
+		wakeRenderLoop()
+		ensureBackFace()
+	}
+
+	function endDrag(pointerId: number) {
+		// Après un pointercancel (le navigateur a pris la main pour scroller), la capture est déjà libérée :
+		// releasePointerCapture() lèverait une exception.
+		if (boundCanvas?.hasPointerCapture(pointerId)) {
+			boundCanvas.releasePointerCapture(pointerId)
+		}
+		clearHoldTimer()
+		dragging = false
+		grabbed = false
+	}
+
 	function onPointerDown(event: PointerEvent) {
-		if (!camera || !flipGroup || !topGroup || !physicsReady) return
+		// Un seul pointeur à la fois (un 2e doigt = pinch, laissé au navigateur) ; clic gauche uniquement
+		if (!event.isPrimary || !camera || !flipGroup || !topGroup || !physicsReady) return
+		if (event.pointerType === "mouse" && event.button !== 0) return
 		const ndc = getCanvasNDC(event)
 		raycaster.setFromCamera(ndc, camera)
 		const hits = raycaster.intersectObjects([flipGroup, topGroup], true)
 		if (hits.length === 0) return
-		wakeRenderLoop()
 
-		;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
+		const canvasEl = event.currentTarget as HTMLElement
+		canvasEl.setPointerCapture(event.pointerId)
 		dragging = true
-		if (!supportsTouch) {
-			isHoveringBadge = true
-			;(event.currentTarget as HTMLElement).style.cursor = "grabbing"
-		}
 		dragMoved = false
+		grabbed = false
+		pointerIsTouch = event.pointerType !== "mouse"
 		pointerDownX = event.clientX
 		pointerDownY = event.clientY
 		pointerDownTime = performance.now()
 
-		// L'utilisateur touche la carte : il peut la retourner, la face arrière doit être prête
-		ensureBackFace()
+		if (pointerIsTouch) {
+			holdTimer = window.setTimeout(onHoldElapsed, TOUCH_HOLD_DELAY)
+		} else {
+			// Souris : aucun risque de scroll, on peut préparer le dos tout de suite
+			ensureBackFace()
+			if (!supportsTouch) {
+				isHoveringBadge = true
+				canvasEl.style.cursor = "grabbing"
+			}
+		}
 
 		// On mémorise le point saisi dans le repère de la carte : il reste "collé" au doigt
 		// même quand la carte tourne (saisir un coin la fait pivoter, comme en vrai)
@@ -1172,9 +1260,17 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		if (!dragging || !camera) return
 
 		if (!dragMoved) {
-			const moved = Math.hypot(event.clientX - pointerDownX, event.clientY - pointerDownY)
-			if (moved < CLICK_MOVE_THRESHOLD) return // encore un "clic", on ne tire pas la carte
-			dragMoved = true
+			const dx = event.clientX - pointerDownX
+			const dy = event.clientY - pointerDownY
+			if (Math.hypot(dx, dy) < CLICK_MOVE_THRESHOLD) return // encore un "clic"
+
+			// Tactile, pas encore "attrapé" : un geste plutôt vertical est un scroll → on s'efface
+			// et le navigateur défile la page (touch-action: pan-y).
+			if (pointerIsTouch && !grabbed && Math.abs(dy) > Math.abs(dx)) {
+				endDrag(event.pointerId)
+				return
+			}
+			engageDrag()
 		}
 
 		unprojectToDragPlane(getCanvasNDC(event), dragTarget)
@@ -1182,8 +1278,7 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 
 	function onPointerUp(event: PointerEvent) {
 		if (!dragging) return
-		;(event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId)
-		dragging = false
+		endDrag(event.pointerId)
 
 		const isClick =
 			event.type === "pointerup" &&
@@ -1194,43 +1289,62 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		// Pas de vitesse de lâcher à gérer : la sangle se détend et la carte garde son élan
 
 		if (!supportsTouch) {
-			// Redéfinit proprement l'état de survol : le pointeur peut très bien avoir fini le glisser
-			// ailleurs que sur la carte, auquel cas il faut redonner la main au reste de la page.
+			// Le pointeur peut avoir fini le glisser ailleurs que sur la carte : on redonne la main à la page.
 			isHoveringBadge = false
-			updateHoverState(event)
+			updateHoverState(event.clientX, event.clientY)
 		}
+	}
+
+	// Seul rôle : empêcher la page de défiler pendant qu'on tient la carte (appui long validé).
+	// Doit être non-passif pour pouvoir appeler preventDefault ; ne fait rien tant que `grabbed` est faux,
+	// donc le scroll natif (thread compositeur) n'est jamais ralenti.
+	function onTouchMove(event: TouchEvent) {
+		if (grabbed && event.cancelable) event.preventDefault()
 	}
 
 	function attachPointerEvents() {
 		const canvasEl = options.canvas.value
 		if (!canvasEl) return
-		canvasEl.style.touchAction = "none"
-		// { passive: true } partout : aucun de ces gestionnaires n'appelle jamais preventDefault() (le
-		// blocage du défilement pendant le glisser passe par touch-action:none, pas par du JS), le
-		// navigateur peut donc les traiter sans attendre — un vrai gain de fluidité au scroll/toucher.
+		boundCanvas = canvasEl
+		// { passive: true } : aucun de ces gestionnaires n'appelle preventDefault() (le blocage du scroll
+		// pendant l'appui long passe par onTouchMove), le navigateur peut donc les traiter sans attendre.
 		canvasEl.addEventListener("pointerdown", onPointerDown, { passive: true })
 		canvasEl.addEventListener("pointermove", onPointerMove, { passive: true })
 		canvasEl.addEventListener("pointerup", onPointerUp, { passive: true })
 		canvasEl.addEventListener("pointercancel", onPointerUp, { passive: true })
+
 		if (supportsTouch) {
-			// Comportement historique : le canvas capture tout, sur toute sa surface, en permanence.
+			// pan-y : le scroll vertical reste géré nativement par le navigateur (thread compositeur, zéro JS),
+			// même quand le doigt démarre sur la carte. pinch-zoom conservé pour l'accessibilité.
+			canvasEl.style.touchAction = "pan-y pinch-zoom"
 			canvasEl.style.pointerEvents = "auto"
+			canvasEl.style.userSelect = "none"
+			canvasEl.style.setProperty("-webkit-user-select", "none")
+			canvasEl.style.setProperty("-webkit-touch-callout", "none")
+			canvasEl.style.setProperty("-webkit-tap-highlight-color", "transparent")
+			canvasEl.addEventListener("touchmove", onTouchMove, { passive: false })
 		} else {
-			// Pointeur fin, sans tactile détecté : on part masqué, et seul le survol (raycast) réactive
-			// le canvas pile au-dessus du badge — voir updateHoverState.
+			// Pointeur fin sans tactile : on part masqué, seul le survol (raycast) réactive le canvas.
+			canvasEl.style.touchAction = "none"
 			canvasEl.style.pointerEvents = "none"
-			window.addEventListener("pointermove", updateHoverState, { passive: true })
+			window.addEventListener("pointermove", onWindowPointerMove, { passive: true })
 		}
 	}
 
 	function detachPointerEvents() {
-		const canvasEl = options.canvas.value
+		clearHoldTimer()
+		cancelAnimationFrame(hoverRaf)
+		hoverRaf = 0
+		if (!supportsTouch) window.removeEventListener("pointermove", onWindowPointerMove)
+
+		const canvasEl = boundCanvas
+		boundCanvas = null
 		if (!canvasEl) return
 		canvasEl.removeEventListener("pointerdown", onPointerDown)
 		canvasEl.removeEventListener("pointermove", onPointerMove)
 		canvasEl.removeEventListener("pointerup", onPointerUp)
 		canvasEl.removeEventListener("pointercancel", onPointerUp)
-		if (!supportsTouch) window.removeEventListener("pointermove", updateHoverState)
+		canvasEl.removeEventListener("touchmove", onTouchMove)
 	}
 
 	// ─── Rendu ───────────────────────────────────────────────────────────────
@@ -1397,6 +1511,9 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		strapBumpTexture.dispose()
 		scene?.environment?.dispose()
 		renderer?.dispose()
+		// Libère le contexte WebGL tout de suite (iOS Safari en limite le nombre : sans ça, des allers-retours
+		// entre pages finissent par le saturer et le badge ne s'affiche plus).
+		renderer?.forceContextLoss()
 	}
 
 	// ─── Préchargement léger ─────────────────────────────────────────────────
