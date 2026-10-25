@@ -36,7 +36,7 @@ import { readThemeColor, withAlpha } from "@/utils/theme/readThemeColor"
 const pageTransitionActive = usePageTransitionActive()
 
 if (import.meta.client) {
-	void preloadComponents("ContactLanyardBadge")
+	void import("@/components/about/LanyardBadge.client.vue")
 }
 
 definePageMeta({
@@ -71,7 +71,6 @@ const myBadgeData: BadgeData = {
 	tagline: "Awwwards Young Jury Member",
 	colors: {
 		cardBg: "#000000",
-		footerBg: "#000000",
 		accentColor: themeLime,
 		nameColor: themeWhite,
 		roleColor: withAlpha(themeWhite, 0.78),

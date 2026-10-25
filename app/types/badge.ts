@@ -6,7 +6,6 @@ export interface BadgeColors {
 	nameColor: string
 	roleColor: string
 	metaColor: string
-	footerBg: string
 	footerText: string
 }
 
@@ -46,7 +45,6 @@ export const defaultBadgeData: BadgeData = {
 	tagline: "A short tagline goes here",
 	colors: {
 		cardBg: "#000000",
-		footerBg: "#000000",
 		accentColor: themeLime,
 		nameColor: themeWhite,
 		roleColor: withAlpha(themeWhite, 0.78),

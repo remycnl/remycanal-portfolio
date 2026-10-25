@@ -318,7 +318,6 @@ function drawVenueBlock(ctx: CanvasRenderingContext2D, data: BadgeData) {
 
 // Plus de bandeau opaque en bas : le site flotte directement sur le fond (et sur la trame, côté
 // recto), pour que le motif couvre vraiment toute la carte jusqu'au bord bas, comme sur la
-// référence. `footerBg` n'est donc plus utilisé ici.
 function drawFooter(ctx: CanvasRenderingContext2D, data: BadgeData) {
 	ctx.fillStyle = data.colors.footerText
 	ctx.font = '400 34px "VG5000", ui-monospace, monospace'

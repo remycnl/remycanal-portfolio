@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js"
-import type { BadgeData } from "~/types/badge"
+import type { BadgeData } from "@/types/badge"
 import {
 	drawBadgeFrontFace,
 	drawBadgeBackFace,
@@ -10,12 +10,12 @@ import {
 	BADGE_TEXTURE_HEIGHT,
 	STRAP_TEXTURE_WIDTH,
 	STRAP_TEXTURE_HEIGHT,
-} from "~/utils/badge/drawBadgeFace"
-import { createStrapRibbon, type StrapRibbon } from "~/utils/badge/strapRibbon"
+} from "@/utils/badge/drawBadgeFace"
+import { createStrapRibbon, type StrapRibbon } from "@/utils/badge/strapRibbon"
 import {
 	computeHardwareLayout,
 	createLanyardHardware,
-} from "~/utils/badge/lanyardHardware"
+} from "@/utils/badge/lanyardHardware"
 
 /**
  * Options for {@link useLanyardBadge}.
@@ -104,10 +104,14 @@ const STRAP_VISIBLE_HEIGHT = 0.575 // hauteur de sangle visible au-dessus du poi
 const FRAME_BOTTOM_PADDING = 0.16 // petit padding sous la carte au repos
 const MIN_VISIBLE_WIDTH = CARD_WIDTH * 1.7 // garde de la place pour le balancement (mobile)
 const MAX_SHIFT_RATIO = 0.22 // décalage max du badge vers la droite (part de la largeur visible)
-// Remonte le badge à l'écran, en part de la hauteur visible (donc le même rendu proportionnel sur
-// desktop et mobile) : 0 = comme avant, 0.05 = un chouille plus haut, 0.1 = nettement plus haut.
-// Le cadre descend, la taille du badge à l'écran ne change pas.
-const BADGE_RAISE_RATIO = 0.05
+// Remonte le badge à l'écran, en part de la hauteur visible : 0 = position d'origine, 0.1 = ~10 % de la
+// hauteur de l'écran plus haut. Le cadre descend, la taille du badge à l'écran ne change pas.
+// Téléphone portrait (ratio ≤ MOBILE_ASPECT) : valeur "mobile" ; desktop (ratio ≥ DESKTOP_ASPECT) : valeur
+// "desktop" ; entre les deux (tablette, fenêtre étroite), interpolation douce.
+const BADGE_RAISE_DESKTOP = 0.05
+const BADGE_RAISE_MOBILE = 0.12
+const RAISE_MOBILE_ASPECT = 0.6
+const RAISE_DESKTOP_ASPECT = 1
 
 // ─── Arrivée sur la page : le badge tombe du haut une fois la transition de page terminée ──
 const DROP_CLEARANCE = 0.1 // marge au-dessus du bord haut du cadre : la carte démarre hors champ
@@ -121,10 +125,21 @@ const FLIP_STIFFNESS = 90
 const FLIP_DAMPING = 14
 
 // ─── Tactile ─────────────────────────────────────────────────────────────────
-// Le canvas laisse le navigateur gérer le scroll vertical (touch-action: pan-y) : un geste vertical qui
-// démarre sur la carte fait défiler la page. Un geste horizontal, ou un appui long immobile suivi d'un
-// glissement dans n'importe quelle direction, "attrape" la carte (et bloque alors le scroll).
+// Le canvas laisse le navigateur gérer le scroll vertical (touch-action: pan-y), et la carte décide au
+// premier mouvement si le geste est pour elle ou pour la page (voir resolveTouchIntent) :
+//  • geste horizontal                                    → la carte
+//  • geste vertical, page qui peut défiler dans ce sens   → scroll de la page
+//  • geste vertical, page qui ne peut pas défiler         → la carte (ex. tirer la carte vers le bas
+//    quand on est en haut de page : il n'y a rien à faire défiler)
+//  • appui long immobile                                  → la carte, dans toutes les directions
 const TOUCH_HOLD_DELAY = 180 // ms : doigt immobile au-delà = "attraper" la carte (drag libre, sans scroll)
+const TOUCH_HIT_SLOP = 14 // px : tolérance de visée au doigt (un doigt n'est pas précis au pixel près)
+const TOUCH_HIT_OFFSETS = [
+	[1, 0],
+	[-1, 0],
+	[0, 1],
+	[0, -1],
+] as const
 
 // ─── Chargement ──────────────────────────────────────────────────────────────
 const MAX_TEXTURE_SCALE = 2 // plafond du sur-échantillonnage des faces de la carte
@@ -223,13 +238,21 @@ function getFrameMetrics(aspect: number) {
 	}
 
 	// Remonte le badge à l'écran : on descend tout le cadre (la hauteur ne change pas, donc l'échelle non plus)
-	const raise = frameHeight * BADGE_RAISE_RATIO
+	const raiseRatio = THREE.MathUtils.lerp(
+		BADGE_RAISE_MOBILE,
+		BADGE_RAISE_DESKTOP,
+		THREE.MathUtils.smoothstep(aspect, RAISE_MOBILE_ASPECT, RAISE_DESKTOP_ASPECT)
+	)
+	const raise = frameHeight * raiseRatio
 	return {
 		frameTop: frameTop - raise,
 		frameBottom: frameBottom - raise,
 		frameHeight,
 	}
 }
+
+// Destination d'un geste tactile : pas encore décidé, la carte, ou un scroll de page
+type TouchIntent = "pending" | "drag" | "scroll"
 
 interface StrapSegmentState {
 	normal: THREE.Vector3
@@ -357,9 +380,11 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 
 	// Tactile
 	let pointerIsTouch = false // le geste en cours vient d'un doigt/stylet (pas d'une souris)
-	let grabbed = false // appui long validé : drag libre, scroll de la page bloqué
+	let touchIntent: TouchIntent = "drag" // souris : toujours "drag" ; tactile : décidé au 1er mouvement
+	let activePointerId = -1
 	let holdTimer = 0
 	let boundCanvas: HTMLCanvasElement | null = null // canvas sur lequel les écouteurs sont posés
+	let pickTargets: THREE.Object3D[] = [] // objets testés au raycast (carte + embout), alloué une seule fois
 
 	// Flip (ressort sur la rotation Y de la face visible)
 	let flipTarget = 0
@@ -929,6 +954,7 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		scene.add(topGroup)
 
 		scene.add(cardGroup)
+		pickTargets = [flipGroup, topGroup]
 	}
 
 	const BAND_SAMPLE_SMOOTHING = 0.75
@@ -1167,7 +1193,7 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		hoverNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1
 		hoverNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1
 		raycaster.setFromCamera(hoverNDC, camera)
-		const hovering = raycaster.intersectObjects([flipGroup, topGroup], true).length > 0
+		const hovering = raycaster.intersectObjects(pickTargets, true).length > 0
 		if (hovering !== isHoveringBadge) setBadgeInteractive(hovering)
 	}
 
@@ -1183,17 +1209,95 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 
 	// ── Drag / flip ──
 
+	// Tactile : à quoi sert le geste en cours ? Décidé une seule fois, au premier mouvement significatif.
+	//  - "pending" : pas encore décidé (le doigt n'a pas assez bougé)
+	//  - "drag"    : la carte est attrapée → la page ne défile plus (preventDefault sur touchmove)
+	//  - "scroll"  : c'est un scroll de page → on s'efface, le navigateur défile
+	// Souris : toujours "drag".
+
+	// Raycast sur le badge. Au doigt, on tolère un léger écart : si le point exact rate, on essaie quatre
+	// points tout autour (TOUCH_HIT_SLOP).
+	function castAtClient(
+		cam: THREE.PerspectiveCamera,
+		clientX: number,
+		clientY: number,
+		rect: DOMRect
+	): THREE.Intersection | null {
+		pointerNDC.set(
+			((clientX - rect.left) / rect.width) * 2 - 1,
+			-((clientY - rect.top) / rect.height) * 2 + 1
+		)
+		raycaster.setFromCamera(pointerNDC, cam)
+		return raycaster.intersectObjects(pickTargets, true)[0] ?? null
+	}
+
+	function pickBadge(event: PointerEvent): THREE.Intersection | null {
+		const canvasEl = options.canvas.value
+		if (!camera || !canvasEl || pickTargets.length === 0) return null
+		const rect = canvasEl.getBoundingClientRect()
+		const direct = castAtClient(camera, event.clientX, event.clientY, rect)
+		if (direct || event.pointerType === "mouse") return direct
+		for (const [ox, oy] of TOUCH_HIT_OFFSETS) {
+			const hit = castAtClient(
+				camera,
+				event.clientX + ox * TOUCH_HIT_SLOP,
+				event.clientY + oy * TOUCH_HIT_SLOP,
+				rect
+			)
+			if (hit) return hit
+		}
+		return null
+	}
+
 	function clearHoldTimer() {
 		if (!holdTimer) return
 		clearTimeout(holdTimer)
 		holdTimer = 0
 	}
 
+	// Le défilement de la page peut-il encore partir dans ce sens ? On cherche le conteneur qui défile
+	// vraiment (la fenêtre dans 99 % des cas), puis on regarde s'il reste de la marge. `fingerDy` > 0 : le
+	// doigt descend, donc le contenu remonte — possible seulement si on n'est pas déjà tout en haut ;
+	// et inversement. Appelé une fois par geste tactile, jamais en boucle.
+	function findScroller(): HTMLElement {
+		let el = options.container.value?.parentElement ?? null
+		while (el && el !== document.body && el !== document.documentElement) {
+			const { overflowY } = getComputedStyle(el)
+			if (
+				(overflowY === "auto" || overflowY === "scroll") &&
+				el.scrollHeight > el.clientHeight + 1
+			) {
+				return el
+			}
+			el = el.parentElement
+		}
+		return (document.scrollingElement ?? document.documentElement) as HTMLElement
+	}
+
+	function canPageScroll(fingerDy: number): boolean {
+		const scroller = findScroller()
+		const max = scroller.scrollHeight - scroller.clientHeight
+		if (max <= 2) return false
+		return fingerDy > 0 ? scroller.scrollTop > 2 : scroller.scrollTop < max - 2
+	}
+
+	// Décide, une seule fois, à qui appartient le geste tactile (voir la section "Tactile" des constantes).
+	// Idempotent : appelé aussi bien depuis pointermove que touchmove, selon celui que le navigateur
+	// livre en premier.
+	function resolveTouchIntent(dx: number, dy: number) {
+		if (touchIntent !== "pending") return
+		if (Math.hypot(dx, dy) < CLICK_MOVE_THRESHOLD) return // encore un "tap"
+		clearHoldTimer()
+		const claim = Math.abs(dx) >= Math.abs(dy) || !canPageScroll(dy)
+		touchIntent = claim ? "drag" : "scroll"
+		if (!claim) endDrag(activePointerId) // scroll de page : on s'efface, le navigateur défile
+	}
+
 	// Tactile : le doigt est resté immobile → l'utilisateur veut attraper la carte, pas scroller
 	function onHoldElapsed() {
 		holdTimer = 0
-		if (!dragging || dragMoved) return
-		grabbed = true
+		if (!dragging || dragMoved || touchIntent !== "pending") return
+		touchIntent = "drag"
 		ensureBackFace() // il va sans doute la manipuler : le dos doit être prêt
 		navigator.vibrate?.(8)
 	}
@@ -1215,24 +1319,22 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		}
 		clearHoldTimer()
 		dragging = false
-		grabbed = false
 	}
 
 	function onPointerDown(event: PointerEvent) {
 		// Un seul pointeur à la fois (un 2e doigt = pinch, laissé au navigateur) ; clic gauche uniquement
-		if (!event.isPrimary || !camera || !flipGroup || !topGroup || !physicsReady) return
+		if (!event.isPrimary || !physicsReady) return
 		if (event.pointerType === "mouse" && event.button !== 0) return
-		const ndc = getCanvasNDC(event)
-		raycaster.setFromCamera(ndc, camera)
-		const hits = raycaster.intersectObjects([flipGroup, topGroup], true)
-		if (hits.length === 0) return
+		const hit = pickBadge(event)
+		if (!hit) return
 
 		const canvasEl = event.currentTarget as HTMLElement
 		canvasEl.setPointerCapture(event.pointerId)
+		activePointerId = event.pointerId
 		dragging = true
 		dragMoved = false
-		grabbed = false
 		pointerIsTouch = event.pointerType !== "mouse"
+		touchIntent = pointerIsTouch ? "pending" : "drag"
 		pointerDownX = event.clientX
 		pointerDownY = event.clientY
 		pointerDownTime = performance.now()
@@ -1250,10 +1352,9 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 
 		// On mémorise le point saisi dans le repère de la carte : il reste "collé" au doigt
 		// même quand la carte tourne (saisir un coin la fait pivoter, comme en vrai)
-		const hitPoint = hits[0]!.point
 		tmpQuaternion.copy(cardQuaternion).invert()
-		dragLocalGrab.copy(hitPoint).sub(cardPos).applyQuaternion(tmpQuaternion)
-		dragTarget.copy(hitPoint)
+		dragLocalGrab.copy(hit.point).sub(cardPos).applyQuaternion(tmpQuaternion)
+		dragTarget.copy(hit.point)
 	}
 
 	function onPointerMove(event: PointerEvent) {
@@ -1263,13 +1364,8 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 			const dx = event.clientX - pointerDownX
 			const dy = event.clientY - pointerDownY
 			if (Math.hypot(dx, dy) < CLICK_MOVE_THRESHOLD) return // encore un "clic"
-
-			// Tactile, pas encore "attrapé" : un geste plutôt vertical est un scroll → on s'efface
-			// et le navigateur défile la page (touch-action: pan-y).
-			if (pointerIsTouch && !grabbed && Math.abs(dy) > Math.abs(dx)) {
-				endDrag(event.pointerId)
-				return
-			}
+			resolveTouchIntent(dx, dy)
+			if (!dragging) return // c'était un scroll de page
 			engageDrag()
 		}
 
@@ -1295,11 +1391,19 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		}
 	}
 
-	// Seul rôle : empêcher la page de défiler pendant qu'on tient la carte (appui long validé).
-	// Doit être non-passif pour pouvoir appeler preventDefault ; ne fait rien tant que `grabbed` est faux,
-	// donc le scroll natif (thread compositeur) n'est jamais ralenti.
+	// Seul endroit où le scroll de la page peut être bloqué : le premier touchmove d'un geste est annulable
+	// tant que le navigateur n'a pas commencé à défiler. Décide ici si le geste est pour la carte ; si oui,
+	// preventDefault garde la page immobile. Hors geste sur la carte, ne fait strictement rien : le scroll
+	// natif (thread compositeur) n'est jamais ralenti.
 	function onTouchMove(event: TouchEvent) {
-		if (grabbed && event.cancelable) event.preventDefault()
+		if (!dragging || !pointerIsTouch) return
+		if (touchIntent === "pending") {
+			const touch = event.touches[0]
+			if (touch) {
+				resolveTouchIntent(touch.clientX - pointerDownX, touch.clientY - pointerDownY)
+			}
+		}
+		if (touchIntent === "drag" && event.cancelable) event.preventDefault()
 	}
 
 	function attachPointerEvents() {
@@ -1307,7 +1411,7 @@ export function useLanyardBadge(options: UseLanyardBadgeOptions) {
 		if (!canvasEl) return
 		boundCanvas = canvasEl
 		// { passive: true } : aucun de ces gestionnaires n'appelle preventDefault() (le blocage du scroll
-		// pendant l'appui long passe par onTouchMove), le navigateur peut donc les traiter sans attendre.
+		// passe uniquement par onTouchMove), le navigateur peut donc les traiter sans attendre.
 		canvasEl.addEventListener("pointerdown", onPointerDown, { passive: true })
 		canvasEl.addEventListener("pointermove", onPointerMove, { passive: true })
 		canvasEl.addEventListener("pointerup", onPointerUp, { passive: true })
