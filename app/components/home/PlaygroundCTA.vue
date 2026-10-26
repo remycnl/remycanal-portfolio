@@ -7,11 +7,16 @@
 			class="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-px -translate-x-1/2 bg-[repeating-linear-gradient(to_bottom,var(--color-gray-dark)_0_4px,transparent_4px_9px)] opacity-50"
 		/>
 
-		<!-- Plus de singlePhrase : seuls les éléments marqués data-text-reveal-block sont découpés -->
+		<!--
+			Une seule font-size sur le lien pilote tout (texte, indentation, gaps, flèches) :
+			tout le reste est en `em`, donc plus aucun breakpoint md: à maintenir.
+			Chaque ligne est en `text-fit` : sa boîte fait exactement la cap-height, donc
+			`gap` / `items-center` / `size-cap` s'alignent sur les capitales et plus sur le line-height.
+		-->
 		<NuxtLink
 			v-text-reveal="{ childStagger: 0.15, theme: 'violet' }"
 			:to="TARGET"
-			class="group relative z-10 inline-flex w-fit flex-col items-start text-black"
+			class="group relative z-10 inline-flex w-fit flex-col items-start gap-[0.2em] text-[clamp(1.75rem,8.5vw,4.5rem)] text-black"
 			@pointerenter="onEnter"
 			@pointerleave="onLeave"
 			@pointerdown="onPress"
@@ -23,43 +28,50 @@
 			<span
 				ref="leadRef"
 				data-text-reveal-block
-				class="font-lineal-heavy text-5xl leading-[0.85] tracking-tight will-change-transform md:text-7xl"
+				class="font-lineal-heavy text-fit tracking-tight will-change-transform"
 			>
 				And a few
 			</span>
 
+			<!-- clip-path en em : laisse dépasser ascendantes/descendantes (le "g") en haut et en bas -->
 			<span
 				ref="rowRef"
-				class="relative -mt-1 ml-8 flex items-center gap-4 [clip-path:inset(-50%_0)] md:ml-16 md:gap-8"
+				class="relative ml-[0.8em] flex items-center gap-[0.5em] [clip-path:inset(-0.5em_0)]"
 			>
 				<span
 					ref="textRef"
 					data-text-reveal-block
-					class="font-lineal-heavy text-5xl leading-[0.85] tracking-tight will-change-transform md:text-7xl"
+					class="font-lineal-heavy text-fit tracking-tight will-change-transform"
 				>
 					more things...
 				</span>
 
 				<!-- Flèche au repos (à droite) : cachée pendant `idle`, fondu après le démarrage du texte.
-					 La transition n'existe que dans l'état `playing`, sinon le passage à `idle` serait lui aussi animé. -->
+					 La transition n'existe que dans l'état `playing`, sinon le passage à `idle` serait lui aussi animé.
+					 Le slot fait 1cap de haut (mesuré avec la police du texte, donc aligné sur les capitales)
+					 et prend la largeur du glyphe : rien ne déborde, donc rien n'est rogné par le clip-path du row.
+					 La flèche d'entrée a exactement le même slot, d'où un `shift` identique. -->
 				<span
 					ref="arrowOutRef"
 					aria-hidden="true"
-					class="font-vg5000 text-violet text-6xl will-change-transform group-data-[text-reveal=idle]:opacity-0 group-data-[text-reveal=playing]:transition-opacity group-data-[text-reveal=playing]:delay-500 group-data-[text-reveal=playing]:duration-500 md:text-8xl"
+					class="font-lineal-heavy grid h-[1cap] shrink-0 place-items-center will-change-transform group-data-[text-reveal=idle]:opacity-0 group-data-[text-reveal=playing]:transition-opacity group-data-[text-reveal=playing]:delay-500 group-data-[text-reveal=playing]:duration-500"
 				>
-					→
+					<span class="font-vg5000 text-violet text-fit text-[1.25em]">→</span>
 				</span>
 
-				<!-- Flèche qui arrive par la gauche au hover -->
+				<!-- Flèche qui arrive par la gauche au hover : même slot 1cap, calé sur le haut de la ligne -->
 				<span
 					aria-hidden="true"
-					class="pointer-events-none absolute inset-y-0 left-0 flex items-center"
+					class="font-lineal-heavy pointer-events-none absolute top-0 left-0 h-[1cap]"
 				>
 					<!-- Wrapper dédié au rebond : jamais en conflit avec l'entrée/sortie de la flèche -->
-					<span ref="bounceRef" class="inline-flex will-change-transform">
+					<span
+						ref="bounceRef"
+						class="grid h-full place-items-center will-change-transform"
+					>
 						<span
 							ref="arrowInRef"
-							class="font-vg5000 text-violet invisible text-6xl will-change-transform md:text-8xl"
+							class="font-vg5000 text-violet text-fit invisible text-[1.25em] will-change-transform"
 						>
 							→
 						</span>
@@ -107,7 +119,10 @@ useGsapContext(({ gsap }) => {
 	const violet = getComputedStyle(arrowIn).color
 	const ink = getComputedStyle(text).color
 	const gap = () => parseFloat(getComputedStyle(row).columnGap) || 0
+	// Le slot de flèche épouse la largeur du glyphe : le décalage reste juste à toutes les tailles
 	const shift = () => arrowOut.offsetWidth + gap()
+	// Décalage de la ligne du haut proportionnel à la font-size (avant : 14px fixes)
+	const leadShift = () => parseFloat(getComputedStyle(lead).fontSize) * 0.25
 
 	let hovered = false
 	let pressed = false
@@ -152,7 +167,7 @@ useGsapContext(({ gsap }) => {
 			ease: "expo.out",
 			overwrite: true,
 		})
-		gsap.to(lead, { x: 14, duration: 0.9, delay: 0.1, ease: "expo.out", overwrite: true })
+		gsap.to(lead, { x: leadShift, duration: 0.9, delay: 0.1, ease: "expo.out", overwrite: true })
 		gsap.to(arrowIn, {
 			xPercent: 0,
 			duration: 0.9,
