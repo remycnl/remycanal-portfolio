@@ -62,5 +62,6 @@ export default defineNuxtConfig({
 		resendApiKey: "", // rempli par NUXT_RESEND_API_KEY
 		contactTo: "", // rempli par NUXT_CONTACT_TO
 	},
+
 	modules: ["@nuxtjs/seo", "@nuxt/image", "@nuxt/content"],
 })
