@@ -1,47 +1,30 @@
 <script setup lang="ts">
-interface Project {
-	id: string
-	year: string
-	name: string
-	image: string
-	to: string
-}
+import type { WorkCollectionItem } from "@nuxt/content"
+
+type FeaturedProject = Pick<WorkCollectionItem, "path" | "title" | "date" | "image">
 
 interface Corner {
 	id: string
 	classes: string
 }
 
-const projects: Project[] = [
-	{
-		id: "01",
-		year: "2024",
-		name: "Rémy Canal — Portfolio",
-		to: "/work/remy-canal-portfolio",
-		image: "https://www.remycanal.me/img/metaImg.png",
-	},
-	{
-		id: "02",
-		year: "2022",
-		name: "Pascale Canal — Galery",
-		to: "/work/pascale-canal-galery",
-		image: "https://www.remycanal.me/img/mockup-pascale-canal-galery.webp",
-	},
-	{
-		id: "03",
-		year: "2021",
-		name: "Vikl — Marketing Website",
-		to: "/work/vikl",
-		image: "https://www.remycanal.me/img/mockup-vikl.webp",
-	},
-	{
-		id: "04",
-		year: "2020",
-		name: "Animaux d'à côté — Web App",
-		to: "/work/animaux-dacote",
-		image: "https://animauxdacote.fr/img/carrousel-home-1.png",
-	},
-]
+interface Stack {
+	id: string
+	side: string
+	classes: string
+	label: (project: FeaturedProject) => string
+}
+
+const { data: projects } = await useAsyncData(
+	"featured-projects",
+	() =>
+		queryCollection("work")
+			.where("featured", "=", true)
+			.select("path", "title", "date", "image")
+			.order("date", "DESC")
+			.all(),
+	{ default: (): FeaturedProject[] => [] }
+)
 
 const CORNER_BASE =
 	"border-lime absolute h-8 w-8 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-data-active:duration-500 group-data-active:ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none"
@@ -66,6 +49,22 @@ const CORNERS: Corner[] = [
 		id: "br",
 		classes:
 			"right-0 bottom-0 border-r-2 border-b-2 group-data-active:-translate-x-[var(--corner-pull)] group-data-active:-translate-y-[var(--corner-pull)]",
+	},
+]
+
+const STACKS: Stack[] = [
+	{
+		id: "year",
+		side: "lg:left-edge",
+		classes: "font-vg5000",
+		label: (project) => workYear(project.date),
+	},
+	{
+		id: "title",
+		side: "lg:right-edge",
+		classes:
+			"font-lineal text-left [font-weight:var(--lineal-weight-medium)] lg:text-right",
+		label: (project) => project.title,
 	},
 ]
 
@@ -98,7 +97,6 @@ const {
 	onCardLeave,
 	onCardPress,
 	onCardRelease,
-	onCardClick,
 } = useFeaturedCarousel({
 	section: sectionRef,
 	viewport: viewportRef,
@@ -108,11 +106,24 @@ const {
 
 useStackRoll({ scope: stageRef, index: activeIndex })
 
+const { arm, overlay } = useOverlay()
+
+const isBadgeVisible = computed(() => toValue(isBadgeActive) && !overlay.locked)
+const badge = useBadgePresentation({
+	active: isBadgeVisible,
+	state: badgeState,
+	labels: BADGE_LABELS,
+})
+
+function onProjectClick(event: MouseEvent) {
+	arm(event)
+}
+
 const pad = (n: number) => String(n).padStart(2, "0")
 </script>
 
 <template>
-	<div class="section-p-y relative bg-white">
+	<div v-if="projects.length" class="section-p-y relative bg-white">
 		<section ref="section" class="relative w-full">
 			<div ref="viewport" class="section-p-xy sticky top-0 h-svh w-full">
 				<div
@@ -156,45 +167,28 @@ const pad = (n: number) => String(n).padStart(2, "0")
 						class="absolute bottom-[calc(50%-var(--card-offset-y)+var(--card-half-h)+2.5rem)] left-0 z-10 flex w-(--card-w) flex-col items-start gap-2 lg:contents"
 					>
 						<div
-							class="lg:left-edge z-10 flex lg:absolute lg:top-1/2 lg:-translate-y-1/2"
+							v-for="stack in STACKS"
+							:key="stack.id"
+							:class="[
+								'z-10 flex lg:absolute lg:top-1/2 lg:-translate-y-1/2',
+								stack.side,
+							]"
 						>
 							<div
 								data-stack
 								:class="[
 									STACK_WINDOW,
-									'font-vg5000',
+									stack.classes,
 									isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light',
 								]"
 							>
 								<span
 									v-for="(p, i) in projects"
-									:key="p.id"
+									:key="p.path"
 									:style="{ '--idx': i }"
 									:class="STACK_ITEM"
 								>
-									{{ p.year }}
-								</span>
-							</div>
-						</div>
-
-						<div
-							class="lg:right-edge z-10 flex lg:absolute lg:top-1/2 lg:-translate-y-1/2"
-						>
-							<div
-								data-stack
-								:class="[
-									STACK_WINDOW,
-									'font-lineal text-left [font-weight:var(--lineal-weight-medium)] lg:text-right',
-									isActiveHovered ? 'lg:bg-gray-dark lg:text-white' : 'lg:bg-gray-light',
-								]"
-							>
-								<span
-									v-for="(p, i) in projects"
-									:key="p.id"
-									:style="{ '--idx': i }"
-									:class="STACK_ITEM"
-								>
-									{{ p.name }}
+									{{ stack.label(p) }}
 								</span>
 							</div>
 						</div>
@@ -210,7 +204,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 						>
 							<span
 								v-for="(p, i) in projects"
-								:key="p.id"
+								:key="p.path"
 								:style="{ '--idx': i }"
 								:class="STACK_ITEM"
 							>
@@ -231,10 +225,10 @@ const pad = (n: number) => String(n).padStart(2, "0")
 						>
 							<NuxtLink
 								v-for="(p, i) in projects"
-								:key="p.id"
+								:key="p.path"
 								:ref="(el) => setCardRef(el, i)"
-								:to="p.to"
-								:aria-label="`${p.name}, ${p.year}`"
+								:to="p.path"
+								:aria-label="`${p.title}, ${workYear(p.date)}`"
 								draggable="false"
 								class="block shrink-0 cursor-pointer rounded-lg bg-black p-2 will-change-transform [-webkit-tap-highlight-color:transparent]"
 								@pointerenter="onCardEnter(i, $event)"
@@ -243,14 +237,15 @@ const pad = (n: number) => String(n).padStart(2, "0")
 								@pointerdown="onCardPress(i)"
 								@pointerup="onCardRelease(i)"
 								@pointercancel="onCardRelease(i)"
-								@click="onCardClick"
+								@click="onProjectClick"
 							>
 								<div
 									class="bg-black-light isolate aspect-16/10 w-(--card-w) overflow-hidden rounded-xs"
 								>
 									<img
+										v-if="p.image"
 										:src="p.image"
-										:alt="p.name"
+										:alt="p.title"
 										draggable="false"
 										decoding="async"
 										:loading="i === 0 ? 'eager' : 'lazy'"
@@ -283,11 +278,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
 					/>
 				</div>
 
-				<UiBadgeCursor
-					:active="isBadgeActive"
-					:state="badgeState"
-					:labels="BADGE_LABELS"
-				/>
+				<UiBadgeCursor :badge="badge" />
 			</div>
 		</section>
 	</div>

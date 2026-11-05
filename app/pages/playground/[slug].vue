@@ -41,7 +41,7 @@ useSeoMeta({
 
 <template>
 	<article v-if="item" class="relative flow-root min-h-svh w-full bg-black text-white">
-		<div class="section-p-xy mt-edge mx-auto max-w-3xl">
+		<div class="section-p-xy mt-edge w-full">
 			<time
 				:datetime="isoDate"
 				class="font-vg5000 text-xs tracking-widest text-white/40 uppercase"
@@ -66,44 +66,10 @@ useSeoMeta({
 			<ContentRenderer
 				v-if="item.body?.value?.length"
 				:value="item"
-				class="playground-content mt-10 text-white/80"
+				class="overlay-content mt-10 text-white/80"
 			/>
 		</div>
 
 		<LayoutOverlayClose />
 	</article>
 </template>
-
-<style scoped>
-.playground-content :deep(h2) {
-	margin-top: 3rem;
-	font-family: var(--font-lineal);
-	font-size: 1.5rem;
-	font-weight: var(--lineal-weight-bold);
-	line-height: 1.1;
-	color: var(--color-white);
-}
-
-.playground-content :deep(p) {
-	margin-top: 1.25rem;
-	font-size: 1rem;
-	line-height: 1.75;
-}
-
-.playground-content :deep(h2 + p) {
-	margin-top: 1rem;
-}
-
-.playground-content :deep(img) {
-	margin-top: 2rem;
-	width: 100%;
-	height: auto;
-	border-radius: var(--radius-xs);
-}
-
-@media (min-width: 1024px) {
-	.playground-content :deep(p) {
-		font-size: 1.125rem;
-	}
-}
-</style>

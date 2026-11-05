@@ -2,6 +2,17 @@ import { defineCollection, defineContentConfig, z } from "@nuxt/content"
 
 const monthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/)
 
+const workTags = [
+	"Identité",
+	"Branding",
+	"Site web",
+	"Application web",
+	"E-commerce",
+	"UI/UX",
+	"Développement",
+	"3D",
+] as const
+
 const periodSchema = z.object({
 	start: monthSchema,
 	end: monthSchema.nullable().default(null),
@@ -36,6 +47,20 @@ export default defineContentConfig({
 				description: z.string().optional(),
 			}),
 			indexes: [{ columns: ["date"] }],
+		}),
+		work: defineCollection({
+			type: "page",
+			source: "work/*.md",
+			schema: z.object({
+				date: monthSchema,
+				tone: z
+					.string()
+					.regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, "Expected a hexadecimal color"),
+				featured: z.boolean().default(false),
+				tags: z.array(z.enum(workTags)).default([]),
+				image: z.string().min(1).optional(),
+			}),
+			indexes: [{ columns: ["date"] }, { columns: ["featured"] }],
 		}),
 		resume: defineCollection({
 			type: "data",

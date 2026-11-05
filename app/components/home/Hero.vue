@@ -36,7 +36,7 @@ useStackSection(heroRef, {
 		>
 			<div class="flex items-baseline-last gap-5 self-start md:self-auto">
 				<div
-					v-text-reveal="{ singlePhrase: true, theme: 'white', immediate: true }"
+					v-text-reveal="{ singlePhrase: true, immediate: true }"
 					class="flex flex-col"
 				>
 					<span>Crafting cool websites. </span>
@@ -47,7 +47,7 @@ useStackSection(heroRef, {
 			<div class="flex items-baseline-last gap-5 self-end md:self-auto">
 				<UiShapeCross data-reveal-follow class="text-lime h-4 w-4 md:h-6 md:w-6" />
 				<div
-					v-text-reveal="{ singlePhrase: true, theme: 'white', immediate: true }"
+					v-text-reveal="{ singlePhrase: true, immediate: true }"
 					class="flex flex-col items-end"
 				>
 					<span>Rémy Canal </span>

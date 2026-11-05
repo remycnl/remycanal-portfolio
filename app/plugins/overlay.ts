@@ -1,13 +1,11 @@
 import type { OverlayState } from "@/types/overlay"
 
-/** Safety net: an overlay never stays if the page transition does not report back. */
-const DISMISS_TIMEOUT_MS = 4000
-
 export default defineNuxtPlugin((nuxtApp) => {
 	const router = useRouter()
 
 	// Shallow on purpose: route objects must never become deep reactive proxies.
 	const overlay = shallowReactive<OverlayState>({
+		navigation: null,
 		background: null,
 		sheet: null,
 		scroller: null,
@@ -17,26 +15,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 		scrollY: 0,
 	})
 
-	/** Another page takes over: the sheet stays until the page transition has covered the screen. */
-	function dismissWhenCovered() {
-		const sheet = overlay.sheet
-		overlay.slides = false
-
-		let timer: ReturnType<typeof setTimeout> | undefined
-		let stop: (() => void) | undefined
-
-		const dismiss = () => {
-			stop?.()
-			clearTimeout(timer)
-			if (overlay.sheet === sheet) overlay.sheet = null
-		}
-
-		stop = nuxtApp.hooks.hookOnce("page:transition:finish", dismiss)
-		timer = setTimeout(dismiss, DISMISS_TIMEOUT_MS)
-	}
-
-	// Opening or closing an overlay never scrolls the page behind. Nuxt reads `scrollToTop` on the
-	// destination route, which is its official way to skip the scroll of a navigation.
+	// Overlay navigation owns its own sheet animation. The page transition must not cover the page
+	// behind or reset its scroll position.
 	router.beforeEach((to, from) => {
 		if (!overlay.armed && !overlay.background) return
 
@@ -47,8 +27,15 @@ export default defineNuxtPlugin((nuxtApp) => {
 			from.matched.length > 0
 		const closing =
 			Boolean(from.meta.overlay) && overlay.background?.fullPath === to.fullPath
+		const leavingOverlay = Boolean(overlay.background) && !to.meta.overlay && !closing
 
-		if (opening || closing) to.meta.scrollToTop = false
+		if (opening || closing) {
+			to.meta.scrollToTop = false
+			to.meta.pageTransition = false
+			overlay.navigation = opening ? "opening" : "closing"
+		} else if (leavingOverlay) {
+			overlay.navigation = "page"
+		}
 	})
 
 	router.afterEach((to, from, failure) => {
@@ -88,7 +75,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 			return
 		}
 
-		dismissWhenCovered()
+		overlay.slides = false
 	})
 
 	return { provide: { overlay } }

@@ -52,14 +52,26 @@ watch(
 )
 
 function onAfterLeave() {
-	if (!overlay.sheet) overlay.locked = false
+	if (!overlay.sheet) {
+		overlay.locked = false
+		overlay.navigation = null
+	}
+}
+
+function onAfterEnter() {
+	if (overlay.navigation === "opening") overlay.navigation = null
 }
 </script>
 
 <template>
 	<!-- Outside of the app root: above the footer, whatever the stacking contexts of the layout. -->
 	<Teleport to="#teleports">
-		<Transition name="sheet" :css="overlay.slides" @after-leave="onAfterLeave">
+		<Transition
+			name="sheet"
+			:css="overlay.slides"
+			@after-enter="onAfterEnter"
+			@after-leave="onAfterLeave"
+		>
 			<div
 				v-if="overlay.sheet"
 				ref="wrapperRef"

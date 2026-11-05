@@ -4,6 +4,8 @@
 @import "./theme.css";
 
 @import "./utilities/spacing.css";
+@import "./utilities/card-hover.css";
+@import "./utilities/overlay-content.css";
 @import "./utilities/grid-backgrounds.css";
 @import "./utilities/typography.css";
 @import "./utilities/display.css";

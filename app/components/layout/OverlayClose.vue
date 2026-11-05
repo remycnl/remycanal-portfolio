@@ -47,9 +47,9 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown))
 </script>
 
 <template>
-	<!-- Sticks to the bottom of the screen while the page scrolls, and stops with the page. -->
+	<!-- Fixed in the reading corner so closing remains available throughout the overlay. -->
 	<div
-		class="pointer-events-none sticky bottom-0 z-10 flex justify-end px-6 pb-4 lg:px-8 lg:pb-6"
+		class="pointer-events-none fixed inset-x-0 top-5 z-20 flex justify-end px-5 lg:px-8"
 	>
 		<NuxtLink
 			:to="target"

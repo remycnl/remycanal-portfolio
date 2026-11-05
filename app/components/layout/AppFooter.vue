@@ -67,8 +67,7 @@ watch(routeTheme, (theme) => {
 
 const wrapClipPath = "polygon(0% 0, 100% 0%, 100% 100%, 0 100%)"
 
-const { ScrollTrigger } = useGsap()
-const lenis = useLenis()
+const { refresh } = useScrollRefresh()
 
 let resizeObserver: ResizeObserver | undefined
 let resizeTimeout: ReturnType<typeof setTimeout> | undefined
@@ -77,8 +76,7 @@ let isFirstObservation = true
 function syncScrollEngines() {
 	clearTimeout(resizeTimeout)
 	resizeTimeout = setTimeout(() => {
-		lenis?.resize()
-		ScrollTrigger.refresh()
+		refresh(0)
 	}, 100)
 }
 

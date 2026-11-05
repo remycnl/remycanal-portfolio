@@ -1,10 +1,6 @@
 <template>
 	<section class="relative min-h-svh overflow-hidden bg-black text-white">
-		<LazyAboutLanyardBadge
-			v-if="!pageTransitionActive"
-			class="z-1"
-			:data="myBadgeData"
-		/>
+		<LazyAboutLanyardBadge v-if="!pageTransitionActive" class="z-1" :data="myBadgeData" />
 		<div
 			class="p-edge pointer-events-none absolute inset-x-0 bottom-0 z-0 select-none"
 			aria-hidden="true"

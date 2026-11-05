@@ -42,6 +42,20 @@ export default defineNuxtConfig({
 
 	vite: {
 		plugins: [tailwindcss()],
+		optimizeDeps: {
+			include: [
+				"gsap",
+				"gsap/Draggable",
+				"gsap/InertiaPlugin",
+				"gsap/ScrollTrigger",
+				"gsap/SplitText",
+				"lenis",
+				"three",
+				"three/examples/jsm/environments/RoomEnvironment.js",
+				"three/examples/jsm/libs/meshopt_decoder.module.js",
+				"three/examples/jsm/loaders/GLTFLoader.js",
+			],
+		},
 	},
 
 	modules: ["@nuxtjs/seo", "@nuxt/image", "@nuxt/content"],

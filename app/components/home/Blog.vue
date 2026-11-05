@@ -143,6 +143,12 @@ const badgeState = computed<BadgeState>(() => {
 	return "idle"
 })
 
+const badge = useBadgePresentation({
+	active: isBadgeActive,
+	state: badgeState,
+	labels: BADGE_LABELS,
+})
+
 const slotCount = ref(16)
 
 const slots = computed(() => {
@@ -691,11 +697,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 					/>
 				</div>
 
-				<UiBadgeCursor
-					:active="isBadgeActive"
-					:state="badgeState"
-					:labels="BADGE_LABELS"
-				/>
+				<UiBadgeCursor :badge="badge" />
 
 				<div
 					class="pointer-events-none relative z-110 mt-80 flex flex-col items-center gap-4 text-center md:mt-120 lg:mt-125 2xl:mt-160"

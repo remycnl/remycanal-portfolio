@@ -1,6 +1,8 @@
 import type { RouteLocationNormalized } from "vue-router"
 
 export interface OverlayState {
+	/** Navigation currently handled by the overlay host instead of the page transition. */
+	navigation: "opening" | "closing" | "page" | null
 	/** The page the overlay was opened from. It stays displayed, untouched, behind the overlay. */
 	background: RouteLocationNormalized | null
 	/** The overlay route being displayed. */

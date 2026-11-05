@@ -14,21 +14,48 @@ export default defineNuxtPlugin({
 		).matches
 
 		const lenis = new Lenis({
-			duration: prefersReducedMotion ? 0 : 1.2,
+			lerp: prefersReducedMotion ? 1 : 0.1,
+			duration: prefersReducedMotion ? 0 : 1.1,
 			smoothWheel: !prefersReducedMotion,
 			syncTouch: false,
+			wheelMultiplier: 0.92,
+			touchMultiplier: 1,
+			autoRaf: false,
 		})
 
-		lenis.on("scroll", ScrollTrigger.update)
+		let scrolling = false
+		let scrollEndTimeout: ReturnType<typeof setTimeout> | undefined
+		let pendingRefresh = false
+
+		function onScroll() {
+			scrolling = true
+			clearTimeout(scrollEndTimeout)
+			scrollEndTimeout = setTimeout(() => {
+				scrolling = false
+				if (pendingRefresh) {
+					pendingRefresh = false
+					refreshScroll()
+				}
+			}, 120)
+			ScrollTrigger.update()
+		}
+
+		lenis.on("scroll", onScroll)
 
 		function update(time: number) {
 			lenis.raf(time * 1000)
 		}
 		gsap.ticker.add(update)
 
-		gsap.ticker.lagSmoothing(1000, 16)
+		// Lenis must receive the real frame delta. Catch-up frames create visible jumps.
+		gsap.ticker.lagSmoothing(0)
 
 		function refreshScroll() {
+			if (scrolling) {
+				pendingRefresh = true
+				return
+			}
+
 			lenis.resize()
 			ScrollTrigger.refresh()
 		}
@@ -70,7 +97,9 @@ export default defineNuxtPlugin({
 			import.meta.hot.dispose(() => {
 				disposed = true
 				cancelPendingTransitionRefresh()
+				clearTimeout(scrollEndTimeout)
 				gsap.ticker.remove(update)
+				lenis.off("scroll", onScroll)
 				unsubscribeResize()
 				document.removeEventListener("visibilitychange", handleVisibilityChange)
 				lenis.destroy()

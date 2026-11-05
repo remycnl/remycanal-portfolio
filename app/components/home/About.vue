@@ -18,7 +18,7 @@
 		<div
 			class="py-section text-gray-dark relative max-w-6xl text-center text-2xl lg:text-5xl"
 		>
-			<div class="py-section max-w-xl lg:max-w-6xl">
+			<div class="max-w-xl lg:max-w-6xl">
 				<h2 v-text-reveal="{ theme: 'violet', singlePhrase: true }">
 					Bonjour, I'm <span class="text-white">Rémy Canal</span>. I make websites that
 					look cool, feel good, and care about the little things.<br />
@@ -31,23 +31,8 @@
 					</span>
 				</h2>
 			</div>
-			<UiPopImage
-				src="/stickers/character_violet.svg"
-				alt="Sticker Rémy"
-				:rotate="15"
-				draggable
-				img-class="absolute top-0 -right-4 w-auto 2xl:-right-30 h-20 md:h-30 lg:h-42 2xl:h-50"
-			/>
-			<UiPopImage
-				src="/stickers/computer_violet.svg"
-				alt="Sticker computer"
-				:rotate="-15"
-				:delay="0.12"
-				draggable
-				img-class="absolute bottom-0 -left-2 w-auto 2xl:-left-40 h-20 md:h-30 lg:h-42 2xl:h-50"
-			/>
 		</div>
-		<div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+		<div class="absolute bottom-0 left-1/2 z-20 -translate-x-1/2 translate-y-1/2">
 			<UiAnimatedButton
 				label="Rémy who?"
 				to="/about"

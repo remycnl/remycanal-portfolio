@@ -151,27 +151,23 @@ export default defineNuxtPlugin({
 				return binding.value?.disabled ? {} : { style: { opacity: 0 } }
 			},
 
-			...(import.meta.client
-				? {
-						beforeMount(el, binding) {
-							if (binding.value?.disabled) return
-							el.style.opacity = "0"
-						},
+			beforeMount(el, binding) {
+				if (binding.value?.disabled) return
+				el.style.opacity = "0"
+			},
 
-						mounted(el, binding) {
-							if (binding.value?.disabled || STATE.has(el)) return
-							initReveal(el, binding.value ?? {})
-						},
+			mounted(el, binding) {
+				if (binding.value?.disabled || STATE.has(el)) return
+				initReveal(el, binding.value ?? {})
+			},
 
-						unmounted(el) {
-							const state = STATE.get(el)
-							state?.killTrigger?.()
-							state?.cleanup?.()
-							state?.ctx?.revert()
-							STATE.delete(el)
-						},
-					}
-				: {}),
+			unmounted(el) {
+				const state = STATE.get(el)
+				state?.killTrigger?.()
+				state?.cleanup?.()
+				state?.ctx?.revert()
+				STATE.delete(el)
+			},
 		}
 
 		async function initReveal(el: HTMLElement, options: TextRevealOptions) {

@@ -70,7 +70,17 @@ const pageTransition = {
 	mode: "out-in" as const,
 	css: false,
 	onLeave(_el: Element, done: () => void) {
+		if (overlay.navigation === "opening" || overlay.navigation === "closing") {
+			done()
+			return
+		}
+
 		const finish = () => {
+			if (overlay.navigation === "page") {
+				overlay.sheet = null
+				overlay.locked = false
+				overlay.navigation = null
+			}
 			resetScrollWhileCovered()
 			done()
 		}
@@ -79,6 +89,10 @@ const pageTransition = {
 		else finish()
 	},
 	onEnter(_el: Element, done: () => void) {
+		if (overlay.navigation === "opening" || overlay.navigation === "closing") {
+			done()
+			return
+		}
 		overlayRef.value?.reveal(done)
 	},
 }

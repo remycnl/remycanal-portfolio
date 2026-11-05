@@ -55,7 +55,7 @@ const badge = provideCardGrid({
 
 <template>
 	<div class="section-p-xy relative isolate">
-		<UiBadgeCursor v-bind="badge" />
+		<UiBadgeCursor :badge="badge" />
 
 		<div v-if="error" :class="[textTones[theme], 'max-w-lg']">
 			<p class="font-lineal-medium text-xl">{{ errorTitle }}</p>

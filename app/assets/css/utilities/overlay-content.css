@@ -1,0 +1,31 @@
+.overlay-content h2 {
+	margin-top: 3rem;
+	font-family: var(--font-lineal);
+	font-size: 1.5rem;
+	font-weight: var(--lineal-weight-bold);
+	line-height: 1.1;
+	color: var(--overlay-content-color, var(--color-white));
+}
+
+.overlay-content p {
+	margin-top: 1.25rem;
+	font-size: 1rem;
+	line-height: 1.75;
+}
+
+.overlay-content h2 + p {
+	margin-top: 1rem;
+}
+
+.overlay-content img {
+	margin-top: 2rem;
+	width: 100%;
+	height: auto;
+	border-radius: var(--radius-xs);
+}
+
+@media (min-width: 1024px) {
+	.overlay-content p {
+		font-size: 1.125rem;
+	}
+}

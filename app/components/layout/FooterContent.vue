@@ -90,6 +90,14 @@ const badgeState = computed<BadgeState | undefined>(() =>
 const tagLabel = computed(() =>
 	isDesktopPointer.value ? "Copied, see you soon!" : "Email copied!"
 )
+const badge = useBadgePresentation({
+	active: isHoveringEmail,
+	state: badgeState,
+	labels: BADGE_LABELS,
+	offset: BADGE_OFFSET,
+	bgColor: computed(() => themeClasses.value.badgeBg),
+	textColor: computed(() => themeClasses.value.badgeText),
+})
 
 async function copyEmail() {
 	const success = await copy(EMAIL)
@@ -127,14 +135,7 @@ async function copyEmail() {
 				/>
 			</div>
 
-			<UiBadgeCursor
-				:active="isHoveringEmail"
-				:state="badgeState"
-				:labels="BADGE_LABELS"
-				:offset="BADGE_OFFSET"
-				:bg-color="themeClasses.badgeBg"
-				:text-color="themeClasses.badgeText"
-			/>
+			<UiBadgeCursor :badge="badge" />
 
 			<div
 				class="pointer-events-none relative z-10 grid flex-1 grid-cols-2 grid-rows-[auto_auto_minmax(2.5rem,1fr)_auto_auto] gap-x-10 gap-y-6 [grid-template-areas:'intro_intro'_'nav_social'_'spacer_spacer'_'copy_copy'_'legal_legal'] sm:grid-cols-[1fr_auto] sm:grid-rows-[auto_auto_minmax(2.5rem,1fr)_auto] sm:[grid-template-areas:'intro_nav'_'social_nav'_'spacer_spacer'_'copy_legal'] lg:grid-cols-3 lg:grid-rows-[auto_minmax(2.5rem,1fr)_auto] lg:[grid-template-areas:'intro_intro_nav'_'spacer_spacer_spacer'_'social_copy_legal']"

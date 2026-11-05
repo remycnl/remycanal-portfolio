@@ -167,7 +167,13 @@ useGsapContext(({ gsap }) => {
 			ease: "expo.out",
 			overwrite: true,
 		})
-		gsap.to(lead, { x: leadShift, duration: 0.9, delay: 0.1, ease: "expo.out", overwrite: true })
+		gsap.to(lead, {
+			x: leadShift,
+			duration: 0.9,
+			delay: 0.1,
+			ease: "expo.out",
+			overwrite: true,
+		})
 		gsap.to(arrowIn, {
 			xPercent: 0,
 			duration: 0.9,

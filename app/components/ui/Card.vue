@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CardTheme, CardTint } from "@/composables/useCardGrid"
 import { decodeImage } from "@/utils/decodeImage"
+import { isPlainClick } from "@/utils/isPlainClick"
 import { createRevealTrigger } from "@/utils/revealTrigger"
 
 interface Props {
@@ -158,20 +159,12 @@ function onPointerDown(event: PointerEvent) {
 }
 
 function onClick(event: MouseEvent) {
-	if (
-		event.button !== 0 ||
-		event.metaKey ||
-		event.ctrlKey ||
-		event.shiftKey ||
-		event.altKey
-	) {
-		return
-	}
+	if (!isPlainClick(event)) return
 
 	// An overlay opens above the current page: the navigation that follows is marked as such, and
 	// there is no pending-navigation state to show.
 	if (overlay) {
-		arm()
+		arm(event)
 		return
 	}
 
@@ -317,104 +310,6 @@ function onClick(event: MouseEvent) {
 </template>
 
 <style scoped>
-.card-media {
-	--card-gap: 0px;
-	--card-spring: cubic-bezier(0.22, 1, 0.36, 1);
-	/* The height of the card is its width divided by its ratio (set on `.card-image`). */
-	scale: calc(1 - tan(atan2(var(--card-gap) * 2, 100cqw)))
-		calc(1 - tan(atan2(var(--card-gap) * 2, 100cqw / var(--card-ratio, 1.7778))));
-	transition: scale 900ms var(--card-spring);
-}
-
-@supports (transition-timing-function: linear(0, 1)) {
-	.card-media {
-		--card-spring: linear(
-			0,
-			0.046,
-			0.164,
-			0.323,
-			0.497,
-			0.668,
-			0.821,
-			0.947,
-			1.044,
-			1.11,
-			1.148,
-			1.162,
-			1.159,
-			1.142,
-			1.118,
-			1.089,
-			1.061,
-			1.035,
-			1.013,
-			0.996,
-			0.984,
-			0.977,
-			0.974,
-			0.974,
-			0.976,
-			0.98,
-			0.984,
-			0.989,
-			0.993,
-			0.997,
-			1,
-			1.002,
-			1.003,
-			1.004,
-			1.004,
-			1.004,
-			1
-		);
-	}
-}
-
-.card-frame {
-	opacity: 0;
-	transition: opacity 600ms ease-out;
-}
-
-@media (hover: hover) and (pointer: fine) {
-	.card-link:hover .card-media {
-		--card-gap: min(0.6rem, 3.2cqw);
-	}
-
-	.card-link:hover .card-frame {
-		opacity: 1;
-		transition-duration: 250ms;
-	}
-}
-
-.card-link:focus-visible .card-media {
-	--card-gap: min(0.6rem, 3.2cqw);
-}
-
-.card-link:focus-visible .card-frame {
-	opacity: 1;
-	transition-duration: 250ms;
-}
-
-.card-link:active .card-media,
-.card-link[aria-busy="true"] .card-media {
-	--card-gap: min(1rem, 6cqw);
-	transition-duration: 220ms;
-	transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.card-link:active .card-frame,
-.card-link[aria-busy="true"] .card-frame {
-	opacity: 1;
-	transition-duration: 250ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.card-media,
-	.card-frame {
-		transition: none;
-	}
-}
-
 /*
  * Image reveal, driven by the phase of the text reveal of the same card. A curtain in the color of
  * the card frame covers the image while the text is idle, then lifts while the image settles.

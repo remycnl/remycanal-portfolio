@@ -12,7 +12,7 @@ export function useLoopHeight() {
 		if (!(el instanceof HTMLElement)) return
 
 		const update = () => {
-			height.value = Math.round(el.getBoundingClientRect().height)
+			height.value = el.getBoundingClientRect().height
 		}
 
 		update()

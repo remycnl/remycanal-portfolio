@@ -11,9 +11,19 @@ const COLLECTIONS = ["blog", "playground", "resume"] as const
 
 export default defineNuxtPlugin((nuxtApp) => {
 	nuxtApp.hook("app:mounted", () => {
+		const lenis = useLenis()
+
 		const schedule = (callback: () => void) => {
+			if (lenis?.isScrolling) {
+				setTimeout(() => schedule(callback), 250)
+				return
+			}
+
 			if ("requestIdleCallback" in window) {
-				window.requestIdleCallback(callback, { timeout: 3000 })
+				window.requestIdleCallback(() => {
+					if (lenis?.isScrolling) schedule(callback)
+					else callback()
+				}, { timeout: 3000 })
 			} else {
 				setTimeout(callback, 400)
 			}

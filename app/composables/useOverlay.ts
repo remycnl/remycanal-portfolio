@@ -1,4 +1,5 @@
 import type { InjectionKey } from "vue"
+import { isPlainClick } from "@/utils/isPlainClick"
 
 /** Provided by the overlay host: tells the content of a page that it is displayed in the sheet. */
 export const OVERLAY_SHEET_KEY: InjectionKey<boolean> = Symbol("overlay-sheet")
@@ -8,8 +9,10 @@ export function useOverlay() {
 	const router = useRouter()
 
 	/** Call it on the click of a link to an overlay: the next navigation opens it above the current page. */
-	function arm() {
+	function arm(event?: MouseEvent) {
+		if (event && !isPlainClick(event)) return false
 		overlay.armed = true
+		return true
 	}
 
 	/** Closes the overlay: back to the page it was opened from. */

@@ -39,7 +39,9 @@ useHead({
 	<div class="min-h-svh bg-white">
 		<div class="bg-lime">
 			<HomeHero />
-			<HomeAbout />
+			<div class="relative z-20">
+				<HomeAbout />
+			</div>
 		</div>
 		<HomeFeaturedProjects />
 		<HomePlaygroundCTA />

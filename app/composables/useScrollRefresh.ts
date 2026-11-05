@@ -1,4 +1,5 @@
 let refreshTimeout: ReturnType<typeof setTimeout> | undefined
+let scrollingRetryTimeout: ReturnType<typeof setTimeout> | undefined
 let deferredFlushPending = false
 
 export function useScrollRefresh() {
@@ -36,6 +37,13 @@ export function useScrollRefresh() {
 	}
 
 	function runOrDefer() {
+		const lenis = useLenis()
+		if (lenis?.isScrolling) {
+			clearTimeout(scrollingRetryTimeout)
+			scrollingRetryTimeout = setTimeout(runOrDefer, 120)
+			return
+		}
+
 		if (isUncovering()) flushAfterTransition()
 		else resyncAndRefresh()
 	}

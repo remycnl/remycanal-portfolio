@@ -1,5 +1,4 @@
 import type { InjectionKey } from "vue"
-import type { BadgeProps } from "@/components/ui/Badge.vue"
 import type { RevealSlot } from "@/composables/useRowReveal"
 
 export type CardTint = "lime" | "violet"
@@ -44,39 +43,26 @@ export function provideCardGrid({
 	pressLabel,
 	loadingLabel = "Opening...",
 }: CardGridOptions = {}) {
-	const isHovering = shallowRef(false)
-	const isPressed = shallowRef(false)
-	const isOpening = useOpening()
+	const interaction = useBadgeInteraction({ label, pressLabel, loadingLabel })
 	const { slotFor } = useRowReveal()
 
-	const badge = computed<BadgeProps>(() => ({
-		...TINT_COLORS[tint],
-		active: isHovering.value || isOpening.value,
-		state: isOpening.value ? "loading" : isPressed.value ? "press" : "view",
+	const badge = useBadgePresentation({
+		active: interaction.active,
+		state: interaction.state,
 		labels: { view: label, press: pressLabel ?? label, loading: loadingLabel },
-	}))
+		bgColor: TINT_COLORS[tint].bgColor,
+		textColor: TINT_COLORS[tint].textColor,
+	})
 
 	provide(CARD_GRID_KEY, {
 		theme,
 		tint,
 		slotFor,
-		onEnter: () => {
-			isHovering.value = true
-		},
-		onLeave: () => {
-			isHovering.value = false
-			isPressed.value = false
-		},
-		onPress: () => {
-			isPressed.value = true
-		},
-		onRelease: () => {
-			isPressed.value = false
-		},
-		onOpen: () => {
-			isOpening.value = true
-			isPressed.value = false
-		},
+		onEnter: interaction.onEnter,
+		onLeave: interaction.onLeave,
+		onPress: interaction.onPress,
+		onRelease: interaction.onRelease,
+		onOpen: interaction.onOpen,
 	})
 
 	return badge

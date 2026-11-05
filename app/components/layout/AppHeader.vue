@@ -174,7 +174,7 @@
 <script setup lang="ts">
 import type UiStickerPattern from "@/components/ui/StickerPattern.vue"
 
-const route = useRoute()
+const activePath = useActivePath()
 
 const links = [
 	{ to: "/", label: "Home" },
@@ -195,7 +195,9 @@ const stickerSrcs = [
 ]
 
 function isActive(link: { to: string }) {
-	return route.path === link.to || route.path.startsWith(`${link.to}/`)
+	const path = activePath.value
+	if (link.to === "/") return path === "/"
+	return path === link.to || path.startsWith(`${link.to}/`)
 }
 
 const MOBILE_REVEAL_IN = 620
@@ -264,12 +266,6 @@ function onWheelLock(e: WheelEvent) {
 
 let touchScrollLockActive = false
 
-/**
- * Fige la hauteur de l'overlay sur le viewport réellement visible.
- * Appelée à l'ouverture. La hauteur reste figée pendant toute l'animation
- * de fermeture : sinon l'overlay retombe sur `h-screen` (100vh) et les liens,
- * centrés verticalement, se décalent vers le bas.
- */
 function applyOverlayHeight() {
 	const viewportHeight = getStableViewportHeight()
 
@@ -280,10 +276,6 @@ function applyOverlayHeight() {
 	document.documentElement.style.setProperty("--app-vh", `${viewportHeight}px`)
 }
 
-/**
- * Libère la hauteur figée. À appeler uniquement quand l'overlay est
- * totalement fermé (onOverlayClosed) ou au démontage du composant.
- */
 function releaseOverlayHeight() {
 	document.documentElement.style.removeProperty("--app-vh")
 
@@ -538,17 +530,11 @@ useGsapContext(({ gsap }) => {
 		})
 	}
 
-	/**
-	 * État pressé des liens de l'overlay (mobile, tablette, souris sur fenêtre étroite).
-	 * Visible dès le pointerdown, conservé jusqu'à la fermeture du menu :
-	 * le depop repart de l'état pressé au lieu de le couper net.
-	 */
 	const MOBILE_PRESS_SCALE = 0.9
 	const MOBILE_PRESS_OPACITY = 0.5
 	const MOBILE_TAP_CLOSE_DELAY = 180
 
 	const pressedMobileLinks = new Set<HTMLElement>()
-	// pointerup reçu : le click suit, on garde l'état pressé.
 	const committedMobileLinks = new Set<HTMLElement>()
 
 	function releaseMobileLink(el: HTMLElement) {
@@ -577,7 +563,6 @@ useGsapContext(({ gsap }) => {
 		committedMobileLinks.delete(el)
 
 		gsap.to(el, {
-			// Avec prefers-reduced-motion : opacité seule, sans réduction d'échelle.
 			scale: prefersReducedMotion ? 1 : MOBILE_PRESS_SCALE,
 			opacity: MOBILE_PRESS_OPACITY,
 			duration: 0.1 * d,
@@ -594,7 +579,6 @@ useGsapContext(({ gsap }) => {
 		if (e.type === "pointerup") {
 			committedMobileLinks.add(el)
 
-			// Filet de sécurité : tap annulé (doigt glissé hors du lien), aucun click ne vient.
 			window.setTimeout(() => {
 				if (open.value && committedMobileLinks.has(el)) releaseMobileLink(el)
 			}, MOBILE_TAP_CLOSE_DELAY * 2)
@@ -602,7 +586,6 @@ useGsapContext(({ gsap }) => {
 			return
 		}
 
-		// Sur tactile, pointerleave arrive juste après pointerup : on l'ignore.
 		if (committedMobileLinks.has(el)) return
 
 		releaseMobileLink(el)
@@ -686,7 +669,6 @@ useGsapContext(({ gsap }) => {
 	}
 
 	onOverlayClosed = () => {
-		// Réouvert pendant la fermeture : la hauteur a été reposée par lockScroll(), on la garde.
 		if (open.value) return
 
 		overlayShown.value = false
@@ -697,7 +679,6 @@ useGsapContext(({ gsap }) => {
 		if (!open.value) return
 		const target = e.target as Node
 
-		// Les clics sur les liens de l'overlay sont gérés par onMobileLinkClick (fermeture différée).
 		if (mobileLinkEls.some((el) => el?.contains(target))) return
 
 		if (boxRef.value && !boxRef.value.contains(target)) closeMenu()

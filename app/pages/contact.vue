@@ -1,8 +1,5 @@
 <template>
-	<section class="relative min-h-svh overflow-hidden bg-violet text-white">
-		
-	</section>
+	<section class="bg-violet relative min-h-svh overflow-hidden text-white"></section>
 </template>
 
-<script lang="ts" setup>
-</script>
+<script lang="ts" setup></script>
