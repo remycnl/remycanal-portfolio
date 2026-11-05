@@ -1,5 +1,4 @@
 import type { Directive } from "vue"
-import type { GsapInstance } from "@/composables/useGsap"
 import { createRevealTrigger } from "@/utils/revealTrigger"
 import { readThemeColor } from "@/utils/theme/readThemeColor"
 
@@ -57,6 +56,14 @@ const START_DELAY = 0.05
 const WORD_LENGTH = 5
 const IMMEDIATE_STAGGER = 0.12
 
+const WORD_CLASS = "text-reveal-word"
+const CHAR_CLASS = "text-reveal-char"
+const UNIT_CLASS = "text-reveal-unit"
+const SKIPPED_PARENTS = "script, style, noscript, textarea, svg"
+const WHITESPACE_RUN = /(\s+)/
+const WHITESPACE_ONLY = /^\s+$/
+const HAS_TEXT = /\S/
+
 const APPEAR_EASE = "cubic-bezier(.2,.8,.2,1)"
 const COLOR_EASE = "cubic-bezier(.25,1,.5,1)"
 const FOLLOW_EASE = "cubic-bezier(.34,1.56,.64,1)"
@@ -89,6 +96,11 @@ const REVEAL_CSS = `
 	}
 }
 `
+
+const segmenter =
+	typeof Intl !== "undefined" && "Segmenter" in Intl
+		? new Intl.Segmenter(undefined, { granularity: "grapheme" })
+		: null
 
 interface ImmediateEntry {
 	el: HTMLElement
@@ -132,7 +144,6 @@ function hasFollower(el: HTMLElement) {
 }
 
 interface RevealState {
-	ctx?: ReturnType<GsapInstance["context"]>
 	killTrigger?: () => void
 	cleanup?: () => void
 }
@@ -165,7 +176,6 @@ export default defineNuxtPlugin({
 				const state = STATE.get(el)
 				state?.killTrigger?.()
 				state?.cleanup?.()
-				state?.ctx?.revert()
 				STATE.delete(el)
 			},
 		}
@@ -209,60 +219,32 @@ export default defineNuxtPlugin({
 			if (!STATE.has(el)) return
 
 			const baseDelay = START_DELAY + delay + slot * immediateStagger
-			const { gsap, SplitText, ScrollTrigger } = useGsap()
+			const { ScrollTrigger } = useGsap()
 
 			const forceWords = (el.textContent ?? "").length > MAX_CHAR_UNITS
 			const revertWhenDone = REVERT_SPLIT_WHEN_DONE && !hasFollower(el)
 
-			const splits: { revert: () => void }[] = []
+			const restores: (() => void)[] = []
 			let finish: { time: number; char?: HTMLElement } = { time: 0 }
 
-			state.ctx = gsap.context(() => {
-				const blocks = singlePhrase ? [el] : getTextBlocks(el)
+			const blocks = singlePhrase ? [el] : getTextBlocks(el)
 
-				blocks.forEach((block, i) => {
-					const byWords = forceWords || block.dataset.textRevealBlock === "words"
-					const offset = baseDelay + i * childStagger
+			blocks.forEach((block, i) => {
+				const byWords = forceWords || block.dataset.textRevealBlock === "words"
+				const offset = baseDelay + i * childStagger
 
-					const before = measureOriginal(block, byWords)
+				const textNodes = collectTextNodes(block)
+				const before = measureOriginal(textNodes, byWords)
+				const split = splitTextNodes(textNodes, byWords)
+				restores.push(split.restore)
 
-					const split = SplitText.create(
-						block,
-						byWords
-							? {
-									type: "words",
-									wordsClass: "text-reveal-unit",
-									reduceWhiteSpace: false,
-								}
-							: {
-									type: "words, chars",
-									wordsClass: "text-reveal-word",
-									charsClass: "text-reveal-char",
-									reduceWhiteSpace: false,
-								}
-					)
-					splits.push(split)
+				compensate(byWords ? split.words : split.chars, before)
 
-					compensate((byWords ? split.words : split.chars) as HTMLElement[], before)
-
-					const end = byWords
-						? applyDelays(
-								split.words as HTMLElement[],
-								0,
-								speed / WORD_LENGTH,
-								jitter,
-								offset
-							)
-						: applyDelays(
-								split.chars as HTMLElement[],
-								split.words.length,
-								speed,
-								jitter,
-								offset
-							)
-					if (end.time >= finish.time) finish = end
-				})
-			}, el)
+				const end = byWords
+					? applyDelays(split.words, 0, speed / WORD_LENGTH, jitter, offset)
+					: applyDelays(split.chars, split.words.length, speed, jitter, offset)
+				if (end.time >= finish.time) finish = end
+			})
 
 			const setPhase = (phase: Phase) => {
 				el.dataset.textReveal = phase
@@ -277,7 +259,7 @@ export default defineNuxtPlugin({
 				setPhase("done")
 				el.removeEventListener("animationend", onEnd)
 
-				if (revertWhenDone) for (const split of splits) split.revert()
+				if (revertWhenDone) for (const restore of restores) restore()
 			}
 			el.addEventListener("animationend", onEnd)
 
@@ -334,31 +316,123 @@ interface Point {
 	y: number
 }
 
-function measureOriginal(root: HTMLElement, wordsOnly: boolean): Point[] {
-	const out: Point[] = []
-	const range = document.createRange()
-	const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
-	let atWordStart = true
+interface Token {
+	value: string
+	isWord: boolean
+}
+
+interface Replacement {
+	original: Text
+	nodes: Node[]
+}
+
+interface SplitResult {
+	words: HTMLElement[]
+	chars: HTMLElement[]
+	restore: () => void
+}
+
+function tokenize(text: string): Token[] {
+	return text
+		.split(WHITESPACE_RUN)
+		.filter((value) => value.length > 0)
+		.map((value) => ({ value, isWord: !WHITESPACE_ONLY.test(value) }))
+}
+
+function graphemes(word: string): string[] {
+	return segmenter
+		? Array.from(segmenter.segment(word), (part) => part.segment)
+		: Array.from(word)
+}
+
+function collectTextNodes(root: HTMLElement): Text[] {
+	const nodes: Text[] = []
+	const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+		acceptNode: (node) =>
+			HAS_TEXT.test(node.nodeValue ?? "") && !node.parentElement?.closest(SKIPPED_PARENTS)
+				? NodeFilter.FILTER_ACCEPT
+				: NodeFilter.FILTER_REJECT,
+	})
 
 	for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-		const text = node.textContent ?? ""
+		nodes.push(node as Text)
+	}
+	return nodes
+}
+
+function measureOriginal(textNodes: Text[], wordsOnly: boolean): Point[] {
+	const out: Point[] = []
+	const range = document.createRange()
+
+	for (const node of textNodes) {
 		let index = 0
-		for (const ch of text) {
-			if (/\s/.test(ch)) {
-				atWordStart = true
-			} else {
-				if (!wordsOnly || atWordStart) {
-					range.setStart(node, index)
-					range.setEnd(node, index + ch.length)
-					const r = range.getBoundingClientRect()
-					out.push({ x: r.left, y: r.top })
+
+		for (const token of tokenize(node.nodeValue ?? "")) {
+			if (token.isWord) {
+				const glyphs = wordsOnly ? [token.value] : graphemes(token.value)
+				let glyphIndex = index
+
+				for (const glyph of glyphs) {
+					range.setStart(node, glyphIndex)
+					range.setEnd(node, glyphIndex + glyph.length)
+					const rect = range.getBoundingClientRect()
+					out.push({ x: rect.left, y: rect.top })
+					glyphIndex += glyph.length
 				}
-				atWordStart = false
 			}
-			index += ch.length
+			index += token.value.length
 		}
 	}
 	return out
+}
+
+function splitTextNodes(textNodes: Text[], byWords: boolean): SplitResult {
+	const words: HTMLElement[] = []
+	const chars: HTMLElement[] = []
+	const replacements: Replacement[] = []
+
+	for (const original of textNodes) {
+		const produced: Node[] = []
+
+		for (const token of tokenize(original.nodeValue ?? "")) {
+			if (!token.isWord) {
+				produced.push(document.createTextNode(token.value))
+				continue
+			}
+
+			const word = document.createElement("span")
+			words.push(word)
+			produced.push(word)
+
+			if (byWords) {
+				word.className = UNIT_CLASS
+				word.textContent = token.value
+				continue
+			}
+
+			word.className = WORD_CLASS
+			for (const glyph of graphemes(token.value)) {
+				const char = document.createElement("span")
+				char.className = CHAR_CLASS
+				char.textContent = glyph
+				word.append(char)
+				chars.push(char)
+			}
+		}
+
+		original.replaceWith(...produced)
+		replacements.push({ original, nodes: produced })
+	}
+
+	const restore = () => {
+		for (const { original, nodes } of replacements) {
+			const anchor = nodes.find((node) => node.parentNode)
+			anchor?.parentNode?.insertBefore(original, anchor)
+			for (const node of nodes) node.parentNode?.removeChild(node)
+		}
+	}
+
+	return { words, chars, restore }
 }
 
 function compensate(units: HTMLElement[], before: Point[]) {

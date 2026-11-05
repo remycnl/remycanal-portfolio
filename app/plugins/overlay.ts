@@ -1,9 +1,8 @@
 import type { OverlayState } from "@/types/overlay"
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
 	const router = useRouter()
 
-	// Shallow on purpose: route objects must never become deep reactive proxies.
 	const overlay = shallowReactive<OverlayState>({
 		navigation: null,
 		background: null,
@@ -15,10 +14,11 @@ export default defineNuxtPlugin((nuxtApp) => {
 		scrollY: 0,
 	})
 
-	// Overlay navigation owns its own sheet animation. The page transition must not cover the page
-	// behind or reset its scroll position.
 	router.beforeEach((to, from) => {
-		if (!overlay.armed && !overlay.background) return
+		if (!overlay.armed && !overlay.background) {
+			overlay.navigation = null
+			return
+		}
 
 		const opening =
 			overlay.armed &&
@@ -41,11 +41,12 @@ export default defineNuxtPlugin((nuxtApp) => {
 	router.afterEach((to, from, failure) => {
 		const armed = overlay.armed
 		overlay.armed = false
-		if (failure) return
+		if (failure) {
+			overlay.navigation = null
+			return
+		}
 
 		if (to.meta.overlay) {
-			// Opened from a card: the page it comes from stays behind. Anything else (direct access,
-			// reload, back/forward from another page) shows the article as a regular page.
 			if (armed && !overlay.background && from.matched.length > 0 && !from.meta.overlay) {
 				overlay.background = from
 				overlay.scrollY = window.scrollY
@@ -63,11 +64,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 		if (!behind) return
 		overlay.background = null
 
-		// Back to the page it was opened from: it never moved. The check below only protects against
-		// anything that could have moved it, so that it comes back exactly as it was.
 		if (to.fullPath === behind.fullPath) {
 			overlay.slides = true
 			overlay.sheet = null
+			overlay.navigation = null
 
 			if (Math.abs(window.scrollY - overlay.scrollY) > 1) {
 				window.scrollTo({ top: overlay.scrollY, left: 0, behavior: "instant" })
