@@ -191,7 +191,6 @@ const stickerSrcs = [
 	"/stickers/flower_violet.svg",
 	"/stickers/dog_violet.svg",
 	"/stickers/characterFull_violet.svg",
-	"/stickers/cursor_violet.svg",
 ]
 
 function isActive(link: { to: string }) {
