@@ -24,6 +24,10 @@
 	--spacing-edge: clamp(1rem, 3vw, 2.5rem);
 	--spacing-section: clamp(3rem, 8vw, 7rem);
 
+	--shadow-frame:
+		0 1px 1px rgb(0 0 0 / 0.03), 0 2px 4px rgb(0 0 0 / 0.04),
+		0 8px 16px -4px rgb(0 0 0 / 0.08);
+
 	/* Échelle typographique fluide — interpolée entre 400px et 1536px de viewport */
 	--text-xs: clamp(0.75rem, 0.728rem + 0.088vw, 0.8125rem);
 	--text-xs--line-height: 1.5;

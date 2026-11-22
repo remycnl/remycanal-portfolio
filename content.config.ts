@@ -2,6 +2,10 @@ import { defineCollection, defineContentConfig, z } from "@nuxt/content"
 
 const monthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/)
 
+const hexColorSchema = z
+	.string()
+	.regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, "Expected a hexadecimal color")
+
 const workTags = [
 	"Identité",
 	"Branding",
@@ -15,12 +19,57 @@ const workTags = [
 
 const periodSchema = z.object({
 	start: monthSchema,
+	/** Absent ou null = en cours : affiché « Now », durée calculée jusqu'au mois courant. */
 	end: monthSchema.nullable().default(null),
 })
 
-const linkSchema = z.object({
-	label: z.string().min(1),
-	url: z.string().url(),
+/** Fields shared by the pages that open in the overlay. */
+const tagsSchema = z.array(z.string().min(1)).default([])
+const coverSchema = {
+	image: z.string().min(1),
+	/** Cover video (muted loop): `image` then serves as its poster. */
+	video: z.string().optional(),
+}
+
+/** Fichier de /public, écrit depuis la racine : `/resume/toolbox/figma.svg`. */
+const assetSchema = z
+	.string()
+	.startsWith("/", "Expected a path from /public, e.g. /resume/toolbox/figma.svg")
+
+/** Cadre d'un logo : le fichier, et une couleur de fond facultative dont la bordure se déduit. */
+const logoSchema = {
+	logo: assetSchema,
+	background: hexColorSchema.optional(),
+}
+
+/**
+ * Contenu du panneau déroulé par le « + ». Le bouton n'apparaît que si au moins l'un des trois
+ * est renseigné.
+ */
+const detailsSchema = {
+	description: z.string().min(1).optional(),
+	images: z
+		.array(
+			z.object({
+				src: assetSchema,
+				alt: z.string().min(1),
+			})
+		)
+		.default([]),
+	documents: z
+		.array(
+			z.object({
+				label: z.string().min(1),
+				/** Fichier de /public (PDF, doc…) ou URL complète. */
+				href: z.union([assetSchema, z.string().url()]),
+			})
+		)
+		.default([]),
+}
+
+const toolSchema = z.object({
+	name: z.string().min(1),
+	...logoSchema,
 })
 
 export default defineContentConfig({
@@ -31,8 +80,9 @@ export default defineContentConfig({
 			schema: z.object({
 				author: z.string().min(1),
 				date: z.date(),
-				image: z.string().min(1),
 				description: z.string().min(1),
+				tags: tagsSchema,
+				...coverSchema,
 			}),
 			indexes: [{ columns: ["date"] }],
 		}),
@@ -41,10 +91,12 @@ export default defineContentConfig({
 			source: "playground/*.md",
 			schema: z.object({
 				date: z.date(),
-				image: z.string().min(1),
+				description: z.string().optional(),
+				tags: tagsSchema,
+				/** Dimensions of the cover: it keeps its ratio. */
 				width: z.number().int().positive().optional(),
 				height: z.number().int().positive().optional(),
-				description: z.string().optional(),
+				...coverSchema,
 			}),
 			indexes: [{ columns: ["date"] }],
 		}),
@@ -53,12 +105,15 @@ export default defineContentConfig({
 			source: "work/*.md",
 			schema: z.object({
 				date: monthSchema,
-				tone: z
-					.string()
-					.regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, "Expected a hexadecimal color"),
+				tone: hexColorSchema,
 				featured: z.boolean().default(false),
 				tags: z.array(z.enum(workTags)).default([]),
-				image: z.string().min(1).optional(),
+				...coverSchema,
+				image: coverSchema.image.optional(),
+				client: z.string().optional(),
+				role: z.string().optional(),
+				/** Lien vers le projet en ligne. */
+				url: z.string().url().optional(),
 			}),
 			indexes: [{ columns: ["date"] }, { columns: ["featured"] }],
 		}),
@@ -68,75 +123,55 @@ export default defineContentConfig({
 			schema: z.object({
 				name: z.string().min(1),
 				headline: z.string().min(1),
-				location: z.string().min(1),
-				availability: z.string().optional(),
-				avatar: z.string().optional(),
-				cv: z.string().optional(),
+				linkedin: z.string().url(),
+				/** Cible du bouton « Contact me » (mailto:). */
 				email: z.string().email(),
-				links: z.array(linkSchema).default([]),
-				about: z.array(z.string().min(1)).default([]),
-				experience: z
-					.array(
-						z.object({
-							role: z.string().min(1),
-							company: z.string().min(1),
-							type: z.string().optional(),
-							location: z.string().optional(),
-							period: periodSchema,
-							description: z.string().optional(),
-							highlights: z.array(z.string().min(1)).default([]),
-							skills: z.array(z.string().min(1)).default([]),
-						})
-					)
-					.default([]),
 				education: z
 					.array(
 						z.object({
-							school: z.string().min(1),
+							...logoSchema,
+							/** Intitulé, affiché en gras. */
 							degree: z.string().min(1),
-							field: z.string().optional(),
+							/** Suite de l'intitulé, séparée par « | ». */
+							program: z.string().optional(),
+							school: z.string().min(1),
+							country: z.string().min(1),
+							...detailsSchema,
+						})
+					)
+					.default([]),
+				experience: z
+					.array(
+						z.object({
+							...logoSchema,
+							role: z.string().min(1),
+							/** Séparé du rôle par « @ ». */
+							company: z.string().min(1),
 							period: periodSchema,
-							description: z.string().optional(),
+							/** Séparé de la durée par « | ». */
+							location: z.string().optional(),
+							...detailsSchema,
 						})
 					)
 					.default([]),
-				projects: z
-					.array(
-						z.object({
-							name: z.string().min(1),
-							url: z.string().url().optional(),
-							period: periodSchema.optional(),
-							description: z.string().min(1),
-							skills: z.array(z.string().min(1)).default([]),
-						})
-					)
-					.default([]),
-				skills: z
-					.array(
-						z.object({
-							label: z.string().min(1),
-							items: z.array(z.string().min(1)).min(1),
-						})
-					)
-					.default([]),
-				honors: z
+				toolbox: z.object({
+					/** Toujours visibles. */
+					featured: z.array(toolSchema).default([]),
+					/** Révélés par « Voir toutes mes compétences… ». */
+					more: z.array(toolSchema).default([]),
+				}),
+				awards: z
 					.array(
 						z.object({
 							title: z.string().min(1),
+							/** Séparé du titre par « @ ». */
 							issuer: z.string().min(1),
 							date: monthSchema,
-							description: z.string().optional(),
+							...detailsSchema,
 						})
 					)
 					.default([]),
-				languages: z
-					.array(
-						z.object({
-							name: z.string().min(1),
-							level: z.string().min(1),
-						})
-					)
-					.default([]),
+				languages: z.string().min(1),
 			}),
 		}),
 	},

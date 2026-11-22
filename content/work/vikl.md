@@ -2,9 +2,9 @@
 title: "Vikl — Marketing Website"
 description: "Site marketing de Vikl."
 date: "2021-05"
-tone: "#fcd34d"
+tone: "#FFAD2C"
 featured: true
-image: "https://www.remycanal.me/img/mockup-vikl.webp"
+image: "/works/vikl/og_image.png"
 ---
 
 Étude de cas à venir.

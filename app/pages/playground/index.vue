@@ -20,8 +20,8 @@ const { data: items, error } = await useAsyncData<PlaygroundCard[]>(
 	"playground",
 	async () => {
 		const entries = await queryCollection("playground")
-			.select("path", "title", "date", "image", "width", "height")
 			.order("date", "DESC")
+			.select("path", "title", "date", "image", "width", "height")
 			.all()
 
 		return entries.map((entry) => ({

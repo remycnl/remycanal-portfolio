@@ -2,13 +2,13 @@
 	<div class="section-p-xy min-h-svh bg-black text-white">
 		<div class="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(18rem,24rem)_1fr] lg:gap-16">
 			<aside
-				class="flex mt-15 lg:mt-0 flex-col gap-6 transition duration-700 ease-out motion-reduce:transition-none lg:sticky lg:top-30 lg:self-start starting:translate-y-4 starting:opacity-0"
+				class="mt-15 flex flex-col gap-6 transition duration-700 ease-out motion-reduce:transition-none lg:sticky lg:top-30 lg:mt-0 lg:self-start starting:translate-y-4 starting:opacity-0"
 			>
 				<h1
 					v-text-reveal="{
 						immediate: true,
 					}"
-					class="text-base/relaxed font-semibold text-pretty"
+					class="text-base/relaxed text-pretty"
 				>
 					Here's what "crafting" looks like in practice.
 				</h1>
@@ -89,7 +89,7 @@
 								<div class="flex size-full items-center justify-center p-4">
 									<div
 										:class="[
-											'work-card-image aspect-16/10 overflow-hidden rounded-lg bg-black p-2',
+											'work-card-image relative box-border aspect-16/10 max-h-full overflow-hidden rounded-lg bg-black',
 											imageWidth[item.size],
 										]"
 									>
@@ -99,7 +99,7 @@
 											alt=""
 											:loading="index < EAGER_COUNT ? 'eager' : 'lazy'"
 											decoding="async"
-											class="size-full rounded-xs object-cover"
+											class="absolute inset-2 block size-[calc(100%-1rem)] rounded-xs object-cover"
 										/>
 									</div>
 								</div>
@@ -182,8 +182,8 @@ const { data: projects } = await useAsyncData(
 	"work-projects",
 	() =>
 		queryCollection("work")
-			.select("path", "title", "date", "tone", "image", "tags")
 			.order("date", "DESC")
+			.select("path", "title", "date", "tone", "image", "tags")
 			.all(),
 	{ default: () => [] }
 )

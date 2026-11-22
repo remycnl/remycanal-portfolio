@@ -1,6 +1,13 @@
+import { loadRouteLocation } from "vue-router"
+import type { RouteLocationNormalized, RouteLocationResolved } from "vue-router"
 import type { OverlayState } from "@/types/overlay"
 
-export default defineNuxtPlugin(() => {
+/** `router.resolve()` gives a `null` name where a normalized route has none. */
+function normalize(route: RouteLocationResolved): RouteLocationNormalized {
+	return { ...route, name: route.name ?? undefined }
+}
+
+export default defineNuxtPlugin(async () => {
 	const router = useRouter()
 
 	const overlay = shallowReactive<OverlayState>({
@@ -13,6 +20,26 @@ export default defineNuxtPlugin(() => {
 		armed: false,
 		scrollY: 0,
 	})
+
+	// Loaded directly on an overlay (shared link, reload): its parent page is displayed behind it,
+	// as if the overlay had been opened from there. Close and Escape then behave the same way.
+	// It is decided here, from the URL, before anything renders: on the server as on the client,
+	// so the very first paint is already the sheet over its parent.
+	const entry = router.resolve(useRoute().fullPath)
+	const parent = entry.meta.overlay?.parent
+	if (parent) {
+		try {
+			// The parent page was never navigated to, so its component is still lazy: it has to be
+			// loaded to be displayed behind the sheet, and to be the same component when the sheet
+			// closes (otherwise the page is replaced, and the page transition plays).
+			overlay.background = await loadRouteLocation(normalize(router.resolve(parent)))
+			overlay.sheet = normalize(entry)
+			overlay.locked = true
+		} catch {
+			// The parent cannot be loaded: the page is displayed on its own.
+			overlay.background = null
+		}
+	}
 
 	router.beforeEach((to, from) => {
 		if (!overlay.armed && !overlay.background) {
@@ -29,13 +56,20 @@ export default defineNuxtPlugin(() => {
 			Boolean(from.meta.overlay) && overlay.background?.fullPath === to.fullPath
 		const leavingOverlay = Boolean(overlay.background) && !to.meta.overlay && !closing
 
-		if (opening || closing) {
+		// From one entry to another inside the sheet (the "next" block): the page behind stays
+		// where it is, and nothing transitions.
+		const switching =
+			Boolean(overlay.background) &&
+			Boolean(from.meta.overlay) &&
+			Boolean(to.meta.overlay)
+
+		if (opening || closing || switching) {
 			to.meta.scrollToTop = false
 			to.meta.pageTransition = false
-			overlay.navigation = opening ? "opening" : "closing"
-		} else if (leavingOverlay) {
-			overlay.navigation = "page"
 		}
+
+		if (opening || closing) overlay.navigation = opening ? "opening" : "closing"
+		else if (leavingOverlay) overlay.navigation = "page"
 	})
 
 	router.afterEach((to, from, failure) => {
@@ -63,6 +97,13 @@ export default defineNuxtPlugin(() => {
 		const behind = overlay.background
 		if (!behind) return
 		overlay.background = null
+
+		// The first navigation did not end on the overlay it started with (redirect, error).
+		if (from.matched.length === 0) {
+			overlay.sheet = null
+			overlay.locked = false
+			return
+		}
 
 		if (to.fullPath === behind.fullPath) {
 			overlay.slides = true

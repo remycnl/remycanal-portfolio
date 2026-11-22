@@ -5,6 +5,11 @@ export interface RollHoverOptions {
 	duration?: number
 	/** Easing GSAP (ex. `"back.out(1.2)"`, `"power3.out"`) ou CSS (`"cubic-bezier(...)"`, `"ease-out"`). Par défaut `"back.out(1.2)"`. */
 	ease?: string
+	/**
+	 * Sélecteur de l'ancêtre dont le survol déclenche le roll (ex. `"a"`, `"button"`).
+	 * Par défaut, c'est l'élément lui-même : utile quand le label n'est qu'une partie d'un bouton.
+	 */
+	host?: string
 }
 
 const DEFAULT_OVERSHOOT = 1.2
@@ -140,9 +145,11 @@ export default defineNuxtPlugin({
 				const text = el.textContent?.trim() ?? ""
 				if (!text) return
 
+				const options = binding.value ?? {}
+
 				// Variables CSS posées une seule fois. En reduced-motion, la feuille de style impose 0s.
 				if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-					const { duration, ease } = binding.value ?? {}
+					const { duration, ease } = options
 					if (duration !== undefined)
 						el.style.setProperty("--roll-duration", `${duration}s`)
 					if (ease) {
@@ -157,6 +164,9 @@ export default defineNuxtPlugin({
 				const row = wrapContent(el)
 				syncText(el, row)
 				el.dataset.rollHover = ""
+
+				// Le survol qui déclenche le roll : l'élément, ou l'ancêtre demandé (un bouton entier).
+				const host = (options.host ? el.closest<HTMLElement>(options.host) : null) ?? el
 
 				let hovering = false
 				let finished = false
@@ -193,14 +203,14 @@ export default defineNuxtPlugin({
 					deactivate()
 				}
 
-				el.addEventListener("mouseenter", onEnter)
-				el.addEventListener("mouseleave", onLeave)
+				host.addEventListener("mouseenter", onEnter)
+				host.addEventListener("mouseleave", onLeave)
 				el.addEventListener("animationend", onEnd)
 				el.addEventListener("animationcancel", onCancel)
 
 				cleanups.set(el, () => {
-					el.removeEventListener("mouseenter", onEnter)
-					el.removeEventListener("mouseleave", onLeave)
+					host.removeEventListener("mouseenter", onEnter)
+					host.removeEventListener("mouseleave", onLeave)
 					el.removeEventListener("animationend", onEnd)
 					el.removeEventListener("animationcancel", onCancel)
 				})

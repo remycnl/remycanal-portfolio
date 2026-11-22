@@ -20,8 +20,8 @@ const { data: projects } = await useAsyncData(
 	() =>
 		queryCollection("work")
 			.where("featured", "=", true)
-			.select("path", "title", "date", "image")
 			.order("date", "DESC")
+			.select("path", "title", "date", "image")
 			.all(),
 	{ default: (): FeaturedProject[] => [] }
 )

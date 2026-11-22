@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-// Opened from a card, it covers the page it comes from (see `overlay` on the cards). Reached
-// directly (shared link, reload, search engine), it is a regular page.
+import type { MetaItem } from "@/components/layout/OverlayMeta.vue"
+
 definePageMeta({
 	footerTheme: "lime",
 	overlay: { theme: "black", parent: "/playground" },
@@ -12,64 +12,42 @@ const { data: item, error } = await useAsyncData(`playground-${route.path}`, () 
 	queryCollection("playground").path(route.path).first()
 )
 
-if (error.value || !item.value) {
-	throw createError({
-		statusCode: 404,
-		statusMessage: "Not found",
-		fatal: true,
-	})
-}
+if (error.value || !item.value) throw notFound()
+
+const next = await useNextEntry("playground")
 
 const date = new Date(item.value.date)
-const isoDate = date.toISOString()
-const formattedDate = new Intl.DateTimeFormat("en", {
-	day: "numeric",
-	month: "long",
-	year: "numeric",
-}).format(date)
 
-useSeoMeta({
-	title: item.value.title,
-	description: item.value.description,
-	ogTitle: item.value.title,
-	ogDescription: item.value.description,
-	ogImage: item.value.image,
-	ogImageWidth: 1200,
-	ogImageHeight: 630,
-})
+const meta: MetaItem[] = [
+	{
+		label: "Date",
+		// UTC: the same text on the server and in the browser, whatever the time zone.
+		value: new Intl.DateTimeFormat("en", {
+			day: "numeric",
+			month: "long",
+			year: "numeric",
+			timeZone: "UTC",
+		}).format(date),
+		datetime: date.toISOString(),
+	},
+]
+
+useEntrySeo(item.value)
 </script>
 
 <template>
-	<article v-if="item" class="relative flow-root min-h-svh w-full bg-black text-white">
-		<div class="section-p-xy mt-edge w-full">
-			<time
-				:datetime="isoDate"
-				class="font-vg5000 text-xs tracking-widest text-white/40 uppercase"
-			>
-				{{ formattedDate }}
-			</time>
-			<h1 id="overlay-title" class="font-lineal-bold mt-4 text-4xl lg:text-5xl">
-				{{ item.title }}
-			</h1>
-
-			<NuxtImg
-				:src="item.image"
-				:alt="item.title"
-				:width="item.width"
-				:height="item.height"
-				format="webp"
-				:quality="80"
-				sizes="100vw lg:48rem"
-				class="mt-10 h-auto w-full rounded-xs"
-			/>
-
-			<ContentRenderer
-				v-if="item.body?.value?.length"
-				:value="item"
-				class="overlay-content mt-10 text-white/80"
-			/>
-		</div>
-
-		<LayoutOverlayClose />
-	</article>
+	<LayoutOverlayArticle
+		v-if="item"
+		:title="item.title"
+		:meta="meta"
+		:tags="item.tags"
+		:image="item.image"
+		:image-width="item.width"
+		:image-height="item.height"
+		:video="item.video"
+		:doc="item"
+		:next="next"
+		background="var(--color-black)"
+		tone="white"
+	/>
 </template>

@@ -1,30 +1,7 @@
 <script setup lang="ts">
 import { horizontalLoop } from "@/utils/gsap/horizontalLoop"
 
-type Tier = "mobile" | "tablet" | "desktop"
-type ResponsiveValue<T> = T | Partial<Record<Tier, T>>
-
-const TIER_ORDER: Tier[] = ["mobile", "tablet", "desktop"]
-const TABLET_MIN = 768
 const DESKTOP_MIN = 1024
-
-function isResponsiveObject<T>(value: unknown): value is Partial<Record<Tier, T>> {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		!Array.isArray(value) &&
-		Object.keys(value).some((k) => TIER_ORDER.includes(k as Tier))
-	)
-}
-
-function resolveResponsive<T>(value: ResponsiveValue<T>, tier: Tier): T {
-	if (!isResponsiveObject<T>(value)) return value as T
-	for (let i = TIER_ORDER.indexOf(tier); i >= 0; i--) {
-		const key = TIER_ORDER.at(i)
-		if (key && value[key] !== undefined) return value[key] as T
-	}
-	return undefined as unknown as T
-}
 
 function nextFrames(count = 2) {
 	return new Promise<void>((resolve) => {
@@ -40,43 +17,22 @@ function withTimeout<T>(promise: Promise<T>, ms: number) {
 interface Props {
 	text: string
 	itemClass?: string
-	repeatCount?: ResponsiveValue<number>
-	baseSpeed?: ResponsiveValue<number>
-	maxScrollBoost?: ResponsiveValue<number>
-	enableScrollBoost?: ResponsiveValue<boolean>
-	enableDirection?: ResponsiveValue<boolean>
-	defaultDirection?: ResponsiveValue<"right" | "left">
+	/** Nombre de répétitions du texte. `desktop` (≥ 1024px) retombe sur `mobile` s'il est omis. */
+	repeatCount?: number | { mobile: number; desktop?: number }
+	baseSpeed?: number
+	defaultDirection?: "right" | "left"
 	bg?: string
-	rotation?: ResponsiveValue<number>
-	height?: ResponsiveValue<string>
-	rotatedWidth?: ResponsiveValue<string>
-	outline?: ResponsiveValue<boolean>
-	outlineColor?: ResponsiveValue<string>
-	outlineWidth?: ResponsiveValue<string>
-	outlineOffset?: ResponsiveValue<string>
-	respectReducedMotion?: boolean
 	/** Trims each item to cap height and baseline so the spacing above and below the text is exactly `fitPadding`. */
 	fit?: boolean
 	/** Vertical padding applied on each side of a `fit` item. Use `em` so it scales with the font size. */
-	fitPadding?: ResponsiveValue<string>
+	fitPadding?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	itemClass: "uppercase font-lineal-heavy text-[6vw] pr-[3vw]",
 	repeatCount: 12,
 	baseSpeed: 0.4,
-	maxScrollBoost: 14,
-	enableScrollBoost: true,
-	enableDirection: true,
 	defaultDirection: "left",
-	rotation: 0,
-	height: "auto",
-	rotatedWidth: "150%",
-	outline: false,
-	outlineColor: "currentColor",
-	outlineWidth: "10px",
-	outlineOffset: "10px",
-	respectReducedMotion: true,
 	fit: false,
 	fitPadding: "0.2em",
 })
@@ -84,96 +40,52 @@ const props = withDefaults(defineProps<Props>(), {
 const wrapperEl = shallowRef<HTMLElement | null>(null)
 const railEl = shallowRef<HTMLElement | null>(null)
 
-const tier = shallowRef<Tier>("mobile")
 const fontsReady = useFontsReady()
 const nuxtApp = useNuxtApp()
 
+// Seul le breakpoint desktop compte : mobile et tablette partagent la même valeur.
+const isDesktop = shallowRef(false)
+let desktopMql: MediaQueryList | undefined
+
+function syncDesktop() {
+	isDesktop.value = !!desktopMql?.matches
+}
+
 onMounted(() => {
-	const tabletMql = window.matchMedia(`(min-width: ${TABLET_MIN}px)`)
-	const desktopMql = window.matchMedia(`(min-width: ${DESKTOP_MIN}px)`)
-
-	function updateTier() {
-		tier.value = desktopMql.matches ? "desktop" : tabletMql.matches ? "tablet" : "mobile"
-	}
-
-	updateTier()
-	tabletMql.addEventListener("change", updateTier)
-	desktopMql.addEventListener("change", updateTier)
-
-	onScopeDispose(() => {
-		tabletMql.removeEventListener("change", updateTier)
-		desktopMql.removeEventListener("change", updateTier)
-	})
+	desktopMql = window.matchMedia(`(min-width: ${DESKTOP_MIN}px)`)
+	syncDesktop()
+	desktopMql.addEventListener("change", syncDesktop)
 })
 
-const rRepeatCount = computed(() => resolveResponsive(props.repeatCount, tier.value))
-const rBaseSpeed = computed(() => resolveResponsive(props.baseSpeed, tier.value))
-const rMaxScrollBoost = computed(() =>
-	resolveResponsive(props.maxScrollBoost, tier.value)
-)
-const rEnableScrollBoost = computed(() =>
-	resolveResponsive(props.enableScrollBoost, tier.value)
-)
-const rEnableDirection = computed(() =>
-	resolveResponsive(props.enableDirection, tier.value)
-)
-const rDefaultDirection = computed(() =>
-	resolveResponsive(props.defaultDirection, tier.value)
-)
-const rRotation = computed(() => resolveResponsive(props.rotation, tier.value))
-const rHeight = computed(() => resolveResponsive(props.height, tier.value))
-const rRotatedWidth = computed(() => resolveResponsive(props.rotatedWidth, tier.value))
-const rOutline = computed(() => resolveResponsive(props.outline, tier.value))
-const rOutlineColor = computed(() => resolveResponsive(props.outlineColor, tier.value))
-const rOutlineWidth = computed(() => resolveResponsive(props.outlineWidth, tier.value))
-const rOutlineOffset = computed(() => resolveResponsive(props.outlineOffset, tier.value))
-const rFitPadding = computed(() => resolveResponsive(props.fitPadding, tier.value))
+onBeforeUnmount(() => desktopMql?.removeEventListener("change", syncDesktop))
 
-const outerStyle = computed(() => ({
-	height: rHeight.value,
-	background: rRotation.value ? undefined : props.bg,
-}))
+const repeat = computed(() => {
+	const value = props.repeatCount
+	if (typeof value === "number") return value
+	return isDesktop.value ? (value.desktop ?? value.mobile) : value.mobile
+})
 
-const innerStyle = computed(() => ({
-	...(rRotation.value
-		? {
-				width: rRotatedWidth.value,
-				height: rHeight.value,
-				background: props.bg,
-				transform: `translate(-50%, -50%) rotate(${rRotation.value}deg)`,
-			}
-		: { height: "100%" }),
-	contain: "style paint",
-}))
+// `right` fait défiler dans le sens inverse de la timeline GSAP.
+const baseDir = computed(() => (props.defaultDirection === "right" ? -1 : 1))
 
 const itemStyle = computed(() => ({
 	marginInlineEnd: "3vw",
-	paddingBlock: props.fit ? rFitPadding.value : undefined,
+	paddingBlock: props.fit ? props.fitPadding : undefined,
 }))
-
-function outlineLineStyle(side: "top" | "bottom") {
-	return {
-		[side]: rOutlineOffset.value,
-		height: rOutlineWidth.value,
-		background: rOutlineColor.value,
-	}
-}
 
 const { useGsapContext } = useGsap()
 
 useGsapContext(({ gsap, ScrollTrigger }) => {
 	if (!railEl.value) return
 
-	const reducedMotion =
-		props.respectReducedMotion &&
-		typeof window !== "undefined" &&
-		window.matchMedia("(prefers-reduced-motion: reduce)").matches
+	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
 	const FRICTION = 0.92
 	const SMOOTHING = 0.18
 	const VELOCITY_DIVISOR = 160
 	const MAX_RAW_VELOCITY = 6000
 	const MAX_DELTA_RATIO = 3
+	const MAX_SCROLL_BOOST = 14
 	const FONTS_TIMEOUT = 1500
 
 	let loop: ReturnType<typeof horizontalLoop> | null = null
@@ -194,13 +106,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		const ratio = Math.min(gsap.ticker.deltaRatio(), MAX_DELTA_RATIO)
 		rawVelocity *= Math.pow(FRICTION, ratio)
 
-		const boost = rEnableScrollBoost.value
-			? gsap.utils.clamp(0, rMaxScrollBoost.value, rawVelocity / VELOCITY_DIVISOR)
-			: 0
-
-		const baseDir = rDefaultDirection.value === "right" ? -1 : 1
-		const effectiveDirection = rEnableDirection.value ? baseDir * scrollDir : baseDir
-		const target = effectiveDirection * (1 + boost)
+		const boost = gsap.utils.clamp(0, MAX_SCROLL_BOOST, rawVelocity / VELOCITY_DIVISOR)
+		const target = baseDir.value * scrollDir * (1 + boost)
 
 		const lerpFactor = 1 - Math.pow(1 - SMOOTHING, ratio)
 		currentTimeScale += (target - currentTimeScale) * lerpFactor
@@ -291,15 +198,14 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 		gsap.set(items, { clearProps: "transform" })
 
-		const baseDir = rDefaultDirection.value === "right" ? -1 : 1
-		currentTimeScale = baseDir
+		currentTimeScale = baseDir.value
 		rawVelocity = 0
 
 		const gap = parseFloat(getComputedStyle(lastItem).marginRight) || 0
 
 		loop = horizontalLoop(gsap, items, {
 			repeat: -1,
-			speed: rBaseSpeed.value,
+			speed: props.baseSpeed,
 			paddingRight: gap,
 		})
 		loop.pause()
@@ -316,7 +222,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 		document.addEventListener("visibilitychange", handleVisibilityChange)
 
 		if (reducedMotion) {
-			loop.timeScale(baseDir)
+			loop.timeScale(baseDir.value)
 			loop.play()
 			return
 		}
@@ -344,7 +250,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 			end: "bottom top",
 			invalidateOnRefresh: true,
 			onUpdate(self) {
-				if (rEnableDirection.value) scrollDir = self.direction || scrollDir
+				scrollDir = self.direction || scrollDir
 				const v = Math.min(Math.abs(self.getVelocity()), MAX_RAW_VELOCITY)
 				rawVelocity = Math.max(rawVelocity, v)
 			},
@@ -353,11 +259,9 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 
 	init()
 
-	const stopPropsWatch = watch(
-		[rRepeatCount, rBaseSpeed, rEnableScrollBoost, rEnableDirection, rDefaultDirection],
-		rebuild,
-		{ flush: "post" }
-	)
+	const stopPropsWatch = watch([repeat, () => props.baseSpeed, baseDir], rebuild, {
+		flush: "post",
+	})
 
 	const stopViewportResize = useViewportResize(rebuild, 200)
 
@@ -375,24 +279,17 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 </script>
 
 <template>
-	<div class="relative w-full" :style="outerStyle">
+	<div class="relative w-full" :style="{ background: bg }">
 		<div
 			ref="wrapperEl"
-			class="flex items-center overflow-hidden"
-			:class="rRotation ? 'absolute top-1/2 left-1/2' : 'relative w-full'"
+			class="relative flex w-full items-center overflow-hidden"
 			role="marquee"
 			:aria-label="text"
-			:style="innerStyle"
+			style="contain: style paint"
 		>
-			<span
-				v-if="rOutline"
-				aria-hidden="true"
-				class="pointer-events-none absolute inset-x-0"
-				:style="outlineLineStyle('top')"
-			/>
 			<div ref="railEl" class="flex w-max">
 				<span
-					v-for="n in rRepeatCount"
+					v-for="n in repeat"
 					:key="n"
 					class="block size-fit whitespace-nowrap will-change-transform select-none"
 					:class="[fit ? 'text-fit' : '', itemClass]"
@@ -401,12 +298,6 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 					{{ text }}
 				</span>
 			</div>
-			<span
-				v-if="rOutline"
-				aria-hidden="true"
-				class="pointer-events-none absolute inset-x-0"
-				:style="outlineLineStyle('bottom')"
-			/>
 		</div>
 	</div>
 </template>

@@ -24,7 +24,7 @@ const BADGE_LABELS = {
 	idle: "Copy email",
 	press: "Copy email",
 	drag: "Copy email",
-	view: "Say hello",
+	view: "Say bonjour",
 }
 
 const BADGE_OFFSET = { x: 84, y: 64 }
@@ -64,10 +64,10 @@ const links: FooterLink[] = [
 ]
 
 const legalLinks: FooterLink[] = [
-	{ to: "/", label: "Credits" },
-	{ to: "/", label: "Legal notice" },
-	{ to: "/", label: "Privacy policy" },
-	{ to: "/", label: "Terms" },
+	{ to: "/credits", label: "Credits" },
+	{ to: "/legal-notice", label: "Legal notice" },
+	{ to: "/privacy-policy", label: "Privacy policy" },
+	{ to: "/terms", label: "Terms" },
 ]
 
 const socialLinks: SocialLink[] = [
@@ -122,7 +122,7 @@ async function copyEmail() {
 			<div
 				class="pointer-events-none absolute inset-0 z-0 mt-10 flex items-center justify-center overflow-hidden 2xl:mt-0"
 			>
-				<HomeLogoScene
+				<AppLogoScene
 					v-if="triggerEl"
 					:key="theme"
 					class="pointer-events-auto"
@@ -173,7 +173,7 @@ async function copyEmail() {
 
 						<span
 							aria-hidden="true"
-							class="font-vg5000 pointer-events-none absolute inset-x-0 inset-y-[0.3em] flex items-center justify-center rounded-md transition-[translate] duration-500 ease-[cubic-bezier(.34,1.3,.64,1)] motion-reduce:transition-none"
+							class="font-vg5000 pointer-events-none absolute inset-x-0 inset-y-[0.3em] flex items-center justify-center rounded-xs transition-[translate] duration-500 ease-[cubic-bezier(.34,1.3,.64,1)] motion-reduce:transition-none lg:rounded-md"
 							:class="[
 								themeClasses.tag,
 								copied ? 'translate-y-0' : 'translate-y-[calc(100%+0.5em)]',

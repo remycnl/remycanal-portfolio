@@ -1,99 +1,117 @@
 name: Rémy Canal
-headline: Creative Developer
-location: Lyon, France
-availability: Open to work
-cv: /resume.pdf
-email: hello@example.com
-links:
-  - label: LinkedIn
-    url: https://www.linkedin.com/in/ton-profil
-  - label: GitHub
-    url: https://github.com/ton-profil
-  - label: Awwwards
-    url: https://www.awwwards.com/ton-profil
-
-about:
-  - Développeur full-stack et designer UI/UX, je conçois des interfaces éditoriales où l'animation et la typographie servent le propos, avec une exigence de performance et de zéro artefact visuel.
-  - Je travaille principalement avec Nuxt, Vue, GSAP, Three.js et Tailwind côté front, et NestJS / PostgreSQL côté back.
-
-experience:
-  - role: Full-Stack Developer & UI/UX Designer
-    company: Indépendant
-    type: Freelance
-    location: France · À distance
-    period:
-      start: "2022-09"
-      end: null
-    description: Conception et développement de sites et d'applications sur mesure, du design à la mise en production.
-    highlights:
-      - Direction artistique et intégration d'interfaces animées de niveau Awwwards
-      - Architecture front Nuxt 4 et back NestJS, déploiements Docker
-    skills:
-      - Nuxt
-      - Vue 3
-      - GSAP
-      - Three.js
-      - NestJS
-      - PostgreSQL
+headline: "Creative Developer & Designer"
+linkedin: https://www.linkedin.com/in/remy-canal
 
 education:
-  - school: Nom de l'école
-    degree: Diplôme
-    field: Spécialité
-    period:
-      start: "2019-09"
-      end: "2022-06"
+  - logo: /resume/education/epitech.svg
+    background: "#013AFB"
+    degree: Master's Degree in Computer Science
+    program: Grande École Program
+    school: EPITECH - European Institute of Technology
+    country: France
+    description: "Five-year Grande École programme in computer science, built around hands-on, project-based learning."
 
-projects:
-  - name: Portfolio
-    url: https://example.com
-    period:
-      start: "2026-01"
-      end: null
-    description: Site personnel avec hero 3D, animations GSAP orchestrées, scroll fluide Lenis et système de design propriétaire.
-    skills:
-      - Nuxt 4
-      - Tailwind CSS v4
-      - GSAP
-      - Three.js
-  - name: Animaux d'à côté
-    description: Plateforme sociale pour propriétaires d'animaux avec événements, carte, annonces d'animaux perdus et carnet de santé.
-    skills:
-      - Next.js
-      - NestJS
-      - PostgreSQL
-      - Framer Motion
+  - logo: /resume/education/tud.svg
+    background: "#004D6C"
+    degree: Continuing Professional Development in IT Management
+    school: Technological University Dublin
+    country: Ireland
+    description: "A one-year professional development program in IT management, focusing on the strategic and operational aspects of technology in business."
 
-skills:
-  - label: Front-end
-    items:
-      - Nuxt
-      - Vue 3
-      - TypeScript
-      - Tailwind CSS
-      - GSAP
-      - Three.js
-  - label: Back-end
-    items:
-      - NestJS
-      - PostgreSQL
-      - Docker
-      - Node.js
-  - label: Design
-    items:
-      - UI/UX
-      - Design system
-      - Motion design
-      - Figma
+experience:
+  - logo: /resume/experience/schiever.svg
+    background: "#ED7425"
+    role: Product Owner Intern
+    company: Schiever
+    period: { start: "2026-09" }
+    location: Avallon, France
+    description: "Research and prototyping of B2C e-commerce solutions: requirements analysis, user journey design, and development of functional prototypes."
 
-honors:
-  - title: Young Jury Member
+  - logo: /resume/experience/freelance.svg
+    background: "#F4F4F4"
+    role: "Web Developer & Designer"
+    company: Freelance
+    period: { start: "2025-10" }
+    description: "Design and development of user-centered web experiences, from the initial concept through to production, with a strong focus on user experience and client satisfaction."
+
+  - logo: /resume/experience/awwwards.svg
+    background: "#FF5824"
+    role: Young Jury
+    company: Awwwards
+    period: { start: "2025-01" }
+    description: "Awwwards, the leading platform in web design, gave me the opportunity to join its jury panel to evaluate outstanding websites worldwide, further strengthening my design skills and critical perspective."
+    images:
+      - { alt: "Certificate 2025", src: /works/vikl/og_image.png }
+    documents:
+      - {
+          label: Certificate 2025,
+          href: /resume/experience/documents/certificate-remy_canal-young_jury_2025.pdf,
+        }
+      - {
+          label: Certificate 2026,
+          href: /resume/experience/documents/certificate-remy_canal-young_jury_2026.pdf,
+        }
+
+  - logo: /resume/experience/musee-des-confluences.svg
+    background: "#201E1E"
+    role: Full Stack Engineer Intern
+    company: Musée des Confluences
+    period: { start: "2025-04", end: "2025-08" }
+    location: Lyon, France
+    description: "Independently developed an internal web application dedicated to exhibition and activity planning for museum teams. The success of the project led to the continuation of the collaboration as a freelance developer."
+
+  - logo: /resume/experience/letmotiv.svg
+    background: "#F4F4F4"
+    role: Full Stack Developer Intern
+    company: Letmotiv
+    period: { start: "2024-09", end: "2025-02" }
+    location: Lyon, France
+    description: "Developed a page builder and website templates while maintaining both front-end and back-end web projects. Improved application performance through a green coding approach focused on reducing digital footprint and increasing efficiency."
+
+  - logo: /resume/experience/sharewood.svg
+    background: "#333333"
+    role: Front End Developer Intern
+    company: Sharewood
+    period: { start: "2023-07", end: "2023-12" }
+    location: Lyon, France
+    description: "Developed 8 websites for companies such as L'appart Fitness, Office des Lumières, Éco-fidélité, KLF, Clos & Hameau, ObjectLine, and Europe Qualité. My work also led Sharewood to entrust me with the redesign of their own website."
+
+toolbox:
+  featured:
+    - { name: Figma, logo: /resume/toolbox/figma.svg }
+    - { name: Nuxt, logo: /resume/toolbox/nuxt.svg }
+    - { name: Vue, logo: /resume/toolbox/vue.svg }
+    - { name: Next.js, logo: /resume/toolbox/nextjs.svg }
+    - { name: React, logo: /resume/toolbox/react.svg }
+    - { name: TypeScript, logo: /resume/toolbox/typescript.svg }
+    - { name: Tailwind CSS, logo: /resume/toolbox/tailwind.svg }
+    - { name: GSAP, logo: /resume/toolbox/gsap.svg }
+    - { name: Node.js, logo: /resume/toolbox/nodejs.svg }
+    - { name: Prisma, logo: /resume/toolbox/prisma.svg }
+    - { name: PostgreSQL, logo: /resume/toolbox/postgresql.svg }
+    - { name: Sanity, logo: /resume/toolbox/sanity.svg }
+    - { name: Git, logo: /resume/toolbox/git.svg }
+    - { name: GitHub, logo: /resume/toolbox/github.svg }
+    - { name: Docker, logo: /resume/toolbox/docker.svg }
+    - { name: Vercel, logo: /resume/toolbox/vercel.svg }
+  more:
+    - { name: JavaScript, logo: /resume/toolbox/javascript.svg }
+    - { name: HTML5, logo: /resume/toolbox/html5.svg }
+    - { name: CSS3, logo: /resume/toolbox/css3.svg }
+    - { name: Sass, logo: /resume/toolbox/sass.svg }
+    - { name: PHP, logo: /resume/toolbox/php.svg }
+    - { name: Laravel, logo: /resume/toolbox/laravel.svg }
+    - { name: MySQL, logo: /resume/toolbox/mysql.svg }
+    - { name: Strapi, logo: /resume/toolbox/strapi.svg }
+    - { name: C, logo: /resume/toolbox/c.svg }
+    - { name: Python, logo: /resume/toolbox/python.svg }
+    - { name: Webflow, logo: /resume/toolbox/webflow.svg }
+    - { name: Affinity, logo: /resume/toolbox/affinity.svg }
+    - { name: Blender, logo: /resume/toolbox/blender.svg }
+
+awards:
+  - title: Site Of The Day (SOTD)
     issuer: Awwwards
-    date: "2025-01"
-    description: Évaluation de sites web sur le design, l'usabilité, la créativité et le contenu.
+    date: "2026-03"
 
-languages:
-  - name: Français
-    level: Langue maternelle
-  - name: Anglais
-    level: Professionnel
+languages: Native French speaker, fluent in English

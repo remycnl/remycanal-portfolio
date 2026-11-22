@@ -59,7 +59,7 @@ useStackSection(heroRef, {
 		<div
 			class="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"
 		>
-			<HomeLogoScene class="pointer-events-auto" />
+			<AppLogoScene class="pointer-events-auto" />
 		</div>
 	</section>
 </template>

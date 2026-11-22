@@ -35,6 +35,10 @@ useSeoMeta({
 
 useAwayTitle()
 
+// Owns `data-theme` on <html> and the delayed theme switch: everything themed (background, loop,
+// footer, scrollbar) only reads `useSiteTheme()`. Call it once, here.
+useSiteThemeSync()
+
 // On the client, the lock is applied in the same tick as the state change: not a single frame
 // between the click that opens an overlay and the moment the page stops moving. The `useHead`
 // above renders the same value a moment later, and covers the server.

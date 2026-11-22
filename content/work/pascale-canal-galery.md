@@ -2,9 +2,9 @@
 title: "Pascale Canal — Galery"
 description: "Galerie en ligne des œuvres de Pascale Canal."
 date: "2022-09"
-tone: "#a78bfa"
+tone: "#FFF083"
 featured: true
-image: "https://www.remycanal.me/img/mockup-pascale-canal-galery.webp"
+image: "/works/pascalecanal/og_image.png"
 ---
 
 Étude de cas à venir.

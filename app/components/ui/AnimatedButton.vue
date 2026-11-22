@@ -1,5 +1,17 @@
 <script setup lang="ts">
-type Variant = "black" | "black-light" | "white" | "gray-light" | "lime" | "violet"
+type Variant =
+	"black" | "black-light" | "white" | "gray-light" | "lime" | "violet" | "white-violet"
+
+/**
+ * Thèmes prêts à l'emploi : définissent la pastille ET la bulle d'un coup.
+ * `pill` / `bubble` explicitement passés gardent la priorité.
+ */
+type Theme = "white-violet"
+
+const THEMES: Record<Theme, { pill: Variant; bubble: Variant }> = {
+	// Tout blanc, texte et icône violets : pour les fonds violets.
+	"white-violet": { pill: "white-violet", bubble: "white-violet" },
+}
 
 const BG: Record<Variant, string> = {
 	black: "bg-black",
@@ -8,6 +20,7 @@ const BG: Record<Variant, string> = {
 	"gray-light": "bg-gray-light",
 	lime: "bg-lime",
 	violet: "bg-violet",
+	"white-violet": "bg-white",
 }
 
 const TEXT_ON: Record<Variant, string> = {
@@ -17,26 +30,33 @@ const TEXT_ON: Record<Variant, string> = {
 	"gray-light": "text-black",
 	lime: "text-black",
 	violet: "text-white",
+	"white-violet": "text-violet",
 }
 
-const ICON_BASE_ON_BUBBLE: Record<Variant, "white" | "black"> = {
+type IconColor = "white" | "black" | "violet"
+
+const ICON_BASE_ON_BUBBLE: Record<Variant, IconColor> = {
 	black: "white",
 	"black-light": "white",
 	white: "black",
 	"gray-light": "black",
 	lime: "black",
 	violet: "white",
+	"white-violet": "violet",
 }
 
-const ICON_TEXT_CLASS: Record<"white" | "black" | "black-light" | "gray-light", string> =
-	{
-		white: "text-white",
-		black: "text-black",
-		"black-light": "text-black-light",
-		"gray-light": "text-gray-light",
-	}
+const ICON_TEXT_CLASS: Record<IconColor | "black-light" | "gray-light", string> = {
+	white: "text-white",
+	black: "text-black",
+	violet: "text-violet",
+	"black-light": "text-black-light",
+	"gray-light": "text-gray-light",
+}
 
-function resolveIconVariant(pill: Variant, bubble: Variant) {
+function resolveIconVariant(
+	pill: Variant,
+	bubble: Variant
+): IconColor | "black-light" | "gray-light" {
 	const base = ICON_BASE_ON_BUBBLE[bubble]
 	if (pill === "black-light" && base === "black") return "black-light"
 	if (pill === "gray-light" && base === "white") return "gray-light"
@@ -106,9 +126,11 @@ interface Props {
 	label?: string
 	/** Controls pill height, padding, icon size and text size. */
 	size?: Size
-	/** Background variant of the pill. */
+	/** Preset applying both the pill and the bubble colors. `pill` / `bubble` still win when set. */
+	theme?: Theme
+	/** Background variant of the pill. Defaults to the theme's, otherwise `black`. */
 	pill?: Variant
-	/** Background variant of the icon bubble. */
+	/** Background variant of the icon bubble. Defaults to the theme's, otherwise `lime`. */
 	bubble?: Variant
 	/** Renders a `NuxtLink` when true, otherwise a `button`. */
 	nuxtlink?: boolean
@@ -119,20 +141,28 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	label: "Button",
 	size: "normal",
-	pill: "black",
-	bubble: "lime",
+	theme: undefined,
+	pill: undefined,
+	bubble: undefined,
 	nuxtlink: true,
 	to: undefined,
 })
 
 const size = computed(() => SIZES[props.size])
 
-const pillClasses = computed(() => [TEXT_ON[props.pill], size.value.pillClass])
-const pillBgClasses = computed(() => [BG[props.pill]])
+const pillVariant = computed<Variant>(
+	() => props.pill ?? (props.theme ? THEMES[props.theme].pill : "black")
+)
+const bubbleVariant = computed<Variant>(
+	() => props.bubble ?? (props.theme ? THEMES[props.theme].bubble : "lime")
+)
+
+const pillClasses = computed(() => [TEXT_ON[pillVariant.value], size.value.pillClass])
+const pillBgClasses = computed(() => [BG[pillVariant.value]])
 const bubbleOuterClasses = computed(() => [size.value.bubbleClass])
-const bubbleVisualClasses = computed(() => [BG[props.bubble]])
+const bubbleVisualClasses = computed(() => [BG[bubbleVariant.value]])
 const iconClasses = computed(() => [
-	ICON_TEXT_CLASS[resolveIconVariant(props.pill, props.bubble)],
+	ICON_TEXT_CLASS[resolveIconVariant(pillVariant.value, bubbleVariant.value)],
 	size.value.iconClass,
 ])
 

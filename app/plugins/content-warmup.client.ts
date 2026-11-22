@@ -20,10 +20,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 			}
 
 			if ("requestIdleCallback" in window) {
-				window.requestIdleCallback(() => {
-					if (lenis?.isScrolling) schedule(callback)
-					else callback()
-				}, { timeout: 3000 })
+				window.requestIdleCallback(
+					() => {
+						if (lenis?.isScrolling) schedule(callback)
+						else callback()
+					},
+					{ timeout: 3000 }
+				)
 			} else {
 				setTimeout(callback, 400)
 			}

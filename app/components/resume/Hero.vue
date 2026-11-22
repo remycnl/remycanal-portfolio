@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { CHARACTER_SLOT_CLASSES } from "@/constants/character"
+
 interface PatternHandle {
 	pop: () => Promise<void>
 	depop: () => Promise<void>
@@ -33,6 +35,9 @@ const titleId = useId()
 const patternRef = useTemplateRef<PatternHandle>("pattern")
 const patternHostRef = useTemplateRef<HTMLElement>("patternHost")
 const patternScale = ref(1)
+
+// true once the 3D character is visible: the sticker is its poster.
+const { heroReady } = useResumeCharacterState()
 
 let unsubscribeResize: (() => void) | null = null
 let lastWidth = 0
@@ -90,7 +95,8 @@ onBeforeUnmount(() => {
 <template>
 	<section
 		:aria-labelledby="titleId"
-		class="bg-lime-dark relative isolate flex min-h-svh flex-col text-black lg:grid lg:grid-cols-[2fr_1fr]"
+		data-character-section="hero"
+		class="bg-lime-dark sticky top-(--hero-pin-top,0px) isolate z-0 flex min-h-svh flex-col text-black lg:grid lg:grid-cols-[2fr_1fr]"
 	>
 		<!-- Left column: lime block (pattern) over lime-dark block (copy) -->
 		<div class="flex flex-1 flex-col">
@@ -122,19 +128,36 @@ onBeforeUnmount(() => {
 					{{ SUBTITLE }}
 				</p>
 
-				<!-- Desktop: anchored bottom-right of the column, the bubble spills onto the black panel -->
+				<!--
+					Desktop: anchored bottom-right of the column, the bubble spills onto the black panel.
+					Below lg: right-aligned, in the smaller button format.
+				-->
 				<div
-					class="lg:p-edge mt-6 lg:absolute lg:right-0 lg:bottom-0 lg:z-20 lg:mt-0 lg:translate-x-[11vw]"
+					class="lg:p-edge mt-6 flex justify-end lg:absolute lg:right-0 lg:bottom-0 lg:z-20 lg:mt-0 lg:translate-x-[11vw]"
 				>
-					<UiAnimatedButton
-						:to="CV_URL"
-						label="Download CV"
-						size="large"
-						pill="white"
-						bubble="lime"
-						external
-						download
-					/>
+					<div class="lg:hidden">
+						<UiAnimatedButton
+							:to="CV_URL"
+							label="Download CV"
+							size="small"
+							pill="white"
+							bubble="lime"
+							external
+							download
+						/>
+					</div>
+
+					<div class="hidden lg:block">
+						<UiAnimatedButton
+							:to="CV_URL"
+							label="Download CV"
+							size="large"
+							pill="white"
+							bubble="lime"
+							external
+							download
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -146,34 +169,67 @@ onBeforeUnmount(() => {
 			<div class="bg-grid-black relative flex flex-col bg-black text-white lg:flex-73">
 				<UiGridBeams theme="black" />
 				<div
-					class="p-edge relative grid flex-1 grid-cols-[1fr_auto] items-end gap-6 lg:flex lg:flex-col lg:items-stretch lg:justify-between"
+					class="p-edge relative flex flex-1 flex-col items-stretch justify-between gap-6"
 				>
-					<p
-						v-text-reveal="{ immediate: true }"
-						class="font-lineal-regular leading-fit flex max-w-[30ch] items-start gap-3 self-center text-[clamp(0.875rem,2vw,1.125rem)] lg:self-start lg:text-[clamp(0.875rem,1.15vw,1.35rem)]"
+					<!--
+						Status: top-left of the black block at every size. `text-fit` trims the text to its
+						cap height, so the pinging dot (pushed down by half of the cap height minus its own
+						size) sits exactly on the middle of the first line.
+					-->
+					<div
+						class="font-lineal-regular flex max-w-[20ch] items-start gap-3 self-start text-[clamp(0.875rem,2vw,1.125rem)] lg:max-w-[30ch] lg:text-[clamp(0.875rem,1.15vw,1.35rem)]"
 					>
 						<span
 							aria-hidden="true"
-							class="relative mt-[0.35em] inline-flex size-[0.65em] shrink-0"
+							class="relative mt-[calc((1cap-0.65em)/2)] inline-flex size-[0.65em] shrink-0"
 						>
 							<span
 								class="bg-lime absolute inset-0 rounded-full opacity-60 motion-safe:animate-ping"
 							/>
 							<span class="bg-lime relative size-full rounded-full" />
 						</span>
-						{{ STATUS }}
-					</p>
 
-					<img
-						:src="MASCOT"
-						alt=""
-						width="160"
-						height="340"
-						decoding="async"
-						class="block h-auto w-[18vw] max-w-28 min-w-20 object-contain lg:w-[10.5vw] lg:max-w-none lg:self-end"
-					/>
+						<p v-text-reveal="{ immediate: true }" class="text-fit">{{ STATUS }}</p>
+					</div>
+
+					<!--
+						Slot of the 3D character: same box as the former <img>. The sticker stays as the
+						poster until the WebGL scene is visible, and as the fallback if WebGL is
+						unavailable. The whole section is sticky (curtain): the CV slides over it and
+						covers the character. The character is <ResumeHeroCharacter>, rendered client-side
+						only (not a .client.vue file, see its header) and which only needs this slot as its
+						parent.
+					-->
+					<div
+						data-character-slot="hero"
+						class="relative block self-end"
+						:class="CHARACTER_SLOT_CLASSES"
+					>
+						<img
+							:src="MASCOT"
+							alt=""
+							width="160"
+							height="340"
+							decoding="async"
+							class="block size-full object-contain transition-opacity duration-300 motion-reduce:transition-none"
+							:class="heroReady ? 'opacity-0' : 'opacity-100'"
+						/>
+
+						<ClientOnly>
+							<ResumeHeroCharacter />
+						</ClientOnly>
+					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 </template>
+
+<style>
+/* Hero entièrement recouvert par le CV : on fige ses animations CSS (ping, etc.). */
+[data-character-section="hero"][data-covered] *,
+[data-character-section="hero"][data-covered] *::before,
+[data-character-section="hero"][data-covered] *::after {
+	animation-play-state: paused !important;
+}
+</style>

@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite"
+import { fileURLToPath } from "node:url"
 
 export default defineNuxtConfig({
 	compatibilityDate: "2025-07-15",
@@ -40,6 +41,16 @@ export default defineNuxtConfig({
 		},
 	},
 
+	nitro: {
+		publicAssets: [
+			{
+				baseURL: "/models",
+				dir: fileURLToPath(new URL("./public/models", import.meta.url)),
+				maxAge: 60 * 60 * 24 * 365,
+			},
+		],
+	},
+
 	vite: {
 		plugins: [tailwindcss()],
 		optimizeDeps: {
@@ -50,6 +61,7 @@ export default defineNuxtConfig({
 				"gsap/ScrollTrigger",
 				"gsap/SplitText",
 				"lenis",
+				"qrcode",
 				"three",
 				"three/examples/jsm/environments/RoomEnvironment.js",
 				"three/examples/jsm/libs/meshopt_decoder.module.js",
@@ -63,5 +75,11 @@ export default defineNuxtConfig({
 		contactTo: "", // rempli par NUXT_CONTACT_TO
 	},
 
-	modules: ["@nuxtjs/seo", "@nuxt/image", "@nuxt/content"],
+	modules: [
+		"@nuxtjs/seo",
+		"@nuxt/image",
+		"@nuxt/content",
+		"@vercel/analytics",
+		"@vercel/speed-insights",
+	],
 })

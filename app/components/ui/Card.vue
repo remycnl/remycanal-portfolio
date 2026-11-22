@@ -26,9 +26,9 @@ interface Props {
 	theme?: CardTheme
 	/** Shows only the title and the date, with smaller texts. Has no hover or press effect. */
 	compact?: boolean
-	/** Scroll-triggered reveal. Disabled by default in `compact` mode, enabled otherwise. Force with `:reveal="true"` or `:reveal="false"`. */
+	/** Scroll-triggered reveal of the texts and the image. Disabled by default in `compact` mode, enabled otherwise. Force with `:reveal="true"` or `:reveal="false"`. */
 	reveal?: boolean
-	/** Unveils the image in the same timeline as the texts. Only applies while the reveal is enabled. */
+	/** Plays the image reveal (`v-image-reveal`). Only applies while the reveal is enabled. */
 	revealImage?: boolean
 }
 
@@ -64,12 +64,6 @@ const tones: Record<CardTheme, { title: string; text: string; date: string }> = 
 const frames: Record<CardTheme, string> = {
 	white: "bg-gray-light",
 	black: "bg-black-light",
-}
-
-/** Color of the curtain that covers the image until it is revealed: the color of the card frame. */
-const curtains: Record<CardTheme, string> = {
-	white: "[--card-curtain:var(--color-gray-light)]",
-	black: "[--card-curtain:var(--color-black-light)]",
 }
 
 const teaserOverlays: Record<CardTint, string> = {
@@ -115,6 +109,9 @@ const imageFrameStyle = computed(() => ({
 const revealEnabled = computed(() => reveal ?? !compact)
 const hasImageReveal = computed(() => revealEnabled.value && revealImage)
 
+/** Options of `v-image-reveal`. The effect keeps the defaults of the directive. */
+const imageRevealOptions = computed(() => ({ disabled: !hasImageReveal.value }))
+
 /** The image is unveiled first, then the texts follow. */
 const IMAGE_LEAD = 0.2
 
@@ -130,9 +127,9 @@ function openAlone(card: HTMLElement) {
 }
 
 /**
- * The card plays when its row is open (or when it is visible, outside a grid), its own image is
- * loaded and decoded, and it is its turn in the row (cards of a row start one after the other).
- * Curtain, image settle and texts all hang on the same `playing` phase, so they start together.
+ * The texts play when their row is open (or when the card is visible, outside a grid), their own
+ * image is loaded and decoded, and it is their turn in the row (cards of a row start one after
+ * the other). The image has its own reveal, handled by `v-image-reveal`.
  */
 function sequence(el: HTMLElement) {
 	const card = el.closest<HTMLElement>("[data-card]")
@@ -179,7 +176,6 @@ function onClick(event: MouseEvent) {
 		data-card
 		:class="[
 			'block self-start',
-			hasImageReveal ? ['card-reveal', curtains[resolvedTheme]] : '',
 			compact
 				? 'rounded-lg bg-black p-1.5 transition-transform duration-200 ease-out active:scale-[0.98] lg:p-2'
 				: 'card-link @container [-webkit-tap-highlight-color:transparent]',
@@ -202,40 +198,49 @@ function onClick(event: MouseEvent) {
 				]"
 			/>
 
-			<div
-				:class="[
-					'relative isolate size-full overflow-hidden rounded-xs',
-					compact ? '' : 'card-media',
-				]"
-			>
-				<NuxtImg
-					:src="image"
-					:alt="title"
-					:width="IMAGE_BASE_WIDTH"
-					:height="imageHeight"
-					format="webp"
-					:quality="70"
-					sizes="100vw md:60vw lg:50vw"
-					loading="lazy"
-					decoding="async"
-					:class="['size-full object-cover', teaser ? 'scale-110 blur-xl grayscale' : '']"
-				/>
-
-				<div
-					v-if="teaser"
-					:class="[
-						'absolute inset-0 z-10 flex items-center justify-center text-center mix-blend-normal',
-						teaserOverlays[resolvedTint],
-					]"
-				>
-					<span
+			<!-- Reveal window: it grows and rotates, and its first child receives the inverse transformation. -->
+			<div v-image-reveal="imageRevealOptions" class="size-full rounded-xs">
+				<!-- Neutral layer: it alone carries the inverse transformation, so the reveal never competes with the hover and press effects of `card-media`. -->
+				<div class="size-full">
+					<div
 						:class="[
-							'font-lineal-heavy rounded-xs px-4 py-2 text-sm tracking-[0.2em] uppercase sm:px-5 sm:py-2.5 sm:text-base',
-							teaserBadges[resolvedTheme],
+							'relative isolate size-full overflow-hidden rounded-xs',
+							compact ? '' : 'card-media',
 						]"
 					>
-						COMING SOON
-					</span>
+						<NuxtImg
+							:src="image"
+							:alt="title"
+							:width="IMAGE_BASE_WIDTH"
+							:height="imageHeight"
+							format="webp"
+							:quality="70"
+							sizes="100vw md:60vw lg:50vw"
+							loading="lazy"
+							decoding="async"
+							:class="[
+								'size-full object-cover',
+								teaser ? 'scale-110 blur-xl grayscale' : '',
+							]"
+						/>
+
+						<div
+							v-if="teaser"
+							:class="[
+								'absolute inset-0 z-10 flex items-center justify-center text-center mix-blend-normal',
+								teaserOverlays[resolvedTint],
+							]"
+						>
+							<span
+								:class="[
+									'font-lineal-heavy rounded-xs px-4 py-2 text-sm tracking-[0.2em] uppercase sm:px-5 sm:py-2.5 sm:text-base',
+									teaserBadges[resolvedTheme],
+								]"
+							>
+								COMING SOON
+							</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -308,53 +313,3 @@ function onClick(event: MouseEvent) {
 		</div>
 	</NuxtLink>
 </template>
-
-<style scoped>
-/*
- * Image reveal, driven by the phase of the text reveal of the same card. A curtain in the color of
- * the card frame covers the image while the text is idle, then lifts while the image settles.
- * Only `transform` is animated, so it stays on the compositor. Without motion, the image is
- * always shown.
- */
-@media (prefers-reduced-motion: no-preference) {
-	.card-reveal .card-image::after {
-		content: "";
-		position: absolute;
-		inset: 0;
-		z-index: 1;
-		pointer-events: none;
-		background: var(--card-curtain);
-		transform-origin: 50% 100%;
-	}
-
-	.card-reveal:has([data-text-reveal="playing"], [data-text-reveal="done"])
-		.card-image::after {
-		transform: scaleY(0);
-		animation: card-curtain-lift 900ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-	}
-
-	.card-reveal:has([data-text-reveal="playing"], [data-text-reveal="done"])
-		.card-image
-		img {
-		animation: card-image-settle 1300ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-	}
-}
-
-@keyframes card-curtain-lift {
-	from {
-		transform: scaleY(1);
-	}
-	to {
-		transform: scaleY(0);
-	}
-}
-
-@keyframes card-image-settle {
-	from {
-		transform: scale(1.18);
-	}
-	to {
-		transform: scale(1);
-	}
-}
-</style>

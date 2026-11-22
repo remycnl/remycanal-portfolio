@@ -5,8 +5,8 @@ const { data: posts, error } = await useAsyncData(
 	"blog-posts",
 	() =>
 		queryCollection("blog")
-			.select("path", "title", "date", "image")
 			.order("date", "DESC")
+			.select("path", "title", "date", "image")
 			.all(),
 	{ default: () => [] }
 )
@@ -53,7 +53,6 @@ useSeoMeta({
 				press-label="Open article"
 				error-title="The articles could not be loaded."
 				empty-text="No articles published yet."
-				reveal-first-row
 			>
 				<UiCard
 					:title="item.title"

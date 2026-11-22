@@ -1,0 +1,38 @@
+/*
+ * Apparition des images (directive v-image-reveal).
+ *
+ * Le mouvement (échelle, rotation, fondu, pose du contenu) est joué par la directive avec l'API
+ * Web Animations, sur `transform` et `opacity` uniquement. Ce fichier ne gère que l'état de repos :
+ *
+ *   - avant la révélation, la fenêtre est invisible ;
+ *   - la directive lance l'animation (qui part de cet état invisible) et pose `data-revealed` ;
+ *   - une fois l'animation terminée, il ne reste aucune transformation : rendu net, et aucun
+ *     calque conservé en mémoire pour rien.
+ *
+ * Les réglages passent par les options de la directive (scale, rotate, duration, delay, alternate).
+ */
+
+[data-image-reveal] {
+	/* La fenêtre rogne son contenu, qui grandit à l'envers pendant le mouvement. */
+	overflow: hidden;
+	overflow: clip;
+	opacity: 0;
+}
+
+[data-image-reveal][data-revealed] {
+	opacity: 1;
+}
+
+/* Sans mouvement, les images sont visibles dès le départ. */
+@media (prefers-reduced-motion: reduce) {
+	[data-image-reveal] {
+		opacity: 1;
+	}
+}
+
+/* Sans JavaScript, les images restent visibles. */
+@media (scripting: none) {
+	[data-image-reveal] {
+		opacity: 1;
+	}
+}

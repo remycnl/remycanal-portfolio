@@ -6,8 +6,8 @@ const { data: posts } = await useAsyncData(
 	"blog-posts",
 	() =>
 		queryCollection("blog")
-			.select("path", "title", "description", "date", "image")
 			.order("date", "DESC")
+			.select("path", "title", "description", "date", "image")
 			.all(),
 	{ default: () => [] }
 )
