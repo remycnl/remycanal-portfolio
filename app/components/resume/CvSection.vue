@@ -22,7 +22,7 @@ const titleId = useId()
 				v-if="title"
 				:id="titleId"
 				v-text-reveal
-				class="font-lineal-black mb-6 w-fit text-3xl sm:text-4xl"
+				class="font-lineal-black uppercase mb-6 w-fit text-3xl sm:text-4xl"
 			>
 				{{ title }}
 			</h2>
