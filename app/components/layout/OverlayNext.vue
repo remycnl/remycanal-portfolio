@@ -42,8 +42,8 @@ const TRAVEL = {
 /** Retour haptique discret : des crans réguliers pendant le geste, un cran plus ferme à l'aimant. */
 const HAPTIC = {
 	detents: 12, // crans entre 0 et l'aimant (ils s'espacent vers la fin, avec la dureté de la jauge)
-	tick: 6, // ms de vibration par cran (Android)
-	commit: 16, // ms de vibration à l'aimant (Android)
+	tick: 10, // ms de vibration par cran (Android) : en dessous, beaucoup de moteurs ne réagissent pas
+	commit: 25, // ms de vibration à l'aimant (Android)
 	minGap: 30, // ms minimum entre deux crans
 	doubleGap: 50, // ms entre les deux tics de l'aimant (iOS ne module pas l'intensité)
 } as const
