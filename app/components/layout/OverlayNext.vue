@@ -1,22 +1,25 @@
 <script lang="ts">
 /**
- * Le ressenti du geste, réglé par un seul chiffre : `push`, les pixels de poussée qu'il faut
+ * Le ressenti du geste, réglé par un seul chiffre : `push`, l'effort de référence qu'il faut
  * pour aller au bout. Le reste en découle (voir DISTANCE).
+ *
+ * `push` ne dépend pas de l'écran : c'est TRAVEL qui convertit les pixels réellement parcourus
+ * (molette ou doigt) en effort, selon la hauteur de la fenêtre.
  *
  * Plus la jauge est pleine, plus chaque pixel avance peu : le coût d'un pixel est
  * proportionnel à 1 + hardness × p². La jauge affichée suit l'effort via un ressort amorti,
  * de plus en plus mou vers la fin, et retombe quand on lâche.
  */
 const FEEL = {
-	push: 1500, // px de poussée pour atteindre l'aimant (≈ 15 crans de molette)
+	push: 1500, // effort de référence pour atteindre l'aimant (≈ 15 crans de molette sur un écran moyen)
 	hardness: 6, // la fin coûte 7× plus d'effort par pixel que le début
-	maxStep: 100, // plafond par événement : un coup de molette ne saute pas l'effort
-	touchGain: 1.5, // un doigt parcourt moins de chemin qu'une molette
-	keyStep: 60, // px par événement clavier (↓, PageDown, End, Espace), répétition comprise
+	maxStep: 100, // plafond par événement, en px bruts : un coup de molette ne saute pas l'effort
+	keyStep: 60, // effort par événement clavier (↓, PageDown, End, Espace), répétition comprise
 	stiffness: 190, // raideur du ressort d'affichage
 	softening: 0.5, // le ressort s'assouplit de 50 % près de la fin
 	damping: 0.92, // ratio d'amortissement (1 = critique, pas de rebond)
 	idleDelay: 380, // ms sans geste avant que la jauge ne retombe
+	touchIdleDelay: 650, // ms : au tactile, on laisse le temps de reposer le doigt entre deux glissés
 	drainBase: 0.1, // retour par seconde, jauge presque vide
 	drainGain: 1.6, // + ce qui s'ajoute avec le carré de la tension
 	commit: 0.95, // au-delà, l'aimant prend et termine la course
@@ -26,6 +29,89 @@ const FEEL = {
 	leaveFade: 260, // ms de fondu du contenu avant de changer de page
 } as const
 
+/**
+ * Course pour aller au bout, selon l'entrée : une fraction de la hauteur d'écran, bornée.
+ * Molette / trackpad : px de défilement. Tactile : px parcourus par le doigt.
+ * Exemples tactile : petit téléphone ≈ 240 px, iPhone ≈ 290 px, tablette ≈ 400 px.
+ */
+const TRAVEL = {
+	wheel: { ratio: 1.6, min: 900, max: 1800 },
+	touch: { ratio: 0.42, min: 240, max: 400 },
+} as const
+
+/** Retour haptique discret : des crans réguliers pendant le geste, un cran plus ferme à l'aimant. */
+const HAPTIC = {
+	detents: 12, // crans entre 0 et l'aimant (ils s'espacent vers la fin, avec la dureté de la jauge)
+	tick: 6, // ms de vibration par cran (Android)
+	commit: 16, // ms de vibration à l'aimant (Android)
+	minGap: 30, // ms minimum entre deux crans
+	doubleGap: 50, // ms entre les deux tics de l'aimant (iOS ne module pas l'intensité)
+} as const
+
+type Haptics = { tick: () => void; commit: () => void }
+let haptics: Haptics | null | undefined
+
+/**
+ * Créé à la demande, une seule fois, et seulement sur écran tactile.
+ * Android : Vibration API, durées très courtes.
+ * iOS Safari n'a pas de vibrate : un interrupteur natif (`<input switch>`) caché, activé par son
+ * label, déclenche le retour haptique système (iOS 17.4+). Intensité fixe, légère.
+ */
+function getHaptics(): Haptics | null {
+	if (haptics !== undefined) return haptics
+	haptics = null
+	if (!matchMedia("(pointer: coarse)").matches) return haptics
+
+	let last = 0
+	const allowed = () => {
+		const now = performance.now()
+		if (now - last < HAPTIC.minGap) return false
+		last = now
+		return true
+	}
+
+	if (typeof navigator.vibrate === "function") {
+		haptics = {
+			tick() {
+				if (allowed()) navigator.vibrate(HAPTIC.tick)
+			},
+			commit() {
+				last = performance.now()
+				navigator.vibrate(HAPTIC.commit)
+			},
+		}
+		return haptics
+	}
+
+	const label = document.createElement("label")
+	label.setAttribute("aria-hidden", "true")
+	label.style.cssText =
+		"position:fixed;top:0;left:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none"
+	const input = document.createElement("input")
+	input.type = "checkbox"
+	input.setAttribute("switch", "")
+	input.tabIndex = -1
+	label.append(input)
+	document.body.append(label)
+
+	const fire = () => label.click()
+	haptics = {
+		tick() {
+			if (allowed()) fire()
+		},
+		commit() {
+			last = performance.now()
+			fire()
+			setTimeout(fire, HAPTIC.doubleGap)
+		},
+	}
+	return haptics
+}
+
+/** Numéro de cran d'une position de jauge : de 0 à `detents`, atteint à l'aimant. */
+const detentOf = (p: number) =>
+	Math.min(HAPTIC.detents, Math.floor((p / FEEL.commit) * HAPTIC.detents))
+
 /** Arrivée sur la page suivante : on la garantit en haut, quoi qu'il arrive. */
 const PIN = {
 	waitMax: 2000, // ms d'attente max que l'ancienne page disparaisse
@@ -33,7 +119,7 @@ const PIN = {
 	wheelGrace: 450, // ms avant qu'une molette compte comme un geste volontaire (inertie)
 } as const
 
-/** Distance de base, déduite pour que atteindre `commit` coûte exactement `push` pixels. */
+/** Distance de base, déduite pour que atteindre `commit` coûte exactement `push` d'effort. */
 const DISTANCE = FEEL.push / (FEEL.commit + (FEEL.hardness * FEEL.commit ** 3) / 3)
 
 /** Tolérance en px pour considérer le bas de page atteint. */
@@ -44,23 +130,31 @@ class Gauge {
 	goal = 0 // ce que le geste demande, de 0 à 1
 	shown = 0 // position du ressort, ce qu'on affiche
 	committed = false
+	held = false // doigt posé : la jauge ne retombe pas
 	private vel = 0
 	private lastInput = 0
+	private idle: number = FEEL.idleDelay
 	private onCommit: () => void
 
 	constructor(onCommit: () => void) {
 		this.onCommit = onCommit
 	}
 
-	push(amount: number, now: number) {
-		const step = Math.min(amount, FEEL.maxStep)
-		this.goal = Math.min(1, this.goal + step / (DISTANCE * (1 + FEEL.hardness * this.goal ** 2)))
+	push(amount: number, now: number, idle: number = FEEL.idleDelay) {
+		this.goal = Math.min(1, this.goal + amount / (DISTANCE * (1 + FEEL.hardness * this.goal ** 2)))
 		this.lastInput = now
+		this.idle = idle
 	}
 
 	/** Remonter relâche la jauge, sans résistance. */
 	pull(amount: number, now: number) {
 		this.goal = Math.max(0, this.goal - amount / DISTANCE)
+		this.lastInput = now
+	}
+
+	/** Le doigt se lève : le délai avant retombée repart de zéro. */
+	release(now: number) {
+		this.held = false
 		this.lastInput = now
 	}
 
@@ -80,7 +174,7 @@ class Gauge {
 
 		if (this.committed) {
 			this.goal = 1
-		} else if (this.goal > 0 && now - this.lastInput > FEEL.idleDelay) {
+		} else if (!this.held && this.goal > 0 && now - this.lastInput > this.idle) {
 			// Le rappel se tend avec la jauge : doux au début, vif près de la fin.
 			this.goal = Math.max(0, this.goal - (FEEL.drainBase + FEEL.drainGain * this.goal ** 2) * dt)
 		}
@@ -288,7 +382,6 @@ onMounted(() => {
 	let watchdog = 0
 
 	const gauge = new Gauge(() => {
-		navigator.vibrate?.(8)
 		// Garde-fou : si la fin de course n'aboutit pas (onglet figé, frame perdue), on part quand même.
 		watchdog = window.setTimeout(() => {
 			if (leaving) return
@@ -312,6 +405,23 @@ onMounted(() => {
 	measure()
 	const resizeObserver = new ResizeObserver(measure)
 	resizeObserver.observe(wrap)
+
+	/**
+	 * Gains pixels → effort, par type d'entrée. La course dépend de la hauteur d'écran, bornée.
+	 * Recalculés au changement de largeur seulement (useViewportResize ignore les changements de
+	 * hauteur seuls : la barre d'URL mobile qui apparaît ou disparaît ne déclenche rien).
+	 */
+	let wheelGain = 1
+	let touchGain = 1
+	const computeGains = () => {
+		const h = window.innerHeight
+		const travel = (kind: keyof typeof TRAVEL) =>
+			Math.min(TRAVEL[kind].max, Math.max(TRAVEL[kind].min, h * TRAVEL[kind].ratio))
+		wheelGain = FEEL.push / travel("wheel")
+		touchGain = FEEL.push / travel("touch")
+	}
+	computeGains()
+	const stopViewportResize = useViewportResize(computeGains)
 
 	/** Pixels restants avant le bas de page. La feuille défile dans l'overlay, la fenêtre sinon. */
 	function room() {
@@ -389,6 +499,7 @@ onMounted(() => {
 
 	fillGauge = () => {
 		if (leaving) return
+		if (!gauge.committed) getHaptics()?.commit()
 		gauge.commit()
 		run()
 	}
@@ -408,21 +519,37 @@ onMounted(() => {
 	 * `delta` positif : on descend. Le scroll natif consomme d'abord ce qu'il reste de page ;
 	 * seul le surplus alimente la jauge. L'élan du scroll se prolonge donc dans le geste,
 	 * sans seuil ni temps mort.
+	 *
+	 * `gain` convertit les pixels de l'entrée en effort (voir TRAVEL), `idle` fixe le délai avant
+	 * que la jauge ne retombe. Le plafond `maxStep` s'applique au delta brut.
 	 */
-	function nudge(delta: number, gain = 1) {
+	function nudge(delta: number, gain = 1, idle?: number) {
 		if (leaving || gauge.committed || delta === 0) return
 
 		if (delta < 0) {
 			if (gauge.goal <= 0) return
-			gauge.pull(-delta, performance.now())
+			gauge.pull(-delta * gain, performance.now())
 			run()
 			return
 		}
 
 		const overflow = delta - room()
 		if (overflow <= 0) return
-		gauge.push(overflow * gain, performance.now())
+		gauge.push(Math.min(overflow, FEEL.maxStep) * gain, performance.now(), idle)
 		run()
+	}
+
+	/**
+	 * Haptique du geste tactile : un cran à chaque seuil franchi, dans les deux sens, et un cran
+	 * plus ferme quand l'aimant prend. Seul le doigt en déclenche : la retombée de la jauge,
+	 * une fois le doigt levé, reste silencieuse.
+	 */
+	function feel(from: number, to: number) {
+		if (detentOf(from) === detentOf(to)) return
+		const h = getHaptics()
+		if (!h) return
+		if (from < FEEL.commit && to >= FEEL.commit) h.commit()
+		else h.tick()
 	}
 
 	// Entrées : écoutées seulement quand le panneau approche, toutes passives.
@@ -430,23 +557,29 @@ onMounted(() => {
 		if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return
 		const unit =
 			event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1
-		nudge(event.deltaY * unit)
+		nudge(event.deltaY * unit, wheelGain)
 	}
 
 	const onTouchStart = (event: TouchEvent) => {
 		touchY = event.touches[0]?.clientY ?? null
+		gauge.held = true
 	}
 
 	const onTouchMove = (event: TouchEvent) => {
 		const y = event.touches[0]?.clientY
 		if (y === undefined) return
 		// Si l'écoute démarre en plein geste, le premier point sert de repère.
-		if (touchY !== null) nudge(touchY - y, FEEL.touchGain)
+		if (touchY !== null) {
+			const before = gauge.goal
+			nudge(touchY - y, touchGain, FEEL.touchIdleDelay)
+			feel(before, gauge.goal)
+		}
 		touchY = y
 	}
 
 	const onTouchEnd = () => {
 		touchY = null
+		gauge.release(performance.now())
 	}
 
 	const onKeydown = (event: KeyboardEvent) => {
@@ -471,6 +604,7 @@ onMounted(() => {
 			listeners?.abort()
 			listeners = undefined
 			touchY = null
+			gauge.release(performance.now())
 			return
 		}
 		listeners = new AbortController()
@@ -498,6 +632,7 @@ onMounted(() => {
 		cancelAnimationFrame(frame)
 		clearTimeout(watchdog)
 		listen(false)
+		stopViewportResize()
 		resizeObserver.disconnect()
 		intersectionObserver.disconnect()
 		fillGauge = undefined
