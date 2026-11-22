@@ -40,8 +40,8 @@ experience:
     company: Awwwards
     period: { start: "2025-01" }
     description: "Awwwards, the leading platform in web design, gave me the opportunity to join its jury panel to evaluate outstanding websites worldwide, further strengthening my design skills and critical perspective."
-    images:
-      - { alt: "Certificate 2025", src: /works/vikl/og_image.png }
+    # images:
+    #   - { alt: "Certificate 2025", src: /works/vikl/og_image.png }
     documents:
       - {
           label: Certificate 2025,
@@ -109,9 +109,9 @@ toolbox:
     - { name: Affinity, logo: /resume/toolbox/affinity.svg }
     - { name: Blender, logo: /resume/toolbox/blender.svg }
 
-awards:
-  - title: Site Of The Day (SOTD)
-    issuer: Awwwards
-    date: "2026-03"
+# awards:
+#   - title: Site Of The Day (SOTD)
+#     issuer: Awwwards
+#     date: "2026-03"
 
 languages: Native French speaker, fluent in English
