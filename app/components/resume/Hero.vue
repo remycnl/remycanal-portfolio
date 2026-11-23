@@ -31,10 +31,57 @@ const STATUS = "Currently seeking a final-year internship."
 const SUBTITLE =
 	"A look back at the experiences that shaped me and the path I'm building."
 
+/**
+ * Cat cells. Each hero block is a zone of the cat (useSprite singleton, auto-initialised by
+ * useCatZone) and it wanders between them on its own, in all directions.
+ *
+ * - `host: hero`: the hero is sticky (curtain), so the cat lives *inside* it. It follows the
+ *   pin, the CV slides over it, and it pauses while the hero carries `data-covered`.
+ * - z-5: above the blocks, under the title (z-10) and the CTA, which stay readable and clickable.
+ * - The empty strip only exists from `lg` up (it is `hidden` below), hence its own group.
+ *   No `initial` there: the cat always starts on the lime pattern block.
+ */
+const CAT_Z_INDEX = 5
+const LG_BREAKPOINT = 1024
+const LIME_CELL = { textColorClass: "text-black" }
+const BLACK_CELL = { textColorClass: "text-white" }
+
+/**
+ * Lines specific to each block: the cat mixes them with its generic ones when it arrives, rests or
+ * is hovered there. Keep them ASCII (pixel font) and short.
+ */
+const PATTERN_LINES = ["So many stickers!", "I'm basically a sticker too."]
+const COPY_LINES = ["The journey so far...", "Psst. The CV button is right here."]
+const PANEL_LINES = ["He is looking for an internship.", "Hire him. I vouch for him."]
+const STRIP_LINES = ["Nothing to see here.", "Perfect nap spot."]
+
 const titleId = useId()
+const heroRef = useTemplateRef<HTMLElement>("hero")
+const copyRef = useTemplateRef<HTMLElement>("copy")
+const stripRef = useTemplateRef<HTMLElement>("strip")
+const panelRef = useTemplateRef<HTMLElement>("panel")
 const patternRef = useTemplateRef<PatternHandle>("pattern")
 const patternHostRef = useTemplateRef<HTMLElement>("patternHost")
 const patternScale = ref(1)
+
+useCatZone({
+	cells: {
+		host: heroRef,
+		initial: patternHostRef,
+		zIndex: CAT_Z_INDEX,
+		zones: [
+			{ zone: patternHostRef, ...LIME_CELL, phrases: PATTERN_LINES },
+			{ zone: copyRef, ...LIME_CELL, phrases: COPY_LINES },
+			{ zone: panelRef, ...BLACK_CELL, phrases: PANEL_LINES },
+		],
+	},
+	strip: {
+		minWidth: LG_BREAKPOINT,
+		host: heroRef,
+		zIndex: CAT_Z_INDEX,
+		zones: [{ zone: stripRef, ...LIME_CELL, phrases: STRIP_LINES }],
+	},
+})
 
 // true once the 3D character is visible: the sticker is its poster.
 const { heroReady } = useResumeCharacterState()
@@ -94,6 +141,7 @@ onBeforeUnmount(() => {
 
 <template>
 	<section
+		ref="hero"
 		:aria-labelledby="titleId"
 		data-character-section="hero"
 		class="bg-lime-dark sticky top-(--hero-pin-top,0px) isolate z-0 flex min-h-svh flex-col text-black lg:grid lg:grid-cols-[2fr_1fr]"
@@ -110,7 +158,7 @@ onBeforeUnmount(() => {
 				/>
 			</div>
 
-			<div class="p-edge relative">
+			<div ref="copy" class="p-edge relative">
 				<!-- -mt pulls the first line up so the lime / lime-dark edge runs through it -->
 				<h1
 					v-text-reveal="{ singlePhrase: true, immediate: true }"
@@ -123,7 +171,7 @@ onBeforeUnmount(() => {
 
 				<p
 					v-text-reveal="{ immediate: true }"
-					class="font-lineal-regular leading-fit mt-5 max-w-[36ch] text-[clamp(1rem,2.2vw,1.375rem)] text-balance lg:mt-[1.8vw] lg:text-[clamp(1rem,1.55vw,1.75rem)]"
+					class="font-lineal-regular leading-fit relative z-10 mt-5 max-w-[36ch] text-[clamp(1rem,2.2vw,1.375rem)] text-balance lg:mt-[1.8vw] lg:text-[clamp(1rem,1.55vw,1.75rem)]"
 				>
 					{{ SUBTITLE }}
 				</p>
@@ -131,9 +179,10 @@ onBeforeUnmount(() => {
 				<!--
 					Desktop: anchored bottom-right of the column, the bubble spills onto the black panel.
 					Below lg: right-aligned, in the smaller button format.
+					z-10 / lg:z-20: the CTA stays above the cat (z-5) and clickable.
 				-->
 				<div
-					class="lg:p-edge mt-6 flex justify-end lg:absolute lg:right-0 lg:bottom-0 lg:z-20 lg:mt-0 lg:translate-x-[11vw]"
+					class="lg:p-edge relative z-10 mt-6 flex justify-end lg:absolute lg:right-0 lg:bottom-0 lg:z-20 lg:mt-0 lg:translate-x-[11vw]"
 				>
 					<div class="lg:hidden">
 						<UiAnimatedButton
@@ -164,9 +213,12 @@ onBeforeUnmount(() => {
 
 		<!-- Right column: empty lime-dark strip (desktop) over black panel -->
 		<div class="flex flex-col">
-			<div aria-hidden="true" class="hidden lg:block lg:flex-27" />
+			<div ref="strip" aria-hidden="true" class="hidden lg:block lg:flex-27" />
 
-			<div class="bg-grid-black relative flex flex-col bg-black text-white lg:flex-73">
+			<div
+				ref="panel"
+				class="bg-grid-black relative flex flex-col bg-black text-white lg:flex-73"
+			>
 				<UiGridBeams theme="black" />
 				<div
 					class="p-edge relative flex flex-1 flex-col items-stretch justify-between gap-6"
@@ -226,7 +278,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style>
-/* Hero entièrement recouvert par le CV : on fige ses animations CSS (ping, etc.). */
+/* Hero fully covered by the CV: freeze its CSS animations (ping, etc.). */
 [data-character-section="hero"][data-covered] *,
 [data-character-section="hero"][data-covered] *::before,
 [data-character-section="hero"][data-covered] *::after {

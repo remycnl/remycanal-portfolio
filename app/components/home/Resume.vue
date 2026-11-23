@@ -326,11 +326,31 @@
 	</section>
 </template>
 
+<!--
+	Remplace uniquement le bloc <script lang="ts" setup> de la section « Previously on Rémy Canal ».
+	Le <template> ne change pas (tu peux juste supprimer l'attribut mort `ref="sectionRoot"` sur le <section>).
+-->
 <script lang="ts" setup>
+const LG_BREAKPOINT = 1024
 const CARD_CHILD_STAGGER = 0.3
 
 const cardReveal = { childStagger: CARD_CHILD_STAGGER }
 const cardRevealWhite = { ...cardReveal, theme: "white" }
+
+/** Couleur des bulles du chat selon le fond de la case sur laquelle il se trouve. */
+const ON_LIGHT = { textColorClass: "text-black" }
+const ON_DARK = { textColorClass: "text-white" }
+
+/**
+ * Lignes propres à chaque case : le chat les mêle à ses répliques génériques quand il y arrive,
+ * s'y repose ou y est survolé. ASCII uniquement (police pixel), courtes.
+ */
+const INTRO_LINES = ["Previously on this portfolio...", "Episode one. Popcorn ready?"]
+const CHAPTER01_LINES = ["Where it all started.", "Hello, world!"]
+const CHAPTER02_LINES = ["Learning to build.", "So. Many. Projects."]
+const DUBLIN_LINES = ["Dublin! Rain included.", "A slightly bigger world."]
+const FREELANCE_LINES = ["Freelance mode: on.", "Ideas in, pixels out."]
+const CTA_LINES = ["Go on, press the button!", "The full story is one click away."]
 
 const zoneIntro = useTemplateRef<HTMLElement>("zoneIntro")
 const zoneChapter01 = useTemplateRef<HTMLElement>("zoneChapter01")
@@ -345,19 +365,6 @@ const zoneEmpty3 = useTemplateRef<HTMLElement>("zoneEmpty3")
 const zoneEmpty4 = useTemplateRef<HTMLElement>("zoneEmpty4")
 const zoneEmpty5 = useTemplateRef<HTMLElement>("zoneEmpty5")
 
-const isDesktop = ref(false)
-
-const catDisplayHeight = computed(() => {
-	if (isDesktop.value) return 80
-	return Math.round(Math.min(70, Math.max(40, window.innerWidth * 0.12)))
-})
-
-let mediaQuery: MediaQueryList | null = null
-
-const updateMediaQuery = () => {
-	if (mediaQuery) isDesktop.value = mediaQuery.matches
-}
-
 const isTouchDevice = ref(false)
 const activeCards = reactive(new Set<string>())
 
@@ -368,57 +375,42 @@ function toggleCard(key: string) {
 }
 
 onMounted(() => {
-	mediaQuery = window.matchMedia("(min-width: 1024px)")
-	updateMediaQuery()
-	mediaQuery.addEventListener("change", updateMediaQuery)
-
 	isTouchDevice.value = window.matchMedia("(hover: none) and (pointer: coarse)").matches
 })
 
-onBeforeUnmount(() => {
-	mediaQuery?.removeEventListener("change", updateMediaQuery)
-})
-
-useSprite({
-	spriteSrc: "/sprites/cat-black-light.png",
-	totalFrames: 19,
-	displayHeight: catDisplayHeight,
-	speed: 250,
-	textColorClass: "text-black",
-	autoWander: true,
-	autoWanderMinDelay: 3000,
-	autoWanderMaxDelay: 6500,
-	autoWanderChance: 0.6,
-})
-
+/**
+ * Le chat est un singleton auto-initialisé par `useCatZone` (taille responsive, vitesse, balade :
+ * tout est dans les défauts de useSprite.ts). Cette section ne fait que déclarer ses cases.
+ * Les cases vides n'existent qu'à partir de `lg` (elles sont `hidden` en dessous), d'où les deux groupes.
+ */
 useCatZone({
 	desktop: {
-		minWidth: 1024,
+		minWidth: LG_BREAKPOINT,
 		initial: zoneEmpty1,
 		zones: [
-			{ zone: zoneIntro, textColorClass: "text-white" },
-			{ zone: zoneChapter01, textColorClass: "text-black" },
-			{ zone: zoneEmpty1, textColorClass: "text-black" },
-			{ zone: zoneEmpty2, textColorClass: "text-black" },
-			{ zone: zoneChapter02, textColorClass: "text-black" },
-			{ zone: zoneDublin, textColorClass: "text-black" },
-			{ zone: zoneFreelance, textColorClass: "text-black" },
-			{ zone: zoneEmpty5, textColorClass: "text-black" },
-			{ zone: zoneEmpty3, textColorClass: "text-black" },
-			{ zone: zoneEmpty4, textColorClass: "text-black" },
-			{ zone: zoneCta, textColorClass: "text-white" },
+			{ zone: zoneIntro, ...ON_DARK, phrases: INTRO_LINES },
+			{ zone: zoneChapter01, ...ON_LIGHT, phrases: CHAPTER01_LINES },
+			{ zone: zoneEmpty1, ...ON_LIGHT },
+			{ zone: zoneEmpty2, ...ON_LIGHT },
+			{ zone: zoneChapter02, ...ON_LIGHT, phrases: CHAPTER02_LINES },
+			{ zone: zoneDublin, ...ON_LIGHT, phrases: DUBLIN_LINES },
+			{ zone: zoneFreelance, ...ON_LIGHT, phrases: FREELANCE_LINES },
+			{ zone: zoneEmpty5, ...ON_LIGHT },
+			{ zone: zoneEmpty3, ...ON_LIGHT },
+			{ zone: zoneEmpty4, ...ON_LIGHT },
+			{ zone: zoneCta, ...ON_DARK, phrases: CTA_LINES },
 		],
 	},
 	mobile: {
-		maxWidth: 1023,
+		maxWidth: LG_BREAKPOINT - 1,
 		initial: zoneIntro,
 		zones: [
-			{ zone: zoneIntro, textColorClass: "text-white" },
-			{ zone: zoneChapter01, textColorClass: "text-black" },
-			{ zone: zoneChapter02, textColorClass: "text-black" },
-			{ zone: zoneDublin, textColorClass: "text-black" },
-			{ zone: zoneFreelance, textColorClass: "text-black" },
-			{ zone: zoneCta, textColorClass: "text-white" },
+			{ zone: zoneIntro, ...ON_DARK, phrases: INTRO_LINES },
+			{ zone: zoneChapter01, ...ON_LIGHT, phrases: CHAPTER01_LINES },
+			{ zone: zoneChapter02, ...ON_LIGHT, phrases: CHAPTER02_LINES },
+			{ zone: zoneDublin, ...ON_LIGHT, phrases: DUBLIN_LINES },
+			{ zone: zoneFreelance, ...ON_LIGHT, phrases: FREELANCE_LINES },
+			{ zone: zoneCta, ...ON_DARK, phrases: CTA_LINES },
 		],
 	},
 })
