@@ -1,6 +1,42 @@
+<script setup lang="ts">
+const isLandscapePhone = ref(false)
+
+function check() {
+	// screen.* décrit l'appareil, pas le viewport : le clavier virtuel ne le change pas
+	const type = screen.orientation?.type
+	const legacy = (window as Window & { orientation?: number }).orientation // iOS < 16.4
+
+	let landscape: boolean
+	if (type) landscape = type.startsWith("landscape")
+	else if (typeof legacy === "number") landscape = Math.abs(legacy) === 90
+	else landscape = screen.width > screen.height
+
+	// Téléphone uniquement (pas tablette ni desktop), indépendant du viewport
+	const isPhone =
+		Math.min(screen.width, screen.height) <= 600 &&
+		window.matchMedia("(pointer: coarse)").matches
+
+	isLandscapePhone.value = landscape && isPhone
+}
+
+onMounted(() => {
+	check()
+	screen.orientation?.addEventListener("change", check)
+	window.addEventListener("orientationchange", check)
+	window.addEventListener("resize", check)
+})
+
+onBeforeUnmount(() => {
+	screen.orientation?.removeEventListener("change", check)
+	window.removeEventListener("orientationchange", check)
+	window.removeEventListener("resize", check)
+})
+</script>
+
 <template>
 	<div
-		class="bg-grid-black mobile-landscape:flex pointer-events-auto fixed inset-0 z-[9999] hidden h-dvh w-dvw touch-none flex-col items-center justify-center gap-5 overscroll-contain bg-black px-8 text-center"
+		v-if="isLandscapePhone"
+		class="bg-grid-black pointer-events-auto fixed inset-0 z-9999 flex h-dvh w-dvw touch-none flex-col items-center justify-center gap-5 overscroll-contain bg-black px-8 text-center"
 		role="alertdialog"
 		aria-modal="true"
 		aria-labelledby="orientation-guard-title"
@@ -39,6 +75,7 @@
 </template>
 
 <style scoped>
+/* inchangé */
 .orientation-guard-phone {
 	animation: orientation-guard-rotate 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }

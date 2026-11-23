@@ -1,9 +1,31 @@
+/*
+ * Cartes projet : états (repos, survol, focus, pressé) et animations.
+ *
+ * Tout l'état passe par des variables CSS posées sur `.card-link`. Les enfants
+ * (`.card-media`, `.card-follow`, `.card-frame`, `.work-card-image`) ne font que les lire.
+ * Les valeurs `cqw` sont résolues chez l'élément qui consomme la variable, donc par
+ * rapport à `.card-link` (qui est un container).
+ */
+
 .card-link {
+	/* Tokens */
+	--card-ease: cubic-bezier(0.22, 1, 0.36, 1);
+	--card-spring: var(--card-ease);
+	--card-gap-hover: min(0.6rem, 3.2cqw);
+	--card-gap-press: min(1rem, 6cqw);
+	--card-press-duration: 220ms;
+	--card-press-delay: 0ms;
+
+	/* État au repos */
 	--card-gap: 0px;
+	--card-image-scale: 0.94;
+	--card-frame-opacity: 0;
+	--card-frame-duration: 600ms;
 	--card-duration: 900ms;
-	--card-spring: cubic-bezier(0.22, 1, 0.36, 1);
+	--card-delay: 0ms;
 }
 
+/* Ressort avec léger dépassement, si le navigateur sait faire `linear()`. */
 @supports (transition-timing-function: linear(0, 1)) {
 	.card-link {
 		--card-spring: linear(
@@ -48,56 +70,91 @@
 	}
 }
 
+/* -------------------------------------------------------------------------- */
+/* Consommateurs                                                               */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * `tan(atan2(a, b))` vaut a / b : astuce pour diviser deux longueurs et obtenir un
+ * facteur sans unité. Le média rétrécit de `--card-gap` de chaque côté.
+ */
 .card-media {
 	scale: calc(1 - tan(atan2(var(--card-gap) * 2, 100cqw)))
 		calc(1 - tan(atan2(var(--card-gap) * 2, 100cqw / var(--card-ratio, 1.7778))));
-	transition: scale var(--card-duration) var(--card-spring);
+	transition: scale var(--card-duration) var(--card-spring) var(--card-delay);
 }
 
 .card-follow {
 	translate: calc(var(--card-gap) * var(--follow-x, 1))
 		calc(var(--card-gap) * var(--follow-y, -1));
-	transition: translate var(--card-duration) var(--card-spring);
-	will-change: translate;
+	transition: translate var(--card-duration) var(--card-spring) var(--card-delay);
 }
 
 .card-frame {
-	opacity: 0;
-	transition: opacity 600ms ease-out;
+	opacity: var(--card-frame-opacity);
+	transition: opacity var(--card-frame-duration) ease-out var(--card-delay);
 }
 
+/* -------------------------------------------------------------------------- */
+/* États                                                                       */
+/* -------------------------------------------------------------------------- */
+
+/* Survol : uniquement avec une vraie souris, jamais sur tactile (hover « collant »). */
 @media (hover: hover) and (pointer: fine) {
 	.card-link:hover {
-		--card-gap: min(0.6rem, 3.2cqw);
-	}
-
-	.card-link:hover .card-frame {
-		opacity: 1;
-		transition-duration: 250ms;
+		--card-gap: var(--card-gap-hover);
+		--card-image-scale: 1;
+		--card-frame-opacity: 1;
+		--card-frame-duration: 250ms;
 	}
 }
 
 .card-link:focus-visible {
-	--card-gap: min(0.6rem, 3.2cqw);
+	--card-gap: var(--card-gap-hover);
+	--card-image-scale: 1;
+	--card-frame-opacity: 1;
+	--card-frame-duration: 250ms;
 }
 
-.card-link:focus-visible .card-frame {
-	opacity: 1;
-	transition-duration: 250ms;
-}
-
+/* Pressé, ou navigation en cours. */
 .card-link:active,
 .card-link[aria-busy="true"] {
-	--card-gap: min(1rem, 6cqw);
-	--card-duration: 220ms;
-	--card-spring: cubic-bezier(0.22, 1, 0.36, 1);
+	--card-gap: var(--card-gap-press);
+	--card-image-scale: 1;
+	--card-frame-opacity: 1;
+	--card-frame-duration: 250ms;
+	--card-duration: var(--card-press-duration);
+	--card-spring: var(--card-ease);
+	--card-delay: var(--card-press-delay);
 }
 
-.card-link:active .card-frame,
-.card-link[aria-busy="true"] .card-frame {
-	opacity: 1;
-	transition-duration: 250ms;
+/* Navigation lancée : on anime tout de suite, sans délai. */
+.card-link[aria-busy="true"] {
+	--card-delay: 0ms;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Tactile                                                                     */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Doux, sans rebond, et sans réaction quand le doigt commence à scroller :
+ * le délai de 70 ms ne s'applique qu'à l'entrée dans l'état pressé, et un scroll
+ * annule `:active` avant que l'animation ne démarre.
+ * Doit rester le complément exact de la media query du survol ci-dessus.
+ */
+@media (hover: none), (pointer: coarse) {
+	.card-link {
+		--card-duration: 260ms;
+		--card-spring: var(--card-ease);
+		--card-gap-press: var(--card-gap-hover);
+		--card-press-delay: 70ms;
+	}
+}
+
+/* -------------------------------------------------------------------------- */
+/* Accessibilité                                                               */
+/* -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
 	.card-media,

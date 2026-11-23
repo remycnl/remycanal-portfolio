@@ -74,6 +74,7 @@ const socialLinks: SocialLink[] = [
 	{ href: "https://www.awwwards.com/remy.cnl", label: "Awwwards" },
 	{ href: "https://dribbble.com/remycanal", label: "Dribbble" },
 	{ href: "https://www.behance.net/remycanal", label: "Behance" },
+	{ href: "https://www.instagram.com/madebyremycanal", label: "Instagram" },
 	{ href: "https://github.com/remycnl", label: "GitHub" },
 	{ href: "https://www.linkedin.com/in/remy-canal", label: "LinkedIn" },
 ]
@@ -138,9 +139,9 @@ async function copyEmail() {
 			<UiBadgeCursor :badge="badge" />
 
 			<div
-				class="pointer-events-none relative z-10 grid flex-1 grid-cols-2 grid-rows-[auto_auto_minmax(2.5rem,1fr)_auto_auto] gap-x-10 gap-y-6 [grid-template-areas:'intro_intro'_'nav_social'_'spacer_spacer'_'copy_copy'_'legal_legal'] sm:grid-cols-[1fr_auto] sm:grid-rows-[auto_auto_minmax(2.5rem,1fr)_auto] sm:[grid-template-areas:'intro_nav'_'social_nav'_'spacer_spacer'_'copy_legal'] lg:grid-cols-3 lg:grid-rows-[auto_minmax(2.5rem,1fr)_auto] lg:[grid-template-areas:'intro_intro_nav'_'spacer_spacer_spacer'_'social_copy_legal']"
+				class="pointer-events-none relative z-10 grid flex-1 grid-cols-2 grid-rows-[auto_auto_minmax(2.5rem,1fr)_auto] gap-(--footer-gap) [--footer-gap:1.25rem] [grid-template-areas:'intro_intro'_'nav_social'_'spacer_copy'_'legal_copy'] sm:grid-cols-[1fr_auto] sm:[--footer-gap:1.5rem] sm:[grid-template-areas:'intro_nav'_'social_nav'_'spacer_spacer'_'copy_legal'] lg:grid-cols-[1fr_auto_1fr] lg:grid-rows-[auto_minmax(2.5rem,1fr)_auto] lg:[--footer-gap:2rem] lg:[grid-template-areas:'intro_intro_nav'_'spacer_spacer_spacer'_'social_copy_legal']"
 			>
-				<div class="flex flex-col gap-5 [grid-area:intro] sm:gap-8">
+				<div class="flex flex-col gap-(--footer-gap) [grid-area:intro]">
 					<p
 						class="font-vg5000 text-fit pointer-events-auto text-[0.65rem] tracking-[0.35em] uppercase sm:text-xs"
 						:class="themeClasses.muted"
@@ -190,14 +191,14 @@ async function copyEmail() {
 
 				<nav
 					aria-label="Footer navigation"
-					class="flex flex-col gap-4 self-start [grid-area:nav] sm:items-end sm:gap-5 sm:justify-self-end"
+					class="flex flex-col gap-(--footer-gap) self-start [grid-area:nav] sm:items-end sm:justify-self-end"
 				>
 					<NuxtLink
 						v-for="link in links"
 						:key="link.to"
 						:to="link.to"
 						v-roll-hover
-						class="font-lineal-bold text-fit pointer-events-auto w-fit text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs"
+						class="font-lineal-bold text-fit pointer-events-auto w-fit text-[0.7rem] tracking-[0.15em] whitespace-nowrap uppercase transition-colors duration-200 sm:text-xs"
 						:class="themeClasses.hover"
 					>
 						{{ link.label }}
@@ -206,7 +207,7 @@ async function copyEmail() {
 
 				<nav
 					aria-label="Social links"
-					class="pointer-events-auto flex flex-col items-end gap-4 self-start justify-self-end [grid-area:social] sm:flex-row sm:flex-wrap sm:items-start sm:gap-x-6 sm:gap-y-3 sm:justify-self-start lg:self-end"
+					class="pointer-events-auto flex flex-col items-end gap-(--footer-gap) self-start justify-self-end [grid-area:social] sm:flex-row sm:flex-wrap sm:items-start sm:justify-self-start lg:self-end"
 				>
 					<a
 						v-for="social in socialLinks"
@@ -215,7 +216,7 @@ async function copyEmail() {
 						target="_blank"
 						rel="noopener noreferrer"
 						v-roll-hover
-						class="font-lineal-bold text-fit pointer-events-auto w-fit shrink-0 text-[0.7rem] tracking-[0.15em] uppercase transition-colors duration-200 sm:text-xs"
+						class="font-lineal-bold text-fit pointer-events-auto w-fit shrink-0 text-[0.7rem] tracking-[0.15em] whitespace-nowrap uppercase transition-colors duration-200 sm:text-xs"
 						:class="themeClasses.hover"
 					>
 						{{ social.label }}
@@ -223,7 +224,7 @@ async function copyEmail() {
 				</nav>
 
 				<p
-					class="font-vg5000 text-fit pointer-events-auto self-end text-[0.65rem] tracking-[0.15em] [grid-area:copy] lg:justify-self-center"
+					class="font-vg5000 text-fit pointer-events-auto self-end justify-self-end rotate-180 text-[0.65rem] tracking-[0.15em] whitespace-nowrap [writing-mode:vertical-lr] [grid-area:copy] sm:rotate-0 sm:justify-self-start sm:text-left sm:[writing-mode:horizontal-tb] lg:justify-self-center lg:text-center"
 					:class="themeClasses.legalMuted"
 				>
 					© {{ year }} Rémy Canal — All rights reserved
@@ -231,13 +232,13 @@ async function copyEmail() {
 
 				<ul
 					v-if="legalLinks.length"
-					class="font-vg5000 flex flex-wrap items-center gap-x-6 gap-y-3 self-end text-[10px] tracking-[0.08em] uppercase [grid-area:legal] sm:justify-self-end sm:text-[0.65rem] sm:tracking-[0.15em]"
+					class="font-vg5000 flex flex-col items-start gap-(--footer-gap) self-end justify-self-start text-left text-[10px] tracking-[0.08em] uppercase [grid-area:legal] sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:justify-self-end sm:text-right sm:text-[0.65rem] sm:tracking-[0.15em]"
 				>
-					<li v-for="legal in legalLinks" :key="legal.label" class="flex">
+					<li v-for="legal in legalLinks" :key="legal.label" class="flex shrink-0">
 						<NuxtLink
 							:to="legal.to"
 							v-roll-hover
-							class="text-fit pointer-events-auto transition-colors duration-200"
+							class="text-fit pointer-events-auto whitespace-nowrap transition-colors duration-200"
 							:class="themeClasses.hover"
 						>
 							{{ legal.label }}

@@ -12,6 +12,7 @@ const SOCIALS = [
 	{ label: "Awwwards", href: "https://www.awwwards.com/remy.cnl" },
 	{ label: "Dribbble", href: "https://dribbble.com/remycanal" },
 	{ label: "Behance", href: "https://www.behance.net/remycanal" },
+	{ label: "Instagram", href: "https://www.instagram.com/madebyremycanal" },
 	{ label: "GitHub", href: "https://github.com/remycnl" },
 	{ label: "LinkedIn", href: "https://www.linkedin.com/in/remy-canal" },
 ] as const
