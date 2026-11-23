@@ -41,6 +41,12 @@ export interface UseSpriteOptions {
 	totalFrames?: number
 	frameWidth?: number
 	frameHeight?: number
+	/**
+	 * Rendu pixel art : pas de lissage, taille calée sur une échelle entière du sprite (pixels tous
+	 * identiques, jamais flous). Par défaut : détecté (frames de 128 px de haut ou moins, affichées
+	 * au moins à leur taille native).
+	 */
+	pixelArt?: boolean
 	/** Hauteur d'affichage en px. Par défaut : responsive (80 px dès 1024 px, 40 à 70 px en dessous). */
 	displayHeight?: MaybeRefOrGetter<number>
 
@@ -197,7 +203,12 @@ const DEFAULT_SPRITE_SRC = "/sprites/cat-black-light.png"
 const DEFAULT_Z_INDEX = 40
 const BUBBLE_Z_INDEX = 41
 const DESKTOP_MIN_WIDTH = 1024
-const MAX_DPR = 2
+/** Plafond du ratio de pixels : les téléphones (3x) doivent être rendus nativement, sinon le canvas est flou. */
+const MAX_DPR = 3
+/** Sprite considéré comme du pixel art (échelle entière, pas de lissage) si sa frame ne dépasse pas cette hauteur. */
+const PIXEL_ART_MAX_FRAME_PX = 128
+/** Écart de taille toléré (en proportion) pour caler le chat sur une échelle entière de son sprite. */
+const PIXEL_SNAP_TOLERANCE = 0.15
 
 const RESIZE_DEBOUNCE_MS = 150
 const SOFT_RESIZE_HEIGHT_THRESHOLD = 140
@@ -537,8 +548,7 @@ function createBubble(text: string, colorClass: string) {
 	const el = document.createElement("div")
 	el.textContent = text
 	el.setAttribute("aria-hidden", "true")
-	el.className =
-		`font-vg5000 pointer-events-none select-none text-center text-sm ${colorClass}`.trim()
+	el.className = `font-vg5000 pointer-events-none select-none text-center text-sm ${colorClass}`.trim()
 	Object.assign(el.style, {
 		position: "absolute",
 		top: "0",
@@ -548,7 +558,6 @@ function createBubble(text: string, colorClass: string) {
 		maxWidth: "min(16rem, 80vw)",
 		textWrap: "balance",
 		opacity: "0",
-		willChange: "transform, opacity",
 	})
 	return el
 }
@@ -718,12 +727,24 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 	const ctx = canvas.getContext("2d")
 
-	const setCanvasX = gsap.quickSetter(canvas, "x", "px") as (value: number) => void
-	const setCanvasY = gsap.quickSetter(canvas, "y", "px") as (value: number) => void
+	const applyCanvasX = gsap.quickSetter(canvas, "x", "px") as (value: number) => void
+	const applyCanvasY = gsap.quickSetter(canvas, "y", "px") as (value: number) => void
+
+	/**
+	 * Cale une coordonnée sur un pixel physique de l'écran. Un canvas posé à une position fractionnaire
+	 * est ré-échantillonné par le navigateur : c'est ce qui le rend flou, surtout sur mobile.
+	 */
+	function snap(value: number) {
+		return Math.round(value * dpr) / dpr
+	}
+
+	function setCanvasX(x: number) {
+		applyCanvasX(snap(x))
+	}
 
 	function setPosition(x: number, y: number) {
-		setCanvasX(x)
-		setCanvasY(y)
+		applyCanvasX(snap(x))
+		applyCanvasY(snap(y))
 	}
 
 	function getX() {
@@ -751,8 +772,10 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 	let dpr = resolveDpr()
 	let frameW = 0
 	let frameH = 0
+	/** Hauteur demandée (px CSS), puis taille réellement affichée : calée sur des pixels physiques entiers. */
+	let requestedH = resolveDisplayHeight()
 	let displayW = 0
-	let displayH = resolveDisplayHeight()
+	let displayH = requestedH
 
 	const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
 	let motionReduced = reducedMotionQuery.matches
@@ -858,17 +881,37 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 	/* --------------------------------------------------------------- dessin */
 
+	/**
+	 * Dimensionne le canvas en pixels PHYSIQUES : un pixel du canvas = un pixel d'écran, sans aucun
+	 * ré-échantillonnage par le navigateur. Pour du pixel art, la taille est calée sur une échelle entière
+	 * du sprite (tous les pixels ont la même taille) quand cela reste proche de la taille demandée.
+	 */
 	function setupCanvas() {
 		if (!ctx || !frameW || !frameH) return
 
-		displayW = displayH * (frameW / frameH)
+		const wantedH = requestedH * dpr
+		const ratio = wantedH / frameH
+		const pixelArt = options.pixelArt ?? (frameH <= PIXEL_ART_MAX_FRAME_PX && ratio >= 1)
 
-		canvas.width = Math.round(displayW * dpr)
-		canvas.height = Math.round(displayH * dpr)
+		let backingH = Math.max(1, Math.round(wantedH))
+		if (pixelArt && ratio >= 1) {
+			const integerH = frameH * Math.max(1, Math.round(ratio))
+			if (Math.abs(integerH - wantedH) / wantedH <= PIXEL_SNAP_TOLERANCE) backingH = integerH
+		}
+		const backingW = Math.max(1, Math.round(backingH * (frameW / frameH)))
+
+		displayH = backingH / dpr
+		displayW = backingW / dpr
+
+		canvas.width = backingW
+		canvas.height = backingH
 		canvas.style.width = `${displayW}px`
 		canvas.style.height = `${displayH}px`
+		// Filet de sécurité : si le navigateur doit quand même mettre à l'échelle (zoom en cours), pas de bavure.
+		canvas.style.imageRendering = pixelArt ? "pixelated" : "auto"
 
-		ctx.imageSmoothingEnabled = false
+		ctx.imageSmoothingEnabled = !pixelArt
+		ctx.imageSmoothingQuality = "high"
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 	}
 
@@ -893,11 +936,12 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 			ctx.scale(-1, 1)
 		}
 
+		// Rectangle source aligné sur des pixels entiers : pas de bavure de la frame voisine.
 		ctx.drawImage(
 			activeImage,
-			sheetIndex * frameW,
+			Math.round(sheetIndex * frameW),
 			0,
-			frameW,
+			Math.floor(frameW),
 			frameH,
 			0,
 			0,
@@ -917,6 +961,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 	function tick(_time: number, deltaMs: number) {
 		if (isSuspended()) return
+
 
 		// En saut, les frames sont pilotées par la trajectoire (montée / descente).
 		if (motionReduced || !imageLoaded || state.mode === "jump") return
@@ -1294,10 +1339,10 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 		const nextDpr = resolveDpr()
 		const nextHeight = resolveDisplayHeight()
-		if (nextDpr === dpr && nextHeight === displayH) return
+		if (nextDpr === dpr && nextHeight === requestedH) return
 
 		dpr = nextDpr
-		displayH = nextHeight
+		requestedH = nextHeight
 		setupCanvas()
 		draw()
 	}
@@ -1322,8 +1367,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 		const gapX = Math.max(b.left - (a.left + a.width), a.left - (b.left + b.width))
 		const gapY = Math.max(b.top - (a.top + a.height), a.top - (b.top + b.height))
-		const overlapX =
-			Math.min(a.left + a.width, b.left + b.width) - Math.max(a.left, b.left)
+		const overlapX = Math.min(a.left + a.width, b.left + b.width) - Math.max(a.left, b.left)
 		const overlapY = Math.min(a.top + a.height, b.top + b.height) - Math.max(a.top, b.top)
 
 		return (
@@ -1435,15 +1479,60 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		return viewport.height * (scrollTriggerRatio + FOLLOW_MARGIN_EXTRA)
 	}
 
-	/** Zone visible la plus proche : utilisée quand le chat est hors écran. */
+	/** Zone visible où le chat revient quand il est hors écran : la plus proche du centre de l'écran, là où l'on regarde. */
 	function pickRelocationTarget(): Candidate | null {
-		return nearest(collectCandidates({ margin: followMargin(), jitter: true }))
+		const candidates = collectCandidates({ margin: followMargin(), jitter: true })
+		const origin = originOf(currentHost)
+		const centerY = viewport.height / 2
+
+		let best: Candidate | null = null
+		let bestGap = Number.POSITIVE_INFINITY
+		for (const candidate of candidates) {
+			const gap = Math.abs(origin.y + candidate.y + displayH / 2 - centerY)
+			if (gap < bestGap) {
+				best = candidate
+				bestGap = gap
+			}
+		}
+
+		return best
 	}
 
 	function relocateTo(target: Candidate) {
 		abortMotion()
 		markVisit(currentZone)
 		if (!placeInZone(target.zone, target.x)) scheduleNext()
+	}
+
+	/**
+	 * Le chat est hors écran (scroll rapide) : au lieu de se téléporter, il rejoint la zone visible d'un
+	 * vrai saut, qui entre par le bord de l'écran du côté d'où il vient. La partie hors écran du trajet
+	 * est invisible : on ne voit que l'arc final, à une vitesse normale.
+	 */
+	function leapIn(target: Candidate, timeScale = 1) {
+		if (motionReduced) return relocateTo(target)
+
+		const origin = originOf(currentHost)
+		const viewTop = -origin.y
+		const viewBottom = viewTop + viewport.height
+		const fromAbove = getY() + displayH / 2 < (viewTop + viewBottom) / 2
+
+		let startY = fromAbove ? viewTop - displayH * 1.5 : viewBottom + displayH * 0.5
+		// Pas de bavure sous le bas du document : un canvas posé plus bas agrandirait la page.
+		if (!currentHost) {
+			startY = Math.min(startY, (document.documentElement.scrollHeight || Number.POSITIVE_INFINITY) - displayH)
+		}
+
+		const spread = Math.min(viewport.width * 0.25, 280)
+		const startX = clamp(
+			-origin.x,
+			-origin.x + viewport.width - displayW,
+			target.x + rand(-spread, spread)
+		)
+
+		if (!jumpTo(target.zone, target.x, timeScale, true, { x: startX, y: startY })) {
+			relocateTo(target)
+		}
 	}
 
 	function isCatInViewport() {
@@ -1622,7 +1711,9 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		target: Zone,
 		landingX: number,
 		timeScale = 1,
-		fromRun = false
+		fromRun = false,
+		/** Point de départ imposé (saut qui entre par le bord de l'écran) ; sinon, la position du chat. */
+		start?: { x: number; y: number }
 	): boolean {
 		if (!imageLoaded || target === currentZone) return false
 
@@ -1633,10 +1724,11 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		const toX = clamp(minX, maxX, landingX)
 
 		// Un chat à l'arrêt se ramasse avant de bondir ; un chat lancé en course bondit directement.
-		const crouch = !fromRun && phase !== "walk" && phase !== "hop"
+		const crouch = !start && !fromRun && phase !== "walk" && phase !== "hop"
 
 		clearNextAction()
 		killMotion()
+		if (start) setPosition(start.x, start.y)
 		phase = "jump"
 		jumpTarget = target
 
@@ -1644,11 +1736,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		if (Math.abs(deltaX) > 4) state.facing = deltaX > 0 ? 1 : -1
 
 		const distance = Math.hypot(deltaX, groundY - getY())
-		const rise = clamp(
-			displayH * JUMP_RISE_MIN,
-			displayH * JUMP_RISE_MAX,
-			distance * JUMP_RISE_RATIO
-		)
+		const rise = clamp(displayH * JUMP_RISE_MIN, displayH * JUMP_RISE_MAX, distance * JUMP_RISE_RATIO)
 
 		const launch = () => {
 			motion = flyTo({
@@ -1805,7 +1893,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		// Chat hors écran : inutile d'animer, on le ramène sur une zone visible si possible.
 		if (!isCatInViewport()) {
 			const target = pickRelocationTarget()
-			if (target) relocateTo(target)
+			if (target) leapIn(target)
 			else scheduleNext(OFFSCREEN_RECHECK_S)
 			return
 		}
@@ -1911,8 +1999,12 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 			return
 		}
 
-		if (offscreen || motionReduced) relocateTo(target)
-		else {
+		if (offscreen) {
+			landingLine = scrollVelocity > FAST_SCROLL_PX_S ? "scroll" : null
+			leapIn(target, clamp(1, 2, 1 + scrollVelocity / 3000))
+		} else if (motionReduced) {
+			relocateTo(target)
+		} else {
 			landingLine = scrollVelocity > FAST_SCROLL_PX_S ? "scroll" : null
 			if (!jumpTo(target.zone, target.x, clamp(1, 3, 1 + scrollVelocity / 2200))) {
 				landingLine = null
@@ -1958,11 +2050,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		const origin = originOf(currentHost)
 		let left = -origin.x
 		let top = -origin.y
-		let right =
-			left +
-			(currentHost
-				? viewport.width
-				: document.documentElement.clientWidth || viewport.width)
+		let right = left + (currentHost ? viewport.width : document.documentElement.clientWidth || viewport.width)
 		let bottom = top + viewport.height
 
 		if (currentHost) {
@@ -2040,7 +2128,10 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 			return false
 		}
 
-		gsap.set(el, { x: spot.left, y: spot.top })
+		// Texte posé sur des pixels physiques entiers : net, jamais flou.
+		const left = snap(spot.left)
+		const top = snap(spot.top)
+		gsap.set(el, { x: left, y: top })
 
 		const drift = motionReduced ? 0 : 5
 		const hold = BUBBLE_HOLD_BASE_S + text.length * BUBBLE_HOLD_PER_CHAR_S
@@ -2048,14 +2139,10 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 			.timeline({ onComplete: () => removeBubble(bubble) })
 			.fromTo(
 				el,
-				{ opacity: 0, scale: motionReduced ? 1 : 0.85, y: spot.top + drift },
-				{ opacity: 1, scale: 1, y: spot.top, duration: 0.22, ease: "back.out(2)" }
+				{ opacity: 0, scale: motionReduced ? 1 : 0.85, y: top + drift },
+				{ opacity: 1, scale: 1, y: top, duration: 0.22, ease: "back.out(2)" }
 			)
-			.to(
-				el,
-				{ opacity: 0, y: spot.top - drift, duration: 0.25, ease: "power1.in" },
-				`+=${hold}`
-			)
+			.to(el, { opacity: 0, y: top - drift, duration: 0.25, ease: "power1.in" }, `+=${hold}`)
 
 		const bubble: Bubble = { el, parent, box: spot, anim, dismissing: false }
 		bubbles.add(bubble)
@@ -2119,13 +2206,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		hoverSince = now
 
 		const moving = phase !== "idle"
-		say(
-			moving
-				? "chase"
-				: now - lastHoverAt < REPEAT_HOVER_WINDOW_MS
-					? "hoverAgain"
-					: "hover"
-		)
+		say(moving ? "chase" : now - lastHoverAt < REPEAT_HOVER_WINDOW_MS ? "hoverAgain" : "hover")
 
 		// Curseur qui reste posé : le chat ronronne.
 		purrCall?.kill()
@@ -2160,8 +2241,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 		const now = performance.now()
 		clickTimes.push(now)
-		while (clickTimes.length > 0 && now - clickTimes[0]! > CLICK_WINDOW_MS)
-			clickTimes.shift()
+		while (clickTimes.length > 0 && now - clickTimes[0]! > CLICK_WINDOW_MS) clickTimes.shift()
 
 		if (phase === "idle" && !motionReduced) landSquash(CLICK_SQUASH)
 
@@ -2238,10 +2318,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 	window.addEventListener("scroll", onScroll, { passive: true, signal })
 	window.addEventListener("resize", handleViewportChange, { passive: true, signal })
-	window.addEventListener("orientationchange", handleViewportChange, {
-		passive: true,
-		signal,
-	})
+	window.addEventListener("orientationchange", handleViewportChange, { passive: true, signal })
 	window.visualViewport?.addEventListener("resize", handleViewportChange, { signal })
 	document.addEventListener("visibilitychange", handleVisibilityChange, { signal })
 	// bfcache : la page est gelée / restaurée sans toujours déclencher visibilitychange.
@@ -2281,16 +2358,11 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 			setSpriteImage(img, spriteSrc)
 			scheduleSync()
 		})
-		.catch(() =>
-			console.warn(`[useSprite] Impossible de charger le sprite : ${spriteSrc}`)
-		)
+		.catch(() => console.warn(`[useSprite] Impossible de charger le sprite : ${spriteSrc}`))
 
 	/* ------------------------------------------------------------ API */
 
-	function registerZone(
-		el: HTMLElement,
-		zoneOptions: RegisterZoneOptions = {}
-	): CatZoneHandle {
+	function registerZone(el: HTMLElement, zoneOptions: RegisterZoneOptions = {}): CatZoneHandle {
 		let zone = zones.get(el)
 		if (!zone) {
 			zone = { el, profiles: [] }
