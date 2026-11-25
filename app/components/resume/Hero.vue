@@ -163,7 +163,7 @@ onBeforeUnmount(() => {
 				<h1
 					v-text-reveal="{ singlePhrase: true, immediate: true }"
 					:id="titleId"
-					class="font-lineal-black relative z-10 mt-[-0.85em] ml-[-0.04em] text-[clamp(2.5rem,11.5vw,6.5rem)] leading-none tracking-[-0.01em] uppercase lg:text-[clamp(3.5rem,7.4vw,9rem)]"
+					class="font-lineal-black relative z-10 mt-[-0.85em] ml-[-0.04em] text-[clamp(2.5rem,11.5vw,6.5rem)] leading-none tracking-[-0.01em] uppercase w-fit lg:text-[clamp(3.5rem,7.4vw,9rem)]"
 				>
 					<span class="block">The journey</span>
 					<span class="block">so far.</span>
@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
 
 				<p
 					v-text-reveal="{ immediate: true }"
-					class="font-lineal-regular leading-fit relative z-10 mt-5 max-w-[36ch] text-[clamp(1rem,2.2vw,1.375rem)] text-balance lg:mt-[1.8vw] lg:text-[clamp(1rem,1.55vw,1.75rem)]"
+					class="font-lineal-regular leading-fit relative z-10 mt-5 max-w-[36ch] text-[clamp(1rem,2.2vw,1.375rem)] text-balance lg:mt-[1.8vw] w-fit lg:text-[clamp(1rem,1.55vw,1.75rem)]"
 				>
 					{{ SUBTITLE }}
 				</p>

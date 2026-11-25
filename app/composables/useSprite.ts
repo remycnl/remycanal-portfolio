@@ -17,8 +17,11 @@
  *   zone voisine (trajectoire balistique, anticipation et réception), soit fait un aller-retour
  *   dans sa zone. Les zones sont visitées à tour de rôle (les moins récentes d'abord).
  * - Bulles : chaque réplique naît au-dessus de la tête du chat et y RESTE (elle ne suit pas le chat),
- *   sans recouvrir le chat ni une autre bulle, et au-dessus de tout le reste. Répliques par situation (survol, caresse, clics,
- *   fuite, course, atterrissage, scroll rapide, retour d'onglet...) + répliques propres à chaque zone.
+ *   sans recouvrir le chat ni une autre bulle, et au-dessus de tout le reste. Une bulle n'existe que
+ *   « au niveau du chat » : elle n'apparaît que si le chat est à l'écran et qu'il y a de la place juste
+ *   à côté de lui, et elle disparaît si la mise en page déplace le chat. Le chat arrive sans rien dire :
+ *   les répliques sont des réactions (survol, caresse, clics, fuite, scroll rapide, retour d'onglet...) ou
+ *   des commentaires spontanés (course, atterrissage, repos), + des répliques propres à chaque zone.
  * - Course : vitesse proportionnelle à la taille du chat, démarrage / freinage progressifs, et cadence
  *   des pattes calée sur la vitesse réelle (pas de glissement).
  * - Tout ce qui est temporisé passe par GSAP (tweens + delayedCall) : on peut donc tout mettre
@@ -107,7 +110,7 @@ export interface RegisterZoneOptions {
 	zIndex?: number
 	/** Surcharge de la balade autonome pour cette zone (par défaut : option globale `wander`). */
 	wander?: boolean
-	/** Répliques propres à cette zone, mêlées aux répliques génériques (arrivée, survol, atterrissage, repos). */
+	/** Répliques propres à cette zone, mêlées aux répliques génériques (survol, atterrissage, repos). */
 	phrases?: readonly string[]
 }
 
@@ -260,10 +263,14 @@ const LANDING_PAUSE_MAX_S = 0.9
 
 /** Bulles. */
 const MAX_BUBBLES = 3
+/** Nombre de rangées d'empilement au-dessus du chat : borne aussi l'écart maximal entre une bulle et le chat. */
+const BUBBLE_LEVELS = 3
 /** Espace entre une bulle et la tête du chat / entre deux bulles / avec le bord du viewport (px). */
 const BUBBLE_GAP_PX = 10
 const BUBBLE_PADDING_PX = 6
 const BUBBLE_EDGE_PX = 6
+/** Déplacement du chat par la mise en page (px) au-delà duquel ses bulles, qui ne le suivent pas, sont retirées. */
+const BUBBLE_DETACH_PX = 4
 const BUBBLE_HOLD_BASE_S = 1.3
 const BUBBLE_HOLD_PER_CHAR_S = 0.05
 const RECENT_PHRASES = 8
@@ -275,7 +282,6 @@ const IDLE_CHATTER_CHANCE = 0.16
 const RUN_CHATTER_CHANCE = 0.1
 const LANDING_CHATTER_CHANCE = 0.3
 const ZONE_PHRASE_CHANCE = 0.4
-const HELLO_DELAY_S = 0.7
 
 /** Interactions. */
 const PURR_DELAY_S = 1.4
@@ -326,7 +332,6 @@ function profileRangeWidth(profile: ZoneProfile) {
  * ---------------------------------------------------------------------------------------------- */
 
 export type PhraseKind =
-	| "hello"
 	| "hover"
 	| "hoverAgain"
 	| "chase"
@@ -347,17 +352,6 @@ export type CatPhrases = Record<PhraseKind, readonly string[]>
  * forcément les accents, les flèches ni les points de suspension typographiques.
  */
 const DEFAULT_PHRASES: CatPhrases = {
-	// Le chat apparaît (premier affichage, nouvelle page).
-	hello: [
-		"Hello!",
-		"Peek-a-boo!",
-		"Surprise!",
-		"Oh, a visitor!",
-		"Welcome in!",
-		"Meow!",
-		"Hi! I live here.",
-		"Did you miss me?",
-	],
 	// Le curseur arrive sur le chat.
 	hover: [
 		"Meow!",
@@ -513,7 +507,6 @@ const DEFAULT_PHRASES: CatPhrases = {
 
 /** Situations où une réplique propre à la zone peut remplacer une réplique générique. */
 const ZONE_PHRASE_KINDS: ReadonlySet<PhraseKind> = new Set<PhraseKind>([
-	"hello",
 	"hover",
 	"hoverAgain",
 	"landing",
@@ -544,11 +537,20 @@ function boxesOverlap(a: Box, b: Box, padding = 0) {
 	)
 }
 
+/** Écart entre deux boîtes sur chaque axe (0 si elles se recouvrent sur cet axe). */
+function boxGap(a: Box, b: Box) {
+	return {
+		x: Math.max(a.left - (b.left + b.width), b.left - (a.left + a.width), 0),
+		y: Math.max(a.top - (b.top + b.height), b.top - (a.top + a.height), 0),
+	}
+}
+
 function createBubble(text: string, colorClass: string) {
 	const el = document.createElement("div")
 	el.textContent = text
 	el.setAttribute("aria-hidden", "true")
-	el.className = `font-vg5000 pointer-events-none select-none text-center text-sm ${colorClass}`.trim()
+	el.className =
+		`font-vg5000 pointer-events-none select-none text-center text-sm ${colorClass}`.trim()
 	Object.assign(el.style, {
 		position: "absolute",
 		top: "0",
@@ -896,7 +898,8 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		let backingH = Math.max(1, Math.round(wantedH))
 		if (pixelArt && ratio >= 1) {
 			const integerH = frameH * Math.max(1, Math.round(ratio))
-			if (Math.abs(integerH - wantedH) / wantedH <= PIXEL_SNAP_TOLERANCE) backingH = integerH
+			if (Math.abs(integerH - wantedH) / wantedH <= PIXEL_SNAP_TOLERANCE)
+				backingH = integerH
 		}
 		const backingW = Math.max(1, Math.round(backingH * (frameW / frameH)))
 
@@ -961,7 +964,6 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 	function tick(_time: number, deltaMs: number) {
 		if (isSuspended()) return
-
 
 		// En saut, les frames sont pilotées par la trajectoire (montée / descente).
 		if (motionReduced || !imageLoaded || state.mode === "jump") return
@@ -1244,7 +1246,11 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 	/* ---------------------------------------------------------- placement */
 
-	/** Recale le chat dans les bornes de sa zone (après un resize, un layout shift, un atterrissage). */
+	/**
+	 * Recale le chat dans les bornes de sa zone (après un resize, un layout shift, un atterrissage).
+	 * Si la mise en page l'a déplacé, ses bulles (qui ne le suivent pas) sont retirées : elles resteraient
+	 * à l'ancien emplacement, loin de lui.
+	 */
 	function settle() {
 		if (!currentZone || isMoving()) return
 
@@ -1252,8 +1258,16 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		if (!rect) return
 
 		const { minX, maxX, groundY } = travelOf(rect)
-		const x = clamp(minX, maxX, getX())
+		const fromX = getX()
+		const x = clamp(minX, maxX, fromX)
 		if (!Number.isFinite(x) || !Number.isFinite(groundY)) return
+
+		if (
+			Math.abs(x - fromX) > BUBBLE_DETACH_PX ||
+			Math.abs(groundY - getY()) > BUBBLE_DETACH_PX
+		) {
+			clearBubbles()
+		}
 
 		setPosition(x, groundY)
 	}
@@ -1266,8 +1280,6 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		const x = preferredX === undefined ? (minX + maxX) / 2 : clamp(minX, maxX, preferredX)
 		if (!Number.isFinite(x) || !Number.isFinite(groundY)) return false
 
-		const appearing = parked
-
 		resetTransientState()
 		activateZone(zone)
 
@@ -1279,8 +1291,6 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 		resetScrollTracking()
 		scheduleNext()
-
-		if (appearing) gsap.delayedCall(HELLO_DELAY_S, () => say("hello"))
 		return true
 	}
 
@@ -1367,7 +1377,8 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 		const gapX = Math.max(b.left - (a.left + a.width), a.left - (b.left + b.width))
 		const gapY = Math.max(b.top - (a.top + a.height), a.top - (b.top + b.height))
-		const overlapX = Math.min(a.left + a.width, b.left + b.width) - Math.max(a.left, b.left)
+		const overlapX =
+			Math.min(a.left + a.width, b.left + b.width) - Math.max(a.left, b.left)
 		const overlapY = Math.min(a.top + a.height, b.top + b.height) - Math.max(a.top, b.top)
 
 		return (
@@ -1520,7 +1531,10 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		let startY = fromAbove ? viewTop - displayH * 1.5 : viewBottom + displayH * 0.5
 		// Pas de bavure sous le bas du document : un canvas posé plus bas agrandirait la page.
 		if (!currentHost) {
-			startY = Math.min(startY, (document.documentElement.scrollHeight || Number.POSITIVE_INFINITY) - displayH)
+			startY = Math.min(
+				startY,
+				(document.documentElement.scrollHeight || Number.POSITIVE_INFINITY) - displayH
+			)
 		}
 
 		const spread = Math.min(viewport.width * 0.25, 280)
@@ -1736,7 +1750,11 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		if (Math.abs(deltaX) > 4) state.facing = deltaX > 0 ? 1 : -1
 
 		const distance = Math.hypot(deltaX, groundY - getY())
-		const rise = clamp(displayH * JUMP_RISE_MIN, displayH * JUMP_RISE_MAX, distance * JUMP_RISE_RATIO)
+		const rise = clamp(
+			displayH * JUMP_RISE_MIN,
+			displayH * JUMP_RISE_MAX,
+			distance * JUMP_RISE_RATIO
+		)
 
 		const launch = () => {
 			motion = flyTo({
@@ -2017,8 +2035,12 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 	/**
 	 * Une bulle apparaît au-dessus de la tête du chat, puis RESTE où elle est née (elle ne suit pas le
-	 * chat) et s'efface. À sa naissance elle ne recouvre ni le chat ni une autre bulle : son emplacement
-	 * est choisi parmi des positions libres (au-dessus, décalé, empilé, sur les côtés), dans le viewport.
+	 * chat) et s'efface. Elle reste toujours « au niveau du chat » :
+	 * - à sa naissance, elle ne recouvre ni le chat ni une autre bulle : son emplacement est choisi parmi
+	 *   des positions libres, au plus à BUBBLE_LEVELS rangées du chat (au-dessus, décalé, empilé, sur les
+	 *   côtés), dans le viewport. Si aucune ne convient, elle n'est pas affichée ;
+	 * - elle n'est créée que si le chat est à l'écran ;
+	 * - si la mise en page déplace le chat (voir `settle`), les bulles sont retirées.
 	 * Toujours au-dessus de tout (z-index 41, donc au-dessus du chat, du titre et des boutons) et
 	 * jamais cliquable : rien ne passe par-dessus le texte.
 	 */
@@ -2050,7 +2072,11 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		const origin = originOf(currentHost)
 		let left = -origin.x
 		let top = -origin.y
-		let right = left + (currentHost ? viewport.width : document.documentElement.clientWidth || viewport.width)
+		let right =
+			left +
+			(currentHost
+				? viewport.width
+				: document.documentElement.clientWidth || viewport.width)
 		let bottom = top + viewport.height
 
 		if (currentHost) {
@@ -2077,6 +2103,9 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		const taken = [...bubbles].map((bubble) => bubble.box)
 		const centerX = cat.left + cat.width / 2
 		const levelStep = height + BUBBLE_PADDING_PX
+		// Écart maximal avec le chat : celui de la dernière rangée. Au-delà (emplacement repoussé par un bord
+		// du viewport), la bulle ne serait plus au niveau du chat : mieux vaut ne rien afficher.
+		const maxGap = BUBBLE_GAP_PX + (BUBBLE_LEVELS - 1) * levelStep + BUBBLE_PADDING_PX
 
 		const place = (left: number, top: number): Box => ({
 			left: clamp(bounds.left, bounds.left + bounds.width - width, left),
@@ -2084,12 +2113,18 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 			width,
 			height,
 		})
-		const isFree = (box: Box) =>
-			!boxesOverlap(box, cat, 2) &&
-			!taken.some((other) => boxesOverlap(box, other, BUBBLE_PADDING_PX))
+		const isFree = (box: Box) => {
+			const gap = boxGap(box, cat)
+			return (
+				gap.x <= maxGap &&
+				gap.y <= maxGap &&
+				!boxesOverlap(box, cat, 2) &&
+				!taken.some((other) => boxesOverlap(box, other, BUBBLE_PADDING_PX))
+			)
+		}
 
 		const candidates: Box[] = []
-		for (let level = 0; level < 3; level++) {
+		for (let level = 0; level < BUBBLE_LEVELS; level++) {
 			for (const shift of [0, 0.7, -0.7, 1.4, -1.4]) {
 				candidates.push(
 					place(
@@ -2142,7 +2177,11 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 				{ opacity: 0, scale: motionReduced ? 1 : 0.85, y: top + drift },
 				{ opacity: 1, scale: 1, y: top, duration: 0.22, ease: "back.out(2)" }
 			)
-			.to(el, { opacity: 0, y: top - drift, duration: 0.25, ease: "power1.in" }, `+=${hold}`)
+			.to(
+				el,
+				{ opacity: 0, y: top - drift, duration: 0.25, ease: "power1.in" },
+				`+=${hold}`
+			)
 
 		const bubble: Bubble = { el, parent, box: spot, anim, dismissing: false }
 		bubbles.add(bubble)
@@ -2178,6 +2217,7 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 	 * Le chat dit une réplique de la situation. Une réaction à l'utilisateur (survol, clic...) passe
 	 * toujours (quitte à remplacer la plus ancienne bulle) ; une réplique spontanée respecte un délai
 	 * minimum entre deux, et n'a lieu ni en mouvement réduit ni si les bulles sont déjà nombreuses.
+	 * Dans tous les cas, rien n'est dit tant que le chat n'est pas à l'écran.
 	 */
 	function say(kind: PhraseKind, options: { spontaneous?: boolean } = {}): boolean {
 		if (parked || !imageLoaded || isSuspended()) return false
@@ -2185,6 +2225,8 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		const spontaneous = options.spontaneous ?? false
 		const now = performance.now()
 		if (spontaneous && (motionReduced || now < nextSpontaneousAt)) return false
+
+		if (!isCatInViewport()) return false
 
 		const line = pickPhrase(kind)
 		if (!line || !showBubble(line, !spontaneous)) return false
@@ -2206,7 +2248,13 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 		hoverSince = now
 
 		const moving = phase !== "idle"
-		say(moving ? "chase" : now - lastHoverAt < REPEAT_HOVER_WINDOW_MS ? "hoverAgain" : "hover")
+		say(
+			moving
+				? "chase"
+				: now - lastHoverAt < REPEAT_HOVER_WINDOW_MS
+					? "hoverAgain"
+					: "hover"
+		)
 
 		// Curseur qui reste posé : le chat ronronne.
 		purrCall?.kill()
@@ -2241,7 +2289,8 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 		const now = performance.now()
 		clickTimes.push(now)
-		while (clickTimes.length > 0 && now - clickTimes[0]! > CLICK_WINDOW_MS) clickTimes.shift()
+		while (clickTimes.length > 0 && now - clickTimes[0]! > CLICK_WINDOW_MS)
+			clickTimes.shift()
 
 		if (phase === "idle" && !motionReduced) landSquash(CLICK_SQUASH)
 
@@ -2318,7 +2367,10 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 
 	window.addEventListener("scroll", onScroll, { passive: true, signal })
 	window.addEventListener("resize", handleViewportChange, { passive: true, signal })
-	window.addEventListener("orientationchange", handleViewportChange, { passive: true, signal })
+	window.addEventListener("orientationchange", handleViewportChange, {
+		passive: true,
+		signal,
+	})
 	window.visualViewport?.addEventListener("resize", handleViewportChange, { signal })
 	document.addEventListener("visibilitychange", handleVisibilityChange, { signal })
 	// bfcache : la page est gelée / restaurée sans toujours déclencher visibilitychange.
@@ -2358,11 +2410,16 @@ function createSprite(options: UseSpriteOptions): CatSprite {
 			setSpriteImage(img, spriteSrc)
 			scheduleSync()
 		})
-		.catch(() => console.warn(`[useSprite] Impossible de charger le sprite : ${spriteSrc}`))
+		.catch(() =>
+			console.warn(`[useSprite] Impossible de charger le sprite : ${spriteSrc}`)
+		)
 
 	/* ------------------------------------------------------------ API */
 
-	function registerZone(el: HTMLElement, zoneOptions: RegisterZoneOptions = {}): CatZoneHandle {
+	function registerZone(
+		el: HTMLElement,
+		zoneOptions: RegisterZoneOptions = {}
+	): CatZoneHandle {
 		let zone = zones.get(el)
 		if (!zone) {
 			zone = { el, profiles: [] }

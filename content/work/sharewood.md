@@ -1,82 +1,51 @@
 ---
 title: Sharewood
-description: Identité, site e-commerce et direction artistique pour une marque de céramique contemporaine.
-date: "2026-09"
-tone: "#F2E286"
+description: Brand identity and website for Sharewood, a web agency based in Lyon.
+date: "2023-12"
+tone: "#FFFFFF"
 featured: true
 image: /works/sharewood/og_image.png
-# video: /works/demo.mp4
-client: Maison Aurore
-role: Direction artistique, design, développement
-url: https://example.com
+# video: /works/sharewood/demo.mp4
+client: Sharewood
+role: Brand identity, UI/UX design
+url: https://sharewood.team/
 tags:
   - Identité
   - Branding
-  - E-commerce
+  - Site web
   - UI/UX
-  - Développement
 ---
 
-Maison Aurore fabrique de la céramique à la main, en petites séries. Le brief : une identité calme et un site de vente qui laisse les objets au premier plan.
+Sharewood is a web agency in Lyon. For more than ten years it has worked on strategy, design, development and web marketing. An agency's own website is a tricky brief, because it is both the brand and the portfolio, and everyone who visits is a professional.
 
-## Le contexte
+![The Sharewood homepage](/works/sharewood/overview.webp "Homepage")
 
-La marque vendait surtout en marché et sur les réseaux sociaux. Elle voulait un site qui garde le côté artisanal, sans ressembler à un catalogue. Chaque pièce est unique, donc chaque page produit devait l'être aussi.
+## The brief
 
-![Vue d'ensemble du projet](/works/og_image.png "Vue d'ensemble : identité et site")
+Four trades under one name, and a site that shows all of them without turning into a list of services. The agency also wanted a tone that matched the team: direct and a bit playful, not corporate.
 
-## Ce qu'on a fait
+## The identity
 
-- **Identité** : logotype, palette, règles de typographie
-- **Direction artistique** : cadrage photo, lumière, retouche
-- **Site e-commerce** : catalogue, fiches produit, panier
-- **Développement** : Nuxt, paiement, gestion des pièces uniques
-
-## L'identité
-
-Un logotype simple, une palette réduite et une seule famille de caractères. Tout le reste vient des photos.
+The headline says it all: *Think. Design. Develop. Market. Share(wood).* The name carries a verb, "share", and the parentheses around "wood" play with that. I built the identity around this wink and kept the system simple so it works on any background, from a white page to a client presentation.
 
 ::media-grid{cols="2"}
-![Logotype](/works/og_image.png "Logotype")
+![Logo on a white background](/works/sharewood/logo.webp "Logo")
 
-![Palette](/works/og_image.png "Palette")
+![The hexagon shape used across the site](/works/sharewood/hexagon.webp "A hexagon, reused as a graphic signature")
 ::
 
-> Le site devait faire le même effet qu'une étagère bien rangée : on regarde, et on a envie de toucher.
+## The site
 
-## Le site
+The homepage starts with the agency's own sentence in very large type, then goes straight to the four expertises. Each one has a short list of what it covers and its own page, so a visitor can skip to what they need.
 
-La page d'accueil est une grille de pièces, sans texte superflu. Au survol, chaque pièce montre son détail. Remplace `/works/demo.mp4` par une capture vidéo du site.
+Under that, a project section where each case is labeled with the skills it involved. Then the team, with a GIF instead of a stiff group photo, a strip of client logos (large companies, SMEs, public institutions), recent news, and the studio address.
 
-![Navigation sur le site](/works/demo.mp4 "Parcours de la page d'accueil à la fiche produit")
+The ending is a call to action that makes fun of scrolling and tells people to get in touch. It is the same voice as the rest of the site.
 
-### Les fiches produit
+![Moving through the site](/works/sharewood/demo.mp4 "Homepage, expertises, projects")
 
-Chaque fiche affiche la pièce en grand, ses dimensions, et la date de fabrication. Quand une pièce est vendue, la fiche reste en ligne avec la mention « vendu ».
+## Build
 
-::media{src="/works/og_image.png" alt="Fiche produit" caption="Fiche produit : une pièce, un texte court"}
-::
+The site runs on WordPress with a custom theme, so the team can publish projects and news without a developer.
 
-### Le processus
-
-1. Atelier avec la fondatrice pour définir le ton
-2. Maquettes des trois pages clés
-3. Design system et développement
-4. Mise en ligne et suivi pendant trois mois
-
-## Les résultats
-
-| Indicateur          | Avant | Après |
-| ------------------- | ----- | ----- |
-| Ventes en ligne     | 12 %  | 58 %  |
-| Panier moyen        | 74 €  | 112 € |
-| Temps de chargement | 4,8 s | 1,1 s |
-
-## Le making of
-
-::embed{url="https://www.youtube.com/watch?v=aqz-KE-bpKQ" title="Making of Maison Aurore" caption="Une journée à l'atelier"}
-::
-
----
-
-Merci à toute l'équipe de Maison Aurore pour sa confiance. Le site est [en ligne ici](https://example.com).
+See it at [sharewood.team](https://sharewood.team/).

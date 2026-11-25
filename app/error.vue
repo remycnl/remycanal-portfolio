@@ -21,12 +21,12 @@ const MESSAGES: Record<number, { title: string; text: string }> = {
 		title: "Authentication required",
 		text: "You need to be signed in to see this page.",
 	},
-	403: { title: "Access denied", text: "You don’t have permission to view this page." },
+	403: { title: "Access denied", text: "You don't have permission to view this page." },
 	404: {
 		title: "Page not found",
-		text: "This page doesn’t exist, or it has been moved or removed.",
+		text: "This page doesn't exist, or it has been moved or removed.",
 	},
-	405: { title: "Method not allowed", text: "This action isn’t supported here." },
+	405: { title: "Method not allowed", text: "This action isn't supported here." },
 	408: {
 		title: "Request timed out",
 		text: "The request took too long. Please try again.",
@@ -34,15 +34,15 @@ const MESSAGES: Record<number, { title: string; text: string }> = {
 	410: { title: "Page removed", text: "This page has been permanently removed." },
 	429: {
 		title: "Too many requests",
-		text: "You’re going a bit fast. Please wait a moment and try again.",
+		text: "You're going a bit fast. Please wait a moment and try again.",
 	},
 	500: {
 		title: "Something went wrong",
-		text: "An unexpected error occurred on my side. It isn’t you.",
+		text: "An unexpected error occurred on my side. It isn't you.",
 	},
 	502: {
 		title: "Bad gateway",
-		text: "A service this page depends on isn’t responding properly. Please try again shortly.",
+		text: "A service this page depends on isn't responding properly. Please try again shortly.",
 	},
 	503: {
 		title: "Temporarily unavailable",
@@ -61,7 +61,7 @@ const info = computed(
 		MESSAGES[code.value] ??
 		(code.value >= 500
 			? MESSAGES[500]!
-			: { title: "Request error", text: "This request couldn’t be completed." })
+			: { title: "Request error", text: "This request couldn't be completed." })
 )
 
 // Réessayer n'a de sens que pour une erreur serveur, un timeout ou un rate limit

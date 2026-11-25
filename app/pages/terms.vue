@@ -9,7 +9,7 @@ useSeoMeta({
 
 const jurisdiction = LEGAL.court
 	? `the courts of ${LEGAL.court}`
-	: "the courts with territorial jurisdiction over the Provider’s registered place of business"
+	: "the courts with territorial jurisdiction over the Provider's registered place of business"
 </script>
 
 <template>
@@ -81,7 +81,7 @@ const jurisdiction = LEGAL.court
 			These terms apply to all web development, design, integration, optimisation and
 			maintenance services (the “Services”) provided by {{ LEGAL.legalName }} (the
 			“Provider”) to its clients (the “Client”). A quote or contract signed by both
-			parties may set specific terms, which prevail over these terms. The Client’s own
+			parties may set specific terms, which prevail over these terms. The Client's own
 			general terms do not apply unless the Provider accepts them in writing.
 		</p>
 		<h3>B2. Professional clients only</h3>
@@ -133,7 +133,7 @@ const jurisdiction = LEGAL.court
 		<h3>B6. Deadlines and delivery</h3>
 		<p>
 			Deadlines are estimates and depend on the Client providing content, feedback and
-			approvals on time. Delays on the Client’s side extend deadlines accordingly.
+			approvals on time. Delays on the Client's side extend deadlines accordingly.
 		</p>
 		<h3>B7. Acceptance and revisions</h3>
 		<p>
@@ -168,7 +168,7 @@ const jurisdiction = LEGAL.court
 		<h3>B10. Portfolio and credit</h3>
 		<p>
 			Unless the Client objects in writing, the Provider may present the project in its
-			portfolio and case studies, and place a discreet credit and link on the Client’s
+			portfolio and case studies, and place a discreet credit and link on the Client's
 			website.
 		</p>
 		<h3>B11. Warranty and maintenance</h3>
@@ -194,7 +194,7 @@ const jurisdiction = LEGAL.court
 		<p>
 			The Provider processes personal data as described in the
 			<NuxtLink to="/privacy-policy">privacy policy</NuxtLink>. Where the Provider
-			processes personal data on the Client’s behalf, a data processing agreement is
+			processes personal data on the Client's behalf, a data processing agreement is
 			available on request.
 		</p>
 		<h3>B15. Liability and insurance</h3>
@@ -232,7 +232,7 @@ const jurisdiction = LEGAL.court
 		<p>
 			If a provision is found invalid, the others remain in force. These terms and the
 			signed quote form the entire agreement and replace any prior discussion. Neither
-			party may assign the contract without the other’s consent. A party that does not
+			party may assign the contract without the other's consent. A party that does not
 			enforce a right does not waive it.
 		</p>
 		<h3>B21. Governing law and jurisdiction</h3>

@@ -3,7 +3,7 @@ title: Building my new portfolio
 description: A few thoughts about rebuilding my portfolio from scratch with Nuxt, Vue and a slightly obsessive attention to details.
 author: Rémy Canal
 date: 2026-09-12
-image: https://www.remycanal.me/img/mockup-pascale-canal-galery.webp
+image: /blog/building-my-new-portfolio/cover.jpg
 ---
 
 ## A portfolio should feel like a place

@@ -44,9 +44,13 @@ const FIELDS: readonly TextField[] = [
 	},
 ]
 
-/** Champs blancs sur le violet ; le focus est un anneau blanc détaché (offset) pour rester visible. */
+/**
+ * Champs blancs sur le violet ; le focus est un anneau blanc détaché (offset) pour rester visible.
+ * `box-fit` rogne le texte à la hauteur des capitales : le padding (--fit-x / --fit-y) est donc
+ * identique autour du texte et du placeholder.
+ */
 const FIELD_CLASS =
-	"font-vg5000 w-full rounded-lg bg-white px-4 py-3 text-base text-black placeholder:text-gray-dark/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+	"font-vg5000 box-fit w-full rounded-lg bg-white text-base text-black [--fit-x:1em] [--fit-y:1.1em] placeholder:text-gray-dark/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
 
 const ERROR_DEFAULT =
 	"Your message didn't go through. Check your connection and try again."
@@ -169,6 +173,7 @@ function onAfterEnter(el: Element) {
 
 					<label class="flex flex-col gap-2 sm:col-span-2">
 						<span class="font-vg5000 text-sm text-white/70">Message</span>
+						<!-- Multi-line: the tight fit line-height is overridden so the lines stay readable. -->
 						<textarea
 							v-model="form.message"
 							name="message"
@@ -176,7 +181,7 @@ function onAfterEnter(el: Element) {
 							rows="8"
 							:minlength="MESSAGE_MIN"
 							:maxlength="MESSAGE_MAX"
-							:class="[FIELD_CLASS, 'min-h-48 resize-y']"
+							:class="[FIELD_CLASS, 'min-h-48 resize-y [--leading-fit:1.5]']"
 							required
 						/>
 					</label>

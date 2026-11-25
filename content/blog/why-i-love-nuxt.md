@@ -3,7 +3,7 @@ title: Why I love Nuxt
 description: Nuxt has become one of my favorite tools for building fast, expressive and enjoyable web experiences.
 author: Rémy Canal
 date: 2026-08-28
-image: https://www.remycanal.me/img/mockup-vikl.webp
+image: /blog/why-i-love-nuxt/cover.jpeg
 ---
 
 ## Structure without losing freedom

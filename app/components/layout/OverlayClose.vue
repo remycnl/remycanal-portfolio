@@ -116,7 +116,7 @@ function onRelease(event: PointerEvent) {
 
 		<span
 			aria-hidden="true"
-			class="font-vg5000 hidden rounded-xs border border-current px-[0.5em] py-[0.3em] text-[10px] leading-none opacity-50 [@media(hover:hover)_and_(pointer:fine)]:inline-block"
+			class="font-vg5000 box-fit hidden rounded-xs border border-current text-[10px] opacity-50 [--fit-x:0.7em] [--fit-y:0.5em] [@media(hover:hover)_and_(pointer:fine)]:inline-block"
 		>
 			Esc
 		</span>

@@ -1,5 +1,5 @@
 ---
-title: Construire une interface qui sait se taire
+title: Designing an Interface That Knows When to Say Nothing
 description: Notes sur la retenue en design, la typographie comme structure et les médias qui respirent. Un article d'exemple qui montre tout ce que le rendu sait faire.
 author: Ton Nom
 date: 2026-11-18

@@ -147,10 +147,12 @@ function scrollToContent() {
 	}
 }
 
-function go(id: string) {
+/** Sommaire → section. On ferme d'abord le menu (mobile) : le scroll se calcule sur le layout final. */
+async function go(id: string) {
+	tocOpen.value = false
+	await nextTick()
 	if (progress.value) progress.value.scrollToId(id)
 	else document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
-	tocOpen.value = false
 }
 
 /* ───────── Sommaire : l'indicateur glisse (effet liquide) ───────── */
@@ -572,8 +574,15 @@ onBeforeUnmount(() => {
 	transform: rotate(180deg);
 }
 
+/* Mobile : le menu est un dropdown en position absolue. Il recouvre le contenu au lieu de
+   le pousser : ouvrir/fermer le menu ne change JAMAIS la position des titres, donc les
+   ancres et la règle de droite/bas restent synchronisées. */
 .toc-nav {
 	display: none;
+	position: absolute;
+	inset-inline: 0;
+	top: 100%;
+	z-index: 30;
 	max-height: min(50svh, 22rem);
 	margin-top: 0.5rem;
 	padding: 0.5rem;
@@ -581,6 +590,7 @@ onBeforeUnmount(() => {
 	overscroll-behavior: contain;
 	border-radius: 1rem;
 	background: var(--color-white);
+	box-shadow: 0 1rem 2.5rem -1rem rgb(0 0 0 / 0.25);
 }
 .toc-nav.open {
 	display: block;
@@ -595,10 +605,13 @@ onBeforeUnmount(() => {
 	}
 	.toc-nav {
 		display: block;
+		position: static;
+		z-index: auto;
 		max-height: calc(100svh - 11rem);
 		margin: 0;
 		padding: 0;
 		background: transparent;
+		box-shadow: none;
 		scrollbar-width: none;
 	}
 	.toc-nav::-webkit-scrollbar {

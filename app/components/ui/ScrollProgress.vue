@@ -229,6 +229,11 @@ function scrollToId(id: string, options: { immediate?: boolean; hash?: boolean }
 	const i = props.sections.findIndex((s) => s.id === id)
 	if (i < 0) return
 
+	// `reach` est rafraîchi via ResizeObserver + rAF : il a donc toujours une frame de retard
+	// après un changement de layout (menu mobile qui se ferme, polices, images…).
+	// On remesure ici, de façon synchrone, pour viser la position réelle au moment du clic.
+	measure()
+
 	if (hash) history.replaceState(null, "", `#${id}`)
 
 	const instant = immediate || reduced

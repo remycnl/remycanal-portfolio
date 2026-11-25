@@ -111,7 +111,7 @@ useSeoMeta({
 		<p>
 			Some providers, such as Vercel and Resend, are based in the United States or process
 			data there. These transfers rely on appropriate safeguards, such as the EU–US Data
-			Privacy Framework and/or the European Commission’s Standard Contractual Clauses.
+			Privacy Framework and/or the European Commission's Standard Contractual Clauses.
 		</p>
 
 		<h2>Retention periods</h2>
@@ -128,7 +128,7 @@ useSeoMeta({
 				Quotes, invoices and accounting records: 10 years, as required by French law.
 			</li>
 			<li>
-				Analytics and performance data: according to Vercel’s retention policy, in
+				Analytics and performance data: according to Vercel's retention policy, in
 				aggregated or anonymous form.
 			</li>
 			<li>Hosting logs: the short period set by Vercel for security and operation.</li>

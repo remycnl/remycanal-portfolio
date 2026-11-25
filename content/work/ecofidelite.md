@@ -1,82 +1,122 @@
 ---
 title: Éco-fidélité
-description: Identité, site e-commerce et direction artistique pour une marque de céramique contemporaine.
-date: "2026-09"
+description: Brand identity and low-carbon website for a solution that rewards eco-friendly actions inside loyalty programs.
+date: "2024-10"
 tone: "#027566"
 featured: true
 image: /works/ecofidelite/og_image.png
-# video: /works/demo.mp4
-client: Maison Aurore
-role: Direction artistique, design, développement
-url: https://example.com
+# video: /works/ecofidelite/demo.mp4
+client: letmotiv
+role: Brand identity, UI/UX design, eco-design, development
+url: https://eco-fidelite.com/
 tags:
   - Identité
   - Branding
-  - E-commerce
+  - Site web
   - UI/UX
   - Développement
 ---
 
-Maison Aurore fabrique de la céramique à la main, en petites séries. Le brief : une identité calme et un site de vente qui laisse les objets au premier plan.
+Éco-fidélité is a solution from letmotiv that lets brands, companies and local authorities reward eco-friendly purchases and actions inside their loyalty program. I created the brand and built the website, which was carried out at Sharewood. The site had to explain an abstract mechanism clearly. It also had to be light, because a site that promotes eco-friendly behavior shouldn't weigh a ton.
 
-## Le contexte
+![The Éco-fidélité homepage](/works/ecofidelite/overview.webp "Homepage")
 
-La marque vendait surtout en marché et sur les réseaux sociaux. Elle voulait un site qui garde le côté artisanal, sans ressembler à un catalogue. Chaque pièce est unique, donc chaque page produit devait l'être aussi.
+## The brief
 
-![Vue d'ensemble du projet](/works/og_image.png "Vue d'ensemble : identité et site")
+The idea is simple once you see it. Eco-friendly purchases and verified eco-gestures are converted into points, based on a scale of ecological benefit, and those points feed an existing loyalty program. Customers get rewarded, and the brand measures a real impact.
 
-## Ce qu'on a fait
+The difficulty is that it speaks to four very different audiences: consumers, businesses, employees (as part of a CSR approach) and local authorities. And the product is new, so the brand had to carry the explanation.
 
-- **Identité** : logotype, palette, règles de typographie
-- **Direction artistique** : cadrage photo, lumière, retouche
-- **Site e-commerce** : catalogue, fiches produit, panier
-- **Développement** : Nuxt, paiement, gestion des pièces uniques
+## The brand
 
-## L'identité
+The name already says what the product does: eco and loyalty in one word. So the logo could stay simple, in a white version and a green version for dark and light backgrounds. The deep green is the main color of the whole site.
 
-Un logotype simple, une palette réduite et une seule famille de caractères. Tout le reste vient des photos.
+The mechanism is explained with four pictograms, drawn as SVG: eco-friendly purchases, eco-gestures, eco-points, loyalty. The same four icons come back through the site, so after the first visit the logic is already familiar.
 
 ::media-grid{cols="2"}
-![Logotype](/works/og_image.png "Logotype")
+![Logo, white and green](/works/ecofidelite/logo.webp "Logo")
 
-![Palette](/works/og_image.png "Palette")
+![The four pictograms](/works/ecofidelite/pictograms.webp "Four steps, four pictograms")
 ::
 
-> Le site devait faire le même effet qu'une étagère bien rangée : on regarde, et on a envie de toucher.
+## The pages
 
-## Le site
+**Home.** The promise, the four-step principle, the objective (a measurable solution), the eco-gestures grouped by theme, the value proposition and the latest articles. Two actions only: ask for a demo or contact the team.
 
-La page d'accueil est une grille de pièces, sans texte superflu. Au survol, chaque pièce montre son détail. Remplace `/works/demo.mp4` par une capture vidéo du site.
+**Why éco-fidélité®.** The longer argument for decision-makers.
 
-![Navigation sur le site](/works/demo.mp4 "Parcours de la page d'accueil à la fiche produit")
+**Solution and eco-gestures, by audience.** Each audience (consumers, businesses, employees, local authorities) gets two pages: one that explains the solution for them, and one that lists the eco-gestures that apply. Same structure, different content, so a visitor from a city hall isn't read the pitch meant for a retailer.
 
-### Les fiches produit
+![An eco-gestures page](/works/ecofidelite/eco-gestures.webp "Eco-gestures: mobility, waste, IT, health and more")
 
-Chaque fiche affiche la pièce en grand, ses dimensions, et la date de fabrication. Quand une pièce est vendue, la fiche reste en ligne avec la mention « vendu ».
+**letmotiv, blog and contact.** A page about the company behind the solution, a blog with case studies and tips, and a contact form.
 
-::media{src="/works/og_image.png" alt="Fiche produit" caption="Fiche produit : une pièce, un texte court"}
-::
+## Green IT with Nuxt
 
-### Le processus
+Eco-design is mostly subtraction, and a lot of it happens before any code. Nuxt then gives you many levers to keep what's left light. This is the toolbox I worked from.
 
-1. Atelier avec la fondatrice pour définir le ton
-2. Maquettes des trois pages clés
-3. Design system et développement
-4. Mise en ligne et suivi pendant trois mois
+**Measure first.** Set a budget (page weight, number of requests, DOM size) before designing, then check it with EcoIndex, Lighthouse and Website Carbon. The RGESN and the 115 best practices from GreenIT.fr work as a checklist. `nuxi analyze` shows what each dependency really costs.
 
-## Les résultats
+**Prerender what doesn't change.** With `nuxt generate` or prerendering, pages are built once and served from a CDN, so no server works on each visit. `routeRules` lets you mix this with cached or server-rendered routes where needed.
 
-| Indicateur          | Avant | Après |
-| ------------------- | ----- | ----- |
-| Ventes en ligne     | 12 %  | 58 %  |
-| Panier moyen        | 74 €  | 112 € |
-| Temps de chargement | 4,8 s | 1,1 s |
+**Ship less JavaScript.** Lazy hydration (`hydrate-on-visible`, `hydrate-on-idle`) delays the work until a component is needed. Server components and islands keep some parts free of client code, and Nuxt can even render a page with no client JavaScript at all (`noScripts` in `routeRules`).
 
-## Le making of
+**Handle images properly.** `@nuxt/image` converts to AVIF or WebP, generates responsive sizes and lazy-loads below the fold. Images are the heaviest part of most pages, so this is where the biggest savings come from. Illustrations and pictograms stay in SVG.
 
-::embed{url="https://www.youtube.com/watch?v=aqz-KE-bpKQ" title="Making of Maison Aurore" caption="Une journée à l'atelier"}
-::
+**Self-host and subset fonts.** `@nuxt/fonts` serves fonts from your own domain, and subsetting keeps only the characters you use. One variable family is enough.
 
----
+**Control third-party scripts.** A demo-booking widget and a contact form are the kind of third-party tools that quietly weigh more than the page. `@nuxt/scripts` loads them on interaction or when visible, not on every visit.
 
-Merci à toute l'équipe de Maison Aurore pour sa confiance. Le site est [en ligne ici](https://example.com).
+**Avoid runtime requests.** With `@nuxt/icon`, icons can be bundled locally, so there are no calls to an icon API.
+
+**Prefetch less.** By default, links are prefetched as soon as they become visible. Switching to prefetch on interaction avoids downloading pages nobody asked for.
+
+**Fetch smarter.** Call the CMS at build time instead of on every visit, and avoid duplicate requests with `useFetch` caching and deduplication.
+
+**Compress and cache.** Static assets are precompressed with Brotli and gzip at build time, and `/_nuxt/**` files get long-lived immutable cache headers.
+
+**Choose the host.** A host that runs on renewable energy, close to the visitors, listed in the Green Web Foundation directory.
+
+**Respect user preferences.** `prefers-color-scheme` for the theme, `prefers-reduced-motion` for animations, no autoplay video.
+
+```ts
+export default defineNuxtConfig({
+  nitro: {
+    compressPublicAssets: true,
+    prerender: { crawlLinks: true, routes: ["/"] },
+  },
+  routeRules: {
+    "/_nuxt/**": {
+      headers: { "cache-control": "public, max-age=31536000, immutable" },
+    },
+  },
+  experimental: {
+    defaults: {
+      nuxtLink: { prefetchOn: { visibility: false, interaction: true } },
+    },
+  },
+  image: {
+    format: ["avif", "webp"],
+    quality: 70,
+  },
+})
+```
+
+## Results
+
+[Replace with your real measurements.]
+
+| Indicator         | Typical site | Éco-fidélité |
+| ----------------- | ------------ | ------------ |
+| Page weight       | —            | —            |
+| Requests per page | —            | —            |
+| EcoIndex grade    | —            | —            |
+| CO₂ per page view | —            | —            |
+
+![Browsing the site](/works/ecofidelite/demo.mp4 "From the homepage to a solution page")
+
+## What I took from it
+
+The biggest wins came from choices made before the code: fewer images, fewer fonts, fewer features. Nuxt then made the technical part easy, but it can't make a heavy design light. I now start every project with a weight budget and treat it like any other requirement.
+
+See it at [eco-fidelite.com](https://eco-fidelite.com/).

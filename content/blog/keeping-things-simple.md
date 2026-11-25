@@ -3,7 +3,7 @@ title: Keeping things simple
 description: Sometimes the best interface is the one where you remove everything that does not need to be there.
 author: Rémy Canal
 date: 2026-04-03
-image: /blog/1.png
+image: /blog/keeping-things-simple/cover.jpg
 ---
 
 ## Simplicity is an active choice
