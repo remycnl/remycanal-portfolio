@@ -3,7 +3,7 @@ title: Éco-fidélité
 description: Brand identity and low-carbon website for a solution that rewards eco-friendly actions inside loyalty programs.
 date: "2024-10"
 tone: "#027566"
-featured: true
+featured: false
 image: /works/ecofidelite/og_image.png
 # video: /works/ecofidelite/demo.mp4
 client: letmotiv

@@ -3,7 +3,7 @@ title: "Office des lumières — Website"
 description: "Brand identity and website for a Lyon notary office that was changing its name and its image."
 date: "2023-10"
 tone: "#FFEA8D"
-featured: true
+featured: false
 tags: ["Identité", "Site web", "UI/UX", "Développement"]
 image: "/works/officedeslumieres/og_image.png"
 # video: /works/officedeslumieres/demo.mp4

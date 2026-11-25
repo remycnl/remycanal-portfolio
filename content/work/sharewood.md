@@ -3,7 +3,7 @@ title: Sharewood
 description: Brand identity and website for Sharewood, a web agency based in Lyon.
 date: "2023-12"
 tone: "#FFFFFF"
-featured: true
+featured: false
 image: /works/sharewood/og_image.png
 # video: /works/sharewood/demo.mp4
 client: Sharewood
