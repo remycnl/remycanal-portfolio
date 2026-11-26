@@ -29,6 +29,7 @@ useSeoMeta({
 				'/stickers/dog_violet.svg',
 				'/stickers/characterFull_violet.svg',
 				'/stickers/cursor_violet.svg',
+				'/stickers/computer_violet.svg',
 			]"
 		>
 			<template #title>Welcome to my blog.<br />Side quests included.</template>

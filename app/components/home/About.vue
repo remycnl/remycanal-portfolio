@@ -38,6 +38,8 @@
 				to="/about"
 				pill="violet"
 				bubble="violet"
+				text="white"
+				icon="white"
 				size="large"
 			/>
 		</div>

@@ -270,7 +270,14 @@ const resume = computed(() => {
 
 		<!-- Sans titre : la cellule blanche reste vide, la bande continue jusqu'en bas. -->
 		<ResumeCvSection>
-			<UiAnimatedButton label="Have a spot for me on your team?" to="/contact" />
+			<UiAnimatedButton
+				label="Have a spot for me on your team?"
+				bubble="lime"
+				pill="black"
+				text="white"
+				icon="black"
+				to="/contact"
+			/>
 		</ResumeCvSection>
 	</div>
 </template>

@@ -65,6 +65,7 @@ useSeoMeta({
 				'/stickers/dog_lime.svg',
 				'/stickers/characterFull_lime.svg',
 				'/stickers/cursor_lime.svg',
+				'/stickers/computer_lime.svg',
 			]"
 		>
 			<template #title>Just things<br />I make.</template>

@@ -106,7 +106,10 @@ async function copyEmail() {
 						<UiAnimatedButton
 							label="Get my business card"
 							size="small"
-							theme="white-violet"
+							bubble="white"
+							pill="white"
+							text="violet"
+							icon="violet"
 							:to="BUSINESS_CARD.href"
 							external
 							:download="BUSINESS_CARD.filename"
@@ -116,7 +119,10 @@ async function copyEmail() {
 					<div class="hidden lg:block">
 						<UiAnimatedButton
 							label="Get my business card"
-							theme="white-violet"
+							bubble="white"
+							pill="white"
+							text="violet"
+							icon="violet"
 							:to="BUSINESS_CARD.href"
 							external
 							:download="BUSINESS_CARD.filename"

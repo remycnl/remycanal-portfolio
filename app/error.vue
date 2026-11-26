@@ -168,6 +168,8 @@ onMounted(() => {
 					size="medium"
 					pill="white"
 					bubble="lime"
+					text="black"
+					icon="black"
 					:nuxtlink="false"
 					@click="goHome"
 				/>
@@ -176,7 +178,9 @@ onMounted(() => {
 					label="Try again"
 					size="medium"
 					pill="white"
-					bubble="lime"
+					bubble="white"
+					text="black"
+					icon="black"
 					:nuxtlink="false"
 					@click="retry"
 				/>
@@ -186,6 +190,8 @@ onMounted(() => {
 					size="medium"
 					pill="white"
 					bubble="lime"
+					text="black"
+					icon="black"
 					:nuxtlink="false"
 					@click="goBack"
 				/>

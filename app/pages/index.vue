@@ -48,5 +48,6 @@ useHead({
 		<HomeResume />
 		<HomeBlog />
 		<HomeQuote />
+		<HomeContact />
 	</div>
 </template>

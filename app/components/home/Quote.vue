@@ -1,9 +1,81 @@
-<!-- HomeQuote.vue -->
 <script setup lang="ts">
+interface StickerSpec {
+	src: string
+	/** Position along the quote, from 0 (start) to 1 (end of the text). Past ~0.7 the sticker stays above the line: the author sits under the end of the quote. */
+	x: number
+	/** Vertical offset from the quote line, in em of the quote size: negative above, positive below. */
+	y: number
+	/** Width, in em of the quote size. */
+	size: number
+	/** Resting tilt (deg). */
+	tilt: number
+	/** Share of the wave it follows: the outer ones swing less, so they stay on screen. */
+	amplitude: number
+}
+
+const STICKERS: readonly StickerSpec[] = [
+	{
+		src: "/stickers/flower_violet.svg",
+		x: 0.05,
+		y: -1.1,
+		size: 1.1,
+		tilt: -12,
+		amplitude: 0.7,
+	},
+	{
+		src: "/stickers/dog_violet.svg",
+		x: 0.17,
+		y: 1.15,
+		size: 1.5,
+		tilt: 8,
+		amplitude: 0.8,
+	},
+	{
+		src: "/stickers/character_violet.svg",
+		x: 0.29,
+		y: -0.95,
+		size: 1.3,
+		tilt: 10,
+		amplitude: 0.85,
+	},
+	{
+		src: "/stickers/cursor_violet.svg",
+		x: 0.41,
+		y: 1.1,
+		size: 1.1,
+		tilt: -8,
+		amplitude: 0.9,
+	},
+	{
+		src: "/stickers/computer_lime.svg",
+		x: 0.55,
+		y: -1.1,
+		size: 1.4,
+		tilt: 7,
+		amplitude: 0.9,
+	},
+	{
+		src: "/stickers/characterFull_lime.svg",
+		x: 0.68,
+		y: 1.05,
+		size: 1.0,
+		tilt: -10,
+		amplitude: 0.85,
+	},
+	{ src: "/stickers/dog_lime.svg", x: 0.79, y: -1.2, size: 1.5, tilt: 9, amplitude: 0.8 },
+	{
+		src: "/stickers/flower_lime.svg",
+		x: 0.91,
+		y: -1.05,
+		size: 1.2,
+		tilt: 12,
+		amplitude: 0.7,
+	},
+]
+
 const sectionRef = useTemplateRef<HTMLElement>("sectionRef")
 const quoteWrapRef = useTemplateRef<HTMLElement>("quoteWrapRef")
-const authorRef = useTemplateRef<HTMLElement>("authorRef")
-const portraitRef = useTemplateRef<HTMLElement>("portraitRef")
+const stickerLayerRef = useTemplateRef<HTMLElement>("stickerLayerRef")
 
 const fontsReady = useFontsReady()
 
@@ -13,6 +85,10 @@ const { refreshImmediate } = useScrollRefresh()
 const SEGMENT_1 = '"Simplicity'
 const SEGMENT_2 = "is the ultimate"
 const SEGMENT_3 = 'sophistication."'
+const AUTHOR = "by Leonardo Da Vinci"
+
+const QUOTE_SIZE = "text-[clamp(2.5rem,11vw,14rem)]"
+const STICKER_SIZE = "text-[clamp(2.5rem,calc(9vw_+_1.6rem),min(14rem,18svh))]"
 
 const WAVE_FREQUENCY = 0.95
 const MAX_AMPLITUDE_RATIO = 0.2
@@ -24,6 +100,13 @@ const SCROLL_DISTANCE_RATIO = 4.4
 const EDGE_BUFFER_RATIO = 0.08
 const TEXT_ROTATION_FACTOR = 1
 const IMAGE_ROTATION_FACTOR = 0.85
+const STICKER_ROTATION_FACTOR = 0.6
+
+const POP_ENTER_RATIO = 0.92
+const POP_SCALE_FROM = 0.25
+const POP_Y_FROM = 40
+const POP_ROTATE_FROM = -35
+const POP_DURATION = 0.85
 
 const TABLET_BREAKPOINT = 1024
 const MOBILE_BREAKPOINT = 640
@@ -34,6 +117,15 @@ const MOBILE_WAVINESS_SCALE = 0.55
 
 const VELOCITY_DECAY_RATE = -Math.log(DECAY) * 60
 const WAVINESS_SMOOTH_RATE = -Math.log(1 - SMOOTH) * 60
+
+const ITEM_STYLE = {
+	position: "absolute",
+	top: 0,
+	left: 0,
+	yPercent: -50,
+	willChange: "transform",
+} as const
+const ITEM_STYLE_PROPS = "position,top,left,x,y,rotation,yPercent"
 
 function getResponsiveScale(containerW: number) {
 	if (containerW < MOBILE_BREAKPOINT) {
@@ -47,38 +139,37 @@ function getResponsiveScale(containerW: number) {
 
 type Setter = (v: number) => void
 
+interface PopState {
+	/** The image inside the sticker: the flow moves the sticker, the pop only animates the image. */
+	img: HTMLElement
+	tilt: number
+	shown: boolean
+}
+
 interface FlowItem {
 	el: HTMLElement
-	offsetPx: number
-	width: number
 	rotationFactor: number
+	/** Share of the wave the item follows, 1 for the quote. */
+	amplitude: number
+	/** The author line sits under the quote, it keeps its vertical gap while following the wave. */
+	isAuthor: boolean
+	/** Stickers only: where it sits around the quote, and its pop. */
+	anchor?: StickerSpec
+	pop?: PopState
+	/** Position and size in the flow, measured before the item leaves the layout. */
+	offsetX: number
+	offsetY: number
+	width: number
 	setX: Setter
 	setY: Setter
 	setRotation: Setter
 }
 
-useHoverPop(authorRef, portraitRef, {
-	rotate: -6,
-	y: 15,
-	duration: 0.6,
-})
-
-const crossRotated = ref(false)
-const hasHover = ref(true)
-
-function toggleCrossRotation() {
-	if (hasHover.value) return
-	crossRotated.value = !crossRotated.value
-}
-
-onMounted(() => {
-	hasHover.value = window.matchMedia("(hover: hover)").matches
-})
-
 useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 	const section = sectionRef.value
 	const wrap = quoteWrapRef.value
-	if (!section || !wrap) return
+	const stickerLayer = stickerLayerRef.value
+	if (!section || !wrap || !stickerLayer) return
 
 	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
@@ -104,22 +195,45 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 	let amplitudeScale = 1
 	let wavinessScale = 1
 
-	function buildFlowItem(el: HTMLElement, rotationFactor: number): FlowItem {
+	const itemEls = () => items.map((item) => item.el)
+	const centerY = (el: HTMLElement) => el.offsetTop + el.offsetHeight / 2
+
+	function buildFlowItem(
+		el: HTMLElement,
+		rotationFactor: number,
+		extra: Partial<FlowItem> = {}
+	): FlowItem {
 		return {
 			el,
-			offsetPx: el.offsetLeft,
-			width: el.offsetWidth,
 			rotationFactor,
+			amplitude: 1,
+			isAuthor: el.closest(".path-author") !== null,
+			offsetX: 0,
+			offsetY: 0,
+			width: 0,
 			setX: gsap.quickSetter(el, "x", "px") as Setter,
 			setY: gsap.quickSetter(el, "y", "px") as Setter,
 			setRotation: gsap.quickSetter(el, "rotation", "deg") as Setter,
+			...extra,
 		}
 	}
 
-	function computeBounds() {
-		const buffer = containerW * EDGE_BUFFER_RATIO
-		startX = containerW + buffer
-		endX = -(textWidth + buffer)
+	function buildStickerItems(): FlowItem[] {
+		const els = Array.from(stickerLayer!.querySelectorAll<HTMLElement>("[data-sticker]"))
+
+		return els.flatMap((el) => {
+			const spec = STICKERS[Number(el.dataset.index)]
+			const img = el.querySelector("img")
+			if (!spec || !img) return []
+
+			return [
+				buildFlowItem(el, STICKER_ROTATION_FACTOR, {
+					amplitude: spec.amplitude,
+					anchor: spec,
+					pop: { img, tilt: spec.tilt, shown: false },
+				}),
+			]
+		})
 	}
 
 	function measureContainer() {
@@ -132,31 +246,50 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 		wavinessScale = scale.waviness
 	}
 
-	function setupLayout(): boolean {
-		const measuredWidth = wrap!.scrollWidth
-		if (!measuredWidth) return false
+	function computeBounds() {
+		const buffer = containerW * EDGE_BUFFER_RATIO
+		startX = containerW + buffer
+		endX = -(textWidth + buffer)
+	}
 
-		const imageEls = Array.from(wrap!.querySelectorAll<HTMLElement>(".path-word-img"))
-		const charItems = split.chars.map((c) =>
-			buildFlowItem(c as HTMLElement, TEXT_ROTATION_FACTOR)
-		)
-		const imageItems = imageEls.map((el) => buildFlowItem(el, IMAGE_ROTATION_FACTOR))
-		items = [...charItems, ...imageItems]
-
-		textWidth = measuredWidth
+	function measure() {
+		textWidth = wrap!.scrollWidth || textWidth
 		measureContainer()
 		computeBounds()
 
-		gsap.set(
-			items.map((item) => item.el),
-			{
-				position: "absolute",
-				top: 0,
-				left: 0,
-				yPercent: -50,
-				willChange: "transform",
+		const quoteY = centerY(split.chars[0] as HTMLElement)
+		const quoteSize = parseFloat(getComputedStyle(stickerLayer!).fontSize)
+
+		for (const item of items) {
+			item.width = item.el.offsetWidth
+
+			if (item.anchor) {
+				item.offsetX = item.anchor.x * textWidth - item.width / 2
+				item.offsetY = item.anchor.y * quoteSize
+				continue
 			}
-		)
+
+			item.offsetX = item.el.offsetLeft
+			item.offsetY = item.isAuthor ? centerY(item.el) - quoteY : 0
+		}
+	}
+
+	function setupLayout(): boolean {
+		if (!wrap!.scrollWidth) return false
+
+		const imageEls = Array.from(wrap!.querySelectorAll<HTMLElement>(".path-word-img"))
+		items = [
+			...split.chars.map((c) => buildFlowItem(c as HTMLElement, TEXT_ROTATION_FACTOR)),
+			...imageEls.map((el) => buildFlowItem(el, IMAGE_ROTATION_FACTOR)),
+			...buildStickerItems(),
+		]
+
+		for (const { pop } of items) {
+			if (pop) hideSticker(pop)
+		}
+
+		measure()
+		gsap.set(itemEls(), ITEM_STYLE)
 
 		return true
 	}
@@ -164,27 +297,53 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 	function remeasure() {
 		if (!items.length) return
 
-		const els = items.map((item) => item.el)
-		gsap.set(els, { clearProps: "position,top,left,x,y,rotation,yPercent" })
-
-		const measuredWidth = wrap!.scrollWidth
-		textWidth = measuredWidth || textWidth
-		measureContainer()
-		for (const item of items) {
-			item.offsetPx = item.el.offsetLeft
-			item.width = item.el.offsetWidth
-		}
-		computeBounds()
-
-		gsap.set(els, {
-			position: "absolute",
-			top: 0,
-			left: 0,
-			yPercent: -50,
-			willChange: "transform",
-		})
+		gsap.set(itemEls(), { clearProps: ITEM_STYLE_PROPS })
+		measure()
+		gsap.set(itemEls(), ITEM_STYLE)
 
 		render(currentProgress, currentWaviness)
+	}
+
+	function hideSticker({ img, tilt }: PopState) {
+		gsap.killTweensOf(img)
+		gsap.set(img, {
+			opacity: 0,
+			scale: POP_SCALE_FROM,
+			rotation: tilt + POP_ROTATE_FROM,
+			y: POP_Y_FROM,
+			transformOrigin: "50% 50%",
+			force3D: true,
+		})
+	}
+
+	function popSticker({ img, tilt }: PopState) {
+		gsap.killTweensOf(img)
+		gsap
+			.timeline()
+			.to(img, { opacity: 1, duration: POP_DURATION * 0.35, ease: "power1.out" }, 0)
+			.to(
+				img,
+				{ scale: 1, y: 0, duration: POP_DURATION, ease: "elastic.out(1, 0.55)" },
+				0
+			)
+			.to(
+				img,
+				{ rotation: tilt, duration: POP_DURATION, ease: "elastic.out(1, 0.65)" },
+				0
+			)
+	}
+
+	function syncPop(item: FlowItem, centerX: number) {
+		const pop = item.pop
+		if (!pop) return
+
+		if (!pop.shown && centerX < containerW * POP_ENTER_RATIO) {
+			pop.shown = true
+			popSticker(pop)
+		} else if (pop.shown && centerX > containerW + item.width) {
+			pop.shown = false
+			hideSticker(pop)
+		}
 	}
 
 	function render(progress: number, waviness: number) {
@@ -196,21 +355,24 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 		const eps = 0.5
 
 		for (const item of items) {
-			const screenX = origin + item.offsetPx
+			const screenX = origin + item.offsetX
 			const centerX = screenX + item.width / 2
 			const phase = (centerX / containerW) * WAVE_FREQUENCY * Math.PI * 2
 			const phaseNext = ((centerX + eps) / containerW) * WAVE_FREQUENCY * Math.PI * 2
 
-			const y = baseline + amplitude * Math.sin(phase)
-			const yNext = baseline + amplitude * Math.sin(phaseNext)
+			const swing = amplitude * item.amplitude
+			const y = baseline + swing * Math.sin(phase)
+			const yNext = baseline + swing * Math.sin(phaseNext)
 			const angle =
-				amplitude === 0
+				swing === 0
 					? 0
 					: Math.atan2(yNext - y, eps) * (180 / Math.PI) * item.rotationFactor
 
 			item.setX(screenX)
-			item.setY(y)
+			item.setY(y + item.offsetY)
 			item.setRotation(angle)
+
+			syncPop(item, centerX)
 		}
 	}
 
@@ -233,6 +395,7 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 
 		render(0, 0)
 		gsap.set(wrap, { opacity: 1 })
+		gsap.set(stickerLayer, { autoAlpha: 1 })
 
 		gsap.ticker.add(tick)
 
@@ -253,9 +416,6 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 		})
 
 		requestAnimationFrame(() => requestAnimationFrame(() => refreshImmediate()))
-		// Safety pass: if the blog section below finalizes its pin-spacer
-		// after this section's first refresh, its own start position would
-		// otherwise stay stale relative to this section's true height.
 		setTimeout(() => refreshImmediate(), 250)
 	}
 
@@ -274,6 +434,9 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 		if (rafId !== null) cancelAnimationFrame(rafId)
 		gsap.ticker.remove(tick)
 		trigger?.kill()
+		for (const { pop } of items) {
+			if (pop) gsap.killTweensOf(pop.img)
+		}
 		split.revert()
 	}
 }, sectionRef)
@@ -291,7 +454,8 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 					aria-hidden="true"
 				>
 					<div
-						class="table-cell w-full text-center align-middle text-[clamp(2.5rem,11vw,14rem)] leading-none whitespace-nowrap [word-spacing:0.2em] [&_.path-char]:inline-block"
+						:class="QUOTE_SIZE"
+						class="table-cell w-full text-center align-middle leading-none whitespace-nowrap [word-spacing:0.2em] [&_.path-char]:inline-block"
 					>
 						<span>{{ SEGMENT_1 }}</span
 						><span class="path-word-img inline-block px-[0.4em] align-middle">
@@ -310,44 +474,39 @@ useGsapContext(({ gsap, ScrollTrigger, SplitText }) => {
 								loading="eager"
 								decoding="async" /></span
 						><span>{{ SEGMENT_3 }}</span>
+
+						<span
+							class="path-author mt-[0.6em] mr-[-3em] block text-right text-[0.3em] [word-spacing:0.2em]"
+						>
+							{{ AUTHOR }}
+						</span>
 					</div>
 				</div>
-			</div>
 
-			<span
-				ref="authorRef"
-				class="right-edge bottom-edge group absolute cursor-default text-base"
-				aria-hidden="true"
-				@click="toggleCrossRotation"
-			>
-				<div class="flex items-center gap-4">
-					<UiShapeCross
-						data-reveal-follow
-						:class="[
-							'text-lime -mt-0.5 h-4 w-4 transition-transform duration-400 md:h-5 md:w-5',
-							crossRotated ? '-rotate-180' : 'group-hover:-rotate-180',
-						]"
-					/>
+				<div
+					ref="stickerLayerRef"
+					:class="STICKER_SIZE"
+					class="pointer-events-none invisible absolute inset-0 z-10"
+					aria-hidden="true"
+				>
 					<span
-						v-text-reveal
-						class="font-vg5000 text-fit inline-block w-max whitespace-nowrap"
+						v-for="(sticker, index) in STICKERS"
+						:key="index"
+						:data-index="index"
+						:style="{ width: `${sticker.size}em` }"
+						class="absolute top-0 left-0 block"
+						data-sticker
 					>
-						Leonardo da Vinci
+						<img
+							:src="sticker.src"
+							alt=""
+							draggable="false"
+							decoding="async"
+							class="block h-auto w-full select-none"
+						/>
 					</span>
 				</div>
-				<span
-					ref="portraitRef"
-					class="pointer-events-none absolute bottom-0 -left-20 -mb-1 w-[clamp(4rem,8vw,6rem)] lg:-left-30 lg:-mb-2.5"
-				>
-					<NuxtImg
-						src="/quote/leonardo-da-vinci.png"
-						alt="Portrait de Leonardo da Vinci"
-						class="h-auto w-full object-contain grayscale"
-						loading="lazy"
-						decoding="async"
-					/>
-				</span>
-			</span>
+			</div>
 		</div>
 	</section>
 </template>

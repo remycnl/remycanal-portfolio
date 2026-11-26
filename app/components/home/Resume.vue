@@ -318,6 +318,8 @@
 					to="/resume"
 					pill="white"
 					bubble="lime"
+					text="black"
+					icon="black"
 					size="normal"
 					class="relative z-10"
 				/>

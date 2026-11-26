@@ -274,6 +274,8 @@ const pad = (n: number) => String(n).padStart(2, "0")
 						to="/work"
 						pill="gray-light"
 						bubble="lime"
+						text="black"
+						icon="black"
 						size="normal"
 					/>
 				</div>

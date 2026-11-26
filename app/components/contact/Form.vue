@@ -234,7 +234,10 @@ function onAfterEnter(el: Element) {
 					<!-- aria-disabled (not disabled) keeps the button focusable and its hover state intact -->
 					<UiAnimatedButton
 						type="submit"
-						theme="white-violet"
+						pill="white"
+						bubble="white"
+						text="violet"
+						icon="violet"
 						:nuxtlink="false"
 						:label="isLoading ? 'Sending…' : 'Send message'"
 						:aria-disabled="isLoading"

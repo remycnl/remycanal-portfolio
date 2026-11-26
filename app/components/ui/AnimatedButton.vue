@@ -1,66 +1,16 @@
 <script setup lang="ts">
-type Variant =
-	"black" | "black-light" | "white" | "gray-light" | "lime" | "violet" | "white-violet"
-
 /**
- * Thèmes prêts à l'emploi : définissent la pastille ET la bulle d'un coup.
- * `pill` / `bubble` explicitement passés gardent la priorité.
+ * Color name from the Tailwind theme (`violet` reads `--color-violet`), so only the name is
+ * passed. Any raw CSS color (`#fff`, `rgb(...)`, `oklch(...)`, `var(...)`) is used as is.
+ * The `(string & {})` keeps the autocomplete on the known names while accepting any theme color.
  */
-type Theme = "white-violet"
+type ButtonColor =
+	"black" | "black-light" | "white" | "gray-light" | "lime" | "violet" | (string & {})
 
-const THEMES: Record<Theme, { pill: Variant; bubble: Variant }> = {
-	// Tout blanc, texte et icône violets : pour les fonds violets.
-	"white-violet": { pill: "white-violet", bubble: "white-violet" },
-}
+const RAW_COLOR = /^(#|rgb|hsl|oklch|oklab|color\(|var\()/i
 
-const BG: Record<Variant, string> = {
-	black: "bg-black",
-	"black-light": "bg-black-light",
-	white: "bg-white",
-	"gray-light": "bg-gray-light",
-	lime: "bg-lime",
-	violet: "bg-violet",
-	"white-violet": "bg-white",
-}
-
-const TEXT_ON: Record<Variant, string> = {
-	black: "text-white",
-	"black-light": "text-white",
-	white: "text-black",
-	"gray-light": "text-black",
-	lime: "text-black",
-	violet: "text-white",
-	"white-violet": "text-violet",
-}
-
-type IconColor = "white" | "black" | "violet"
-
-const ICON_BASE_ON_BUBBLE: Record<Variant, IconColor> = {
-	black: "white",
-	"black-light": "white",
-	white: "black",
-	"gray-light": "black",
-	lime: "black",
-	violet: "white",
-	"white-violet": "violet",
-}
-
-const ICON_TEXT_CLASS: Record<IconColor | "black-light" | "gray-light", string> = {
-	white: "text-white",
-	black: "text-black",
-	violet: "text-violet",
-	"black-light": "text-black-light",
-	"gray-light": "text-gray-light",
-}
-
-function resolveIconVariant(
-	pill: Variant,
-	bubble: Variant
-): IconColor | "black-light" | "gray-light" {
-	const base = ICON_BASE_ON_BUBBLE[bubble]
-	if (pill === "black-light" && base === "black") return "black-light"
-	if (pill === "gray-light" && base === "white") return "gray-light"
-	return base
+function toColor(value: ButtonColor) {
+	return RAW_COLOR.test(value) ? value : `var(--color-${value})`
 }
 
 type Size = "extrasmall" | "small" | "normal" | "medium" | "large"
@@ -126,12 +76,14 @@ interface Props {
 	label?: string
 	/** Controls pill height, padding, icon size and text size. */
 	size?: Size
-	/** Preset applying both the pill and the bubble colors. `pill` / `bubble` still win when set. */
-	theme?: Theme
-	/** Background variant of the pill. Defaults to the theme's, otherwise `black`. */
-	pill?: Variant
-	/** Background variant of the icon bubble. Defaults to the theme's, otherwise `lime`. */
-	bubble?: Variant
+	/** Background color of the pill, a Tailwind theme color name, e.g. `violet`. */
+	pill?: ButtonColor
+	/** Background color of the icon bubble, e.g. `lime`. */
+	bubble?: ButtonColor
+	/** Color of the label, e.g. `white`. */
+	text?: ButtonColor
+	/** Color of the icon, e.g. `black`. */
+	icon?: ButtonColor
 	/** Renders a `NuxtLink` when true, otherwise a `button`. */
 	nuxtlink?: boolean
 	/** Destination used when `nuxtlink` is true. */
@@ -141,30 +93,20 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	label: "Button",
 	size: "normal",
-	theme: undefined,
-	pill: undefined,
-	bubble: undefined,
+	pill: "black",
+	bubble: "lime",
+	text: "white",
+	icon: "black",
 	nuxtlink: true,
 	to: undefined,
 })
 
 const size = computed(() => SIZES[props.size])
 
-const pillVariant = computed<Variant>(
-	() => props.pill ?? (props.theme ? THEMES[props.theme].pill : "black")
-)
-const bubbleVariant = computed<Variant>(
-	() => props.bubble ?? (props.theme ? THEMES[props.theme].bubble : "lime")
-)
-
-const pillClasses = computed(() => [TEXT_ON[pillVariant.value], size.value.pillClass])
-const pillBgClasses = computed(() => [BG[pillVariant.value]])
-const bubbleOuterClasses = computed(() => [size.value.bubbleClass])
-const bubbleVisualClasses = computed(() => [BG[bubbleVariant.value]])
-const iconClasses = computed(() => [
-	ICON_TEXT_CLASS[resolveIconVariant(pillVariant.value, bubbleVariant.value)],
-	size.value.iconClass,
-])
+const pillStyle = computed(() => ({ color: toColor(props.text) }))
+const pillBgStyle = computed(() => ({ backgroundColor: toColor(props.pill) }))
+const bubbleStyle = computed(() => ({ backgroundColor: toColor(props.bubble) }))
+const iconStyle = computed(() => ({ color: toColor(props.icon) }))
 
 interface Els {
 	pill: HTMLElement
@@ -360,17 +302,18 @@ const rootAttrs = computed(() =>
 	>
 		<span
 			ref="bubbleEl"
-			:class="bubbleOuterClasses"
+			:class="size.bubbleClass"
 			class="absolute top-1/2 right-0 z-0 -translate-y-1/2"
 		>
 			<span ref="bubbleScaleEl" class="flex h-full w-full items-center justify-center">
 				<span
 					ref="bubblePressEl"
-					:class="bubbleVisualClasses"
+					:style="bubbleStyle"
 					class="flex h-full w-full items-center justify-center rounded-full pl-1"
 				>
 					<svg
-						:class="iconClasses"
+						:class="size.iconClass"
+						:style="iconStyle"
 						class="block aspect-16/19"
 						viewBox="0 0 16 19"
 						fill="none"
@@ -392,12 +335,13 @@ const rootAttrs = computed(() =>
 		</span>
 		<span
 			ref="pillEl"
-			:class="pillClasses"
+			:class="size.pillClass"
+			:style="pillStyle"
 			class="font-vg5000 relative z-10 flex items-center justify-center rounded-full whitespace-nowrap"
 		>
 			<span
 				ref="pillBgEl"
-				:class="pillBgClasses"
+				:style="pillBgStyle"
 				class="absolute inset-0 -z-10 rounded-full"
 			/>
 			<span :class="size.text">

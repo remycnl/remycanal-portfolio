@@ -626,7 +626,7 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 	>
 		<div class="relative flex h-svh flex-col">
 			<div
-				class="section-p-xy grid shrink-0 grid-cols-1 items-end justify-items-center pb-6 text-center lg:grid-cols-[1fr_auto_1fr] lg:justify-items-stretch lg:gap-x-6 lg:pb-10"
+				class="section-p-x pt-section grid shrink-0 grid-cols-1 items-end justify-items-center pb-6 text-center lg:grid-cols-[1fr_auto_1fr] lg:justify-items-stretch lg:gap-x-6 lg:pb-10"
 			>
 				<div class="relative mb-4 shrink-0 sm:py-1 lg:mb-3 lg:justify-self-start">
 					<span
@@ -709,6 +709,8 @@ useGsapContext(({ gsap, ScrollTrigger }) => {
 							size="medium"
 							pill="black"
 							bubble="lime"
+							text="white"
+							icon="black"
 						/>
 					</div>
 				</div>
